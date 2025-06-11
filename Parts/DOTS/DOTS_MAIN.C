@@ -22,7 +22,11 @@ extern long depthtable4[];
 extern short dotnum;
 
 extern void __cdecl drawdots(void);
-extern void __cdecl setpalette(char *);
+void setpalette( char * p )
+{
+  shim_outp( 0x3c8, 0 );
+  for ( int c = 0; c < 768; c++ ) shim_outp( 0x3c9, p[ c ] );
+}
 
 #define vram shim_vram
 //char far *vram=(char far *)0xa0000000L;

@@ -221,27 +221,6 @@ _drawdots:
 	jmp	@@0
   ret
 
-global _setpalette
-_setpalette:
-	push	ebp
-;	mov	bp,sp
-	push	esi
-	push	edi
-;	push	eds
-;	mov	si,[bp+6]
-;	mov	ds,[bp+8]
-;	mov	dx,3c8h
-;	mov	al,0
-;	out	dx,al
-;	inc	dx
-;	mov	cx,768
-;	rep	outsb
-;	pop	ds
-	pop	edi
-	pop	esi
-	pop	ebp
-	ret
-
 section .data
 _face:
 global _face
