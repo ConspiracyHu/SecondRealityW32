@@ -73,7 +73,7 @@ _drawdots:
 	imul	word [_rotcos]
 	sub	ax,bx
 	sub	dx,cx
-	movzx	ebp,dx
+	movsx	ebp,dx
 	add	ebp,9000
 	
 	mov	ax,[esi+0] ;X
