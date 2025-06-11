@@ -22,7 +22,8 @@ extern int dotnum;
 
 extern void drawdots(void);
 
-char far *vram=(char far *)0xa0000000L;
+char * vram = NULL;
+//char far *vram=(char far *)0xa0000000L;
 
 char	pal[768];
 char	pal2[768];
@@ -57,6 +58,7 @@ extern int gravityd;
 
 void setborder(int color)
 {
+  unsigned char color8 = color;
 	_asm
 	{
 		mov	dx,3dah
@@ -64,7 +66,7 @@ void setborder(int color)
 		mov	dx,3c0h
 		mov	al,11h+32
 		out	dx,al
-		mov	al,color
+		mov	al,color8
 		out	dx,al
 	}
 }

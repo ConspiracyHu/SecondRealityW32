@@ -1,41 +1,41 @@
-FIXWORD	MACRO ;go to word boundary
+%macro FIXWORD 0 ;go to word boundary
 	if ($-start) mod 1
 	db 0
 	endif
-	ENDM
+%endmacro
 	
-CDS	MACRO
+%macro CDS 0
 	mov	ax,cs
 	mov	ds,ax
-	ENDM
+%endmacro
 
-CBEG	MACRO ;C/Assembler procedure begin
+%macro CBEG 0 ;C/Assembler procedure begin
 	push	bp
 	mov	bp,sp
 	push	si
 	push	di
 	push	ds
-	ENDM
+%endmacro
 
-CEND	MACRO ;C/Assembler procedure end
+%macro CEND 0 ;C/Assembler procedure end
 	pop	ds
 	pop	di
 	pop	si
 	pop	bp
 	ret
-	ENDM
+%endmacro
 
-CBEG0	MACRO ;C/Assembler procedure begin, minimal
+%macro CBEG0 0 ;C/Assembler procedure begin, minimal
 	push	bp
 	mov	bp,sp
-	ENDM
+%endmacro
 
-CEND0	MACRO ;C/Assembler procedure end, minimal
+%macro CEND0 0 ;C/Assembler procedure end, minimal
 	pop	bp
 	ret
-	ENDM
+%endmacro
 
-movpar	MACRO	reg,par ;loads parameter [par(0..)] to register [reg]
-	mov	reg,[bp+par*2+6]
-	ENDM
+%macro movpar	2 ;loads parameter [par(0..)] to register [reg]
+	mov	%1,[bp+%2*2+6]
+%endmacro
 

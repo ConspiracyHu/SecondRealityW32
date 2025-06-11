@@ -21,9 +21,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Parts\DOTS\ASM.ASM">
-      <Filter>Parts\15-Dots</Filter>
-    </None>
     <None Include="Parts\DOTS\CLINK.INC">
       <Filter>Parts\15-Dots</Filter>
     </None>
@@ -33,5 +30,10 @@
     <None Include="Parts\DOTS\SIN1024.INC">
       <Filter>Parts\15-Dots</Filter>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="Parts\DOTS\ASM.ASM">
+      <Filter>Parts\15-Dots</Filter>
+    </CustomBuild>
   </ItemGroup>
 </Project>

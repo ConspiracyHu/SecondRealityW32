@@ -57,3 +57,5 @@ extern void dis_setcopper(int routine_number,void (*routine)(void));
 void _dis_setmframe(int frame);
 int _dis_getmframe(void);
 int _dis_sync(void);
+
+#define halloc(x,y) malloc(x*y)
