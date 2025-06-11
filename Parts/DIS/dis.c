@@ -18,7 +18,7 @@ int dis_waitb()
 
 int dis_exit()
 {
-  return 0;
+  return demo_wantstoquit();
 }
 
 void dis_partstart()

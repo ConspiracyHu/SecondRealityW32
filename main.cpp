@@ -3,30 +3,42 @@
 
 extern "C" void dots_main( int argc, char * argv[] );
 
+int width = 320;
+int height = 240;
+unsigned int * screen32;
+
+Graphics graphics;
+
+extern "C" void blit();
+
+void blit()
+{
+  graphics.HandleMessages();
+
+  for ( int i = 0; i < width * height; i++ ) screen32[ i ] = shim_palette[ shim_vram[ i ] ];
+  graphics.Update( screen32 );
+}
+
+extern "C" bool demo_wantstoquit();
+bool demo_wantstoquit()
+{
+  return graphics.WantsToQuit();
+}
+
 int main()
 {
-  Graphics graphics;
-
   int windowWidth = 1280;
   int windowHeight = 720;
-  int width = 320;
-  int height = 240;
   bool fullscreen = false;
   if ( !graphics.Init( GetModuleHandle( NULL ), windowWidth, windowHeight, width, height, fullscreen ) )
   {
     return false;
   }
 
+  screen32 = new unsigned int[ width * height ];
+
   dots_main( 0, NULL );
 
-  unsigned int * screen32 = new unsigned int[ width * height ];
-  while ( !graphics.WantsToQuit() )
-  {
-    graphics.HandleMessages();
-
-    for ( int i = 0; i < width * height; i++ ) screen32[ i ] = shim_palette[ shim_vram[ i ] ];
-    graphics.Update( screen32 );
-  }
   delete[] screen32;
 
   graphics.Close();
