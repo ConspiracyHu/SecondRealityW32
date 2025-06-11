@@ -9,7 +9,7 @@
 
 extern int face[];
 
-extern int bpmin,bpmax;
+extern short bpmin,bpmax;
 
 extern char bgpic[];
 extern short rotsin,rotcos;
@@ -294,8 +294,8 @@ dots_main(int argc,char *argv[])
 	}
 	if(!dis_indemo())
 	{
-		_asm mov ax,3h
-		_asm int 10h
+		//_asm mov ax,3h
+		//_asm int 10h
 	}
 	return(0);
 }
