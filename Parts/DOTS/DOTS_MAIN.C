@@ -11,18 +11,18 @@ extern int face[];
 
 extern int bpmin,bpmax;
 
-extern char *bgpic;
-extern int rotsin,rotcos;
-extern int rows[];
+extern char bgpic[];
+extern short rotsin,rotcos;
+extern short rows[];
 extern long depthtable1[];
 extern long depthtable2[];
 extern long depthtable3[];
 extern long depthtable4[];
 
-extern int dotnum;
+extern short dotnum;
 
-extern void drawdots(void);
-extern void setpalette(char *);
+extern void __cdecl drawdots(void);
+extern void __cdecl setpalette(char *);
 
 #define vram shim_vram
 //char far *vram=(char far *)0xa0000000L;
@@ -30,7 +30,7 @@ extern void setpalette(char *);
 char	pal[768];
 char	pal2[768];
 
-extern sin1024[];
+extern short sin1024[];
 
 int	isin(int deg)
 {
@@ -44,19 +44,19 @@ int	icos(int deg)
 
 extern struct
 {
-	int	x;
-	int	y;
-	int	z;
-	int	old1;
-	int	old2;
-	int	old3;
-	int	old4;
-	int	yadd;
+	short	x;
+	short	y;
+	short	z;
+	short	old1;
+	short	old2;
+	short	old3;
+	short	old4;
+	short	yadd;
 } dot[];
 
-extern int gravity;
-extern int gravitybottom;
-extern int gravityd;
+extern short gravity;
+extern short gravitybottom;
+extern short gravityd;
 
 void setborder(int color)
 {
@@ -169,7 +169,7 @@ dots_main(int argc,char *argv[])
 		depthtable3[a]=0x202+0x04040404*c;
 		//depthtable4[a]=0x02020302+0x04040404*c;
 	}
-	bgpic=halloc(64000L,1L);
+//	bgpic=halloc(64000L,1L);
 	memcpy(bgpic,vram,64000);
 	a=0;
 	for(b=64;b>=0;b--)

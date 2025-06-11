@@ -38,7 +38,10 @@ _rotsin dw 0
 _rotcos dw 0
 
 global _bgpic
-_bgpic	dw 0,0
+_bgpic times 64000 db 0
+
+global _shim_vram
+extern _shim_vram
 
 global _depthtable1,_depthtable2,_depthtable3,_depthtable4
 _depthtable1 times 128 dd 0
@@ -51,32 +54,34 @@ section .code
 global _drawdots
 _drawdots:
 	CBEG
-	mov	ax,0a000h
-	mov	es,ax
-	mov	ax,cs
-	mov	ds,ax
-	mov	fs,[cs:_bgpic+2]
-	mov	cx,[cs:_dotnum]
-	mov	si,dot
-@@1:	push	cx
 
-	mov	ax,[ds:si+0] ;X
-	imul	word [ds:_rotsin]
+  ; ds:si = dot array
+  ; es:di = video memory
+  ; fs:di = background
+
+  mov edi,_shim_vram
+
+	movzx	ecx, word [_dotnum]
+	mov	esi, dot
+@@1:	push	ecx
+
+	mov	ax,[esi+0] ;X
+	imul	word [_rotsin]
 	mov	ax,ax
 	mov	cx,dx
-	mov	ax,[ds:si+4] ;Z
-	imul	word [ds:_rotcos]
+	mov	ax,[esi+4] ;Z
+	imul	word [_rotcos]
 	sub	ax,bx
 	sub	dx,cx
-	mov	bp,dx
-	add	bp,9000
+	movzx	ebp,dx
+	add	ebp,9000
 	
-	mov	ax,[ds:si+0] ;X
-	imul	word [ds:_rotcos]
+	mov	ax,[esi+0] ;X
+	imul	word [_rotcos]
 	mov	bx,ax
 	mov	cx,dx
-	mov	ax,[ds:si+4] ;Z
-	imul	word [ds:_rotsin]
+	mov	ax,[esi+4] ;Z
+	imul	word [_rotsin]
 	add	ax,bx
 	adc	dx,cx
 	shrd	ax,dx,8
@@ -91,7 +96,7 @@ _drawdots:
 	
 	idiv	bp
 	add	ax,160
-	push	ax
+	push	eax
 	cmp	ax,319
 	ja	@@2
 	
@@ -103,37 +108,37 @@ _drawdots:
 	add	ax,100
 	cmp	ax,199
 	ja	@@2
-	mov	bx,ax
-	shl	bx,1
-	mov	bx,[ds:_rows+bx]
-	pop	ax
+	movzx	ebx,ax
+	shl	ebx,1
+	mov	bx,[_rows+ebx]
+	pop	eax
 	add	bx,ax
-	push	ax
+	push	eax
 	
-	mov	di,[ds:si+6]
-	mov	ax,[fs:di]
-	mov	[es:di],ax
+	movzx	edi, word [esi+6]
+	mov	ax,[_bgpic+edi]
+	mov	[_shim_vram+edi],ax
 	mov	ax,87+87*256
-	mov	word [es:bx],ax
-	mov	[ds:si+6],bx
+	mov	word [_shim_vram+ebx],ax
+	mov	[esi+6],bx
 	
 	;ball
 	
-	mov	ax,[ds:_gravity]
-	add	[ds:si+14],ax
-	mov	ax,[ds:si+2] ;Y
-	add	ax,[ds:si+14]
-	cmp	ax,[ds:_gravitybottom]
+	mov	ax,[_gravity]
+	add	[esi+14],ax
+	mov	ax,[esi+2] ;Y
+	add	ax,[esi+14]
+	cmp	ax,[_gravitybottom]
 	jl	@@4
-	push	ax
-	mov	ax,[ds:si+14]
+	push	eax
+	mov	ax,[esi+14]
 	neg	ax
-	imul	word [cs:_gravityd]
+	imul	word [_gravityd]
 	sar	ax,4
-	mov	[ds:si+14],ax
-	pop	ax
-	add	ax,[ds:si+14]
-@@4:	mov	[ds:si+2],ax
+	mov	[esi+14],ax
+	pop	eax
+	add	ax,[esi+14]
+@@4:	mov	[esi+2],ax
 	cwd
 	shld	dx,ax,6
 	shl	ax,6
@@ -141,100 +146,100 @@ _drawdots:
 	add	ax,100
 	cmp	ax,199
 	ja	@@3
-	mov	bx,ax
-	shl	bx,1
-	mov	bx,[ds:_rows+bx]
-	pop	ax
+	movzx	ebx,ax
+	shl	ebx,1
+	mov	bx,[_rows+ebx]
+	pop	eax
 	add	bx,ax
 
-	mov	di,[ds:si+8]
-	mov	eax,[fs:di]
-	mov	[es:di],eax
+	mov	di,[esi+8]
+	mov	eax,[_bgpic+edi]
+	mov	[_shim_vram+edi],eax
 	add	di,320
-	mov	eax,[fs:di]
-	mov	[es:di],eax
+	mov	eax,[_bgpic+edi]
+	mov	[_shim_vram+edi],eax
 	add	di,320
-	mov	eax,[fs:di]
-	mov	[es:di],eax
+	mov	eax,[_bgpic+edi]
+	mov	[_shim_vram+edi],eax
 ;	add	di,320
-;	mov	eax,[fs:di]
-;	mov	[es:di],eax
+;	mov	eax,[_bgpic+edi]
+;	mov	[_shim_vram+edi],eax
 	shr	bp,6
 	and	bp,~3
 	
-	cmp	bp,[cs:_bpmin]
+	cmp	bp,[_bpmin]
 	jge	@@t1
-	mov	[cs:_bpmin],bp
-@@t1:	cmp	bp,[cs:_bpmax]
+	mov	[_bpmin],bp
+@@t1:	cmp	bp,[_bpmax]
 	jle	@@t2
-	mov	[cs:_bpmax],bp
+	mov	[_bpmax],bp
 @@t2:
-	mov	ax,word [ds:_depthtable1+bp]
-	mov	word [es:bx+1],ax
-	mov	eax,[ds:_depthtable2+bp]
-	mov	dword [es:bx+320],eax
-	mov	ax,word [ds:_depthtable3+bp]
-	mov	word [es:bx+641],ax
-	mov	[ds:si+8],bx
+	mov	ax,word [_depthtable1+ebp]
+	mov	word [_shim_vram+ebx+1],ax
+	mov	eax,[_depthtable2+ebp]
+	mov	dword [_shim_vram+ebx+320],eax
+	mov	ax,word [_depthtable3+ebp]
+	mov	word [_shim_vram+ebx+641],ax
+	mov	[esi+8],bx
 
-@@z:	pop	cx
-	add	si,16
+@@z:	pop	ecx
+	add	esi,16
 	LOOP_LARGE	@@1
 @@0:	CEND
 
-@@2:	mov	di,[ds:si+8]
-	mov	eax,[fs:di]
-	mov	[es:di],eax
+@@2:	mov	di,[esi+8]
+	mov	eax,[_bgpic+edi]
+	mov	[_shim_vram+edi],eax
 	add	di,320
-	mov	eax,[fs:di]
-	mov	[es:di],eax
+	mov	eax,[_bgpic+edi]
+	mov	[_shim_vram+edi],eax
 	add	di,320
-	mov	eax,[fs:di]
-	mov	[es:di],eax
-	mov	di,[ds:si+6]
-	mov	[ds:si+6],ax
-	mov	ax,[fs:di]
-	mov	[es:di],ax
-	pop	bx
-	pop	cx
-	add	si,16
+	mov	eax,[_bgpic+edi]
+	mov	[_shim_vram+edi],eax
+	mov	di,[esi+6]
+	mov	[esi+6],ax
+	mov	ax,[_bgpic+edi]
+	mov	[_shim_vram+edi],ax
+	pop	ebx
+	pop	ecx
+	add	esi,16
 	LOOP_LARGE	@@1
 	jmp	@@0
-@@3:	mov	di,[ds:si+8]
-	mov	eax,[fs:di]
-	mov	[es:di],eax
+@@3:	mov	di,[esi+8]
+	mov	eax,[_bgpic+edi]
+	mov	[_shim_vram+edi],eax
 	add	di,320
-	mov	eax,[fs:di]
-	mov	[es:di],eax
+	mov	eax,[_bgpic+edi]
+	mov	[_shim_vram+edi],eax
 	add	di,320
-	mov	eax,[fs:di]
-	mov	[es:di],eax
-	pop	bx
-	pop	cx
-	add	si,16
+	mov	eax,[_bgpic+edi]
+	mov	[_shim_vram+edi],eax
+	pop	ebx
+	pop	ecx
+	add	esi,16
 	LOOP_LARGE	@@1
 	jmp	@@0
   ret
 
 global _setpalette
 _setpalette:
-	push	bp
-	mov	bp,sp
-	push	si
-	push	di
-	push	ds
-	mov	si,[bp+6]
-	mov	ds,[bp+8]
-	mov	dx,3c8h
-	mov	al,0
-	out	dx,al
-	inc	dx
-	mov	cx,768
-	rep	outsb
-	pop	ds
-	pop	di
-	pop	si
-	pop	bp
+	push	ebp
+;	mov	bp,sp
+	push	esi
+	push	edi
+;	push	eds
+;	mov	si,[bp+6]
+;	mov	ds,[bp+8]
+;	mov	dx,3c8h
+;	mov	al,0
+;	out	dx,al
+;	inc	dx
+;	mov	cx,768
+;	rep	outsb
+;	pop	ds
+	pop	edi
+	pop	esi
+	pop	ebp
 	ret
 
 section .data
