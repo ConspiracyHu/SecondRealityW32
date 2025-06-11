@@ -87,7 +87,7 @@ bool Graphics::Init( HINSTANCE _instance, int _screenWidth, int _screenHeight, i
     AdjustWindowRectEx( &windowRect, wStyle, FALSE, wExStyle );
   }
 
-  mHWnd = CreateWindowEx( wExStyle, wndClass.lpszClassName, _T( "Ümlaüt Design YORE Engine" ), wStyle,
+  mHWnd = CreateWindowEx( wExStyle, wndClass.lpszClassName, _T( "Second Reality (Win32)" ), wStyle,
     ( GetSystemMetrics( SM_CXSCREEN ) - mPhysicalWidth ) / 2,
     ( GetSystemMetrics( SM_CYSCREEN ) - mPhysicalHeight ) / 2,
     windowRect.right - windowRect.left, windowRect.bottom - windowRect.top,
