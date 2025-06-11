@@ -3,8 +3,33 @@
   <ItemGroup>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Graphics.cpp" />
+    <ClCompile Include="Parts\DOTS\MAIN.C">
+      <Filter>Parts\15-Dots</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Graphics.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Parts">
+      <UniqueIdentifier>{78585c14-9278-4ee8-87d6-b22709b9851d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Parts\15-Dots">
+      <UniqueIdentifier>{13afc6c3-7159-4404-a106-322c18e461ac}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Parts\DOTS\ASM.ASM">
+      <Filter>Parts\15-Dots</Filter>
+    </None>
+    <None Include="Parts\DOTS\CLINK.INC">
+      <Filter>Parts\15-Dots</Filter>
+    </None>
+    <None Include="Parts\DOTS\FACE.INC">
+      <Filter>Parts\15-Dots</Filter>
+    </None>
+    <None Include="Parts\DOTS\SIN1024.INC">
+      <Filter>Parts\15-Dots</Filter>
+    </None>
   </ItemGroup>
 </Project>
