@@ -23,7 +23,7 @@ void shim_outp( int reg, int value )
   case 0x3c9:
     {
       unsigned char * pal8 = (unsigned char *)shim_palette;
-      pal8[paletteIndex * 4 + ( 2 - paletteReadComponent ) ] = value << 2;
+      pal8[paletteIndex * 4 + ( 2 - paletteComponent ) ] = value << 2;
       paletteComponent++;
       if ( paletteComponent == 3 )
       {
