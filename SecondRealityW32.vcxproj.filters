@@ -6,9 +6,11 @@
     <ClCompile Include="Parts\DOTS\MAIN.C">
       <Filter>Parts\15-Dots</Filter>
     </ClCompile>
+    <ClCompile Include="Parts\DIS\dis.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Graphics.h" />
+    <ClInclude Include="Parts\DIS\dis.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Parts">

@@ -145,10 +145,12 @@
   <ItemGroup>
     <ClCompile Include="Graphics.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Parts\DIS\dis.cpp" />
     <ClCompile Include="Parts\DOTS\MAIN.C" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Graphics.h" />
+    <ClInclude Include="Parts\DIS\dis.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Parts\DOTS\ASM.ASM" />
