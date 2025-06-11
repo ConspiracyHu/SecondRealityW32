@@ -177,7 +177,7 @@ _drawdots:
 
 @@z:	pop	cx
 	add	si,16
-	loop	@@1
+	LOOP_LARGE	@@1
 @@0:	CEND
 
 @@2:	mov	di,[ds:si+8]
@@ -196,7 +196,7 @@ _drawdots:
 	pop	bx
 	pop	cx
 	add	si,16
-	loop	@@1
+	LOOP_LARGE	@@1
 	jmp	@@0
 @@3:	mov	di,[ds:si+8]
 	mov	eax,[fs:di]
@@ -210,7 +210,7 @@ _drawdots:
 	pop	bx
 	pop	cx
 	add	si,16
-	loop	@@1
+	LOOP_LARGE	@@1
 	jmp	@@0
   ret
 

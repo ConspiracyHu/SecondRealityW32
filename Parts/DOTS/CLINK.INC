@@ -39,3 +39,10 @@
 	mov	%1,[bp+%2*2+6]
 %endmacro
 
+%macro LOOP_LARGE 1
+  loop %%notDone
+  jmp %%done
+  %%notDone:
+  jmp %1
+  %%done:
+%endmacro
