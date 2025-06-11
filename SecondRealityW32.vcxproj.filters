@@ -3,14 +3,16 @@
   <ItemGroup>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Graphics.cpp" />
-    <ClCompile Include="Parts\DOTS\MAIN.C">
+    <ClCompile Include="Parts\DOTS\DOTS_MAIN.C">
       <Filter>Parts\15-Dots</Filter>
     </ClCompile>
     <ClCompile Include="Parts\DIS\dis.c" />
+    <ClCompile Include="shims.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Graphics.h" />
     <ClInclude Include="Parts\DIS\dis.h" />
+    <ClInclude Include="shims.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Parts">

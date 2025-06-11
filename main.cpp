@@ -1,4 +1,7 @@
 #include "Graphics.h"
+#include "shims.h"
+
+extern "C" void dots_main( int argc, char * argv[] );
 
 int main()
 {
@@ -14,19 +17,17 @@ int main()
     return false;
   }
 
-  unsigned char * screen = new unsigned char[ width * height ];
-  unsigned int palette[ 256 ] = { 0 };
-  for ( int i = 0; i < 256; i++ ) palette[ i ] = i * 0x01010101;
+  dots_main( 0, NULL );
+
   unsigned int * screen32 = new unsigned int[ width * height ];
   while ( !graphics.WantsToQuit() )
   {
     graphics.HandleMessages();
 
-    for ( int i = 0; i < width * height; i++ ) screen32[ i ] = palette[ screen[ i ] ];
+    for ( int i = 0; i < width * height; i++ ) screen32[ i ] = shim_palette[ shim_vram[ i ] ];
     graphics.Update( screen32 );
   }
   delete[] screen32;
-  delete[] screen;
 
   graphics.Close();
 }

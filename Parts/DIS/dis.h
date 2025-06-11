@@ -59,3 +59,4 @@ int _dis_getmframe(void);
 int _dis_sync(void);
 
 #define halloc(x,y) malloc(x*y)
+

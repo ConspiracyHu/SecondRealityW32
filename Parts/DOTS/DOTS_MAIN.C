@@ -5,6 +5,7 @@
 #include <malloc.h>
 #include <math.h>
 #include "..\dis\dis.h"
+#include "..\..\shims.h"
 
 extern int face[];
 
@@ -21,8 +22,9 @@ extern long depthtable4[];
 extern int dotnum;
 
 extern void drawdots(void);
+extern void setpalette(char *);
 
-char * vram = NULL;
+#define vram shim_vram
 //char far *vram=(char far *)0xa0000000L;
 
 char	pal[768];
@@ -78,7 +80,7 @@ int	cols[]={
 16,55,60};
 int	dottaul[1024];
 
-main(int argc,char *argv[])
+dots_main(int argc,char *argv[])
 {
 	int	timer=30000;
 	int	dropper,repeat;
@@ -86,7 +88,7 @@ main(int argc,char *argv[])
 	int	rota=-1*64;
 	int	fb=0;
 	int	rot=0,rots=0;
-	int	a,b,c,d,i,j,mode;
+	int	a,b,c,d,i,j=0,mode;
 	int	grav,gravd;
 	int	f=0;
 	dis_partstart();
@@ -124,33 +126,33 @@ main(int argc,char *argv[])
 		d=dot[b].z; dot[b].z=dot[c].z; dot[c].z=d;
 	}
 	for(a=0;a<200;a++) rows[a]=a*320;
-	_asm mov ax,13h
-	_asm int 10h
-	outp(0x3c8,0);
+// 	_asm mov ax,13h
+// 	_asm int 10h
+	shim_outp(0x3c8,0);
 	for(a=0;a<16;a++) for(b=0;b<4;b++)
 	{
 		c=100+a*9;
-		outp(0x3c9,cols[b*3+0]);
-		outp(0x3c9,cols[b*3+1]*c/256);
-		outp(0x3c9,cols[b*3+2]*c/256);
+		shim_outp(0x3c9,cols[b*3+0]);
+		shim_outp(0x3c9,cols[b*3+1]*c/256);
+		shim_outp(0x3c9,cols[b*3+2]*c/256);
 	}
-	outp(0x3c8,255);
-	outp(0x3c9,31);
-	outp(0x3c9,0);
-	outp(0x3c9,15);
-	outp(0x3c8,64);
+	shim_outp(0x3c8,255);
+	shim_outp(0x3c9,31);
+	shim_outp(0x3c9,0);
+	shim_outp(0x3c9,15);
+	shim_outp(0x3c8,64);
 	for(a=0;a<100;a++)
 	{
 		c=64-256/(a+4);
 		c=c*c/64;
-		outp(0x3c9,c/4);
-		outp(0x3c9,c/4);
-		outp(0x3c9,c/4);
+		shim_outp(0x3c9,c/4);
+		shim_outp(0x3c9,c/4);
+		shim_outp(0x3c9,c/4);
 	}
-	outp(0x3c7,0);
-	for(a=0;a<768;a++) pal[a]=inp(0x3c9);
-	outp(0x3c8,0);
-	for(a=0;a<768;a++) outp(0x3c9,0);
+	shim_outp(0x3c7,0);
+	for(a=0;a<768;a++) pal[a]=shim_inp(0x3c9);
+	shim_outp(0x3c8,0);
+	for(a=0;a<768;a++) shim_outp(0x3c9,0);
 	for(a=0;a<100;a++)
 	{
 		memset(vram+(100+a)*320,a+64,320);
@@ -180,8 +182,8 @@ main(int argc,char *argv[])
 		}
 		dis_waitb();
 		dis_waitb();
-		outp(0x3c8,0);
-		for(c=0;c<768;c++) outp(0x3c9,pal2[c]);
+		shim_outp(0x3c8,0);
+		for(c=0;c<768;c++) shim_outp(0x3c9,pal2[c]);
 	}
 	
 	while(!dis_exit() && frame<2450)

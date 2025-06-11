@@ -18,7 +18,7 @@ int dis_waitb()
 
 int dis_exit()
 {
-  return 1;
+  return 0;
 }
 
 void dis_partstart()

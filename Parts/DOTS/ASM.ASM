@@ -1,6 +1,6 @@
 %include "clink.inc"
 
-section .code
+section .data
 
 %define MAXDOTS 1024
 
@@ -45,6 +45,8 @@ _depthtable1 times 128 dd 0
 _depthtable2 times 128 dd 0
 _depthtable3 times 128 dd 0
 _depthtable4 times 128 dd 0
+
+section .code
 
 global _drawdots
 _drawdots:
@@ -235,6 +237,7 @@ _setpalette:
 	pop	bp
 	ret
 
+section .data
 _face:
 global _face
 %include "face.inc"
