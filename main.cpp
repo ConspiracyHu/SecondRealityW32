@@ -4,7 +4,7 @@
 extern "C" void dots_main( int argc, char * argv[] );
 
 int width = 320;
-int height = 240;
+int height = 200;
 unsigned int * screen32;
 
 Graphics graphics;
@@ -23,6 +23,12 @@ extern "C" bool demo_wantstoquit();
 bool demo_wantstoquit()
 {
   return graphics.WantsToQuit();
+}
+
+extern "C" void vsync();
+void vsync()
+{
+  Sleep( 1000 / 60 );
 }
 
 int main()

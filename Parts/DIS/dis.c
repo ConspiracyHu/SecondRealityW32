@@ -13,6 +13,7 @@ int dis_indemo()
 
 int dis_waitb()
 {
+  vsync();
   return 1;
 }
 
