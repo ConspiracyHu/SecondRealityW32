@@ -6,7 +6,7 @@
     <ClCompile Include="Parts\DOTS\MAIN.C">
       <Filter>Parts\15-Dots</Filter>
     </ClCompile>
-    <ClCompile Include="Parts\DIS\dis.cpp" />
+    <ClCompile Include="Parts\DIS\dis.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Graphics.h" />

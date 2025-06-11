@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include "dis.h"
 
 int dis_version()
@@ -26,10 +27,10 @@ void dis_partstart()
 
 void * dis_msgarea( int areanumber )
 {
-  return nullptr;
+  return NULL;
 }
 
-int dis_muscode( int )
+int dis_muscode( int code )
 {
   return 0;
 }
@@ -39,7 +40,7 @@ int dis_musplus()
   return 0;
 }
 
-int dis_musrow( int )
+int dis_musrow( int code )
 {
   return 0;
 }
