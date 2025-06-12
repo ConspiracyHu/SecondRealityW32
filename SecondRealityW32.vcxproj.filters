@@ -14,6 +14,9 @@
     <ClCompile Include="Parts\JPLOGO\READP.C">
       <Filter>Parts\18-JellyLogo</Filter>
     </ClCompile>
+    <ClCompile Include="Parts\LENS\MAIN.C">
+      <Filter>Parts\11-12-Lens</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Graphics.h" />
@@ -29,6 +32,9 @@
     </Filter>
     <Filter Include="Parts\18-JellyLogo">
       <UniqueIdentifier>{932452aa-4afb-45f4-866c-b5c06b7c898d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Parts\11-12-Lens">
+      <UniqueIdentifier>{3fac80c4-f0ed-4cc6-b23d-3c6d5a03ff97}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -50,6 +56,27 @@
     <None Include="Parts\JPLOGO\ICEKNGDM.UP">
       <Filter>Parts\18-JellyLogo</Filter>
     </None>
+    <None Include="Parts\LENS\LENS.EX0">
+      <Filter>Parts\11-12-Lens</Filter>
+    </None>
+    <None Include="Parts\LENS\LENS.EX1">
+      <Filter>Parts\11-12-Lens</Filter>
+    </None>
+    <None Include="Parts\LENS\LENS.EX2">
+      <Filter>Parts\11-12-Lens</Filter>
+    </None>
+    <None Include="Parts\LENS\LENS.EX3">
+      <Filter>Parts\11-12-Lens</Filter>
+    </None>
+    <None Include="Parts\LENS\LENS.EX4">
+      <Filter>Parts\11-12-Lens</Filter>
+    </None>
+    <None Include="Parts\LENS\LENS.EXB">
+      <Filter>Parts\11-12-Lens</Filter>
+    </None>
+    <None Include="Parts\LENS\LENS.EXP">
+      <Filter>Parts\11-12-Lens</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="Parts\DOTS\DOTS_ASM.ASM">
@@ -60,6 +87,9 @@
     </CustomBuild>
     <CustomBuild Include="Parts\JPLOGO\JL_PIC.ASM">
       <Filter>Parts\18-JellyLogo</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Parts\LENS\ASM.ASM">
+      <Filter>Parts\11-12-Lens</Filter>
     </CustomBuild>
   </ItemGroup>
 </Project>
