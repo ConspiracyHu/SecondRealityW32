@@ -3,6 +3,7 @@
 
 extern "C" void dots_main( int argc, char * argv[] );
 extern "C" void jplogo_main();
+extern "C" void lens_main();
 
 int width = 320;
 int height = 200;
@@ -45,7 +46,8 @@ int main()
   screen32 = new unsigned int[ width * height ];
 
   //dots_main( 0, NULL );
-  jplogo_main();
+  //jplogo_main();
+  lens_main();
 
   delete[] screen32;
 

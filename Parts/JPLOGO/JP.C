@@ -19,7 +19,7 @@ void setpalarea( char * p, int offset, int count )
   for ( int c = offset; c < count * 3; c++ ) shim_outp( 0x3c9, p[ c ] );
 }
 
-char *vram=shim_vram;
+#define vram shim_vram
 
 char	rowdata1[200][186];
 char	rowdata2[200][186];
@@ -56,7 +56,7 @@ void	scrolly(int y)
 }
 
 char	*shiftstatus=(char *)0x0417;
-int	waitb()
+inline int	waitb()
 {
 	return(dis_waitb());
 }

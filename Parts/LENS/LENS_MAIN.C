@@ -1,7 +1,10 @@
 #include <stdio.h>
+#include <stdlib.h>
+#include <memory.h>
 #include <malloc.h>
 #include <math.h>
 #include "..\dis\dis.h"
+#include "..\..\shims.h"
 
 extern char lensex0[];
 extern char lensex1[];
@@ -11,18 +14,25 @@ extern char lensex4[];
 extern char lensexp[];
 extern char lensexb[];
 
+void dorow(  int *, int, int, int );
+void dorow2( int *, int, int, int );
+void dorow2( int *, int, int, int );
+void dorow3( int *, int, int, int );
+void setpalarea( char * p, int offset, int count );
+void rotate( int, int, int, int );
+
 #define noSAVEPATH
 
 #ifdef SAVEPATH
 FILE	*fp;
 int	pathstart2;
 #else 
-int	*pathdata1;
-int	*pathdata2;
+short	*pathdata1;
+short	*pathdata2;
 char	pathdata[13000];
 #endif
 
-char *vram=(char *)0xA0000000L;
+#define vram shim_vram
 int *lens1,*lens2,*lens3,*lens4;
 extern char *back;
 char *fade,*fade2;
@@ -31,18 +41,18 @@ extern char *rotpic90;
 int	lenswid,lenshig,lensxs,lensys;
 char	palette[768];
 
-char	*shiftstatus=(char *)0x0417;
+//char	*shiftstatus=(char *)0x0417;
 
-int	waitb()
+inline int	waitb()
 {
 	if(dis_indemo())
 	{
 		return(dis_waitb());
 	}
-	if(*shiftstatus&16) setborder(0);
-	while(!(inp(0x3da)&8));
-	while((inp(0x3da)&8));
-	if(*shiftstatus&16) setborder(24);
+//	if(*shiftstatus&16) setborder(0);
+//	while(!(inp(0x3da)&8));
+//	while((inp(0x3da)&8));
+//	if(*shiftstatus&16) setborder(24);
 	return(1);
 }
 
@@ -77,8 +87,8 @@ void	drawlens(int x0,int y0)
 
 void	setvmode(int m)
 {
-	_asm mov ax,m
-	_asm int 10h
+//	_asm mov ax,m
+//	_asm int 10h
 }
 
 int	firfade1[200];
@@ -101,9 +111,9 @@ void	part1(void)
 		firfade1[b]=170*64+(100-b)*50;
 		firfade2[b]=170*64+(100-b)*50;
 	}
-	if(dis_musplus>-30) while(!dis_exit() && dis_musplus()<-6) ;
+	//if(dis_musplus>-30) while(!dis_exit() && dis_musplus()<-6) ;
 	dis_waitb();
-	dis_setmframe(0);
+	//dis_setmframe(0);
 	while(!dis_exit() && frame<300)
 	{
 		if(frame<80)
@@ -115,8 +125,12 @@ void	part1(void)
 				for(y=0;y<200;y++)
 				{
 					x=firfade1[y]>>6;
+          if ( x < 0 ) x = 0;
+          if ( x > 320 ) x = 320;
 					cp[x]=dp[x];
 					x=firfade2[y]>>6;
+          if ( x < 0 ) x = 0;
+          if ( x > 320 ) x = 320;
 					cp[x]=dp[x];
 					firfade1[y]+=firfade1a[y];
 					firfade2[y]+=firfade2a[y];
@@ -125,6 +139,7 @@ void	part1(void)
 				}
 			}
 		}
+    demo_blit();
 		a=waitb();
 		frame+=a;
 	}
@@ -171,6 +186,7 @@ void	part2(void)
 		y=pathdata1[frame*2+1];
 		drawlens(x,y);
 		#endif
+    demo_blit();
 		a=waitb();
 		uframe+=a;
 		if(a>3) a=3;
@@ -198,7 +214,7 @@ void	part3(void)
 	}
 	waitb();
 	setpalarea(fade+64*64*3,0,64);
-	inittwk();
+	//inittwk();
 	{
 		double	d1,d2,d3,scale,scaleb,scalea;
 		int	flag=1;
@@ -275,7 +291,7 @@ void	part3(void)
 	setpalarea(palette,0,256);
 }
 
-main()
+void lens_main()
 {
 	int	x,y,xa,ya;
 	int	a,r,g,b,c,i;
@@ -290,18 +306,21 @@ main()
 	fade2=halloc(20000,1);
 	if(!fade2) exit(1);
 	setvmode(0x13);
-	outp(0x3c8,0);
-	for(a=0;a<768;a++) outp(0x3c9,0);
+	shim_outp(0x3c8,0);
+	for(a=0;a<768;a++) shim_outp(0x3c9,0);
 	#ifndef SAVEPATH
-	a=*(int *)(lensexp+2);
-	pathdata1=(int *)(lensexp+4);
-	pathdata2=(int *)(lensexp+4+2*a);
+	a=*(short *)(lensexp+2);
+	pathdata1=(short *)(lensexp+4);
+	pathdata2=(short *)(lensexp+4+2*a);
 	#endif
 	memcpy(palette,lensexb+16,768);
-	back=(char *)((long)lensexb+((768+16)/16)*65536L);
-	memcpy(back+64000,back+64000-1536,1536);
-	lenswid=*(int *)(lensex0+0);
-	lenshig=*(int *)(lensex0+2);
+
+  //back=(char *)((long)lensexb+((768+16)/16)*65536L);
+	//memcpy(back+64000,back+64000-1536,1536);
+  back = lensexb + 16 + 768;
+
+	lenswid=*(short *)(lensex0+0);
+	lenshig=*(short *)(lensex0+2);
 	cp=lensex0+4;
 	lensxs=lenswid/2;
 	lensys=lenshig/2;
@@ -323,10 +342,10 @@ main()
 			palette[a+i*64*3+2]=c;
 		}	
 	}
-	lens1=lensex1;
-	lens2=lensex2;
-	lens3=lensex3;
-	lens4=lensex4;
+	lens1=(int*)lensex1;
+	lens2=(int*)lensex2;
+	lens3=(int*)lensex3;
+	lens4=(int*)lensex4;
 	cp=fade;
 	for(x=0;x<64;x++)
 	{
@@ -377,7 +396,7 @@ main()
 	#endif
 
 	if(!dis_exit()) part1();
-	while(!dis_exit() && dis_musplus()<-20) ;
+	//while(!dis_exit() && dis_musplus()<-20) ;
 	dis_waitb();
 	if(!dis_exit()) part2();
 	#ifdef SAVEPATH

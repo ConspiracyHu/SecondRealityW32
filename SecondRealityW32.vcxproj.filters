@@ -14,7 +14,7 @@
     <ClCompile Include="Parts\JPLOGO\READP.C">
       <Filter>Parts\18-JellyLogo</Filter>
     </ClCompile>
-    <ClCompile Include="Parts\LENS\MAIN.C">
+    <ClCompile Include="Parts\LENS\LENS_MAIN.C">
       <Filter>Parts\11-12-Lens</Filter>
     </ClCompile>
   </ItemGroup>
@@ -88,7 +88,10 @@
     <CustomBuild Include="Parts\JPLOGO\JL_PIC.ASM">
       <Filter>Parts\18-JellyLogo</Filter>
     </CustomBuild>
-    <CustomBuild Include="Parts\LENS\ASM.ASM">
+    <CustomBuild Include="Parts\LENS\LENS_ASM.ASM">
+      <Filter>Parts\11-12-Lens</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Parts\LENS\LENS_DATA.ASM">
       <Filter>Parts\11-12-Lens</Filter>
     </CustomBuild>
   </ItemGroup>
