@@ -1,10 +1,10 @@
 struct st_readp
 {
-	int	magic;
-	int	wid;
-	int	hig;
-	int	cols;
-	int	add;
+	short	magic;
+	short	wid;
+	short	hig;
+	short	cols;
+	short	add;
 };
 
 void	readp(char *dest,int row,char *src)
@@ -21,44 +21,41 @@ void	readp(char *dest,int row,char *src)
 	src+=hdr->add*16;
 	while(row)
 	{
-		src+=*(int *)src;
+		src+=*(short *)src;
 		src+=2;
 		row--;
 	}
-	bytes=*(int *)src;
+	bytes=*(short *)src;
 	src+=2;
 	_asm
 	{
-		push	si
-		push	ds
-		push	di
-		push	es
-		mov	cx,bytes
-		lds	si,src
+		push	esi
+		push	edi
+		mov	ecx,bytes
+		mov esi,src
 		add	cx,si
-		les	di,dest
-	l1:	mov	al,ds:[si]
+		mov edi,dest
+	l1:	mov	al,[esi]
 		inc	si
 		or	al,al
 		jns	l2
 		mov	ah,al
 		and	ah,7fh	
-		mov	al,ds:[si]
+		mov	al,[esi]
 		inc	si
-	l4:	mov	es:[di],al
+	l4:	mov	[edi],al
 		inc	di
 		dec	ah
 		jnz	l4
 		cmp	si,cx
 		jb	l1
 		jmp	l3
-	l2:	mov	es:[di],al
+	l2:	mov	[edi],al
 		inc	di
 		cmp	si,cx
 		jb	l1
-	l3:	pop	es
-		pop	di
-		pop	ds
-		pop	si
+	l3:
+		pop	edi
+		pop	esi
 	}
 }

@@ -2,6 +2,7 @@
 #include "shims.h"
 
 extern "C" void dots_main( int argc, char * argv[] );
+extern "C" void jplogo_main();
 
 int width = 320;
 int height = 200;
@@ -9,9 +10,9 @@ unsigned int * screen32;
 
 Graphics graphics;
 
-extern "C" void blit();
+extern "C" void demo_blit();
 
-void blit()
+void demo_blit()
 {
   graphics.HandleMessages();
 
@@ -43,7 +44,8 @@ int main()
 
   screen32 = new unsigned int[ width * height ];
 
-  dots_main( 0, NULL );
+  //dots_main( 0, NULL );
+  jplogo_main();
 
   delete[] screen32;
 

@@ -8,6 +8,12 @@
     </ClCompile>
     <ClCompile Include="Parts\DIS\dis.c" />
     <ClCompile Include="shims.c" />
+    <ClCompile Include="Parts\JPLOGO\JP.C">
+      <Filter>Parts\18-JellyLogo</Filter>
+    </ClCompile>
+    <ClCompile Include="Parts\JPLOGO\READP.C">
+      <Filter>Parts\18-JellyLogo</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Graphics.h" />
@@ -21,6 +27,9 @@
     <Filter Include="Parts\15-Dots">
       <UniqueIdentifier>{13afc6c3-7159-4404-a106-322c18e461ac}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Parts\18-JellyLogo">
+      <UniqueIdentifier>{932452aa-4afb-45f4-866c-b5c06b7c898d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="Parts\DOTS\CLINK.INC">
@@ -32,10 +41,25 @@
     <None Include="Parts\DOTS\SIN1024.INC">
       <Filter>Parts\15-Dots</Filter>
     </None>
+    <None Include="Parts\JPLOGO\SIN1024.INC">
+      <Filter>Parts\18-JellyLogo</Filter>
+    </None>
+    <None Include="Parts\JPLOGO\ZOOM.INC">
+      <Filter>Parts\18-JellyLogo</Filter>
+    </None>
+    <None Include="Parts\JPLOGO\ICEKNGDM.UP">
+      <Filter>Parts\18-JellyLogo</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
-    <CustomBuild Include="Parts\DOTS\ASM.ASM">
+    <CustomBuild Include="Parts\DOTS\DOTS_ASM.ASM">
       <Filter>Parts\15-Dots</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Parts\JPLOGO\JL_ASM.ASM">
+      <Filter>Parts\18-JellyLogo</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Parts\JPLOGO\JL_PIC.ASM">
+      <Filter>Parts\18-JellyLogo</Filter>
     </CustomBuild>
   </ItemGroup>
 </Project>

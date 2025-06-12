@@ -188,7 +188,7 @@ dots_main(int argc,char *argv[])
 		dis_waitb();
 		shim_outp(0x3c8,0);
 		for(c=0;c<768;c++) shim_outp(0x3c9,pal2[c]);
-    blit();
+    demo_blit();
 	}
 	
 	while(!dis_exit() && frame<2450)
@@ -290,7 +290,7 @@ dots_main(int argc,char *argv[])
 			gravityd=gravd;
 		}
 		drawdots();
-    blit();
+    demo_blit();
 	}
 	if(!dis_indemo())
 	{

@@ -1,14 +1,25 @@
 #include <stdio.h>
 #include <string.h>
 #include "..\dis\dis.h"
+#include "..\..\shims.h"
 
 FILE	*f1;
 
-#include "readp.c"
+//#include "readp.c"
 
-extern char pic[];
+extern char jl_pic[];
 
-char *vram=(char *)0xa0000000L;
+extern void jl_setborder(int);
+extern void inittwk();
+extern void linezoom(char * dst, char * src, int);
+
+void setpalarea( char * p, int offset, int count )
+{
+  shim_outp( 0x3c8, offset );
+  for ( int c = offset; c < count * 3; c++ ) shim_outp( 0x3c9, p[ c ] );
+}
+
+char *vram=shim_vram;
 
 char	rowdata1[200][186];
 char	rowdata2[200][186];
@@ -18,7 +29,7 @@ char	pal2[768];
 char	palette[768];
 char	rowbuf[640];
 
-extern int sin1024[];
+extern short jl_sin1024[];
 
 int	framey1[200];
 int	framey2[200];
@@ -31,17 +42,17 @@ void	scrolly(int y)
 {
 	int	a;
 	a=y*80;
-	_asm
-	{
-		mov	dx,3d4h
-		mov	al,0dh
-		mov	ah,byte ptr a[0]
-		out	dx,ax
-		mov	dx,3d4h
-		mov	al,0ch
-		mov	ah,byte ptr a[1]
-		out	dx,ax
-	}
+//	_asm
+//	{
+//		mov	dx,3d4h
+//		mov	al,0dh
+//		mov	ah,byte ptr a[0]
+//		out	dx,ax
+//		mov	dx,3d4h
+//		mov	al,0ch
+//		mov	ah,byte ptr a[1]
+//		out	dx,ax
+//	}
 }
 
 char	*shiftstatus=(char *)0x0417;
@@ -54,12 +65,12 @@ int	calc(int y,int c)
 {
 	_asm
 	{
-		mov	ax,y
+		mov	eax,[y]
 		sub	ax,400
-		add	ax,c
+		add	eax,[c]
 		mov	dx,400
 		imul	dx
-		mov	cx,c
+		mov	ecx,[c]
 		idiv	cx
 	} 
 }
@@ -68,12 +79,12 @@ void	doit(void)
 {
 	int	frame=0,halt=0,storea=0,ysb=0;
 	int	a,b,c,y,ysz,ysza,xsc,spd=10,la,y1,y2;
-	while(!dis_exit() && dis_musplus()<4);
+	//while(!dis_exit() && dis_musplus()<4);
 	while(!dis_exit() && frame<700)
 	{
-		if(*shiftstatus&16) setborder(0);
+		//if(*shiftstatus&16) jl_setborder(0);
 		c=waitb();
-		if(*shiftstatus&16) setborder(127);
+		//if(*shiftstatus&16) jl_setborder(127);
 		frame+=c;
 		if(frame>511) c=400;
 		else 
@@ -91,7 +102,7 @@ void	doit(void)
 			else 
 			{
 				b=(long)(y-y1)*400L/(long)(y2-y1);
-				a=184+(sin1024[b*32/25]*xsc+32)/64;
+				a=184+(jl_sin1024[b*32/25]*xsc+32)/64;
 				a&=~1;
 				if(lasty[y]!=b || lasts[y]!=a)
 				{
@@ -101,10 +112,11 @@ void	doit(void)
 				}
 			}
 		}
+    demo_blit();
 	}
 }
 
-main()
+void jplogo_main()
 {
 	int	frame,halt=0,storea=0;
 	int	a,b,c,d,y,ya,ysz,ysza,xsc,spd=10,la;
@@ -170,27 +182,27 @@ main()
 		framey2t[a]=(framey2[b]*d+framey2[b+1]*c)/3;
 	}
 
-	_asm mov ax,13h
-	_asm int 10h	
-	inittwk();
-	_asm
-	{
-		mov	dx,3c0h
-		mov	al,11h
-		out	dx,al
-		mov	al,255
-		out	dx,al
-		mov	al,20h
-		out	dx,al
-	}
+	//_asm mov ax,13h
+	//_asm int 10h	
+	//inittwk();
+	//_asm
+	//{
+	//	mov	dx,3c0h
+	//	mov	al,11h
+	//	out	dx,al
+	//	mov	al,255
+	//	out	dx,al
+	//	mov	al,20h
+	//	out	dx,al
+	//}
 
-	readp(palette,-1,pic);
+	readp(palette,-1,jl_pic);
 	palette[64*3+0]=0;
 	palette[64*3+1]=0;
 	palette[64*3+2]=0;
 	for(y=0;y<400;y++)
 	{
-		readp(rowbuf,y,pic);
+		readp(rowbuf,y,jl_pic);
 		memcpy(row[y],rowbuf+70,184);
 		row[y][184]=65;
 	}
@@ -216,6 +228,7 @@ main()
 		if(y<0) y=0;
 		scrolly(y/64);
 		dis_waitb();
+    demo_blit();
 	}
 	storea=a;
 	dis_waitb();
