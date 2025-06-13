@@ -24,7 +24,11 @@ extern _shim_vram
 global _dorow
 _dorow:
 	push ebp
-	
+
+  ; ds:si => esi (lens)
+  ; es:bp => ebp (vram)
+  ; fs:di => edi (back)
+
 	;mov	fs,cs:_back[2]
 	;mov	ax,0a000h
 	;mov	es,ax
@@ -39,7 +43,8 @@ _dorow:
 	cmp	cx,4
 	jge	@@2
 	jmp	@@0
-@@2:	add	di,[esi]
+@@2:
+  add	di,[esi]
 	mov	bp,di
 	add	si,2
 	test	bp,1
@@ -87,30 +92,47 @@ _dorow:
 global _dorow2
 _dorow2:
 	push ebp
-	
-	mov	fs,[esp+8]
-	mov	si,[esp+12]
-	shl	si,2
+
+  ; ds = back
+  ; es = vram
+  ; fs = ptr (lens)
+
+	mov	esi,[esp+16] ; Y
+	shl	esi,2
+	add	esi,[esp+8] ; ptr
 	mov	cx,[esi+2] ; fs
-	mov	si,[esi]   ; fs
+	movzx	esi, word [esi]   ; fs
 	or	cx,cx
 	jcxz	@@0
-	mov	ds,[_back+2]
-	mov edi,_shim_vram
-	mov	dx,[bp+14]
-	mov	dh,dl
-	add edi,[bp+10]
-	add	edi,[esi] ; fs
-	mov	ax,di
-	lea	bp,[si+2]
-	mov	si,ax
-	
-@@3:	mov	bx,[ebp+2] ; fs
-	mov	al,[ebx+edi] ; ds
-	or	al,dl
-	mov	bx,[ebp] ; fs
-	add	bp,4
-	mov	[ebx+esi],al ; es
+
+	mov	edx, [esp+20]    ; M
+	mov	dh, dl
+
+	mov	edi, [esp+12]    ; U
+  push esi
+  add esi, [esp+8+4] ; ptr
+  add di, [esi]
+  pop esi
+
+	mov	eax, edi
+	lea	ebp, [esi+2]
+	mov	esi, eax
+
+  add esi, _shim_vram
+  add edi, _back
+  add ebp, [esp+8] ; ptr
+
+  ; ds:di => edi (back)
+  ; es:si => esi (vram)
+  ; fs:bp => ebp (lens)
+
+@@3:
+  movzx	ebx, word [ebp+2]
+	mov	al, [ebx+edi]
+	or	al, dl
+	movzx	ebx, word [ebp]
+	add	ebp, 4
+	mov	[ebx+esi], al
 	dec	cx
 	jnz	@@3
 	
@@ -130,7 +152,7 @@ _dorow3:
   add	esi,[esp+8] ; ptr
 	or	cx,cx
 	jcxz	@@0
-	mov	edi, [ebp+12] ; U
+	mov	edi, [esp+12] ; U
 	add	di, [esi] ; fs
 	add	esi, 2
 

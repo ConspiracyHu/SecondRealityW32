@@ -68,17 +68,17 @@ void	drawlens(int x0,int y0)
 		if(u1>=0 && u1<=64000)
 		{
 //			dorow(lens1,(unsigned)u1,y,0x40);
-//			dorow2(lens2,(unsigned)u1,y,0x80);
-//			dorow2(lens3,(unsigned)u1,y,0xC0);
-//			dorow3(lens4,(unsigned)u1,y,0);
+			dorow2(lens2,(unsigned)u1,y,0x80);
+			dorow2(lens3,(unsigned)u1,y,0xC0);
+			dorow3(lens4,(unsigned)u1,y,0);
 		}
 		u1+=320;
 		if(u2>=0 && u2<=64000)
 		{
 // 			dorow(lens1,(unsigned)u2,ye-y,0x40);
-// 			dorow2(lens2,(unsigned)u2,ye-y,0x80);
-// 			dorow2(lens3,(unsigned)u2,ye-y,0xC0);
-// 			dorow3(lens4,(unsigned)u2,ye-y,0);
+ 			dorow2(lens2,(unsigned)u2,ye-y,0x80);
+ 			dorow2(lens3,(unsigned)u2,ye-y,0xC0);
+ 			dorow3(lens4,(unsigned)u2,ye-y,0);
 		}
 		u2-=320;
 	}
@@ -399,7 +399,7 @@ void lens_main()
 	if(!dis_exit()) part1();
 	//while(!dis_exit() && dis_musplus()<-20) ;
 	dis_waitb();
-	//if(!dis_exit()) part2();
+	if(!dis_exit()) part2();
 	#ifdef SAVEPATH
 	pathstart2=(ftell(fp)-4)/2;
 	#endif
