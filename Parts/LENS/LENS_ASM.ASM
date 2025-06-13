@@ -9,6 +9,9 @@ _rotpic90 dw	0,0
 
 section .code
 
+global _shim_vram
+extern _shim_vram
+
 %macro DOWORD 2
 	mov	bx,[esi+(%2)]	;4
 	mov	al,[ebx+edi]		;3
@@ -20,20 +23,16 @@ section .code
 
 global _dorow
 _dorow:
-	push 	bp
-	mov 	bp,sp
-	push 	si
-	push	di
-	push	ds
+	push ebp
 	
 	;mov	fs,cs:_back[2]
 	;mov	ax,0a000h
 	;mov	es,ax
-	mov	ds,[bp+8]
-	mov	dx,[bp+14]
+	mov	esi,[esp+8] ; 1
+	mov	dx,[esp+20] ; 4
 	mov	dh,dl
-	mov	di,[bp+10]
-	mov	si,[bp+12]
+	mov	di,[esp+12] ; 2 
+	mov	si,[esp+16] ; 3
 	shl	si,2
 	mov	cx,[esi+2]
 	mov	si,[esi]
@@ -81,34 +80,27 @@ _dorow:
 	mov	al,[ebx+edi]
 	or	ax,dx
 	mov	[ebp+320],al
-@@0:	pop	ds
-	pop	di
-	pop	si
-	pop 	bp
+@@0:	
+	pop ebp
 	ret
 
 global _dorow2
 _dorow2:
-	push 	bp
-	mov 	bp,sp
-	push 	si
-	push	di
-	push	ds
+	push ebp
 	
-	mov	fs,[bp+8]
-	mov	si,[bp+12]
+	mov	fs,[esp+8]
+	mov	si,[esp+12]
 	shl	si,2
 	mov	cx,[esi+2] ; fs
 	mov	si,[esi]   ; fs
 	or	cx,cx
 	jcxz	@@0
 	mov	ds,[_back+2]
-	mov	ax,0a000h
-	mov	es,ax
+	mov edi,_shim_vram
 	mov	dx,[bp+14]
 	mov	dh,dl
-	mov	di,[bp+10]
-	add	di,[esi] ; fs
+	add edi,[bp+10]
+	add	edi,[esi] ; fs
 	mov	ax,di
 	lea	bp,[si+2]
 	mov	si,ax
@@ -122,45 +114,40 @@ _dorow2:
 	dec	cx
 	jnz	@@3
 	
-@@0:	pop	ds
-	pop	di
-	pop	si
-	pop 	bp
+@@0:
+	pop ebp
 	ret
 
 global _dorow3
 _dorow3:
-	push 	bp
-	mov 	bp,sp
-	push 	si
-	push	di
-	push	ds
+	push ebp
 	
-	mov	fs,[bp+8]
-	mov	si,[bp+12]
-	shl	si,2
+	mov	esi,[esp+16] ; Y
+	shl	esi,2
+	add	esi,[esp+8] ; ptr
 	mov	cx,[esi+2] ; fs
-	mov	si,[esi]   ; fs
+	movzx	esi, word [esi]   ; fs
+  add	esi,[esp+8] ; ptr
 	or	cx,cx
 	jcxz	@@0
-	mov	ds,[_back+2]
-	mov	ax,0a000h
-	mov	es,ax
-	mov	di,[bp+10]
-	add	di,[esi] ; fs
-	add	si,2
-	
-@@3:	mov	bx,[esi] ; fs
-	add	si,2
-	mov	al,[ebx+edi] ; ds
-	mov	[ebx+edi],al ; es
+	mov	edi, [ebp+12] ; U
+	add	di, [esi] ; fs
+	add	esi, 2
+
+  push ebp
+  mov ebp,[_back]
+@@3:
+  movzx	ebx, word [esi] ; fs
+  add ebx, edi
+	add	esi, 2
+	mov	al,[ebp+ebx] ; ds
+	mov	[_shim_vram+ebx],al ; es
 	dec	cx
 	jnz	@@3
+  pop ebp
 	
-@@0:	pop	ds
-	pop	di
-	pop	si
-	pop 	bp
+@@0:
+	pop ebp
 	ret
 
 ;global _setborder
@@ -268,31 +255,27 @@ section .code
 
 global _rotate
 _rotate:
-	push	bp
-	mov	bp,sp
-	push	si
-	push	di
-	push	ds
+	push	ebp
 	
-	mov	ax,[bp+6]
+	mov	eax,[esp+8] ; x
 	shl	eax,16
 	mov	[_xpos],eax
-	mov	ax,[bp+8]
+	mov	eax,[esp+12]  ; y
 	shl	eax,16
 	mov	[_ypos],eax
 	
-	mov	ax,[bp+12]
+	mov	eax,[esp+16] ; xa
 	cwde
 	shl	eax,6
 	mov	ebx,eax
-	mov	ax,[bp+10]
+	mov	eax,[esp+20] ; ya
 	cwde
 	shl	eax,6
 	
 	mov	ecx,eax
 	mov	edx,ebx
 	
-	mov	ds,[_rotpic+2]
+	mov	ebp,[_rotpic]
 	cmp	ecx,0
 	jge	@@s1
 	neg	ecx
@@ -302,7 +285,7 @@ _rotate:
 @@s2:	cmp	ecx,edx
 	jle	@@s3
 	
-	mov	ds,[_rotpic90+2]
+	mov	ebp,[_rotpic90]
 	xchg	eax,ebx
 	neg	eax
 	mov	ecx,[_xpos]
@@ -334,23 +317,27 @@ _rotate:
 	adc	al,bl
 	add	di,dx
 	adc	ah,bh
-	mov	word [@@moda+zzz+2],ax
+  cwde
+	mov	dword [@@moda+zzz+3],eax
 	add	si,cx
 	adc	al,bl
 	add	di,dx
 	adc	ah,bh
-	mov	word [@@modb+zzz+2],ax
+  cwde
+	mov	dword [@@modb+zzz+3],eax
 	add	si,cx
 	adc	al,bl
 	add	di,dx
 	adc	ah,bh
-	mov	word [@@moda+zzz+6],ax
+  cwde
+	mov	dword [@@moda+zzz+10],eax
 	add	si,cx
 	adc	al,bl
 	add	di,dx
 	adc	ah,bh
-	mov	word [@@modb+zzz+6],ax
-	%assign zzz zzz+13
+  cwde
+	mov	dword [@@modb+zzz+10],eax
+	%assign zzz zzz+3*7
 	%endrep
 	
 	;aspect ratio
@@ -363,9 +350,8 @@ _rotate:
 	sar	eax,8
 	mov	[_yadd],eax
 	
-	mov	ax,0a000h
-	mov	es,ax
-	mov	di,-1000h
+	mov edi,_shim_vram
+	add edi,-1000h
 	
 	mov	cx,ZOOMYW
 @@2:	mov	ebx,[_ypos]
@@ -377,27 +363,27 @@ _rotate:
 	mov	[_xpos],eax
 	shr	eax,16
 	mov	bl,al
-	mov	si,bx
+	movzx	esi,bx
 	;
-	mov	dx,3c4h
-	mov	ax,0302h
-	out	dx,ax
+	;mov	dx,3c4h
+	;mov	ax,0302h
+	;out	dx,ax
 @@moda:
   %assign zzz 1000h
 	%rep	ZOOMXW/4
-	mov	al,[esi+1234h]	;4
-	mov	ah,[esi+1234h]	;4
+	mov	al,[ebp+esi+1234h]	;4
+	mov	ah,[ebp+esi+1234h]	;4
 	mov	[edi+zzz],ax		;5
 	%assign zzz zzz+2
 	%endrep
-	mov	dx,3c4h
-	mov	ax,0c02h
-	out	dx,ax
+	;mov	dx,3c4h
+	;mov	ax,0c02h
+	;out	dx,ax
 @@modb:
   %assign zzz 1000h
 	%rep	ZOOMXW/4
-	mov	al,[esi+1234h]	;4
-	mov	ah,[esi+1234h]	;4
+	mov	al,[ebp+esi+1234h]	;4
+	mov	ah,[ebp+esi+1234h]	;4
 	mov	[edi+zzz],ax		;5
 	%assign zzz zzz+2
 	%endrep
@@ -407,10 +393,7 @@ _rotate:
 	jz	@@1
 	jmp	@@2
 @@1:	
-	pop	ds
-	pop	di
-	pop	si
-	pop	bp
+	pop	ebp
 	ret
 	
 global _rotatez
@@ -509,9 +492,8 @@ _rotatez:
 	sar	eax,8
 	mov	[_yadd],eax
 	
-	mov	ax,0a000h
-	mov	es,ax
-	mov	di,-1000h
+	mov edi, _shim_vram
+	add edi,-1000h
 	
 	mov	cx,ZOOMYW
 @@2:	mov	ebx,[_ypos]

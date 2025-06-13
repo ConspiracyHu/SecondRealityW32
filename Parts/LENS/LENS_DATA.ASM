@@ -1,3 +1,5 @@
+section .data
+
 global _lensexb
 _lensexb:
 incbin "lens.exb"

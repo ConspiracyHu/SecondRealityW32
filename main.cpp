@@ -4,6 +4,7 @@
 extern "C" void dots_main( int argc, char * argv[] );
 extern "C" void jplogo_main();
 extern "C" void lens_main();
+extern "C" void rotate( int, int, int, int );
 
 int width = 320;
 int height = 200;
@@ -35,6 +36,10 @@ void vsync()
 
 int main()
 {
+  // self-modifying code in rotozoomer, wahey!
+  DWORD old = 0;
+  VirtualProtect( &rotate, 8192, PAGE_EXECUTE_READWRITE, &old );
+
   int windowWidth = 1280;
   int windowHeight = 720;
   bool fullscreen = false;

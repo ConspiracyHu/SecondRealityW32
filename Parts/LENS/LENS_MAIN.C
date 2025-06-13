@@ -16,7 +16,6 @@ extern char lensexb[];
 
 void dorow(  int *, int, int, int );
 void dorow2( int *, int, int, int );
-void dorow2( int *, int, int, int );
 void dorow3( int *, int, int, int );
 void setpalarea( char * p, int offset, int count );
 void rotate( int, int, int, int );
@@ -68,18 +67,18 @@ void	drawlens(int x0,int y0)
 	{
 		if(u1>=0 && u1<=64000)
 		{
-			dorow(lens1,(unsigned)u1,y,0x40);
-			dorow2(lens2,(unsigned)u1,y,0x80);
-			dorow2(lens3,(unsigned)u1,y,0xC0);
-			dorow3(lens4,(unsigned)u1,y,0);
+//			dorow(lens1,(unsigned)u1,y,0x40);
+//			dorow2(lens2,(unsigned)u1,y,0x80);
+//			dorow2(lens3,(unsigned)u1,y,0xC0);
+//			dorow3(lens4,(unsigned)u1,y,0);
 		}
 		u1+=320;
 		if(u2>=0 && u2<=64000)
 		{
-			dorow(lens1,(unsigned)u2,ye-y,0x40);
-			dorow2(lens2,(unsigned)u2,ye-y,0x80);
-			dorow2(lens3,(unsigned)u2,ye-y,0xC0);
-			dorow3(lens4,(unsigned)u2,ye-y,0);
+// 			dorow(lens1,(unsigned)u2,ye-y,0x40);
+// 			dorow2(lens2,(unsigned)u2,ye-y,0x80);
+// 			dorow2(lens3,(unsigned)u2,ye-y,0xC0);
+// 			dorow3(lens4,(unsigned)u2,ye-y,0);
 		}
 		u2-=320;
 	}
@@ -204,7 +203,7 @@ void	part3(void)
 	int	a,r,g,b,c,i;
 	int	frame=0;
 	char	*cp,*dp;
-	rotpic90=back;
+  rotpic90 = back;
 	for(x=0;x<256;x++)
 	{
 		for(y=0;y<256;y++)
@@ -214,6 +213,7 @@ void	part3(void)
 	}
 	waitb();
 	setpalarea(fade+64*64*3,0,64);
+
 	//inittwk();
 	{
 		double	d1,d2,d3,scale,scaleb,scalea;
@@ -226,7 +226,7 @@ void	part3(void)
 		frame=0;
 		while(!dis_exit() && frame<2000)
 		{	
-			if(dis_musplus()>-4) break;
+			//if(dis_musplus()>-4) break;
 			#ifdef SAVEPATH
 			x=70.0*sin(d1)-30;
 			y=70.0*cos(d1)+60;
@@ -285,6 +285,7 @@ void	part3(void)
 			{
 				setpalarea(fade+(64+frame)*64*3,0,64);
 			}
+      demo_blit();
 		}
 	}
 	for(a=0;a<768;a++) palette[a]=63;
@@ -398,7 +399,7 @@ void lens_main()
 	if(!dis_exit()) part1();
 	//while(!dis_exit() && dis_musplus()<-20) ;
 	dis_waitb();
-	if(!dis_exit()) part2();
+	//if(!dis_exit()) part2();
 	#ifdef SAVEPATH
 	pathstart2=(ftell(fp)-4)/2;
 	#endif
