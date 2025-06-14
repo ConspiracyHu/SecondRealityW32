@@ -147,6 +147,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Parts\DIS\dis.c" />
     <ClCompile Include="Parts\DOTS\DOTS_MAIN.C" />
+    <ClCompile Include="Parts\ENDSCRL\ENDSCRL_MAIN.C" />
     <ClCompile Include="Parts\END\END.C" />
     <ClCompile Include="Parts\JPLOGO\JP.C" />
     <ClCompile Include="Parts\JPLOGO\READP.C" />
@@ -225,6 +226,21 @@
     <CustomBuild Include="Parts\END\END_DATA.ASM">
       <FileType>Document</FileType>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">yasm-1.2.0-win32.exe -f win32  -g cv8 -X vc %(FullPath) -o $(IntDir)%(Filename).obj</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)%(Filename).obj</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">yasm-1.2.0-win32.exe -f win32  -g cv8 -X vc %(FullPath) -o $(IntDir)%(Filename).obj</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)%(Filename).obj</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">yasm-1.2.0-win32.exe -f win32  -g cv8 -X vc %(FullPath) -o $(IntDir)%(Filename).obj</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)%(Filename).obj</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">yasm-1.2.0-win32.exe -f win32  -g cv8 -X vc %(FullPath) -o $(IntDir)%(Filename).obj</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)%(Filename).obj</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="Parts\ENDSCRL\FONA.ASM">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
+      <FileType>Document</FileType>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>

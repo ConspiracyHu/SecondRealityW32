@@ -5,6 +5,12 @@ int paletteReadIndex = 0;
 int paletteReadComponent = 0;
 int paletteIndex = 0;
 int paletteComponent = 0;
+
+void shim_setpal( int idx, unsigned char r, unsigned char g, unsigned char b )
+{
+  shim_palette[ idx ] = r | ( g << 8 ) | ( b << 16 );
+}
+
 void shim_outp( int reg, int value )
 {
   switch ( reg )
