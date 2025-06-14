@@ -17,6 +17,12 @@
     <ClCompile Include="Parts\LENS\LENS_MAIN.C">
       <Filter>Parts\11-12-Lens</Filter>
     </ClCompile>
+    <ClCompile Include="Parts\END\END.C">
+      <Filter>Parts\21-EndPic+Scroll</Filter>
+    </ClCompile>
+    <ClCompile Include="Parts\END\READP.C">
+      <Filter>Parts\21-EndPic+Scroll</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Graphics.h" />
@@ -35,6 +41,9 @@
     </Filter>
     <Filter Include="Parts\11-12-Lens">
       <UniqueIdentifier>{3fac80c4-f0ed-4cc6-b23d-3c6d5a03ff97}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Parts\21-EndPic+Scroll">
+      <UniqueIdentifier>{86c1373c-04ae-485b-a3df-e1dec86c21ac}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -77,6 +86,9 @@
     <None Include="Parts\LENS\LENS.EXP">
       <Filter>Parts\11-12-Lens</Filter>
     </None>
+    <None Include="Parts\END\PIC.UH">
+      <Filter>Parts\21-EndPic+Scroll</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="Parts\DOTS\DOTS_ASM.ASM">
@@ -93,6 +105,9 @@
     </CustomBuild>
     <CustomBuild Include="Parts\LENS\LENS_DATA.ASM">
       <Filter>Parts\11-12-Lens</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Parts\END\ASM.ASM">
+      <Filter>Parts\21-EndPic+Scroll</Filter>
     </CustomBuild>
   </ItemGroup>
 </Project>
