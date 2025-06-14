@@ -1,11 +1,16 @@
 #include <stdio.h>
 #include "..\dis\dis.h"
+#include "..\..\shims.h"
 
-#include "readp.c"
+//#include "readp.c"
+void	readp( char * dest, int row, char * src );
+void lineblit( char *, char * );
+void setpalarea( char * p, int offset, int count );
 
-extern char pic[];
+extern char end_pic[];
 
-char *vram=(char *)0xa0000000L;
+//char *vram=(char *)0xa0000000L;
+#define vram shim_vram
 
 char *scroller[]={
 "      S e c o n d  R e a l i t y     ",
@@ -44,10 +49,11 @@ char	pal2[768];
 char	palette[768];
 char	rowbuf[640];
 
-main()
+void end_main()
 {
 	int	a,b,c,y;
 	dis_partstart();
+  /*
 	_asm
 	{
 		mov	dx,3c0h
@@ -58,12 +64,14 @@ main()
 		mov	al,20h
 		out	dx,al
 	}
+  */
 	dis_waitb();
-	outp(0x3c8,0);
-	for(a=0;a<768-3;a++) outp(0x3c9,63);
+	shim_outp(0x3c8,0);
+	for(a=0;a<768-3;a++) shim_outp(0x3c9,63);
 //	_asm mov ax,13h+80h
 //	_asm int 10h	
 //	inittwk();
+  /*
 	_asm
 	{
 		mov	dx,3d4h
@@ -86,15 +94,16 @@ main()
 		mov	al,32
 		out	dx,al
 	}
+  */
 	dis_waitb();
-	outp(0x3c8,0);
-	for(a=0;a<768-3;a++) outp(0x3c9,63);
+  shim_outp(0x3c8,0);
+	for(a=0;a<768-3;a++) shim_outp(0x3c9,63);
 	for(a=0;a<32;a++) dis_waitb();
 
-	readp(palette,-1,pic);
+	readp(palette,-1,end_pic);
 	for(y=0;y<400;y++)
 	{
-		readp(rowbuf,y,pic);
+		readp(rowbuf,y,end_pic);
 		lineblit(vram+(unsigned)y*80U,rowbuf);
 	}
 	
@@ -103,6 +112,7 @@ main()
 		for(a=0;a<768-3;a++) pal2[a]=((128-c)*63+palette[a]*c)/128;
 		dis_waitb();
 		setpalarea(pal2,0,255);
+    demo_blit();
 	}
 	for(a=0;a<5000 && !dis_exit();a++)
 	{
@@ -114,6 +124,7 @@ main()
 		for(a=0;a<768-3;a++) pal2[a]=(palette[a]*c)/64;
 		dis_waitb();
 		setpalarea(pal2,0,255);
+    demo_blit();
 	}
 	/*
 	_asm mov ax,4

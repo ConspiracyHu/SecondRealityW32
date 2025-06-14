@@ -4,6 +4,8 @@
 extern "C" void dots_main( int argc, char * argv[] );
 extern "C" void jplogo_main();
 extern "C" void lens_main();
+extern "C" void end_main();
+
 extern "C" void rotate( int, int, int, int );
 
 int width = 320;
@@ -58,7 +60,8 @@ int main()
 
   //dots_main( 0, NULL );
   //jplogo_main();
-  lens_main();
+  //lens_main();
+  end_main();
 
   delete[] screen32;
 

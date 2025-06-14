@@ -64,38 +64,38 @@ _inittwk:
 	pop	bp
 	ret
 
-global _lineblit
-_lineblit:
-	push	bp
-	mov	bp,sp
-	push	si
-	push	di
-	push	ds
-	mov	di,[bp+6]
-	mov	es,[bp+8]
-	mov	si,[bp+10]
-	mov	ds,[bp+12]
-
-  %assign zpl 0
-	%rep	4
-	mov	dx,3c4h
-	mov	ax,02h+(100h << zpl)
-	out	dx,ax
-	%assign zzz 0
-	%rep	80/2
-	mov	al,[esi+(zzz+0)*4+zpl]
-	mov	ah,[esi+(zzz+1)*4+zpl]
-	mov	[edi+zzz],ax
-	%assign zzz zzz+2
-	%endrep
-	%assign zpl zpl+1
-	%endrep
-
-	pop	ds
-	pop	di
-	pop	si
-	pop	bp
-	ret
+;global _lineblit
+;_lineblit:
+;	push	bp
+;	mov	bp,sp
+;	push	si
+;	push	di
+;	push	ds
+;	mov	di,[bp+6]
+;	mov	es,[bp+8]
+;	mov	si,[bp+10]
+;	mov	ds,[bp+12]
+;
+;  %assign zpl 0
+;	%rep	4
+;	mov	dx,3c4h
+;	mov	ax,02h+(100h << zpl)
+;	out	dx,ax
+;	%assign zzz 0
+;	%rep	80/2
+;	mov	al,[esi+(zzz+0)*4+zpl]
+;	mov	ah,[esi+(zzz+1)*4+zpl]
+;	mov	[edi+zzz],ax
+;	%assign zzz zzz+2
+;	%endrep
+;	%assign zpl zpl+1
+;	%endrep
+;
+;	pop	ds
+;	pop	di
+;	pop	si
+;	pop	bp
+;	ret
 
 ;global _setpalarea
 ;_setpalarea:
