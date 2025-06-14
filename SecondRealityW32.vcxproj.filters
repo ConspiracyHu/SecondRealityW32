@@ -26,6 +26,9 @@
     <ClCompile Include="Parts\PAM\OUTTAA.C">
       <Filter>Parts\03-IntroPraxisBlast</Filter>
     </ClCompile>
+    <ClCompile Include="Parts\ALKU\MAIN.C">
+      <Filter>Parts\01-IntroScroll</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Graphics.h" />
@@ -53,6 +56,9 @@
     </Filter>
     <Filter Include="Parts\03-IntroPraxisBlast">
       <UniqueIdentifier>{f701f20d-cae8-4bff-9c0d-e40e68fe31c7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Parts\01-IntroScroll">
+      <UniqueIdentifier>{53556962-13bc-4283-a965-87491e0a79b4}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -116,6 +122,15 @@
     <None Include="Parts\PAM\PAL.INC">
       <Filter>Parts\03-IntroPraxisBlast</Filter>
     </None>
+    <None Include="Parts\ALKU\HOI.IN0">
+      <Filter>Parts\01-IntroScroll</Filter>
+    </None>
+    <None Include="Parts\ALKU\HOI.IN1">
+      <Filter>Parts\01-IntroScroll</Filter>
+    </None>
+    <None Include="Parts\ALKU\FONA.INC">
+      <Filter>Parts\01-IntroScroll</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="Parts\DOTS\DOTS_ASM.ASM">
@@ -147,6 +162,12 @@
     </CustomBuild>
     <CustomBuild Include="Parts\PAM\ASMYT.ASM">
       <Filter>Parts\03-IntroPraxisBlast</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Parts\ALKU\ASMYT.ASM">
+      <Filter>Parts\01-IntroScroll</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Parts\ALKU\INCLUDE.ASM">
+      <Filter>Parts\01-IntroScroll</Filter>
     </CustomBuild>
   </ItemGroup>
 </Project>
