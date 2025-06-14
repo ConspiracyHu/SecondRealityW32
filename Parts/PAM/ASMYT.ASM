@@ -217,7 +217,7 @@ _ulosta_frame:
 
 @@over:
 	mov	edi, esi
-	shr	esi, 4
+	;shr	esi, 4
 	mov	eax, ebp
 	add	eax, esi
 	and	edi, 15
