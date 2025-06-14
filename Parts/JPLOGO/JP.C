@@ -42,6 +42,7 @@ void	scrolly(int y)
 {
 	int	a;
 	a=y*80;
+  shim_setstartpixel( a );
 //	_asm
 //	{
 //		mov	dx,3d4h
@@ -233,6 +234,7 @@ void jplogo_main()
 	storea=a;
 	dis_waitb();
 	doit();
+  scrolly(0);
 	//_asm mov ax,3
 	//_asm int 10h
 	//printf("%i\n",storea);

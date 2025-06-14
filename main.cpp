@@ -22,7 +22,7 @@ void demo_blit()
 {
   graphics.HandleMessages();
 
-  for ( int i = 0; i < width * height; i++ ) screen32[ i ] = shim_palette[ shim_vram[ i ] ];
+  for ( int i = 0; i < width * height; i++ ) screen32[ i ] = shim_palette[ shim_vram[ i + shim_startpixel ] ];
 
   if ( GetAsyncKeyState('P') &0x8000 )
   {
@@ -64,8 +64,8 @@ int main()
   //jplogo_main();
   //lens_main();
   //end_main();
-  //endscrl_main();
-  pam_main();
+  endscrl_main();
+  //pam_main();
 
   delete[] screen32;
 

@@ -1,5 +1,6 @@
-unsigned char shim_vram[ 320 * 240 ] = { 0 };
+unsigned char shim_vram[ 320 * 480 ] = { 0 };
 unsigned int shim_palette[ 256 ] = { 0 };
+unsigned int shim_startpixel = 0;
 
 int paletteReadIndex = 0;
 int paletteReadComponent = 0;
@@ -69,4 +70,9 @@ unsigned char shim_inp( int reg )
     break;
   }
   return result;
+}
+
+void shim_setstartpixel( int reg )
+{
+  shim_startpixel = reg;
 }
