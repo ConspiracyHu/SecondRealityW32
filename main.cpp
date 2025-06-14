@@ -6,6 +6,7 @@ extern "C" void jplogo_main();
 extern "C" void lens_main();
 extern "C" void end_main();
 extern "C" void endscrl_main();
+extern "C" void pam_main();
 
 extern "C" void rotate( int, int, int, int );
 
@@ -63,7 +64,8 @@ int main()
   //jplogo_main();
   //lens_main();
   //end_main();
-  endscrl_main();
+  //endscrl_main();
+  pam_main();
 
   delete[] screen32;
 

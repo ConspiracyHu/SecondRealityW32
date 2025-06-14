@@ -1,10 +1,6 @@
-	IDEAL
-	MODEL large
-	P386
+section .data
 
-CODESEG
-
-aseg	dw	0
+aseg	dd	0
 
 ;ntaulu	db	1000b,1100b,1110b,1111b
 ;taulu	db	1111b,0111b,0011b,0001b
@@ -14,33 +10,41 @@ taulu	db	1111b,1110b,1100b,1000b
 
 ptaulu	db	1,2,4,8
 
-PUBLIC	C init_uframe, C ulosta_frame
+section .code
 
-PROC	C init_uframe
+global _shim_vram
+extern _shim_vram
 
-	ARG	fseg:word
+global _init_uframe
+_init_uframe:
 
-	mov	ax, [fseg]
-	mov	[cs:aseg], ax
+	;ARG	fseg:word
+  push ebp
+	mov	eax, [esp+8]
+	mov	[aseg], eax
+  pop ebp
 	ret
-ENDP
 
-PROC	C ulosta_frame
+global _ulosta_frame
+_ulosta_frame:
 
-	ARG	scseg:word
+	;ARG	scseg:word
 
-	push	ds di si
+	;push	ds di si
+  push ebp
 
 	xor	di, di
 	xor	si, si
-	mov	ax, [scseg]
-	mov	es, ax
-	mov	ds, [cs:aseg]
-	mov	dx, 03c4h		; map mask... 03c4h, 02..
+	;mov	edi, [esp+8]
+	;mov	es, ax
+  xor edi, edi
+	mov	esi, [aseg]
+  xor ebx, ebx
+	;mov	dx, 03c4h		; map mask... 03c4h, 02..
 
 @@looppi:
 	lodsb
-	cmp	al, 0d
+	cmp	al, 0
 	jg	@@outtaa
 	je	@@over
 @@skip:
@@ -48,7 +52,7 @@ PROC	C ulosta_frame
 	sub	di, ax
 
 	lodsb
-	cmp	al, 0d
+	cmp	al, 0
 	jl	@@skip
 	je	@@over
 
@@ -57,113 +61,118 @@ PROC	C ulosta_frame
 	jz	@@single
 
 	cbw
-	mov	bx, di
-	and	bx, 3d
+	mov	ebx, edi
+	and	bx, 3
 	add	bx, ax
-	shr	bx, 2d
+	shr	bx, 2
 	or	bx, bx
 	jz	@@samebyte
-	cmp	bx, 1d
+	cmp	bx, 1
 	je	@@twobytes
 
 	mov	cx, ax
+	mov	ebx, edi
+	and	bx, 3
+	mov	ah, [taulu+ebx]
+	mov	al, 2
+	;out	dx, ax
+	mov	al, [esi]
 	mov	bx, di
-	and	bx, 3d
-	mov	ah, [cs:taulu+bx]
-	mov	al, 2d
-	out	dx, ax
-	mov	al, [ds:si]
-	mov	bx, di
-	shr	bx, 2d
-	mov	[es:bx], al
+	shr	bx, 2
+	mov	[_shim_vram+ebx], al
 
-	push	di cx
+	push di
+  push cx
 
 	mov	ax, di
 	add	cx, ax
-	shr	cx, 2d
+	shr	cx, 2
 	sub	cx, bx
 	dec	cx
-	shr	di, 2d
+	shr	di, 2
 	inc	di
 
 	mov	ax, 0f02h
-	out	dx, ax
-	mov	al, [ds:si]
+	;out	dx, ax
+	mov	al, [esi]
 	mov	ah, al
-	shr	cx, 1d
+	shr	cx, 1
+  add edi, _shim_vram
 	jnc	@@l1
 	stosb
 @@l1:   jcxz	@@l2
 	rep	stosw
 
-@@l2:	pop	cx di
+@@l2:
+  sub edi, _shim_vram
+  pop	cx
+  pop di
 	add	di, cx
-	mov	bx, di
-	and	bx, 3d
-	mov	ah, [cs:ntaulu+bx]
-	mov	al, 2d
-	out	dx, ax
+	mov	ebx, edi
+	and	bx, 3
+	mov	ah, [ntaulu+ebx]
+	mov	al, 2
+	;out	dx, ax
 	lodsb
 	mov	bx, di
-	shr	bx, 2d
-	mov	[es:bx], al
+	shr	bx, 2
+	mov	[_shim_vram+ebx], al
 
 	inc	di
 
 	lodsb
-	cmp	al, 0d
+	cmp	al, 0
 	jl	@@skip
 	jg	@@outtaa
 	je	@@over
 
 @@twobytes:
-	mov	bx, di
-	and	bx, 3d
-	mov	cl, [cs:taulu+bx]
+	mov	ebx, edi
+	and	bx, 3
+	mov	cl, [taulu+ebx]
 	add	di, ax
 	mov	bx, di
-	and	bx, 3d
-	mov	ch, [cs:ntaulu+bx]
+	and	bx, 3
+	mov	ch, [ntaulu+ebx]
 	mov	ah, cl
-	mov	al, 2d
-	out	dx, ax
-	mov	cl, [ds:si]
+	mov	al, 2
+	;out	dx, ax
+	mov	cl, [esi]
 	mov	bx, di
-	shr	bx, 2d
-	mov	[es:bx-1], cl
+	shr	bx, 2
+	mov	[_shim_vram+ebx-1], cl
 	mov	ah, ch
-	out	dx, ax
-	mov	[es:bx], cl
-	inc	di
-	inc	si
+	;out	dx, ax
+	mov	[_shim_vram+ebx], cl
+	inc	edi
+	inc	esi
 
 	lodsb
-	cmp	al, 0d
+	cmp	al, 0
 	jl	@@skip
 	jg	@@outtaa
 	je	@@over
 
 
 @@samebyte:
-	mov	bx, di
-	and    	bx, 3d
-	mov	cl, [cs:taulu+bx]
+	mov	ebx, edi
+	and    	bx, 3
+	mov	cl, [taulu+ebx]
 	add	di, ax
 	mov	bx, di
-	and	bx, 3d
-	and	cl, [cs:ntaulu+bx]
+	and	bx, 3
+	and	cl, [ntaulu+ebx]
 	mov	ah, cl
 	mov	al, 02h
-	out	dx, ax
+	;out	dx, ax
 	lodsb
 	mov	bx, di
-	shr	bx, 2d
-	mov	[es:bx], al
+	shr	bx, 2
+	mov	[_shim_vram+ebx], al
 	inc	di
 
 	lodsb
-	cmp	al, 0d
+	cmp	al, 0
 	jl	@@skip
 	jg	@@outtaa
 	je	@@over
@@ -171,152 +180,153 @@ PROC	C ulosta_frame
 
 @@single:
 	mov	bx, di
-	and	bx, 3d
-	mov	ah, [cs:ptaulu+bx]
-	mov	al, 2d
-	out	dx, ax
+	and	bx, 3
+	mov	ah, [ptaulu+ebx]
+	mov	al, 2
+	;out	dx, ax
 	lodsb
 	mov	bx, di
-	shr	bx, 2d
-	mov	[es:bx], al
+	shr	bx, 2
+	mov	[_shim_vram+ebx], al
 	inc	di
 
 ;-------------
 	lodsb
-	cmp	al, 0d
+	cmp	al, 0
 	jl	@@skip
 	jg	@@outtaa
 	je	@@over
 
 @@over:
 	mov	di, si
-	shr	si, 4d
+	shr	si, 4
 	mov	ax, ds
 	add	ax, si
-	and	di, 15d
+	and	di, 15
 	jz	@@exit
 	inc	ax
 @@exit:
-	mov	[cs:aseg], ax
+	mov	[aseg], eax
 
-	pop     si di ds
+	pop ebp
 
 	ret
-ENDP
 
-PROC	ruudulle
 
+ruudulle:
 	dec	al
 	jz	@@single
 
 	cbw
 	mov	bx, di
-	and	bx, 3d
+	and	bx, 3
 	add	bx, ax
-	shr	bx, 2d
+	shr	bx, 2
 	or	bx, bx
 	jz	@@samebyte
-	cmp	bx, 1d
+	cmp	bx, 1
 	je	@@twobytes
 
 	mov	cx, ax
 	mov	bx, di
-	and	bx, 3d
-	mov	ah, [cs:taulu+bx]
-	mov	al, 2d
-	out	dx, ax
-	mov	al, [ds:si]
+	and	bx, 3
+	mov	ah, [taulu+ebx]
+	mov	al, 2
+	;out	dx, ax
+	mov	al, [esi]
 	mov	bx, di
-	shr	bx, 2d
+	shr	bx, 2
 	mov	[es:bx], al
 
-	push	di cx
+	push di
+  push cx
 
 	mov	ax, di
 	add	cx, ax
-	shr	cx, 2d
+	shr	cx, 2
 	sub	cx, bx
 	dec	cx
-	shr	di, 2d
+	shr	di, 2
 	inc	di
 
 	mov	ax, 0f02h
-	out	dx, ax
-	mov	al, [ds:si]
+	;out	dx, ax
+	mov	al, [esi]
 	mov	ah, al
-	shr	cx, 1d
+	shr	cx, 1
 	jnc	@@l1
 	stosb
 @@l1:   jcxz	@@l2
 	rep	stosw
 
-@@l2:	pop	cx di
+@@l2:
+  pop	cx
+  pop	di
+
 	add	di, cx
 	mov	bx, di
-	and	bx, 3d
-	mov	ah, [cs:ntaulu+bx]
-	mov	al, 2d
-	out	dx, ax
+	and	bx, 3
+	mov	ah, [ntaulu+ebx]
+	mov	al, 2
+	;out	dx, ax
 	lodsb
 	mov	bx, di
-	shr	bx, 2d
+	shr	bx, 2
 	mov	[es:bx], al
 
 	inc	di
 	ret
 
 @@twobytes:
-	mov	bx, di
-	and	bx, 3d
-	mov	cl, [cs:taulu+bx]
+	mov	ebx, edi
+	and	bx, 3
+	mov	cl, [taulu+ebx]
 	add	di, ax
 	mov	bx, di
-	and	bx, 3d
-	mov	ch, [cs:ntaulu+bx]
+	and	bx, 3
+	mov	ch, [ntaulu+bx]
 	mov	ah, cl
-	mov	al, 2d
-	out	dx, ax
-	mov	cl, [ds:si]
+	mov	al, 2
+	;out	dx, ax
+	mov	cl, [esi]
 	mov	bx, di
-	shr	bx, 2d
-	mov	[es:bx-1], cl
+	shr	bx, 2
+	mov	[_shim_vram+ebx-1], cl
 	mov	ah, ch
-	out	dx, ax
-	mov	[es:bx], cl
+	;out	dx, ax
+	mov	[_shim_vram+ebx], cl
 	inc	di
 	inc	si
 	ret
 
 @@samebyte:
-	mov	bx, di
-	and    	bx, 3d
-	mov	cl, [cs:taulu+bx]
+	mov	ebx, edi
+	and    	bx, 3
+	mov	cl, [taulu+ebx]
 	add	di, ax
 	mov	bx, di
-	and	bx, 3d
-	and	cl, [cs:ntaulu+bx]
+	and	bx, 3
+	and	cl, [ntaulu+ebx]
 	mov	ah, cl
 	mov	al, 02h
-	out	dx, ax
+	;out	dx, ax
 	lodsb
 	mov	bx, di
-	shr	bx, 2d
-	mov	[es:bx], al
+	shr	bx, 2
+	mov	[_shim_vram+ebx], al
 	inc	di
 	ret
 
 @@single:
-	mov	bx, di
-	and	bx, 3d
-	mov	ah, [cs:ptaulu+bx]
-	mov	al, 2d
-	out	dx, ax
+	mov	ebx, edi
+	and	bx, 3
+	mov	ah, [ptaulu+ebx]
+	mov	al, 2
+	;out	dx, ax
 	lodsb
 	mov	bx, di
-	shr	bx, 2d
-	mov	[es:bx], al
+	shr	bx, 2
+	mov	[_shim_vram+ebx], al
 	inc	di
-	ret
-ENDP
 
-END
+	ret
