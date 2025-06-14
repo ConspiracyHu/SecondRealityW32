@@ -145,7 +145,7 @@
   <ItemGroup>
     <ClCompile Include="Graphics.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="Parts\ALKU\MAIN.C" />
+    <ClCompile Include="Parts\ALKU\ALKU_MAIN.C" />
     <ClCompile Include="Parts\DIS\dis.c" />
     <ClCompile Include="Parts\DOTS\DOTS_MAIN.C" />
     <ClCompile Include="Parts\ENDSCRL\ENDSCRL_MAIN.C" />
@@ -177,7 +177,7 @@
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">yasm-1.2.0-win32.exe -f win32  -g cv8 -X vc %(FullPath) -o $(IntDir)%(Filename).obj</Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)%(Filename).obj</Outputs>
     </CustomBuild>
-    <CustomBuild Include="Parts\ALKU\ASMYT.ASM">
+    <CustomBuild Include="Parts\ALKU\ALKU_ASMYT.ASM">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
       <FileType>Document</FileType>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</ExcludedFromBuild>
@@ -210,7 +210,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </None>
-    <CustomBuild Include="Parts\ALKU\INCLUDE.ASM">
+    <CustomBuild Include="Parts\ALKU\ALKU_INCLUDE.ASM">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
       <FileType>Document</FileType>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</ExcludedFromBuild>
@@ -414,7 +414,7 @@
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">yasm-1.2.0-win32.exe -f win32  -g cv8 -X vc %(FullPath) -o $(IntDir)%(Filename).obj</Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)%(Filename).obj</Outputs>
     </CustomBuild>
-    <CustomBuild Include="Parts\PAM\ASMYT.ASM">
+    <CustomBuild Include="Parts\PAM\PAM_ASMYT.ASM">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
       <FileType>Document</FileType>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</ExcludedFromBuild>
@@ -429,7 +429,7 @@
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">yasm-1.2.0-win32.exe -f win32  -g cv8 -X vc %(FullPath) -o $(IntDir)%(Filename).obj</Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)%(Filename).obj</Outputs>
     </CustomBuild>
-    <CustomBuild Include="Parts\PAM\INCLUDE.ASM">
+    <CustomBuild Include="Parts\PAM\PAM_INCLUDE.ASM">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
       <FileType>Document</FileType>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</ExcludedFromBuild>
