@@ -33,17 +33,20 @@ _ulosta_frame:
 	;push	ds di si
   push ebp
 
-	xor	di, di
-	xor	si, si
 	;mov	edi, [esp+8]
 	;mov	es, ax
   xor edi, edi
-	mov	esi, [aseg]
+  xor esi, esi
+	mov	ebp, [aseg]
+  xor eax, eax
   xor ebx, ebx
+  xor ecx, ecx
+  xor edx, edx
 	;mov	dx, 03c4h		; map mask... 03c4h, 02..
 
 @@looppi:
-	lodsb
+	mov al, [ebp+esi]
+  inc esi
 	cmp	al, 0
 	jg	@@outtaa
 	je	@@over
@@ -51,7 +54,8 @@ _ulosta_frame:
 	cbw
 	sub	di, ax
 
-	lodsb
+	mov al, [ebp+esi]
+  inc esi
 	cmp	al, 0
 	jl	@@skip
 	je	@@over
@@ -76,7 +80,7 @@ _ulosta_frame:
 	mov	ah, [taulu+ebx]
 	mov	al, 2
 	;out	dx, ax
-	mov	al, [esi]
+	mov	al, [ebp+esi]
 	mov	bx, di
 	shr	bx, 2
 	mov	[_shim_vram+ebx], al
@@ -94,17 +98,20 @@ _ulosta_frame:
 
 	mov	ax, 0f02h
 	;out	dx, ax
-	mov	al, [esi]
+	mov	al, [ebp+esi]
 	mov	ah, al
 	shr	cx, 1
-  add edi, _shim_vram
 	jnc	@@l1
-	stosb
+	mov [_shim_vram+edi], al
+  inc edi
 @@l1:   jcxz	@@l2
+  add edi, _shim_vram
+  add esi, ebp
 	rep	stosw
+  sub esi, ebp
+  sub edi, _shim_vram 
 
 @@l2:
-  sub edi, _shim_vram
   pop	cx
   pop di
 	add	di, cx
@@ -113,14 +120,18 @@ _ulosta_frame:
 	mov	ah, [ntaulu+ebx]
 	mov	al, 2
 	;out	dx, ax
-	lodsb
+	mov al, [ebp+esi]
+  inc esi
+
 	mov	bx, di
 	shr	bx, 2
 	mov	[_shim_vram+ebx], al
 
 	inc	di
 
-	lodsb
+	mov al, [ebp+esi]
+  inc esi
+
 	cmp	al, 0
 	jl	@@skip
 	jg	@@outtaa
@@ -137,7 +148,7 @@ _ulosta_frame:
 	mov	ah, cl
 	mov	al, 2
 	;out	dx, ax
-	mov	cl, [esi]
+	mov	cl, [ebp+esi]
 	mov	bx, di
 	shr	bx, 2
 	mov	[_shim_vram+ebx-1], cl
@@ -147,7 +158,9 @@ _ulosta_frame:
 	inc	edi
 	inc	esi
 
-	lodsb
+	mov al, [ebp+esi]
+  inc esi
+
 	cmp	al, 0
 	jl	@@skip
 	jg	@@outtaa
@@ -165,13 +178,16 @@ _ulosta_frame:
 	mov	ah, cl
 	mov	al, 02h
 	;out	dx, ax
-	lodsb
+	mov al, [ebp+esi]
+  inc esi
+
 	mov	bx, di
 	shr	bx, 2
 	mov	[_shim_vram+ebx], al
 	inc	di
 
-	lodsb
+	mov al, [ebp+esi]
+  inc esi
 	cmp	al, 0
 	jl	@@skip
 	jg	@@outtaa
@@ -184,27 +200,29 @@ _ulosta_frame:
 	mov	ah, [ptaulu+ebx]
 	mov	al, 2
 	;out	dx, ax
-	lodsb
+	mov al, [ebp+esi]
+  inc esi
 	mov	bx, di
 	shr	bx, 2
 	mov	[_shim_vram+ebx], al
 	inc	di
 
 ;-------------
-	lodsb
+	mov al, [ebp+esi]
+  inc esi
 	cmp	al, 0
 	jl	@@skip
 	jg	@@outtaa
 	je	@@over
 
 @@over:
-	mov	di, si
-	shr	si, 4
-	mov	ax, ds
-	add	ax, si
-	and	di, 15
+	mov	edi, esi
+	shr	esi, 4
+	mov	eax, ebp
+	add	eax, esi
+	and	edi, 15
 	jz	@@exit
-	inc	ax
+	inc	eax
 @@exit:
 	mov	[aseg], eax
 
@@ -233,10 +251,10 @@ ruudulle:
 	mov	ah, [taulu+ebx]
 	mov	al, 2
 	;out	dx, ax
-	mov	al, [esi]
+	mov	al, [ebp+esi]
 	mov	bx, di
 	shr	bx, 2
-	mov	[es:bx], al
+	mov	[_shim_vram+ebx], al
 
 	push di
   push cx
@@ -255,9 +273,12 @@ ruudulle:
 	mov	ah, al
 	shr	cx, 1
 	jnc	@@l1
-	stosb
+	mov [_shim_vram+edi], al
+  inc edi
 @@l1:   jcxz	@@l2
+  add edi, _shim_vram
 	rep	stosw
+  sub edi, _shim_vram
 
 @@l2:
   pop	cx
@@ -269,7 +290,8 @@ ruudulle:
 	mov	ah, [ntaulu+ebx]
 	mov	al, 2
 	;out	dx, ax
-	lodsb
+	mov al, [ebp+esi]
+  inc esi
 	mov	bx, di
 	shr	bx, 2
 	mov	[es:bx], al
@@ -310,7 +332,8 @@ ruudulle:
 	mov	ah, cl
 	mov	al, 02h
 	;out	dx, ax
-	lodsb
+	mov al, [ebp+esi]
+  inc esi
 	mov	bx, di
 	shr	bx, 2
 	mov	[_shim_vram+ebx], al
@@ -323,7 +346,8 @@ ruudulle:
 	mov	ah, [ptaulu+ebx]
 	mov	al, 2
 	;out	dx, ax
-	lodsb
+	mov al, [ebp+esi]
+  inc esi
 	mov	bx, di
 	shr	bx, 2
 	mov	[_shim_vram+ebx], al

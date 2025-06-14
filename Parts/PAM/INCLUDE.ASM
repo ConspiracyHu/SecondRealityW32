@@ -11,3 +11,4 @@ _pam_memblock:
 global _pam_pal
 _pam_pal:
 %include 'pal.inc'
+	times	768*64 db 0

@@ -16,10 +16,10 @@ extern	int frame_count;
 extern  char *cop_pal;
 extern  int do_pal;
 
-extern	init_uframe(int seg);
+//extern	init_uframe(int seg);
 extern	ulosta_frame(int start);
-extern 	char pam_pal[];
 extern 	char pam_memblock[];
+extern 	char pam_pal[];
 
 int	wfade[100]=    {63,32,16,8,4,2,1,0,0,0,
 			0,0,0,0,0,0,0,0,0,0,
@@ -42,11 +42,14 @@ pam_main()
 //	tw_waitvr();
 //	tw_setpalette(&pal[768*63]);
 //	tw_opengraph();
-	init_uframe( pam_memblock);
+  //aseg = pam_memblock;
+	init_uframe(pam_memblock);
 	//init_copper();
 	//frame_count=0;
 	while(!dis_exit() && f++<45)
 		{
+    //setpalarea( &pam_pal[ 768 * wfade[ f ] ], 0, 256 );
+    setpalarea( &pam_pal[ 0 ], 0, 256 );
 		//while(frame_count<4); frame_count=0;
 		if(f<=40)
 			{
@@ -63,6 +66,8 @@ pam_main()
 			}
 		//cop_pal=&pal[768*wfade[f]];
 		//do_pal=1;
+    for(int i=0; i<4; i++)
+      dis_waitb();
     demo_blit();
 		}
 	//close_copper();
