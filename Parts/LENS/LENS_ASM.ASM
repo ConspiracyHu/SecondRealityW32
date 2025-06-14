@@ -56,8 +56,7 @@ _dorow:
 	jz	@@1
 	movsx	ebx, word [esi]
 	add	esi,2
-  add edi, ebx
-	mov	al,[edi] ;fs
+	mov	al,[edi+ebx] ;fs
 	or	ax,dx
 	mov	[_shim_vram+ebp],al
 	inc	ebp
