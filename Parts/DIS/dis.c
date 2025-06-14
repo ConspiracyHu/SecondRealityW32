@@ -49,3 +49,9 @@ int dis_musrow( int code )
 void dis_setcopper( int routine_number, void ( *routine )( ) )
 {
 }
+
+int sync = 0;
+int dis_sync( void )
+{
+  return sync++;
+}

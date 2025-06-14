@@ -7,6 +7,7 @@ extern "C" void lens_main();
 extern "C" void end_main();
 extern "C" void endscrl_main();
 extern "C" void pam_main();
+extern "C" void alku_main();
 
 extern "C" void rotate( int, int, int, int );
 
@@ -63,13 +64,17 @@ int main()
   int windowWidth = 1280;
   int windowHeight = 800;
   bool fullscreen = false;
-  if ( !graphics.Init( GetModuleHandle( NULL ), windowWidth, windowHeight, 1, fullscreen ) )
+  if ( !graphics.Init( GetModuleHandle( NULL ), windowWidth, windowHeight, 2, fullscreen ) )
   {
     return false;
   }
 
   screen32 = new unsigned int[ shim_vram_x * shim_vram_y ];
   ZeroMemory( screen32, shim_vram_x * shim_vram_y * sizeof( unsigned int ) );
+
+  width = 320;
+  height = 400;
+  alku_main();
 
   //dots_main( 0, NULL );
 
@@ -80,9 +85,9 @@ int main()
   //lens_main();
   //end_main();
 
-  width = 640;
-  height = 350;
-  endscrl_main();
+  //width = 640;
+  //height = 350;
+  //endscrl_main();
 
   //pam_main();
 

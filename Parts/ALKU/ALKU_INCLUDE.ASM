@@ -1,22 +1,12 @@
-        IDEAL
-        MODEL large
-        P386
+section .data
 
-PUBLIC C hzpic, C font
+global _hzpic
+_hzpic:
+%include 'hoi.in0'
+%include 'hoi.in1'
 
-SEGMENT kakka0 para use16 private 'FAR_DATA'
-LABEL hzpic BYTE
-INCLUDE 'hoi.in0'
-ENDS
-SEGMENT kakka1 byte use16 private 'FAR_DATA'
-INCLUDE 'hoi.in1'
-ENDS
+global _font
+_font:
+%include 'fona.inc'
 
-SEGMENT asdf byte use16 private 'FAR_DATA'
-LABEL font byte
-INCLUDE 'fona.inc'
-
-dw	1500*5 dup(?)
-
-ENDS
-END
+times 1500*5 dw 0

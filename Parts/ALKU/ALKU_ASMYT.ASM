@@ -1,110 +1,100 @@
-	IDEAL
-	MODEL large
-	P386
-
-CODESEG
-
+section .data
 mmask	dw	0102h,0202h,0402h,0802h,0102h,0202h,0402h,0802h
 rmask	dw	0004h,0104h,0204h,0304h,0004h,0104h,0204h,0304h
+mrol	dw	0
 
-PUBLIC C ascrolltext
+section .code
 
-PROC C ascrolltext
+global _ascrolltext
+_ascrolltext:
 
-	ARG	scrl:word, text:dword
+;	ARG	scrl:word, text:dword
 
-	push	ds es si di
-	push	0a000h
-	pop	es
-	lds	si, [text]
-	mov	cx, 0d
+	push ebp
+	;push	0a000h
+	;pop	es
+	lds	si, [esp+12]
+	mov	cx, 0
 @@l1:
 
 	mov	bx, cx
-	add	bx, [scrl]
-	and	bx, 3d
-	shl	bx, 1d
-	mov	ax, [cs:mmask+bx]
+	add	ebx, [esp+8]
+	and	bx, 3
+	shl	bx, 1
+	mov	ax, [mmask+bx]
 	mov	dx, 3c4h
-	out	dx, ax
-	mov	ax, [cs:rmask+bx]
+	;out	dx, ax
+	mov	ax, [rmask+bx]
 	mov	dx, 3ceh
-	out	dx, ax
+	;out	dx, ax
 
 	mov	di, cx
-	add	di, [scrl]
-	shr	di, 2d
+	add	edi, [esp+8]
+	shr	di, 2
 @@l3:
-	REPT	20
-	add	si, 4d
-	mov	bx, [si-4]
+	%rep	20
+	add	si, 4
+	mov	bx, [esi-4]
 	cmp	bx, -1
 	je	@@l2
-	mov	ax, [si-2]
-	xor	[es:bx+di], al
-	ENDM
+	mov	ax, [esi-2]
+	xor	[bx+di], al
+	%endrep
 	jmp	@@l3
 @@l2:
 	inc	cx
-	cmp	cx, 4d
+	cmp	cx, 4
 	jne	@@l1
 
-	pop	di si es ds
+	pop ebp
 	ret
-ENDP
 
-PUBLIC C outline
+global _outline
+_outline:
 
-mrol	dw	0
+;	ARG	src:dword, dest:dword
 
-PROC	C outline
+	push ebp
 
-	ARG	src:dword, dest:dword
-
-	push	ds es si di
-
-	mov	[cs:mrol], 0802h
-	mov	cx, 4d
+	mov	word [mrol], 0802h
+	mov	ecx, 4
 @@l1:
 	mov	dx, 3c4h
-	mov	ax, [cs:mrol]
-	out	dx, ax
+	mov	ax, [mrol]
+	;out	dx, ax
 
-	lds	si, [src]
-	add	si, cx
-	dec	si
-	les	di, [dest]
-	xor	ax, ax
-	mov	[es:di-352], al
-	mov	[es:di-352+176], al
+	mov esi, [esp+8]
+	add	esi, ecx
+	dec	esi
+	mov edi, [esp+12]
+	xor	eax, eax
+	mov	[edi-352], al
+	mov	[edi-352+176], al
 
-	ccc=0
-	REPT	75
-	mov	al, [ds:si+ccc*640]
-	mov	[es:di+ccc*352], al
-	mov	[es:di+ccc*352+176], al
-	ccc=ccc+1
-	ENDM
+	%assign ccc 0
+	%rep	75
+	mov	al, [esi+ccc*640]
+	mov	[edi+ccc*352], al
+	mov	[edi+ccc*352+176], al
+	%assign ccc ccc+1
+	%endrep
 
-	mov	ax, ds
+	;mov	ax, ds
 	add	ax, 75*40
-	mov	ds, ax
+	;mov	ds, ax
 
-	ccc=0
-	REPT	75
-	mov	al, [ds:si+ccc*640]
-	mov	[es:di+ccc*352+75*352], al
-	mov	[es:di+ccc*352+75*352+176], al
-	ccc=ccc+1
-	ENDM
+	%assign ccc 0
+	%rep	75
+	mov	al, [esi+ccc*640]
+	mov	[edi+ccc*352+75*352], al
+	mov	[edi+ccc*352+75*352+176], al
+	%assign ccc ccc+1
+	%endrep
 
-	shr	[cs:(Byte mrol+1)], 1d
-	dec	cx
+	shr	word [mrol+1], 1
+	dec	ecx
 	jnz	@@l1
 
 
-	pop	di si es ds
+	pop ebp
 	ret
-ENDP
-
-END

@@ -1,30 +1,31 @@
 #include <dos.h>
 #include <stdio.h>
 #include <conio.h>
-#include "tweak.h"
-#include "h:\u2\dis\dis.h"
+//#include "tweak.h"
+#include "../dis/dis.h"
+#include "../../shims.h"
 
 #define SCRLF 9
 
-extern	init_copper();
-extern	close_copper();
-extern	far int frame_count;
-extern  far char * far cop_pal;
-extern  far int do_pal;
-extern  far int cop_start;
-extern  far int cop_scrl;
-extern	far int cop_dofade;
-extern	far char * far cop_fadepal;
-extern 	far char fadepal[];
+//extern	init_copper();
+//extern	close_copper();
+int frame_count;
+char * cop_pal;
+int do_pal;
+int cop_start;
+int cop_scrl;
+int cop_dofade;
+char * cop_fadepal;
+char fadepal[256*3];
 
-extern char far hzpic[];
-extern outline(char far *f, char far *t);
-extern ascrolltext(int scrl, int *dtau);
-char	* far vmem=(char *)0x0a0000000L;
+extern char hzpic[];
+extern void outline(char *f, char *t);
+extern void ascrolltext(int scrl, int *dtau);
+char	* vmem=(char *)0x0a0000000L;
 int	mmask[4]={0x0102,0x0202,0x0402,0x0802};
 
-char (* far vvmem)[176];
-extern char far font[31][1500];
+char (* vvmem)[176];
+extern char font[31][1500];
 char rowbuf[1024];
 
 char	palette[768];		// pic
@@ -37,23 +38,39 @@ int	picin[768];
 int	textin[768];
 int	textout[768];
 
-char	*fonaorder="ABCDEFGHIJKLMNOPQRSTUVWXabcdefghijklmnopqrstuvwxyz0123456789!?,.:èè()+-*='èô";
+char	*alku_fonaorder="ABCDEFGHIJKLMNOPQRSTUVWXabcdefghijklmnopqrstuvwxyz0123456789!?,.:èè()+-*='èô";
 int	fonap[256];
 int	fonaw[256];
 
-int	far dtau[30000];
-char	far tbuf[186][352];
+int	dtau[30000];
+char	tbuf[186][352];
 
-int	a=0,p=0,tptr=0;
+int	a=0,p=0,alku_tptr=0;
 
-main()
+void alku_init();
+void prtc( int x, int y, char * txt );
+void dofade( char * pal1, char * pal2 );
+void fdofade( char * pal1, char * pal2, int a );
+void addtext( int tx, int ty, char * txt );
+void maketext( int scrl );
+void scrolltext( int scrl );
+int alku_do_scroll( int mode );
+void wait( int t );
+void fonapois();
+void ffonapois();
+void prt( int x, int y, char * txt );
+void fffade( char * pal1, char * pal2, int frames );
+void faddtext( int tx, int ty, char * txt );
+void fmaketext( int scrl );
+
+void alku_main()
 	{
 	int	aa,b,c,x,y,f;
 
-	asm	mov	ax, 3
-	asm	int	10h
+	//asm	mov	ax, 3
+	//asm	int	10h
 
-	init();
+	alku_init();
 
 
 	while(dis_sync()<1 && !dis_exit());
@@ -82,7 +99,7 @@ main()
 	cop_fadepal=picin;
 	cop_dofade=128;
 	for(a=1,p=1,f=0,frame_count=0;cop_dofade!=0 && !dis_exit();)
-		do_scroll(2);
+		alku_do_scroll(2);
 
 	for(f=60;a<320 && !dis_exit();)
 		{
@@ -99,7 +116,7 @@ main()
 		else if(f>50 && cop_dofade==0) {
 			cop_pal=palette; do_pal=1; f++;
 			memset(tbuf,0,186*320);
-			switch(tptr++) {
+			switch(alku_tptr++) {
 			case 0:
 				addtext(160,50,"Graphics");
 				addtext(160,90,"Marvel");
@@ -135,35 +152,35 @@ main()
 				ffonapois();
 				break;
 				}
-			while(((a&1) || dis_sync()<4+tptr) && !dis_exit() && a<319)
-				do_scroll(0);
+			while(((a&1) || dis_sync()<4+alku_tptr) && !dis_exit() && a<319)
+				alku_do_scroll(0);
 			aa=a;
 			if(aa<320-12) fmaketext(aa+16);
 			f=0;
 			}
 		else	f++;
-		do_scroll(1);
+		alku_do_scroll(1);
 		}
 	if(f>63/SCRLF){
 		dofade(palette2,palette);
 		}
 	fonapois();
-	close_copper();
+	//close_copper();
 	}
 
-init()	{
+void alku_init()	{
 	int	a,b,c,x,y,p=0,f;
 
 	dis_partstart();
-	tw_opengraph();
-	init_copper();
-	tw_setpalette(fade1);
+	//tw_opengraph();
+	//init_copper();
+	setpalarea(fade1,0,256);
 	memcpy(palette,hzpic+16,768);
 
 	for(a=0;a<88;a++)
 		{
-		outline(MK_FP(FP_SEG(hzpic),FP_OFF(hzpic)+a*4+784), MK_FP(0x0a000,a+176*50));
-		outline(MK_FP(FP_SEG(hzpic),FP_OFF(hzpic)+a*4+784), MK_FP(0x0a000,a+176*50+88));
+		outline(hzpic+a*4+784, shim_vram+a+176*50);
+		outline(hzpic+a*4+784, shim_vram+a+176*50+88);
 		}
 
 	for(y=0;y<32;y++)
@@ -211,7 +228,7 @@ init()	{
 
 	for(a=192;a<768;a++) palette[a]=palette[a-192];
 
-	for(x=0;x<1500 && *fonaorder;)
+	for(x=0;x<1500 && *alku_fonaorder;)
 	{
 		while(x<1500)
 		{
@@ -226,10 +243,10 @@ init()	{
 			if(y==32) break;
 			x++;
 		}
-		//printf("%c: %i %i\n",*fonaorder,b,x-b);
-		fonap[*fonaorder]=b;
-		fonaw[*fonaorder]=x-b;
-		fonaorder++;
+		//printf("%c: %i %i\n",*alku_fonaorder,b,x-b);
+		fonap[*alku_fonaorder]=b;
+		fonaw[*alku_fonaorder]=x-b;
+		alku_fonaorder++;
 	}
 	fonap[32]=1500-20;
 	fonaw[32]=16;
@@ -242,34 +259,42 @@ init()	{
 		}
 	}
 
-wait(int t)
+void wait(int t)
 	{
-	while(frame_count<t && !dis_exit()); frame_count=0;
+  for ( int i = 0; i < t; i++ )
+  {
+    if ( dis_exit() ) break;
+    dis_waitb();
+  }
+	//while(frame_count<t && !dis_exit()); frame_count=0;
 	}
 
-fonapois()
+void fonapois()
 	{
-	char 	far *vvmem=MK_FP(0x0a000,0);
+  char * vvmem = shim_vram;// ( 0x0a000, 0 );
 	unsigned a;
-
-	outport(0x3c4,0x0102);
-	outport(0x3ce,0x0004);
+  memset( shim_vram, 0, shim_vram_x * shim_vram_y );
+	shim_outp(0x3c4,0x0102);
+	shim_outp(0x3ce,0x0004);
 	for(a=160*64;a<160U*(64+256);a++) vvmem[a]=vvmem[a]&63;
 
-	outport(0x3c4,0x0202);
-	outport(0x3ce,0x0104);
+	shim_outp(0x3c4,0x0202);
+	shim_outp(0x3ce,0x0104);
 	for(a=160*64;a<160U*(64+256);a++) vvmem[a]=vvmem[a]&63;
 
-	outport(0x3c4,0x0402);
-	outport(0x3ce,0x0204);
+	shim_outp(0x3c4,0x0402);
+	shim_outp(0x3ce,0x0204);
 	for(a=160*64;a<160U*(64+256);a++) vvmem[a]=vvmem[a]&63;
-	outport(0x3c4,0x0802);
-	outport(0x3ce,0x0304);
+	shim_outp(0x3c4,0x0802);
+	shim_outp(0x3ce,0x0304);
 	for(a=160*64;a<160U*(64+256);a++) vvmem[a]=vvmem[a]&63;
 
 	}
 
-prt(int x,int y,char *txt)
+#define tw_getpixel(x,y) shim_vram[(x)+(y)*320]
+#define tw_putpixel(x,y,c) shim_vram[(x)+(y)*320]=(c)
+
+void prt(int x,int y,char *txt)
 {
 	int	x2w,x2,y2,y2w=y+32,sx,d;
 	while(*txt)
@@ -290,7 +315,7 @@ prt(int x,int y,char *txt)
 	}
 }
 
-prtc(int x,int y,char *txt)
+void prtc(int x,int y,char *txt)
 {
 	int	w=0;
 	char	*t=txt;
@@ -298,7 +323,7 @@ prtc(int x,int y,char *txt)
 	prt(x-w/2,y,txt);
 }
 
-dofade(char far *pal1, char far *pal2)
+void dofade(char *pal1, char *pal2)
 	{
 	int	a,b,c;
 	char	pal[768];
@@ -306,13 +331,16 @@ dofade(char far *pal1, char far *pal2)
 	for(a=0;a<64 && !dis_exit();a++)
 		{
 		for(b=0;b<768;b++) pal[b]=(pal1[b]*(64-a)+pal2[b]*a>>6);
-		cop_pal=pal; do_pal=1;
-		while(frame_count<1); frame_count=0;
+    setpalarea( pal, 0, 256 );
+		//cop_pal=pal; do_pal=1;
+		//while(frame_count<1); frame_count=0;
+    dis_waitb();
+    demo_blit();
 		}
 	}
 char	fuckpal[768];
 
-fdofade(char far *pal1, char far *pal2, int a)
+void fdofade(char *pal1, char *pal2, int a)
 	{
 	int	b,c;
 
@@ -321,7 +349,7 @@ fdofade(char far *pal1, char far *pal2, int a)
 	cop_pal=fuckpal; do_pal=1;
 	}
 
-addtext(int tx,int ty,char *txt)
+void addtext(int tx,int ty,char *txt)
 	{
 	int	a,b,c,x,y,w=0;
 	char	*t=txt;
@@ -340,9 +368,9 @@ addtext(int tx,int ty,char *txt)
 	}
 
 
-maketext(int scrl)
+void maketext(int scrl)
 	{
-	char 	far *vvmem=MK_FP(0x0a000,0);
+  char * vvmem = shim_vram;
 	int	*p1=dtau;
 	int	mtau[]={1*256+2,2*256+2,4*256+2,8*256+2};
 	int	a,b,c,x,y,m;
@@ -360,8 +388,8 @@ maketext(int scrl)
 
 	for(x=0;x<320;x++)
 		{
-		outport(0x3c4,mtau[(x+scrl)&3]);
-		outport(0x3ce,((x+scrl)&3)*256+4);
+		shim_outp(0x3c4,mtau[(x+scrl)&3]);
+		shim_outp(0x3ce,((x+scrl)&3)*256+4);
 		for(y=1;y<184;y++)
 			{
 			vvmem[y*176+176*100+(x+scrl)/4]^=tbuf[y][x-1-1];
@@ -370,9 +398,9 @@ maketext(int scrl)
 		}
 	}
 
-scrolltext(int scrl)
+void scrolltext(int scrl)
 	{
-	char 	far *vvmem=MK_FP(0x0a000,0);
+	char 	*vvmem=shim_vram;
 	int	mtau[]={1*256+2,2*256+2,4*256+2,8*256+2,1*256+2,2*256+2,4*256+2,8*256+2};
 	int	*p1=dtau;
 	int	x,y,a,c,m,aa;
@@ -381,8 +409,8 @@ scrolltext(int scrl)
 	for(m=0;m<4;m++)
 		{
 		aa=(scrl+m)/4;
-		outport(0x3c4,mtau[(scrl+m)&3]);
-		outport(0x3ce,((scrl+m)&3)*256+4);
+		shim_outp(0x3c4,mtau[(scrl+m)&3]);
+		shim_outp(0x3ce,((scrl+m)&3)*256+4);
 		while(*p1!=-1)
 			{
 			a=*p1++;
@@ -394,18 +422,18 @@ scrolltext(int scrl)
 	}
 
 
-do_scroll(int mode)
+int alku_do_scroll(int mode)
 	{
-	if(mode==0 && frame_count<SCRLF) return(0);
-	while(frame_count<SCRLF);
-	frame_count-=SCRLF;
+//	if(mode==0 && frame_count<SCRLF) return(0);
+//	while(frame_count<SCRLF);
+//	frame_count-=SCRLF;
 	if(mode==1) ascrolltext(a+p*352,dtau);
 	cop_start=a/4+p*88; cop_scrl=(a&3)*2;
 
 	if((a&3)==0)
 		{
-		outline(MK_FP(FP_SEG(hzpic),FP_OFF(hzpic)+(a/4+86)*4+784), MK_FP(0x0a000,(a/4+86)+176*50));
-		outline(MK_FP(FP_SEG(hzpic),FP_OFF(hzpic)+(a/4+86)*4+784), MK_FP(0x0a000,(a/4+86)+176*50+88));
+		outline(hzpic+(a/4+86)*4+784, shim_vram + (a/4+86)+176*50);
+		outline(hzpic+(a/4+86)*4+784, shim_vram + (a/4+86)+176*50+88);
 		}
 	a+=1; p^=1;
 	return(1);
@@ -414,7 +442,7 @@ do_scroll(int mode)
 
 
 
-faddtext(int tx,int ty,char *txt)
+void faddtext(int tx,int ty,char *txt)
 	{
 	int	a,b,c,x,y,w=0;
 	char	*t=txt;
@@ -428,14 +456,14 @@ faddtext(int tx,int ty,char *txt)
 			for(y=0;y<32;y++)
 				tbuf[y+ty][tx+x-w]=font[y][fonap[*t]+x];
 
-		do_scroll(0);
+		alku_do_scroll(0);
 		tx+=fonaw[*t++]+2;
 		}
 	}
 
-fmaketext(int scrl)
+void fmaketext(int scrl)
 	{
-	char 	far *vvmem=MK_FP(0x0a000,0);
+	char 	*vvmem=shim_vram;
 	int	*p1=dtau;
 	int	mtau[]={1*256+2,2*256+2,4*256+2,8*256+2};
 	int	b,c,x,y,m;
@@ -447,7 +475,7 @@ fmaketext(int scrl)
 				*p1++=x/4+y*176+100*176;
 				*p1++=tbuf[y][x]^tbuf[y][x-2];
 				}
-			do_scroll(0);
+			alku_do_scroll(0);
 			}
 		*p1++=-1;
 		*p1++=-1;
@@ -455,49 +483,49 @@ fmaketext(int scrl)
 
 	for(x=0;x<320;x++)
 		{
-		outport(0x3c4,mtau[(x+scrl)&3]);
-		outport(0x3ce,((x+scrl)&3)*256+4);
+		shim_outp(0x3c4,mtau[(x+scrl)&3]);
+		shim_outp(0x3ce,((x+scrl)&3)*256+4);
 		for(y=1;y<184;y++)
 			{
 			vvmem[y*176+176*100+(x+scrl)/4]^=tbuf[y][x-1-1];
 			vvmem[y*176+176*100+(x+scrl)/4+88]^=tbuf[y][x-1];
 			}
-		do_scroll(0);
+		alku_do_scroll(0);
 		}
 
-	while(a<=scrl) do_scroll(0);
+	while(a<=scrl) alku_do_scroll(0);
 	}
 
-ffonapois()
+void ffonapois()
 	{
-	long 	far *vvmem=MK_FP(0x0a000,0);
+  unsigned int * vvmem = shim_vram;// MK_FP( 0x0a000, 0 );
 	unsigned a;
 
-	outport(0x3c4,0x0102);
-	outport(0x3ce,0x0004);
+	shim_outp(0x3c4,0x0102);
+	shim_outp(0x3ce,0x0004);
 	for(a=40*64;a<40U*(64+256+10);a++) vvmem[a]=vvmem[a]&0x3f3f3f3f;
-	do_scroll(0);
+	alku_do_scroll(0);
 
-	outport(0x3c4,0x0202);
-	outport(0x3ce,0x0104);
+	shim_outp(0x3c4,0x0202);
+	shim_outp(0x3ce,0x0104);
 	for(a=40*64;a<40U*(64+256+10);a++) vvmem[a]=vvmem[a]&0x3f3f3f3f;
-	do_scroll(0);
+	alku_do_scroll(0);
 
-	outport(0x3c4,0x0402);
-	outport(0x3ce,0x0204);
+	shim_outp(0x3c4,0x0402);
+	shim_outp(0x3ce,0x0204);
 	for(a=40*64;a<40U*(64+256+10);a++) vvmem[a]=vvmem[a]&0x3f3f3f3f;
-	do_scroll(0);
+	alku_do_scroll(0);
 
-	outport(0x3c4,0x0802);
-	outport(0x3ce,0x0304);
+	shim_outp(0x3c4,0x0802);
+	shim_outp(0x3ce,0x0304);
 	for(a=40*64;a<40U*(64+256+10);a++) vvmem[a]=vvmem[a]&0x3f3f3f3f;
-	do_scroll(0);
+	alku_do_scroll(0);
 	}
 
-char far cfpal[768*2];
-int far cop_fade;
+char cfpal[768*2];
+int cop_fade;
 
-fffade(char far *pal1, char far *pal2, int frames)
+void fffade(char *pal1, char *pal2, int frames)
 	{
 	int	a,b,c;
 	for(a=0;a<768;a++)
