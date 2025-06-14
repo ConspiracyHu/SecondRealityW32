@@ -13,9 +13,9 @@ global _shim_vram
 extern _shim_vram
 
 %macro DOWORD 2
-	movzx	ebx, word [esi+(%2)]
+	movsx	ebx, word [esi+(%2)]
 	mov	al,[edi+ebx]
-	movzx	ebx, word [esi+(%2)+2]
+	movsx	ebx, word [esi+(%2)+2]
 	mov	ah,[edi+ebx]
 	or	ax,dx
 	mov	[ebp+(%1)],ax
@@ -47,14 +47,14 @@ _dorow:
 @@2:
   add esi, [esp+8] ; +ds:
   mov ax,[esi]
-  movzx eax, ax
+  movsx eax, ax
   add edi, eax
 	mov	ebp, edi
   add edi, [_back]
 	add	esi,2
 	test	ebp,1
 	jz	@@1
-	movzx	ebx, word [esi]
+	movsx	ebx, word [esi]
 	add	esi,2
   add edi, ebx
 	mov	al,[edi] ;fs
@@ -143,10 +143,10 @@ _dorow2:
   ; fs:bp => ebp (lens)
 
 @@3:
-  movzx	ebx, word [ebp+2]
+  movsx	ebx, word [ebp+2]
 	mov	al, [ebx+edi]
 	or	al, dl
-	movzx	ebx, word [ebp]
+	movsx	ebx, word [ebp]
 	add	ebp, 4
 	mov	[ebx+esi], al
 	dec	cx
@@ -175,7 +175,7 @@ _dorow3:
   push ebp
   mov ebp,[_back]
 @@3:
-  movzx	ebx, word [esi] ; fs
+  movsx	ebx, word [esi] ; fs
   add ebx, edi
 	add	esi, 2
 	mov	al,[ebp+ebx] ; ds
