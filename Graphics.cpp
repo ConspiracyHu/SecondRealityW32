@@ -67,8 +67,8 @@ bool Graphics::Init( HINSTANCE _instance, int _screenWidth, int _screenHeight, i
   }
 
   mHWnd = CreateWindowEx( wExStyle, wndClass.lpszClassName, _T( "Second Reality (Win32)" ), wStyle,
-    ( GetSystemMetrics( SM_CXSCREEN ) - mPhysicalWidth ) / 2,
-    ( GetSystemMetrics( SM_CYSCREEN ) - mPhysicalHeight ) / 2,
+    ( GetSystemMetrics( SM_CXSCREEN ) - ( windowRect.right - windowRect.left ) ) / 2,
+    ( GetSystemMetrics( SM_CYSCREEN ) - ( windowRect.bottom - windowRect.top ) ) / 2,
     windowRect.right - windowRect.left, windowRect.bottom - windowRect.top,
     NULL, NULL, _instance, this );
 

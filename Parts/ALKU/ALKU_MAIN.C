@@ -72,7 +72,7 @@ void alku_main()
 
 	alku_init();
 
-
+  /*
 	while(dis_sync()<1 && !dis_exit());
 
 	prtc(160,120,"A");
@@ -93,13 +93,20 @@ void alku_main()
 	prtc(160,179,"™");
 	dofade(fade1,fade2); wait(300); dofade(fade2,fade1); fonapois();
 
+  */
 	while(dis_sync()<4 && !dis_exit());
 
 	memcpy(fadepal,fade1,768);
 	cop_fadepal=picin;
 	cop_dofade=128;
 	for(a=1,p=1,f=0,frame_count=0;cop_dofade!=0 && !dis_exit();)
+  {
+    for ( int i = 0; i < 768; i++ ) fadepal[ i ] = picin[ i ];
+    setpalarea( fadepal, 0, 256 );
 		alku_do_scroll(2);
+    demo_blit();
+    cop_dofade--;
+  }
 
 	for(f=60;a<320 && !dis_exit();)
 		{
@@ -159,8 +166,12 @@ void alku_main()
 			f=0;
 			}
 		else	f++;
+
 		alku_do_scroll(1);
-		}
+    dis_waitb();
+    demo_blit();
+    cop_dofade--;
+  }
 	if(f>63/SCRLF){
 		dofade(palette2,palette);
 		}
@@ -265,6 +276,7 @@ void wait(int t)
   {
     if ( dis_exit() ) break;
     dis_waitb();
+    demo_blit();
   }
 	//while(frame_count<t && !dis_exit()); frame_count=0;
 	}
@@ -360,7 +372,7 @@ void addtext(int tx,int ty,char *txt)
 	while(*t)
 		{
 		for(x=0;x<fonaw[*t];x++)
-			for(y=0;y<32;y++)
+			for(y=0;y<31;y++)
 				tbuf[y+ty][tx+x-w]=font[y][fonap[*t]+x];
 
 		tx+=fonaw[*t++]+2;
@@ -424,9 +436,9 @@ void scrolltext(int scrl)
 
 int alku_do_scroll(int mode)
 	{
-//	if(mode==0 && frame_count<SCRLF) return(0);
-//	while(frame_count<SCRLF);
-//	frame_count-=SCRLF;
+	if(mode==0 && frame_count++<SCRLF) return(0);
+	while(frame_count<SCRLF){frame_count++;}
+	frame_count-=SCRLF;
 	if(mode==1) ascrolltext(a+p*352,dtau);
 	cop_start=a/4+p*88; cop_scrl=(a&3)*2;
 

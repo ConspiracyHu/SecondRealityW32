@@ -62,7 +62,7 @@ int main()
   VirtualProtect( &rotate, 8192, PAGE_EXECUTE_READWRITE, &old );
 
   int windowWidth = 1280;
-  int windowHeight = 800;
+  int windowHeight = 960;
   bool fullscreen = false;
   if ( !graphics.Init( GetModuleHandle( NULL ), windowWidth, windowHeight, 2, fullscreen ) )
   {
