@@ -50,7 +50,7 @@ _dorow:
   movzx eax, ax
   add edi, eax
 	mov	ebp, edi
-  add edi, _back
+  add edi, [_back]
 	add	esi,2
 	test	ebp,1
 	jz	@@1
@@ -77,7 +77,9 @@ _dorow:
 
   mov eax, ecx
   mov ecx, 30 ; speedcode jump - was 21 in the original (above)
+  push edx
   mul ecx
+  pop edx
 
 	neg	eax
 	;bx=-count*21
@@ -133,7 +135,7 @@ _dorow2:
 	mov	esi, eax
 
   add esi, _shim_vram
-  add edi, _back
+  add edi, [_back]
   add ebp, [esp+8] ; ptr
 
   ; ds:di => edi (back)
