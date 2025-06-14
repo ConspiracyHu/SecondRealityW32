@@ -13,12 +13,12 @@ global _shim_vram
 extern _shim_vram
 
 %macro DOWORD 2
-	mov	bx,[esi+(%2)]	;4
-	mov	al,[ebx+edi]		;3
-	mov	bx,[esi+(%2)+2]	;4
-	mov	ah,[ebx+edi]		;3
-	or	ax,dx			;2
-	mov	[ebp+(%1)],ax	;5
+	movzx	ebx, word [esi+(%2)]
+	mov	al,[edi+ebx]
+	movzx	ebx, word [esi+(%2)+2]
+	mov	ah,[edi+ebx]
+	or	ax,dx
+	mov	[ebp+(%1)],ax
 %endmacro ;=21
 
 global _dorow
@@ -32,49 +32,63 @@ _dorow:
 	;mov	fs,cs:_back[2]
 	;mov	ax,0a000h
 	;mov	es,ax
-	mov	esi,[esp+8] ; 1
-	mov	dx,[esp+20] ; 4
+	mov	esi,[esp+8] ; ptr/lens
+	mov	edx,[esp+20] ; M
 	mov	dh,dl
-	mov	di,[esp+12] ; 2 
-	mov	si,[esp+16] ; 3
+	mov	edi,[esp+12] ; U 
+	mov	esi,[esp+16] ; Y
 	shl	si,2
+  add esi, [esp+8] ; +ds:
 	mov	cx,[esi+2]
-	mov	si,[esi]
+	movzx	esi, word [esi]
 	cmp	cx,4
 	jge	@@2
 	jmp	@@0
 @@2:
-  add	di,[esi]
-	mov	bp,di
-	add	si,2
-	test	bp,1
+  add esi, [esp+8] ; +ds:
+  mov ax,[esi]
+  movzx eax, ax
+  add edi, eax
+	mov	ebp, edi
+  add edi, _back
+	add	esi,2
+	test	ebp,1
 	jz	@@1
-	mov	bx,[esi]
-	add	si,2
-	mov	al,[ebx+edi] ;fs
+	movzx	ebx, word [esi]
+	add	esi,2
+  add edi, ebx
+	mov	al,[edi] ;fs
 	or	ax,dx
-	mov	[ebp],al
-	inc	bp
-	dec	cx
-@@1:	push	cx
-	shr	cx,1
-	sub	si,320
-	sub	bp,320
-	mov	ax,cx ;*1
-	shl	cx,2
-	add	ax,cx ;*4
-	shl	cx,2
-	add	ax,cx ;*16
-	neg	ax
+	mov	[_shim_vram+ebp],al
+	inc	ebp
+	dec	ecx
+@@1:	push	ecx
+	shr	ecx,1
+	sub	esi,320
+	sub	ebp,320
+
+  add ebp, _shim_vram
+
+	;mov	eax,ecx ;*1
+	;shl	ecx,2
+	;add	eax,ecx ;*4
+	;shl	ecx,2
+	;add	eax,ecx ;*16
+
+  mov eax, ecx
+  mov ecx, 30 ; speedcode jump - was 21 in the original (above)
+  mul ecx
+
+	neg	eax
 	;bx=-count*21
-	add	ax,@@l
-	jmp	ax
+	add	eax,@@l
+	jmp	eax
 	%assign zzz 64
 	%rep	64
 	%assign zzz zzz-1
 	DOWORD	320+zzz*2,320+zzz*4
 	%endrep
-@@l:	pop	cx
+@@l:	pop	ecx
 	test	cx,1
 	jz	@@0
 	and	cx,~1
@@ -82,7 +96,7 @@ _dorow:
 	add	cx,cx
 	add	si,cx
 	mov	bx,[esi+320]
-	mov	al,[ebx+edi]
+	mov	al,[edi]
 	or	ax,dx
 	mov	[ebp+320],al
 @@0:	
