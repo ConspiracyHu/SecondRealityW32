@@ -1,4 +1,6 @@
-unsigned char shim_vram[ 320 * 480 ] = { 0 };
+#include "shims.h"
+
+unsigned char shim_vram[ shim_vram_x * shim_vram_y ] = { 0 };
 unsigned int shim_palette[ 256 ] = { 0 };
 unsigned int shim_startpixel = 0;
 
@@ -9,7 +11,7 @@ int paletteComponent = 0;
 
 void shim_setpal( int idx, unsigned char r, unsigned char g, unsigned char b )
 {
-  shim_palette[ idx ] = r | ( g << 8 ) | ( b << 16 );
+  shim_palette[ idx ] = (r << 2) | ( g << 10 ) | ( b << 18 );
 }
 
 void shim_outp( int reg, int value )

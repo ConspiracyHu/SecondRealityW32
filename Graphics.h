@@ -7,8 +7,8 @@ public:
   Graphics();
   ~Graphics();
 
-  bool Init( HINSTANCE _instance, int _screenWidth, int _screenHeight, int _width, int _height, bool _fullscreen );
-  void Update( void * _screenBuffer );
+  bool Init( HINSTANCE _instance, int _width, int _height, int _zoom, bool _fullscreen );
+  void Update( void * _screenBuffer, int _screenWidth, int _screenHeight );
   void HandleMessages();
   void Close();
 
@@ -34,11 +34,7 @@ private:
   
   int mPhysicalWidth;
   int mPhysicalHeight;
-  int mVirtualWidth;
-  int mVirtualHeight;
   int mIntegerZoom;
-  int mCenterX;
-  int mCenterY;
 
   bool mWantsToQuit;
   bool mFullscreen;

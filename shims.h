@@ -4,6 +4,9 @@
 #define EXTERN extern
 #endif
 
+#define shim_vram_x 640
+#define shim_vram_y 960
+
 EXTERN unsigned int shim_palette[];
 EXTERN unsigned int shim_startpixel;
 EXTERN unsigned char shim_vram[];

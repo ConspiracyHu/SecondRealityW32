@@ -9,11 +9,7 @@ Graphics::Graphics()
   , mHWnd( 0 )
   , mPhysicalWidth( 0 )
   , mPhysicalHeight( 0 )
-  , mVirtualWidth( 0 )
-  , mVirtualHeight( 0 )
   , mIntegerZoom( 0 )
-  , mCenterX( 0 )
-  , mCenterY( 0 )
   , mWantsToQuit( 0 )
   , mFullscreen( 0 )
   , mPhysicalScreen( NULL )
@@ -29,33 +25,16 @@ Graphics::~Graphics()
 {
 }
 
-bool Graphics::Init( HINSTANCE _instance, int _screenWidth, int _screenHeight, int _width, int _height, bool _fullscreen )
+bool Graphics::Init( HINSTANCE _instance, int _screenWidth, int _screenHeight, int _zoom, bool _fullscreen )
 {
-  mVirtualWidth = _width;
-  mVirtualHeight = _height;
   mPhysicalWidth = _screenWidth;
   mPhysicalHeight = _screenHeight;
   mFullscreen = _fullscreen;
 
-  mIntegerZoom = 1;
+  mIntegerZoom = _zoom;
 
-  int nZoomedX = _width;
-  int nZoomedY = _height;
-  for ( int i = 1; _width * i <= _screenWidth && _height * i <= _screenHeight; i++ )
-  {
-    mIntegerZoom = i;
-    nZoomedX = _width * i;
-    nZoomedY = _height * i;
-  }
-
-  if ( mIntegerZoom > 1 )
-  {
-    mPhysicalScreen = new unsigned int[ mPhysicalWidth * mPhysicalHeight ];
-    ZeroMemory( mPhysicalScreen, sizeof( unsigned int ) * mPhysicalWidth * mPhysicalHeight );
-
-    mCenterX = ( _screenWidth - nZoomedX ) / 2;
-    mCenterY = ( _screenHeight - nZoomedY ) / 2;
-  }
+  mPhysicalScreen = new unsigned int[ mPhysicalWidth * mPhysicalHeight ];
+  ZeroMemory( mPhysicalScreen, sizeof( unsigned int ) * mPhysicalWidth * mPhysicalHeight );
 
   DWORD wExStyle = WS_EX_APPWINDOW;
   DWORD wStyle = WS_POPUP | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | WS_VISIBLE;
@@ -269,24 +248,23 @@ void Graphics::HandleMessages()
   }
 }
 
-void Graphics::Update( void * _buffer )
+void Graphics::Update( void * _buffer, int _width, int _height )
 {
-  if ( mIntegerZoom == 1 )
-  {
-    Blit( _buffer );
-    return;
-  }
+  int zoomedX = _width * mIntegerZoom;
+  int zoomedY = _height * mIntegerZoom;
+  int mCenterX = ( mPhysicalWidth - zoomedX ) / 2;
+  int mCenterY = ( mPhysicalHeight - zoomedY ) / 2;
 
   unsigned int * src = (unsigned int *) _buffer;
   unsigned int * dst = (unsigned int *) mPhysicalScreen + mCenterY * mPhysicalWidth + mCenterX;
-  for ( int y = 0; y < mVirtualHeight; y++ )
+  for ( int y = 0; y < _height; y++ )
   {
     unsigned int * srcline = NULL;
 
     for ( int yz = 0; yz < mIntegerZoom; yz++ )
     {
       srcline = src;
-      for ( int x = 0; x < mVirtualWidth; x++ )
+      for ( int x = 0; x < _width; x++ )
       {
         for ( int xz = 0; xz < mIntegerZoom; xz++ )
         {
@@ -294,7 +272,7 @@ void Graphics::Update( void * _buffer )
         }
         srcline++;
       }
-      dst += mPhysicalWidth - ( mVirtualWidth * mIntegerZoom );
+      dst += mPhysicalWidth - ( _width * mIntegerZoom );
     }
     src = srcline;
   }

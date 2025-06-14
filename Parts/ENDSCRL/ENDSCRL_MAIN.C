@@ -8,7 +8,10 @@
 #define FONAY 30
 
 //extern	void waitvr(void);
-//extern	void setstart(int);
+void setstart( int y )
+{
+  shim_setstartpixel( y );
+}
 //extern	void setrgbpalette(int p, int r, int g, int b);
 void setrgbpalette( int p, int r, int g, int b )
 {
@@ -66,7 +69,7 @@ int	tstart=0,chars=0;
 int	mtau[8]={128,64,32,16,8,4,2,1};
 
 char	textline[100];
-char	scanbuf[4][80];
+char	scanbuf[640];
 
 void do_scroll()
 	{
@@ -85,9 +88,12 @@ void do_scroll()
 		}
 	memset(scanbuf,0,80*4);
 
-	for(a=0,x=tstart;a<chars;a++,x+=2) for(b=0;b<fonaw[textline[a]];b++,x++)
+	for(a=0,x=tstart;a<chars;a++,x+=2)
+    for(b=0;b<fonaw[textline[a]];b++,x++)
 		{
 		m=mtau[x&7];
+    scanbuf[x] = endscrl_font[line][fonap[textline[a]]+b];
+    /*
 		if(endscrl_font[line][fonap[textline[a]]+b]&1)
 			scanbuf[0][x/8]^=m;
 		if(endscrl_font[line][fonap[textline[a]]+b]&2)
@@ -96,15 +102,17 @@ void do_scroll()
 			scanbuf[2][x/8]^=m;
 		if(endscrl_font[line][fonap[textline[a]]+b]&8)
 			scanbuf[3][x/8]^=m;
+      */
 		}
-  memcpy( shim_vram + 80 * yscrl, scanbuf[ 0 ], 80 );
+  memcpy( shim_vram + 640 * (yscrl), scanbuf, 640 );
+  memcpy( shim_vram + 640 * (yscrl + 400), scanbuf, 640 );
 //	outport(0x3c4,0x0102); memcpy(MK_FP(0x0a000,80*yscrl),scanbuf[0],80); memcpy(MK_FP(0x0a000,80*(yscrl+401)),scanbuf[0],80);
 //	outport(0x3c4,0x0202); memcpy(MK_FP(0x0a000,80*yscrl),scanbuf[1],80); memcpy(MK_FP(0x0a000,80*(yscrl+401)),scanbuf[1],80);
 //	outport(0x3c4,0x0402); memcpy(MK_FP(0x0a000,80*yscrl),scanbuf[2],80); memcpy(MK_FP(0x0a000,80*(yscrl+401)),scanbuf[2],80);
 //	outport(0x3c4,0x0802); memcpy(MK_FP(0x0a000,80*yscrl),scanbuf[3],80); memcpy(MK_FP(0x0a000,80*(yscrl+401)),scanbuf[3],80);
 	yscrl=(yscrl+1)%401;
 	line=(line+1)%FONAY;
-	//setstart(yscrl*80+80*1);
+	setstart(yscrl*640);
 	}
 
 void init()
