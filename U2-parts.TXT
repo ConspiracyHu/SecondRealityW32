@@ -6,8 +6,7 @@
 5   db      'Dottitunneli (TRUG)         ' / 'TUNNELI ' /  'TUNNELI.EXE',0
 6   db      'Techno (PSI)                ' / 'TECHNO  ' /  'TECHNO.EXE',0
 7   db      'Panicfake (WILDF)           ' / 'PANIC   ' /  'PANICEND.EXE',0
-9   db      'Vuori-Scrolli (TRUG)        ' / 'FOREST  ' /  'MNTSCRL.EXE',0
-10  db      'Desert Dream Stars (PSI)    ' / 'DDSTARS ' /  'DDSTARS.EXE',0
+8   db      'Vuori-Scrolli (TRUG)        ' / 'FOREST  ' /  'MNTSCRL.EXE',0
 11  db      'Lens (PSI)                  ' / '        ' / 
 12  db      'Rotazoomer (PSI)            ' / 'LENS    ' /  'LNS&ZOOM.EXE',0
 13  db      'Plasma (WILDF)              ' / '        ' / 
