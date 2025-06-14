@@ -67,10 +67,10 @@ void	drawlens(int x0,int y0)
 	{
 		if(u1>=0 && u1<=64000)
 		{
-			dorow(lens1,(unsigned)u1,y,0x40);
-			dorow2(lens2,(unsigned)u1,y,0x80);
-			dorow2(lens3,(unsigned)u1,y,0xC0);
-			dorow3(lens4,(unsigned)u1,y,0);
+			dorow(lens1,(unsigned)u1,y,0x40);   // lens distortion
+			dorow2(lens2,(unsigned)u1,y,0x80);  // lens graphics overlay
+			dorow2(lens3,(unsigned)u1,y,0xC0);  // lens graphics overlay (?)
+			dorow3(lens4,(unsigned)u1,y,0);     // clear up distortion on previous frame
 		}
 		u1+=320;
 		if(u2>=0 && u2<=64000)

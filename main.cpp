@@ -19,6 +19,12 @@ void demo_blit()
   graphics.HandleMessages();
 
   for ( int i = 0; i < width * height; i++ ) screen32[ i ] = shim_palette[ shim_vram[ i ] ];
+
+  if ( GetAsyncKeyState('P') &0x8000 )
+  {
+    for ( int i = 0; i < 256; i++ ) screen32[ i ] = shim_palette[ i ];
+  }
+
   graphics.Update( screen32 );
 }
 

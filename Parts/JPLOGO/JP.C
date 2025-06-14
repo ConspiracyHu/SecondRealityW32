@@ -16,7 +16,7 @@ extern void linezoom(char * dst, char * src, int);
 void setpalarea( char * p, int offset, int count )
 {
   shim_outp( 0x3c8, offset );
-  for ( int c = offset; c < count * 3; c++ ) shim_outp( 0x3c9, p[ c ] );
+  for ( int c = 0; c < count * 3; c++ ) shim_outp( 0x3c9, p[ c + offset * 3 ] );
 }
 
 #define vram shim_vram
