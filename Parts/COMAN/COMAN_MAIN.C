@@ -25,15 +25,15 @@ int	flip;
 
 #include "wave.h"
 
-extern int *wave1;
-extern int *wave2;
+//extern int *wave1;
+//extern int *wave2;
 extern unsigned char *vbuf;
 extern int cameralevel;
 
 char * vram = shim_vram;// ( char far * )0xa0000000L;
 char *vram2= shim_vram;//(char far *)0xa8000000L;
 
-extern int sin1024[];
+extern short sin1024[];
 
 char	palette[768];
 
@@ -51,7 +51,7 @@ void	coman_doit(void)
 	rot=0; rot2=0;
 	cameralevel=-270;
 	dis_waitb();
-	while(!dis_exit() && dis_musplus()<0);
+	//while(!dis_exit() && dis_musplus()<0);
 	while(!dis_exit() && frame<4444)
 	{
 		a=dis_musplus();
@@ -87,7 +87,7 @@ void	coman_doit(void)
 			xa=(int)(((long)x*(long)rcos+(long)y*(long)rsin)/256L);
 			ya=(int)(((long)y*(long)rcos2-(long)x*(long)rsin2)/256L);
 			b=(a&1)*80+(a>>1)+199*160;
-			docol(xw,yw,xa,ya,b);
+			docol(xw & 0xFFFF,yw & 0xFFFF,xa,ya,b);
 			if(a==80)
 			{
 				xwav+=xa*4;
@@ -98,18 +98,19 @@ void	coman_doit(void)
 		switch(flip)
 		{
 		case 0 :
-			outp(0x3d4,0x0c);
-			outp(0x3d5,0x80);
+			//outp(0x3d4,0x0c);
+			//outp(0x3d5,0x80);
 			frame+=(frepeat=dis_waitb());
-			docopy(0xa000+5*startrise);
+			docopy(shim_vram+5*startrise);
 			break;
 		case 1 :
-			outp(0x3d4,0x0c);
-			outp(0x3d5,0x00);
+			//outp(0x3d4,0x0c);
+			//outp(0x3d5,0x00);
 			frame+=(frepeat=dis_waitb());
-			docopy(0xa800+5*startrise);
+			docopy(shim_vram+5*startrise);
 			break;
 		}
+    demo_blit();
 	}
 }
 
@@ -207,8 +208,8 @@ void coman_main()
 		fclose(f1);
 	}
 	#else
-	wave1=w1dta;
-	wave2=w2dta;
+	//wave1=w1dta;
+	//wave2=w2dta;
 	#endif
 	//inittwk();
 	memset(vram,0,64000);

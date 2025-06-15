@@ -8,6 +8,9 @@ _wave2	dw	0,0
 _vbuf	dw	0,0
 _cameralevel dw 0
 
+global _shim_vram
+extern _shim_vram
+
 global _coman_sin1024
 %include "sin1024.inc"
 
@@ -100,40 +103,28 @@ segment .code
 
 global _docol
 _docol:
-	push	bp
-	mov	bp,sp
-	push	si
-	push	di
-	push	ds
-	mov	es,[_vbuf+2]
-	mov	fs,[_wave1+2]
-	mov	gs,[_wave2+2]
-	mov	ax,~1
-	mov	si,[bp+6]
-	and	si,ax
-	mov	di,[bp+8]
-	and	di,ax
-	mov	cx,[bp+10]
-	and	cx,ax
-	mov	dx,[bp+12]
-	and	dx,ax
-	mov	bp,[bp+14]
+	push	ebp
+;	mov	es,[_vbuf+2]
+;	mov	fs,[_wave1+2]
+;	mov	gs,[_wave2+2]
+	mov	eax,~1
+	mov	esi,[esp+8]
+	and	esi,eax
+	mov	edi,[esp+12]
+	and	edi,eax
+	mov	ecx,[esp+16]
+	and	ecx,eax
+	mov	edx,[esp+20]
+	and	edx,eax
+	mov	ebp,[esp+24]
 	mov	ax,[_cameralevel]
 	call	theloop
-	pop	ds
-	pop	di
-	pop	si
-	pop	bp
+	pop	ebp
 	ret
 
 global _docopy
 _docopy:
-	push	bp
-	mov	bp,sp
-	push	si
-	push	di
-	push	ds
-	mov	es,[bp+6]
+	push	ebp
 
 %ifdef PXLSUX
 	mov	ax,cs
@@ -144,7 +135,7 @@ _docopy:
 	;
 @@7:	mov	dx,3c4h
 	mov	ax,0302h
-	out	dx,ax
+	;out	dx,ax
 	%assign zzz0
 	%rep	20
 	mov	eax,ds:[si+zzz]
@@ -153,7 +144,7 @@ _docopy:
 	%endrep
 	mov	dx,3c4h
 	mov	ax,0C02h
-	out	dx,ax
+	;out	dx,ax
 	%assign zzz 0
 	%rep	20
 	mov	eax,ds:[si+zzz+80]
@@ -165,17 +156,18 @@ _docopy:
 	dec	cx
 	jnz	@@7
 %endif
+
 	mov	dx,3c4h
 	mov	ax,0f02h
-	out	dx,ax
-	mov	es,[bp+6]
-	mov	ds,[_vbuf+2]
-	mov	si,60*160
-	mov	di,52*80
-	mov	cx,18*80/4
+	;out	dx,ax
+	mov	edi,[esp+8]
+	mov	esi,_shim_vram
+	add esi,60*160
+	add	edi,52*80
+	mov	ecx,18*80/4
 	xor	eax,eax
 	rep	stosd
-	mov	cx,140
+	mov	ecx,140
 	mov	bl,255
 	mov	bh,bl
 	mov	ax,bx
@@ -184,7 +176,7 @@ _docopy:
 	;
 @@1:	mov	dx,3c4h
 	mov	ax,0302h
-	out	dx,ax
+	;out	dx,ax
 	%assign zzz 0
 	%rep	20
 	mov	eax,[esi+zzz]
@@ -193,15 +185,15 @@ _docopy:
 	%endrep
 	mov	dx,3c4h
 	mov	ax,0C02h
-	out	dx,ax
+	;out	dx,ax
 	%assign zzz 0
 	%rep	20
 	mov	eax,[esi+zzz+80]
 	mov	[edi+zzz],eax
 	%assign zzz zzz+4
 	%endrep
-	add	si,160
-	add	di,80
+	add	esi,160
+	add	edi,80
 	dec	cx
 	jnz	@@1
 
@@ -209,9 +201,9 @@ _docopy:
 ;	mov	ds,ax
 ;	mov	si,OFFSET _combguse+60*160
 	xor	eax,eax
-	mov	es,[_vbuf+2]
-	mov	di,68*160
-	mov	cx,30*160/4/4
+	mov	edi,_shim_vram
+	add edi,68*160
+	mov	ecx,30*160/4/4
 @@cl1:	mov	[edi],eax
 	add	di,4
 	mov	[edi],eax
@@ -223,8 +215,5 @@ _docopy:
 	dec	cx
 	jnz	@@cl1
 	
-	pop	ds
-	pop	di
-	pop	si
-	pop	bp
+	pop	ebp
 	ret

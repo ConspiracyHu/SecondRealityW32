@@ -32,7 +32,17 @@ theloop_heigth dw 0
 ;	ax=camera heigth adder
 
 segment .code
+
+global _shim_vram
+extern _shim_vram
+global _w1dta
+extern _w1dta
+global _w2dta
+extern _w2dta
+
 theloop:
+push ebp
+
 mov [theloop_xsina1],cx
 mov [theloop_ysina1],dx
 add cx,cx
@@ -40,15 +50,17 @@ mov [theloop_xsina2],cx
 add dx,dx
 mov [theloop_ysina2],dx
 mov [theloop_heigth],ax
-mov ax,cs
-mov ds,ax
+;mov ax,cs
+;mov ds,ax
 xor eax,eax
 mov ecx,0EC00FFFAh
+
+
 _@seek0:
 add si,[theloop_xsina1]
-mov bx,[esi]
+mov bx,[_w1dta+esi]
 add di,[theloop_ysina1]
-add bx,[edi]
+add bx,[_w2dta+edi]
 add bx,-240
 cmp ax,bx
 jge short _@seeko0
@@ -57,17 +69,17 @@ shr dl,1
 _@hit0:
 add eax,000000000h
 adc ax,0
-mov [ebp],dl
+mov [_shim_vram+ebp],dl
 cmp ax,bx
 jge short _@seek1a0
 add eax,000000000h
 adc ax,0
-mov [ebp-160],dl
+mov [_shim_vram+ebp-160],dl
 cmp ax,bx
 jge short _@seek2a0
 add eax,000000000h
 adc ax,0
-mov [ebp-320],dl
+mov [_shim_vram+ebp-320],dl
 add ecx,01E000000h
 adc cx,0
 sub bp,160*3
@@ -84,11 +96,13 @@ sub bp,160
 _@seeko0:
 add eax,ecx
 adc ax,-1
+
+
 _@seek1:
 add si,[theloop_xsina1]
-mov bx,[esi]
+mov bx,[_w1dta+esi]
 add di,[theloop_ysina1]
-add bx,[edi]
+add bx,[_w2dta+edi]
 add bx,-239
 cmp ax,bx
 jge short _@seeko1
@@ -97,17 +111,17 @@ shr dl,1
 _@hit1:
 add eax,00A000000h
 adc ax,0
-mov [ebp],dl
+mov [_shim_vram+ebp],dl
 cmp ax,bx
 jge short _@seek1a1
 add eax,00A000000h
 adc ax,0
-mov [ebp-160],dl
+mov [_shim_vram+ebp-160],dl
 cmp ax,bx
 jge short _@seek2a1
 add eax,00A000000h
 adc ax,0
-mov [ebp-320],dl
+mov [_shim_vram+ebp-320],dl
 add ecx,01E000000h
 adc cx,0
 sub bp,160*3
@@ -124,11 +138,13 @@ sub bp,160
 _@seeko1:
 add eax,ecx
 adc ax,-1
+
+
 _@seek2:
 add si,[theloop_xsina1]
-mov bx,[esi]
+mov bx,[_w1dta+esi]
 add di,[theloop_ysina1]
-add bx,[edi]
+add bx,[_w2dta+edi]
 add bx,-237
 cmp ax,bx
 jge short _@seeko2
@@ -137,17 +153,17 @@ shr dl,1
 _@hit2:
 add eax,014000000h
 adc ax,0
-mov [ebp],dl
+mov [_shim_vram+ebp],dl
 cmp ax,bx
 jge short _@seek1a2
 add eax,014000000h
 adc ax,0
-mov [ebp-160],dl
+mov [_shim_vram+ebp-160],dl
 cmp ax,bx
 jge short _@seek2a2
 add eax,014000000h
 adc ax,0
-mov [ebp-320],dl
+mov [_shim_vram+ebp-320],dl
 add ecx,01E000000h
 adc cx,0
 sub bp,160*3
@@ -164,11 +180,13 @@ sub bp,160
 _@seeko2:
 add eax,ecx
 adc ax,-1
+
+
 _@seek3:
 add si,[theloop_xsina1]
-mov bx,[esi]
+mov bx,[_w1dta+esi]
 add di,[theloop_ysina1]
-add bx,[edi]
+add bx,[_w2dta+edi]
 add bx,-236
 cmp ax,bx
 jge short _@seeko3
@@ -177,17 +195,17 @@ shr dl,1
 _@hit3:
 add eax,01E000000h
 adc ax,0
-mov [ebp],dl
+mov [_shim_vram+ebp],dl
 cmp ax,bx
 jge short _@seek1a3
 add eax,01E000000h
 adc ax,0
-mov [ebp-160],dl
+mov [_shim_vram+ebp-160],dl
 cmp ax,bx
 jge short _@seek2a3
 add eax,01E000000h
 adc ax,0
-mov [ebp-320],dl
+mov [_shim_vram+ebp-320],dl
 add ecx,01E000000h
 adc cx,0
 sub bp,160*3
@@ -204,11 +222,13 @@ sub bp,160
 _@seeko3:
 add eax,ecx
 adc ax,-1
+
+
 _@seek4:
 add si,[theloop_xsina1]
-mov bx,[esi]
+mov bx,[_w1dta+esi]
 add di,[theloop_ysina1]
-add bx,[edi]
+add bx,[_w2dta+edi]
 add bx,-234
 cmp ax,bx
 jge short _@seeko4
@@ -217,17 +237,17 @@ shr dl,1
 _@hit4:
 add eax,028000000h
 adc ax,0
-mov [ebp],dl
+mov [_shim_vram+ebp],dl
 cmp ax,bx
 jge short _@seek1a4
 add eax,028000000h
 adc ax,0
-mov [ebp-160],dl
+mov [_shim_vram+ebp-160],dl
 cmp ax,bx
 jge short _@seek2a4
 add eax,028000000h
 adc ax,0
-mov [ebp-320],dl
+mov [_shim_vram+ebp-320],dl
 add ecx,01E000000h
 adc cx,0
 sub bp,160*3
@@ -244,11 +264,13 @@ sub bp,160
 _@seeko4:
 add eax,ecx
 adc ax,-1
+
+
 _@seek5:
 add si,[theloop_xsina1]
-mov bx,[esi]
+mov bx,[_w1dta+esi]
 add di,[theloop_ysina1]
-add bx,[edi]
+add bx,[_w2dta+edi]
 add bx,-233
 cmp ax,bx
 jge short _@seeko5
@@ -257,17 +279,17 @@ shr dl,1
 _@hit5:
 add eax,032000000h
 adc ax,0
-mov [ebp],dl
+mov [_shim_vram+ebp],dl
 cmp ax,bx
 jge short _@seek1a5
 add eax,032000000h
 adc ax,0
-mov [ebp-160],dl
+mov [_shim_vram+ebp-160],dl
 cmp ax,bx
 jge short _@seek2a5
 add eax,032000000h
 adc ax,0
-mov [ebp-320],dl
+mov [_shim_vram+ebp-320],dl
 add ecx,01E000000h
 adc cx,0
 sub bp,160*3
@@ -284,11 +306,13 @@ sub bp,160
 _@seeko5:
 add eax,ecx
 adc ax,-1
+
+
 _@seek6:
 add si,[theloop_xsina1]
-mov bx,[esi]
+mov bx,[_w1dta+esi]
 add di,[theloop_ysina1]
-add bx,[edi]
+add bx,[_w2dta+edi]
 add bx,-232
 cmp ax,bx
 jge short _@seeko6
@@ -297,17 +321,17 @@ shr dl,1
 _@hit6:
 add eax,03C000000h
 adc ax,0
-mov [ebp],dl
+mov [_shim_vram+ebp],dl
 cmp ax,bx
 jge short _@seek1a6
 add eax,03C000000h
 adc ax,0
-mov [ebp-160],dl
+mov [_shim_vram+ebp-160],dl
 cmp ax,bx
 jge short _@seek2a6
 add eax,03C000000h
 adc ax,0
-mov [ebp-320],dl
+mov [_shim_vram+ebp-320],dl
 add ecx,01E000000h
 adc cx,0
 sub bp,160*3
@@ -324,11 +348,13 @@ sub bp,160
 _@seeko6:
 add eax,ecx
 adc ax,-1
+
+
 _@seek7:
 add si,[theloop_xsina1]
-mov bx,[esi]
+mov bx,[_w1dta+esi]
 add di,[theloop_ysina1]
-add bx,[edi]
+add bx,[_w2dta+edi]
 add bx,-230
 cmp ax,bx
 jge short _@seeko7
@@ -337,17 +363,17 @@ shr dl,1
 _@hit7:
 add eax,046000000h
 adc ax,0
-mov [ebp],dl
+mov [_shim_vram+ebp],dl
 cmp ax,bx
 jge short _@seek1a7
 add eax,046000000h
 adc ax,0
-mov [ebp-160],dl
+mov [_shim_vram+ebp-160],dl
 cmp ax,bx
 jge short _@seek2a7
 add eax,046000000h
 adc ax,0
-mov [ebp-320],dl
+mov [_shim_vram+ebp-320],dl
 add ecx,01E000000h
 adc cx,0
 sub bp,160*3
@@ -364,11 +390,13 @@ sub bp,160
 _@seeko7:
 add eax,ecx
 adc ax,-1
+
+
 _@seek8:
 add si,[theloop_xsina1]
-mov bx,[esi]
+mov bx,[_w1dta+esi]
 add di,[theloop_ysina1]
-add bx,[edi]
+add bx,[_w2dta+edi]
 add bx,-229
 cmp ax,bx
 jge short _@seeko8
@@ -377,17 +405,17 @@ shr dl,1
 _@hit8:
 add eax,050000000h
 adc ax,0
-mov [ebp],dl
+mov [_shim_vram+ebp],dl
 cmp ax,bx
 jge short _@seek1a8
 add eax,050000000h
 adc ax,0
-mov [ebp-160],dl
+mov [_shim_vram+ebp-160],dl
 cmp ax,bx
 jge short _@seek2a8
 add eax,050000000h
 adc ax,0
-mov [ebp-320],dl
+mov [_shim_vram+ebp-320],dl
 add ecx,01E000000h
 adc cx,0
 sub bp,160*3
@@ -404,11 +432,13 @@ sub bp,160
 _@seeko8:
 add eax,ecx
 adc ax,-1
+
+
 _@seek9:
 add si,[theloop_xsina1]
-mov bx,[esi]
+mov bx,[_w1dta+esi]
 add di,[theloop_ysina1]
-add bx,[edi]
+add bx,[_w2dta+edi]
 add bx,-228
 cmp ax,bx
 jge short _@seeko9
@@ -417,17 +447,17 @@ shr dl,1
 _@hit9:
 add eax,05A000000h
 adc ax,0
-mov [ebp],dl
+mov [_shim_vram+ebp],dl
 cmp ax,bx
 jge short _@seek1a9
 add eax,05A000000h
 adc ax,0
-mov [ebp-160],dl
+mov [_shim_vram+ebp-160],dl
 cmp ax,bx
 jge short _@seek2a9
 add eax,05A000000h
 adc ax,0
-mov [ebp-320],dl
+mov [_shim_vram+ebp-320],dl
 add ecx,01E000000h
 adc cx,0
 sub bp,160*3
@@ -444,11 +474,13 @@ sub bp,160
 _@seeko9:
 add eax,ecx
 adc ax,-1
+
+
 _@seek10:
 add si,[theloop_xsina1]
-mov bx,[esi]
+mov bx,[_w1dta+esi]
 add di,[theloop_ysina1]
-add bx,[edi]
+add bx,[_w2dta+edi]
 add bx,-227
 cmp ax,bx
 jge short _@seeko10
@@ -457,17 +489,17 @@ shr dl,1
 _@hit10:
 add eax,064000000h
 adc ax,0
-mov [ebp],dl
+mov [_shim_vram+ebp],dl
 cmp ax,bx
 jge short _@seek1a10
 add eax,064000000h
 adc ax,0
-mov [ebp-160],dl
+mov [_shim_vram+ebp-160],dl
 cmp ax,bx
 jge short _@seek2a10
 add eax,064000000h
 adc ax,0
-mov [ebp-320],dl
+mov [_shim_vram+ebp-320],dl
 add ecx,01E000000h
 adc cx,0
 sub bp,160*3
@@ -484,11 +516,13 @@ sub bp,160
 _@seeko10:
 add eax,ecx
 adc ax,-1
+
+
 _@seek11:
 add si,[theloop_xsina1]
-mov bx,[esi]
+mov bx,[_w1dta+esi]
 add di,[theloop_ysina1]
-add bx,[edi]
+add bx,[_w2dta+edi]
 add bx,-226
 cmp ax,bx
 jge short _@seeko11
@@ -497,17 +531,17 @@ shr dl,1
 _@hit11:
 add eax,06E000000h
 adc ax,0
-mov [ebp],dl
+mov [_shim_vram+ebp],dl
 cmp ax,bx
 jge short _@seek1a11
 add eax,06E000000h
 adc ax,0
-mov [ebp-160],dl
+mov [_shim_vram+ebp-160],dl
 cmp ax,bx
 jge short _@seek2a11
 add eax,06E000000h
 adc ax,0
-mov [ebp-320],dl
+mov [_shim_vram+ebp-320],dl
 add ecx,01E000000h
 adc cx,0
 sub bp,160*3
@@ -524,11 +558,13 @@ sub bp,160
 _@seeko11:
 add eax,ecx
 adc ax,-1
+
+
 _@seek12:
 add si,[theloop_xsina1]
-mov bx,[esi]
+mov bx,[_w1dta+esi]
 add di,[theloop_ysina1]
-add bx,[edi]
+add bx,[_w2dta+edi]
 add bx,-226
 cmp ax,bx
 jge short _@seeko12
@@ -537,17 +573,17 @@ shr dl,1
 _@hit12:
 add eax,078000000h
 adc ax,0
-mov [ebp],dl
+mov [_shim_vram+ebp],dl
 cmp ax,bx
 jge short _@seek1a12
 add eax,078000000h
 adc ax,0
-mov [ebp-160],dl
+mov [_shim_vram+ebp-160],dl
 cmp ax,bx
 jge short _@seek2a12
 add eax,078000000h
 adc ax,0
-mov [ebp-320],dl
+mov [_shim_vram+ebp-320],dl
 add ecx,01E000000h
 adc cx,0
 sub bp,160*3
@@ -564,11 +600,13 @@ sub bp,160
 _@seeko12:
 add eax,ecx
 adc ax,-1
+
+
 _@seek13:
 add si,[theloop_xsina1]
-mov bx,[esi]
+mov bx,[_w1dta+esi]
 add di,[theloop_ysina1]
-add bx,[edi]
+add bx,[_w2dta+edi]
 add bx,-225
 cmp ax,bx
 jge short _@seeko13
@@ -577,17 +615,17 @@ shr dl,1
 _@hit13:
 add eax,082000000h
 adc ax,0
-mov [ebp],dl
+mov [_shim_vram+ebp],dl
 cmp ax,bx
 jge short _@seek1a13
 add eax,082000000h
 adc ax,0
-mov [ebp-160],dl
+mov [_shim_vram+ebp-160],dl
 cmp ax,bx
 jge short _@seek2a13
 add eax,082000000h
 adc ax,0
-mov [ebp-320],dl
+mov [_shim_vram+ebp-320],dl
 add ecx,01E000000h
 adc cx,0
 sub bp,160*3
@@ -604,11 +642,13 @@ sub bp,160
 _@seeko13:
 add eax,ecx
 adc ax,-1
+
+
 _@seek14:
 add si,[theloop_xsina1]
-mov bx,[esi]
+mov bx,[_w1dta+esi]
 add di,[theloop_ysina1]
-add bx,[edi]
+add bx,[_w2dta+edi]
 add bx,-225
 cmp ax,bx
 jge short _@seeko14
@@ -617,17 +657,17 @@ shr dl,1
 _@hit14:
 add eax,08C000000h
 adc ax,0
-mov [ebp],dl
+mov [_shim_vram+ebp],dl
 cmp ax,bx
 jge short _@seek1a14
 add eax,08C000000h
 adc ax,0
-mov [ebp-160],dl
+mov [_shim_vram+ebp-160],dl
 cmp ax,bx
 jge short _@seek2a14
 add eax,08C000000h
 adc ax,0
-mov [ebp-320],dl
+mov [_shim_vram+ebp-320],dl
 add ecx,01E000000h
 adc cx,0
 sub bp,160*3
@@ -644,11 +684,13 @@ sub bp,160
 _@seeko14:
 add eax,ecx
 adc ax,-1
+
+
 _@seek15:
 add si,[theloop_xsina1]
-mov bx,[esi]
+mov bx,[_w1dta+esi]
 add di,[theloop_ysina1]
-add bx,[edi]
+add bx,[_w2dta+edi]
 add bx,-225
 cmp ax,bx
 jge short _@seeko15
@@ -657,17 +699,17 @@ shr dl,1
 _@hit15:
 add eax,096000000h
 adc ax,0
-mov [ebp],dl
+mov [_shim_vram+ebp],dl
 cmp ax,bx
 jge short _@seek1a15
 add eax,096000000h
 adc ax,0
-mov [ebp-160],dl
+mov [_shim_vram+ebp-160],dl
 cmp ax,bx
 jge short _@seek2a15
 add eax,096000000h
 adc ax,0
-mov [ebp-320],dl
+mov [_shim_vram+ebp-320],dl
 add ecx,01E000000h
 adc cx,0
 sub bp,160*3
@@ -684,11 +726,13 @@ sub bp,160
 _@seeko15:
 add eax,ecx
 adc ax,-1
+
+
 _@seek16:
 add si,[theloop_xsina1]
-mov bx,[esi]
+mov bx,[_w1dta+esi]
 add di,[theloop_ysina1]
-add bx,[edi]
+add bx,[_w2dta+edi]
 add bx,-224
 cmp ax,bx
 jge short _@seeko16
@@ -697,17 +741,17 @@ shr dl,1
 _@hit16:
 add eax,0A0000000h
 adc ax,0
-mov [ebp],dl
+mov [_shim_vram+ebp],dl
 cmp ax,bx
 jge short _@seek1a16
 add eax,0A0000000h
 adc ax,0
-mov [ebp-160],dl
+mov [_shim_vram+ebp-160],dl
 cmp ax,bx
 jge short _@seek2a16
 add eax,0A0000000h
 adc ax,0
-mov [ebp-320],dl
+mov [_shim_vram+ebp-320],dl
 add ecx,01E000000h
 adc cx,0
 sub bp,160*3
@@ -724,11 +768,13 @@ sub bp,160
 _@seeko16:
 add eax,ecx
 adc ax,-1
+
+
 _@seek17:
 add si,[theloop_xsina1]
-mov bx,[esi]
+mov bx,[_w1dta+esi]
 add di,[theloop_ysina1]
-add bx,[edi]
+add bx,[_w2dta+edi]
 add bx,-225
 cmp ax,bx
 jge short _@seeko17
@@ -737,17 +783,17 @@ shr dl,1
 _@hit17:
 add eax,0AA000000h
 adc ax,0
-mov [ebp],dl
+mov [_shim_vram+ebp],dl
 cmp ax,bx
 jge short _@seek1a17
 add eax,0AA000000h
 adc ax,0
-mov [ebp-160],dl
+mov [_shim_vram+ebp-160],dl
 cmp ax,bx
 jge short _@seek2a17
 add eax,0AA000000h
 adc ax,0
-mov [ebp-320],dl
+mov [_shim_vram+ebp-320],dl
 add ecx,01E000000h
 adc cx,0
 sub bp,160*3
@@ -764,11 +810,13 @@ sub bp,160
 _@seeko17:
 add eax,ecx
 adc ax,-1
+
+
 _@seek18:
 add si,[theloop_xsina1]
-mov bx,[esi]
+mov bx,[_w1dta+esi]
 add di,[theloop_ysina1]
-add bx,[edi]
+add bx,[_w2dta+edi]
 add bx,-225
 cmp ax,bx
 jge short _@seeko18
@@ -777,17 +825,17 @@ shr dl,1
 _@hit18:
 add eax,0B4000000h
 adc ax,0
-mov [ebp],dl
+mov [_shim_vram+ebp],dl
 cmp ax,bx
 jge short _@seek1a18
 add eax,0B4000000h
 adc ax,0
-mov [ebp-160],dl
+mov [_shim_vram+ebp-160],dl
 cmp ax,bx
 jge short _@seek2a18
 add eax,0B4000000h
 adc ax,0
-mov [ebp-320],dl
+mov [_shim_vram+ebp-320],dl
 add ecx,01E000000h
 adc cx,0
 sub bp,160*3
@@ -804,11 +852,13 @@ sub bp,160
 _@seeko18:
 add eax,ecx
 adc ax,-1
+
+
 _@seek19:
 add si,[theloop_xsina1]
-mov bx,[esi]
+mov bx,[_w1dta+esi]
 add di,[theloop_ysina1]
-add bx,[edi]
+add bx,[_w2dta+edi]
 add bx,-225
 cmp ax,bx
 jge short _@seeko19
@@ -817,17 +867,17 @@ shr dl,1
 _@hit19:
 add eax,0BE000000h
 adc ax,0
-mov [ebp],dl
+mov [_shim_vram+ebp],dl
 cmp ax,bx
 jge short _@seek1a19
 add eax,0BE000000h
 adc ax,0
-mov [ebp-160],dl
+mov [_shim_vram+ebp-160],dl
 cmp ax,bx
 jge short _@seek2a19
 add eax,0BE000000h
 adc ax,0
-mov [ebp-320],dl
+mov [_shim_vram+ebp-320],dl
 add ecx,01E000000h
 adc cx,0
 sub bp,160*3
@@ -844,11 +894,13 @@ sub bp,160
 _@seeko19:
 add eax,ecx
 adc ax,-1
+
+
 _@seek20:
 add si,[theloop_xsina1]
-mov bx,[esi]
+mov bx,[_w1dta+esi]
 add di,[theloop_ysina1]
-add bx,[edi]
+add bx,[_w2dta+edi]
 add bx,-226
 cmp ax,bx
 jge short _@seeko20
@@ -857,17 +909,17 @@ shr dl,1
 _@hit20:
 add eax,0C8000000h
 adc ax,0
-mov [ebp],dl
+mov [_shim_vram+ebp],dl
 cmp ax,bx
 jge short _@seek1a20
 add eax,0C8000000h
 adc ax,0
-mov [ebp-160],dl
+mov [_shim_vram+ebp-160],dl
 cmp ax,bx
 jge short _@seek2a20
 add eax,0C8000000h
 adc ax,0
-mov [ebp-320],dl
+mov [_shim_vram+ebp-320],dl
 add ecx,01E000000h
 adc cx,0
 sub bp,160*3
@@ -884,11 +936,13 @@ sub bp,160
 _@seeko20:
 add eax,ecx
 adc ax,-1
+
+
 _@seek21:
 add si,[theloop_xsina1]
-mov bx,[esi]
+mov bx,[_w1dta+esi]
 add di,[theloop_ysina1]
-add bx,[edi]
+add bx,[_w2dta+edi]
 add bx,-226
 cmp ax,bx
 jge short _@seeko21
@@ -897,17 +951,17 @@ shr dl,1
 _@hit21:
 add eax,0D2000000h
 adc ax,0
-mov [ebp],dl
+mov [_shim_vram+ebp],dl
 cmp ax,bx
 jge short _@seek1a21
 add eax,0D2000000h
 adc ax,0
-mov [ebp-160],dl
+mov [_shim_vram+ebp-160],dl
 cmp ax,bx
 jge short _@seek2a21
 add eax,0D2000000h
 adc ax,0
-mov [ebp-320],dl
+mov [_shim_vram+ebp-320],dl
 add ecx,01E000000h
 adc cx,0
 sub bp,160*3
@@ -924,11 +978,13 @@ sub bp,160
 _@seeko21:
 add eax,ecx
 adc ax,-1
+
+
 _@seek22:
 add si,[theloop_xsina1]
-mov bx,[esi]
+mov bx,[_w1dta+esi]
 add di,[theloop_ysina1]
-add bx,[edi]
+add bx,[_w2dta+edi]
 add bx,-227
 cmp ax,bx
 jge short _@seeko22
@@ -937,17 +993,17 @@ shr dl,1
 _@hit22:
 add eax,0DC000000h
 adc ax,0
-mov [ebp],dl
+mov [_shim_vram+ebp],dl
 cmp ax,bx
 jge short _@seek1a22
 add eax,0DC000000h
 adc ax,0
-mov [ebp-160],dl
+mov [_shim_vram+ebp-160],dl
 cmp ax,bx
 jge short _@seek2a22
 add eax,0DC000000h
 adc ax,0
-mov [ebp-320],dl
+mov [_shim_vram+ebp-320],dl
 add ecx,01E000000h
 adc cx,0
 sub bp,160*3
@@ -964,11 +1020,13 @@ sub bp,160
 _@seeko22:
 add eax,ecx
 adc ax,-1
+
+
 _@seek23:
 add si,[theloop_xsina1]
-mov bx,[esi]
+mov bx,[_w1dta+esi]
 add di,[theloop_ysina1]
-add bx,[edi]
+add bx,[_w2dta+edi]
 add bx,-228
 cmp ax,bx
 jge short _@seeko23
@@ -977,17 +1035,17 @@ shr dl,1
 _@hit23:
 add eax,0E6000000h
 adc ax,0
-mov [ebp],dl
+mov [_shim_vram+ebp],dl
 cmp ax,bx
 jge short _@seek1a23
 add eax,0E6000000h
 adc ax,0
-mov [ebp-160],dl
+mov [_shim_vram+ebp-160],dl
 cmp ax,bx
 jge short _@seek2a23
 add eax,0E6000000h
 adc ax,0
-mov [ebp-320],dl
+mov [_shim_vram+ebp-320],dl
 add ecx,01E000000h
 adc cx,0
 sub bp,160*3
@@ -1004,11 +1062,13 @@ sub bp,160
 _@seeko23:
 add eax,ecx
 adc ax,-1
+
+
 _@seek24:
 add si,[theloop_xsina1]
-mov bx,[esi]
+mov bx,[_w1dta+esi]
 add di,[theloop_ysina1]
-add bx,[edi]
+add bx,[_w2dta+edi]
 add bx,-229
 cmp ax,bx
 jge short _@seeko24
@@ -1017,17 +1077,17 @@ shr dl,1
 _@hit24:
 add eax,0F0000000h
 adc ax,0
-mov [ebp],dl
+mov [_shim_vram+ebp],dl
 cmp ax,bx
 jge short _@seek1a24
 add eax,0F0000000h
 adc ax,0
-mov [ebp-160],dl
+mov [_shim_vram+ebp-160],dl
 cmp ax,bx
 jge short _@seek2a24
 add eax,0F0000000h
 adc ax,0
-mov [ebp-320],dl
+mov [_shim_vram+ebp-320],dl
 add ecx,01E000000h
 adc cx,0
 sub bp,160*3
@@ -1044,11 +1104,13 @@ sub bp,160
 _@seeko24:
 add eax,ecx
 adc ax,-1
+
+
 _@seek25:
 add si,[theloop_xsina1]
-mov bx,[esi]
+mov bx,[_w1dta+esi]
 add di,[theloop_ysina1]
-add bx,[edi]
+add bx,[_w2dta+edi]
 add bx,-230
 cmp ax,bx
 jge short _@seeko25
@@ -1057,17 +1119,17 @@ shr dl,1
 _@hit25:
 add eax,0FA000000h
 adc ax,0
-mov [ebp],dl
+mov [_shim_vram+ebp],dl
 cmp ax,bx
 jge short _@seek1a25
 add eax,0FA000000h
 adc ax,0
-mov [ebp-160],dl
+mov [_shim_vram+ebp-160],dl
 cmp ax,bx
 jge short _@seek2a25
 add eax,0FA000000h
 adc ax,0
-mov [ebp-320],dl
+mov [_shim_vram+ebp-320],dl
 add ecx,01E000000h
 adc cx,0
 sub bp,160*3
@@ -1084,11 +1146,13 @@ sub bp,160
 _@seeko25:
 add eax,ecx
 adc ax,-1
+
+
 _@seek26:
 add si,[theloop_xsina1]
-mov bx,[esi]
+mov bx,[_w1dta+esi]
 add di,[theloop_ysina1]
-add bx,[edi]
+add bx,[_w2dta+edi]
 add bx,-232
 cmp ax,bx
 jge short _@seeko26
@@ -1097,17 +1161,17 @@ shr dl,1
 _@hit26:
 add eax,004000001h
 adc ax,0
-mov [ebp],dl
+mov [_shim_vram+ebp],dl
 cmp ax,bx
 jge short _@seek1a26
 add eax,004000001h
 adc ax,0
-mov [ebp-160],dl
+mov [_shim_vram+ebp-160],dl
 cmp ax,bx
 jge short _@seek2a26
 add eax,004000001h
 adc ax,0
-mov [ebp-320],dl
+mov [_shim_vram+ebp-320],dl
 add ecx,01E000000h
 adc cx,0
 sub bp,160*3
@@ -1124,11 +1188,13 @@ sub bp,160
 _@seeko26:
 add eax,ecx
 adc ax,-1
+
+
 _@seek27:
 add si,[theloop_xsina1]
-mov bx,[esi]
+mov bx,[_w1dta+esi]
 add di,[theloop_ysina1]
-add bx,[edi]
+add bx,[_w2dta+edi]
 add bx,-233
 cmp ax,bx
 jge short _@seeko27
@@ -1137,17 +1203,17 @@ shr dl,1
 _@hit27:
 add eax,00E000001h
 adc ax,0
-mov [ebp],dl
+mov [_shim_vram+ebp],dl
 cmp ax,bx
 jge short _@seek1a27
 add eax,00E000001h
 adc ax,0
-mov [ebp-160],dl
+mov [_shim_vram+ebp-160],dl
 cmp ax,bx
 jge short _@seek2a27
 add eax,00E000001h
 adc ax,0
-mov [ebp-320],dl
+mov [_shim_vram+ebp-320],dl
 add ecx,01E000000h
 adc cx,0
 sub bp,160*3
@@ -1164,11 +1230,13 @@ sub bp,160
 _@seeko27:
 add eax,ecx
 adc ax,-1
+
+
 _@seek28:
 add si,[theloop_xsina1]
-mov bx,[esi]
+mov bx,[_w1dta+esi]
 add di,[theloop_ysina1]
-add bx,[edi]
+add bx,[_w2dta+edi]
 add bx,-234
 cmp ax,bx
 jge short _@seeko28
@@ -1177,17 +1245,17 @@ shr dl,1
 _@hit28:
 add eax,018000001h
 adc ax,0
-mov [ebp],dl
+mov [_shim_vram+ebp],dl
 cmp ax,bx
 jge short _@seek1a28
 add eax,018000001h
 adc ax,0
-mov [ebp-160],dl
+mov [_shim_vram+ebp-160],dl
 cmp ax,bx
 jge short _@seek2a28
 add eax,018000001h
 adc ax,0
-mov [ebp-320],dl
+mov [_shim_vram+ebp-320],dl
 add ecx,01E000000h
 adc cx,0
 sub bp,160*3
@@ -1204,11 +1272,13 @@ sub bp,160
 _@seeko28:
 add eax,ecx
 adc ax,-1
+
+
 _@seek29:
 add si,[theloop_xsina1]
-mov bx,[esi]
+mov bx,[_w1dta+esi]
 add di,[theloop_ysina1]
-add bx,[edi]
+add bx,[_w2dta+edi]
 add bx,-236
 cmp ax,bx
 jge short _@seeko29
@@ -1217,17 +1287,17 @@ shr dl,1
 _@hit29:
 add eax,022000001h
 adc ax,0
-mov [ebp],dl
+mov [_shim_vram+ebp],dl
 cmp ax,bx
 jge short _@seek1a29
 add eax,022000001h
 adc ax,0
-mov [ebp-160],dl
+mov [_shim_vram+ebp-160],dl
 cmp ax,bx
 jge short _@seek2a29
 add eax,022000001h
 adc ax,0
-mov [ebp-320],dl
+mov [_shim_vram+ebp-320],dl
 add ecx,01E000000h
 adc cx,0
 sub bp,160*3
@@ -1244,11 +1314,13 @@ sub bp,160
 _@seeko29:
 add eax,ecx
 adc ax,-1
+
+
 _@seek30:
 add si,[theloop_xsina1]
-mov bx,[esi]
+mov bx,[_w1dta+esi]
 add di,[theloop_ysina1]
-add bx,[edi]
+add bx,[_w2dta+edi]
 add bx,-237
 cmp ax,bx
 jge short _@seeko30
@@ -1257,17 +1329,17 @@ shr dl,1
 _@hit30:
 add eax,02C000001h
 adc ax,0
-mov [ebp],dl
+mov [_shim_vram+ebp],dl
 cmp ax,bx
 jge short _@seek1a30
 add eax,02C000001h
 adc ax,0
-mov [ebp-160],dl
+mov [_shim_vram+ebp-160],dl
 cmp ax,bx
 jge short _@seek2a30
 add eax,02C000001h
 adc ax,0
-mov [ebp-320],dl
+mov [_shim_vram+ebp-320],dl
 add ecx,01E000000h
 adc cx,0
 sub bp,160*3
@@ -1284,11 +1356,13 @@ sub bp,160
 _@seeko30:
 add eax,ecx
 adc ax,-1
+
+
 _@seek31:
 add si,[theloop_xsina1]
-mov bx,[esi]
+mov bx,[_w1dta+esi]
 add di,[theloop_ysina1]
-add bx,[edi]
+add bx,[_w2dta+edi]
 add bx,-239
 cmp ax,bx
 jge short _@seeko31
@@ -1297,17 +1371,17 @@ shr dl,1
 _@hit31:
 add eax,036000001h
 adc ax,0
-mov [ebp],dl
+mov [_shim_vram+ebp],dl
 cmp ax,bx
 jge short _@seek1a31
 add eax,036000001h
 adc ax,0
-mov [ebp-160],dl
+mov [_shim_vram+ebp-160],dl
 cmp ax,bx
 jge short _@seek2a31
 add eax,036000001h
 adc ax,0
-mov [ebp-320],dl
+mov [_shim_vram+ebp-320],dl
 add ecx,01E000000h
 adc cx,0
 sub bp,160*3
@@ -1324,11 +1398,13 @@ sub bp,160
 _@seeko31:
 add eax,ecx
 adc ax,-1
+
+
 _@seek32:
 add si,[theloop_xsina1]
-mov bx,[esi]
+mov bx,[_w1dta+esi]
 add di,[theloop_ysina1]
-add bx,[edi]
+add bx,[_w2dta+edi]
 add bx,-240
 cmp ax,bx
 jge short _@seeko32
@@ -1337,17 +1413,17 @@ shr dl,1
 _@hit32:
 add eax,040000001h
 adc ax,0
-mov [ebp],dl
+mov [_shim_vram+ebp],dl
 cmp ax,bx
 jge short _@seek1a32
 add eax,040000001h
 adc ax,0
-mov [ebp-160],dl
+mov [_shim_vram+ebp-160],dl
 cmp ax,bx
 jge short _@seek2a32
 add eax,040000001h
 adc ax,0
-mov [ebp-320],dl
+mov [_shim_vram+ebp-320],dl
 add ecx,01E000000h
 adc cx,0
 sub bp,160*3
@@ -1364,11 +1440,13 @@ sub bp,160
 _@seeko32:
 add eax,ecx
 adc ax,-1
+
+
 _@seek33:
 add si,[theloop_xsina1]
-mov bx,[esi]
+mov bx,[_w1dta+esi]
 add di,[theloop_ysina1]
-add bx,[edi]
+add bx,[_w2dta+edi]
 add bx,-241
 cmp ax,bx
 jge short _@seeko33
@@ -1377,17 +1455,17 @@ shr dl,1
 _@hit33:
 add eax,04A000001h
 adc ax,0
-mov [ebp],dl
+mov [_shim_vram+ebp],dl
 cmp ax,bx
 jge short _@seek1a33
 add eax,04A000001h
 adc ax,0
-mov [ebp-160],dl
+mov [_shim_vram+ebp-160],dl
 cmp ax,bx
 jge short _@seek2a33
 add eax,04A000001h
 adc ax,0
-mov [ebp-320],dl
+mov [_shim_vram+ebp-320],dl
 add ecx,01E000000h
 adc cx,0
 sub bp,160*3
@@ -1404,11 +1482,13 @@ sub bp,160
 _@seeko33:
 add eax,ecx
 adc ax,-1
+
+
 _@seek34:
 add si,[theloop_xsina1]
-mov bx,[esi]
+mov bx,[_w1dta+esi]
 add di,[theloop_ysina1]
-add bx,[edi]
+add bx,[_w2dta+edi]
 add bx,-243
 cmp ax,bx
 jge short _@seeko34
@@ -1417,17 +1497,17 @@ shr dl,1
 _@hit34:
 add eax,054000001h
 adc ax,0
-mov [ebp],dl
+mov [_shim_vram+ebp],dl
 cmp ax,bx
 jge short _@seek1a34
 add eax,054000001h
 adc ax,0
-mov [ebp-160],dl
+mov [_shim_vram+ebp-160],dl
 cmp ax,bx
 jge short _@seek2a34
 add eax,054000001h
 adc ax,0
-mov [ebp-320],dl
+mov [_shim_vram+ebp-320],dl
 add ecx,01E000000h
 adc cx,0
 sub bp,160*3
@@ -1444,11 +1524,13 @@ sub bp,160
 _@seeko34:
 add eax,ecx
 adc ax,-1
+
+
 _@seek35:
 add si,[theloop_xsina1]
-mov bx,[esi]
+mov bx,[_w1dta+esi]
 add di,[theloop_ysina1]
-add bx,[edi]
+add bx,[_w2dta+edi]
 add bx,-244
 cmp ax,bx
 jge short _@seeko35
@@ -1457,17 +1539,17 @@ shr dl,1
 _@hit35:
 add eax,05E000001h
 adc ax,0
-mov [ebp],dl
+mov [_shim_vram+ebp],dl
 cmp ax,bx
 jge short _@seek1a35
 add eax,05E000001h
 adc ax,0
-mov [ebp-160],dl
+mov [_shim_vram+ebp-160],dl
 cmp ax,bx
 jge short _@seek2a35
 add eax,05E000001h
 adc ax,0
-mov [ebp-320],dl
+mov [_shim_vram+ebp-320],dl
 add ecx,01E000000h
 adc cx,0
 sub bp,160*3
@@ -1484,11 +1566,13 @@ sub bp,160
 _@seeko35:
 add eax,ecx
 adc ax,-1
+
+
 _@seek36:
 add si,[theloop_xsina1]
-mov bx,[esi]
+mov bx,[_w1dta+esi]
 add di,[theloop_ysina1]
-add bx,[edi]
+add bx,[_w2dta+edi]
 add bx,-246
 cmp ax,bx
 jge short _@seeko36
@@ -1497,17 +1581,17 @@ shr dl,1
 _@hit36:
 add eax,068000001h
 adc ax,0
-mov [ebp],dl
+mov [_shim_vram+ebp],dl
 cmp ax,bx
 jge short _@seek1a36
 add eax,068000001h
 adc ax,0
-mov [ebp-160],dl
+mov [_shim_vram+ebp-160],dl
 cmp ax,bx
 jge short _@seek2a36
 add eax,068000001h
 adc ax,0
-mov [ebp-320],dl
+mov [_shim_vram+ebp-320],dl
 add ecx,01E000000h
 adc cx,0
 sub bp,160*3
@@ -1524,11 +1608,13 @@ sub bp,160
 _@seeko36:
 add eax,ecx
 adc ax,-1
+
+
 _@seek37:
 add si,[theloop_xsina1]
-mov bx,[esi]
+mov bx,[_w1dta+esi]
 add di,[theloop_ysina1]
-add bx,[edi]
+add bx,[_w2dta+edi]
 add bx,-247
 cmp ax,bx
 jge short _@seeko37
@@ -1537,17 +1623,17 @@ shr dl,1
 _@hit37:
 add eax,072000001h
 adc ax,0
-mov [ebp],dl
+mov [_shim_vram+ebp],dl
 cmp ax,bx
 jge short _@seek1a37
 add eax,072000001h
 adc ax,0
-mov [ebp-160],dl
+mov [_shim_vram+ebp-160],dl
 cmp ax,bx
 jge short _@seek2a37
 add eax,072000001h
 adc ax,0
-mov [ebp-320],dl
+mov [_shim_vram+ebp-320],dl
 add ecx,01E000000h
 adc cx,0
 sub bp,160*3
@@ -1564,11 +1650,13 @@ sub bp,160
 _@seeko37:
 add eax,ecx
 adc ax,-1
+
+
 _@seek38:
 add si,[theloop_xsina1]
-mov bx,[esi]
+mov bx,[_w1dta+esi]
 add di,[theloop_ysina1]
-add bx,[edi]
+add bx,[_w2dta+edi]
 add bx,-248
 cmp ax,bx
 jge short _@seeko38
@@ -1577,17 +1665,17 @@ shr dl,1
 _@hit38:
 add eax,07C000001h
 adc ax,0
-mov [ebp],dl
+mov [_shim_vram+ebp],dl
 cmp ax,bx
 jge short _@seek1a38
 add eax,07C000001h
 adc ax,0
-mov [ebp-160],dl
+mov [_shim_vram+ebp-160],dl
 cmp ax,bx
 jge short _@seek2a38
 add eax,07C000001h
 adc ax,0
-mov [ebp-320],dl
+mov [_shim_vram+ebp-320],dl
 add ecx,01E000000h
 adc cx,0
 sub bp,160*3
@@ -1604,11 +1692,13 @@ sub bp,160
 _@seeko38:
 add eax,ecx
 adc ax,-1
+
+
 _@seek39:
 add si,[theloop_xsina1]
-mov bx,[esi]
+mov bx,[_w1dta+esi]
 add di,[theloop_ysina1]
-add bx,[edi]
+add bx,[_w2dta+edi]
 add bx,-250
 cmp ax,bx
 jge short _@seeko39
@@ -1617,17 +1707,17 @@ shr dl,1
 _@hit39:
 add eax,086000001h
 adc ax,0
-mov [ebp],dl
+mov [_shim_vram+ebp],dl
 cmp ax,bx
 jge short _@seek1a39
 add eax,086000001h
 adc ax,0
-mov [ebp-160],dl
+mov [_shim_vram+ebp-160],dl
 cmp ax,bx
 jge short _@seek2a39
 add eax,086000001h
 adc ax,0
-mov [ebp-320],dl
+mov [_shim_vram+ebp-320],dl
 add ecx,01E000000h
 adc cx,0
 sub bp,160*3
@@ -1644,11 +1734,13 @@ sub bp,160
 _@seeko39:
 add eax,ecx
 adc ax,-1
+
+
 _@seek40:
 add si,[theloop_xsina1]
-mov bx,[esi]
+mov bx,[_w1dta+esi]
 add di,[theloop_ysina1]
-add bx,[edi]
+add bx,[_w2dta+edi]
 add bx,-251
 cmp ax,bx
 jge short _@seeko40
@@ -1657,17 +1749,17 @@ shr dl,1
 _@hit40:
 add eax,090000001h
 adc ax,0
-mov [ebp],dl
+mov [_shim_vram+ebp],dl
 cmp ax,bx
 jge short _@seek1a40
 add eax,090000001h
 adc ax,0
-mov [ebp-160],dl
+mov [_shim_vram+ebp-160],dl
 cmp ax,bx
 jge short _@seek2a40
 add eax,090000001h
 adc ax,0
-mov [ebp-320],dl
+mov [_shim_vram+ebp-320],dl
 add ecx,01E000000h
 adc cx,0
 sub bp,160*3
@@ -1684,11 +1776,13 @@ sub bp,160
 _@seeko40:
 add eax,ecx
 adc ax,-1
+
+
 _@seek41:
 add si,[theloop_xsina1]
-mov bx,[esi]
+mov bx,[_w1dta+esi]
 add di,[theloop_ysina1]
-add bx,[edi]
+add bx,[_w2dta+edi]
 add bx,-252
 cmp ax,bx
 jge short _@seeko41
@@ -1697,17 +1791,17 @@ shr dl,1
 _@hit41:
 add eax,09A000001h
 adc ax,0
-mov [ebp],dl
+mov [_shim_vram+ebp],dl
 cmp ax,bx
 jge short _@seek1a41
 add eax,09A000001h
 adc ax,0
-mov [ebp-160],dl
+mov [_shim_vram+ebp-160],dl
 cmp ax,bx
 jge short _@seek2a41
 add eax,09A000001h
 adc ax,0
-mov [ebp-320],dl
+mov [_shim_vram+ebp-320],dl
 add ecx,01E000000h
 adc cx,0
 sub bp,160*3
@@ -1724,11 +1818,13 @@ sub bp,160
 _@seeko41:
 add eax,ecx
 adc ax,-1
+
+
 _@seek42:
 add si,[theloop_xsina1]
-mov bx,[esi]
+mov bx,[_w1dta+esi]
 add di,[theloop_ysina1]
-add bx,[edi]
+add bx,[_w2dta+edi]
 add bx,-253
 cmp ax,bx
 jge short _@seeko42
@@ -1737,17 +1833,17 @@ shr dl,1
 _@hit42:
 add eax,0A4000001h
 adc ax,0
-mov [ebp],dl
+mov [_shim_vram+ebp],dl
 cmp ax,bx
 jge short _@seek1a42
 add eax,0A4000001h
 adc ax,0
-mov [ebp-160],dl
+mov [_shim_vram+ebp-160],dl
 cmp ax,bx
 jge short _@seek2a42
 add eax,0A4000001h
 adc ax,0
-mov [ebp-320],dl
+mov [_shim_vram+ebp-320],dl
 add ecx,01E000000h
 adc cx,0
 sub bp,160*3
@@ -1764,11 +1860,13 @@ sub bp,160
 _@seeko42:
 add eax,ecx
 adc ax,-1
+
+
 _@seek43:
 add si,[theloop_xsina1]
-mov bx,[esi]
+mov bx,[_w1dta+esi]
 add di,[theloop_ysina1]
-add bx,[edi]
+add bx,[_w2dta+edi]
 add bx,-254
 cmp ax,bx
 jge short _@seeko43
@@ -1777,17 +1875,17 @@ shr dl,1
 _@hit43:
 add eax,0AE000001h
 adc ax,0
-mov [ebp],dl
+mov [_shim_vram+ebp],dl
 cmp ax,bx
 jge short _@seek1a43
 add eax,0AE000001h
 adc ax,0
-mov [ebp-160],dl
+mov [_shim_vram+ebp-160],dl
 cmp ax,bx
 jge short _@seek2a43
 add eax,0AE000001h
 adc ax,0
-mov [ebp-320],dl
+mov [_shim_vram+ebp-320],dl
 add ecx,01E000000h
 adc cx,0
 sub bp,160*3
@@ -1804,11 +1902,13 @@ sub bp,160
 _@seeko43:
 add eax,ecx
 adc ax,-1
+
+
 _@seek44:
 add si,[theloop_xsina1]
-mov bx,[esi]
+mov bx,[_w1dta+esi]
 add di,[theloop_ysina1]
-add bx,[edi]
+add bx,[_w2dta+edi]
 add bx,-254
 cmp ax,bx
 jge short _@seeko44
@@ -1817,17 +1917,17 @@ shr dl,1
 _@hit44:
 add eax,0B8000001h
 adc ax,0
-mov [ebp],dl
+mov [_shim_vram+ebp],dl
 cmp ax,bx
 jge short _@seek1a44
 add eax,0B8000001h
 adc ax,0
-mov [ebp-160],dl
+mov [_shim_vram+ebp-160],dl
 cmp ax,bx
 jge short _@seek2a44
 add eax,0B8000001h
 adc ax,0
-mov [ebp-320],dl
+mov [_shim_vram+ebp-320],dl
 add ecx,01E000000h
 adc cx,0
 sub bp,160*3
@@ -1844,11 +1944,13 @@ sub bp,160
 _@seeko44:
 add eax,ecx
 adc ax,-1
+
+
 _@seek45:
 add si,[theloop_xsina1]
-mov bx,[esi]
+mov bx,[_w1dta+esi]
 add di,[theloop_ysina1]
-add bx,[edi]
+add bx,[_w2dta+edi]
 add bx,-255
 cmp ax,bx
 jge short _@seeko45
@@ -1857,17 +1959,17 @@ shr dl,1
 _@hit45:
 add eax,0C2000001h
 adc ax,0
-mov [ebp],dl
+mov [_shim_vram+ebp],dl
 cmp ax,bx
 jge short _@seek1a45
 add eax,0C2000001h
 adc ax,0
-mov [ebp-160],dl
+mov [_shim_vram+ebp-160],dl
 cmp ax,bx
 jge short _@seek2a45
 add eax,0C2000001h
 adc ax,0
-mov [ebp-320],dl
+mov [_shim_vram+ebp-320],dl
 add ecx,01E000000h
 adc cx,0
 sub bp,160*3
@@ -1884,11 +1986,13 @@ sub bp,160
 _@seeko45:
 add eax,ecx
 adc ax,-1
+
+
 _@seek46:
 add si,[theloop_xsina1]
-mov bx,[esi]
+mov bx,[_w1dta+esi]
 add di,[theloop_ysina1]
-add bx,[edi]
+add bx,[_w2dta+edi]
 add bx,-255
 cmp ax,bx
 jge short _@seeko46
@@ -1897,17 +2001,17 @@ shr dl,1
 _@hit46:
 add eax,0CC000001h
 adc ax,0
-mov [ebp],dl
+mov [_shim_vram+ebp],dl
 cmp ax,bx
 jge short _@seek1a46
 add eax,0CC000001h
 adc ax,0
-mov [ebp-160],dl
+mov [_shim_vram+ebp-160],dl
 cmp ax,bx
 jge short _@seek2a46
 add eax,0CC000001h
 adc ax,0
-mov [ebp-320],dl
+mov [_shim_vram+ebp-320],dl
 add ecx,01E000000h
 adc cx,0
 sub bp,160*3
@@ -1924,11 +2028,13 @@ sub bp,160
 _@seeko46:
 add eax,ecx
 adc ax,-1
+
+
 _@seek47:
 add si,[theloop_xsina1]
-mov bx,[esi]
+mov bx,[_w1dta+esi]
 add di,[theloop_ysina1]
-add bx,[edi]
+add bx,[_w2dta+edi]
 add bx,-255
 cmp ax,bx
 jge short _@seeko47
@@ -1937,17 +2043,17 @@ shr dl,1
 _@hit47:
 add eax,0D6000001h
 adc ax,0
-mov [ebp],dl
+mov [_shim_vram+ebp],dl
 cmp ax,bx
 jge short _@seek1a47
 add eax,0D6000001h
 adc ax,0
-mov [ebp-160],dl
+mov [_shim_vram+ebp-160],dl
 cmp ax,bx
 jge short _@seek2a47
 add eax,0D6000001h
 adc ax,0
-mov [ebp-320],dl
+mov [_shim_vram+ebp-320],dl
 add ecx,01E000000h
 adc cx,0
 sub bp,160*3
@@ -1964,11 +2070,13 @@ sub bp,160
 _@seeko47:
 add eax,ecx
 adc ax,-1
+
+
 _@seek48:
 add si,[theloop_xsina1]
-mov bx,[esi]
+mov bx,[_w1dta+esi]
 add di,[theloop_ysina1]
-add bx,[edi]
+add bx,[_w2dta+edi]
 add bx,-256
 cmp ax,bx
 jge short _@seeko48
@@ -1977,17 +2085,17 @@ shr dl,1
 _@hit48:
 add eax,0E0000001h
 adc ax,0
-mov [ebp],dl
+mov [_shim_vram+ebp],dl
 cmp ax,bx
 jge short _@seek1a48
 add eax,0E0000001h
 adc ax,0
-mov [ebp-160],dl
+mov [_shim_vram+ebp-160],dl
 cmp ax,bx
 jge short _@seek2a48
 add eax,0E0000001h
 adc ax,0
-mov [ebp-320],dl
+mov [_shim_vram+ebp-320],dl
 add ecx,01E000000h
 adc cx,0
 sub bp,160*3
@@ -2004,11 +2112,13 @@ sub bp,160
 _@seeko48:
 add eax,ecx
 adc ax,-1
+
+
 _@seek49:
 add si,[theloop_xsina1]
-mov bx,[esi]
+mov bx,[_w1dta+esi]
 add di,[theloop_ysina1]
-add bx,[edi]
+add bx,[_w2dta+edi]
 add bx,-255
 cmp ax,bx
 jge short _@seeko49
@@ -2017,17 +2127,17 @@ shr dl,1
 _@hit49:
 add eax,0EA000001h
 adc ax,0
-mov [ebp],dl
+mov [_shim_vram+ebp],dl
 cmp ax,bx
 jge short _@seek1a49
 add eax,0EA000001h
 adc ax,0
-mov [ebp-160],dl
+mov [_shim_vram+ebp-160],dl
 cmp ax,bx
 jge short _@seek2a49
 add eax,0EA000001h
 adc ax,0
-mov [ebp-320],dl
+mov [_shim_vram+ebp-320],dl
 add ecx,01E000000h
 adc cx,0
 sub bp,160*3
@@ -2044,11 +2154,13 @@ sub bp,160
 _@seeko49:
 add eax,ecx
 adc ax,-1
+
+
 _@seek50:
 add si,[theloop_xsina1]
-mov bx,[esi]
+mov bx,[_w1dta+esi]
 add di,[theloop_ysina1]
-add bx,[edi]
+add bx,[_w2dta+edi]
 add bx,-255
 cmp ax,bx
 jge short _@seeko50
@@ -2057,17 +2169,17 @@ shr dl,1
 _@hit50:
 add eax,0F4000001h
 adc ax,0
-mov [ebp],dl
+mov [_shim_vram+ebp],dl
 cmp ax,bx
 jge short _@seek1a50
 add eax,0F4000001h
 adc ax,0
-mov [ebp-160],dl
+mov [_shim_vram+ebp-160],dl
 cmp ax,bx
 jge short _@seek2a50
 add eax,0F4000001h
 adc ax,0
-mov [ebp-320],dl
+mov [_shim_vram+ebp-320],dl
 add ecx,01E000000h
 adc cx,0
 sub bp,160*3
@@ -2084,11 +2196,13 @@ sub bp,160
 _@seeko50:
 add eax,ecx
 adc ax,-1
+
+
 _@seek51:
 add si,[theloop_xsina1]
-mov bx,[esi]
+mov bx,[_w1dta+esi]
 add di,[theloop_ysina1]
-add bx,[edi]
+add bx,[_w2dta+edi]
 add bx,-255
 cmp ax,bx
 jge short _@seeko51
@@ -2097,17 +2211,17 @@ shr dl,1
 _@hit51:
 add eax,0FE000001h
 adc ax,0
-mov [ebp],dl
+mov [_shim_vram+ebp],dl
 cmp ax,bx
 jge short _@seek1a51
 add eax,0FE000001h
 adc ax,0
-mov [ebp-160],dl
+mov [_shim_vram+ebp-160],dl
 cmp ax,bx
 jge short _@seek2a51
 add eax,0FE000001h
 adc ax,0
-mov [ebp-320],dl
+mov [_shim_vram+ebp-320],dl
 add ecx,01E000000h
 adc cx,0
 sub bp,160*3
@@ -2124,11 +2238,13 @@ sub bp,160
 _@seeko51:
 add eax,ecx
 adc ax,-1
+
+
 _@seek52:
 add si,[theloop_xsina1]
-mov bx,[esi]
+mov bx,[_w1dta+esi]
 add di,[theloop_ysina1]
-add bx,[edi]
+add bx,[_w2dta+edi]
 add bx,-254
 cmp ax,bx
 jge short _@seeko52
@@ -2137,17 +2253,17 @@ shr dl,1
 _@hit52:
 add eax,008000002h
 adc ax,0
-mov [ebp],dl
+mov [_shim_vram+ebp],dl
 cmp ax,bx
 jge short _@seek1a52
 add eax,008000002h
 adc ax,0
-mov [ebp-160],dl
+mov [_shim_vram+ebp-160],dl
 cmp ax,bx
 jge short _@seek2a52
 add eax,008000002h
 adc ax,0
-mov [ebp-320],dl
+mov [_shim_vram+ebp-320],dl
 add ecx,01E000000h
 adc cx,0
 sub bp,160*3
@@ -2164,11 +2280,13 @@ sub bp,160
 _@seeko52:
 add eax,ecx
 adc ax,-1
+
+
 _@seek53:
 add si,[theloop_xsina1]
-mov bx,[esi]
+mov bx,[_w1dta+esi]
 add di,[theloop_ysina1]
-add bx,[edi]
+add bx,[_w2dta+edi]
 add bx,-254
 cmp ax,bx
 jge short _@seeko53
@@ -2177,17 +2295,17 @@ shr dl,1
 _@hit53:
 add eax,012000002h
 adc ax,0
-mov [ebp],dl
+mov [_shim_vram+ebp],dl
 cmp ax,bx
 jge short _@seek1a53
 add eax,012000002h
 adc ax,0
-mov [ebp-160],dl
+mov [_shim_vram+ebp-160],dl
 cmp ax,bx
 jge short _@seek2a53
 add eax,012000002h
 adc ax,0
-mov [ebp-320],dl
+mov [_shim_vram+ebp-320],dl
 add ecx,01E000000h
 adc cx,0
 sub bp,160*3
@@ -2204,11 +2322,13 @@ sub bp,160
 _@seeko53:
 add eax,ecx
 adc ax,-1
+
+
 _@seek54:
 add si,[theloop_xsina1]
-mov bx,[esi]
+mov bx,[_w1dta+esi]
 add di,[theloop_ysina1]
-add bx,[edi]
+add bx,[_w2dta+edi]
 add bx,-253
 cmp ax,bx
 jge short _@seeko54
@@ -2217,17 +2337,17 @@ shr dl,1
 _@hit54:
 add eax,01C000002h
 adc ax,0
-mov [ebp],dl
+mov [_shim_vram+ebp],dl
 cmp ax,bx
 jge short _@seek1a54
 add eax,01C000002h
 adc ax,0
-mov [ebp-160],dl
+mov [_shim_vram+ebp-160],dl
 cmp ax,bx
 jge short _@seek2a54
 add eax,01C000002h
 adc ax,0
-mov [ebp-320],dl
+mov [_shim_vram+ebp-320],dl
 add ecx,01E000000h
 adc cx,0
 sub bp,160*3
@@ -2244,11 +2364,13 @@ sub bp,160
 _@seeko54:
 add eax,ecx
 adc ax,-1
+
+
 _@seek55:
 add si,[theloop_xsina1]
-mov bx,[esi]
+mov bx,[_w1dta+esi]
 add di,[theloop_ysina1]
-add bx,[edi]
+add bx,[_w2dta+edi]
 add bx,-252
 cmp ax,bx
 jge short _@seeko55
@@ -2257,17 +2379,17 @@ shr dl,1
 _@hit55:
 add eax,026000002h
 adc ax,0
-mov [ebp],dl
+mov [_shim_vram+ebp],dl
 cmp ax,bx
 jge short _@seek1a55
 add eax,026000002h
 adc ax,0
-mov [ebp-160],dl
+mov [_shim_vram+ebp-160],dl
 cmp ax,bx
 jge short _@seek2a55
 add eax,026000002h
 adc ax,0
-mov [ebp-320],dl
+mov [_shim_vram+ebp-320],dl
 add ecx,01E000000h
 adc cx,0
 sub bp,160*3
@@ -2284,11 +2406,13 @@ sub bp,160
 _@seeko55:
 add eax,ecx
 adc ax,-1
+
+
 _@seek56:
 add si,[theloop_xsina1]
-mov bx,[esi]
+mov bx,[_w1dta+esi]
 add di,[theloop_ysina1]
-add bx,[edi]
+add bx,[_w2dta+edi]
 add bx,-251
 cmp ax,bx
 jge short _@seeko56
@@ -2297,17 +2421,17 @@ shr dl,1
 _@hit56:
 add eax,030000002h
 adc ax,0
-mov [ebp],dl
+mov [_shim_vram+ebp],dl
 cmp ax,bx
 jge short _@seek1a56
 add eax,030000002h
 adc ax,0
-mov [ebp-160],dl
+mov [_shim_vram+ebp-160],dl
 cmp ax,bx
 jge short _@seek2a56
 add eax,030000002h
 adc ax,0
-mov [ebp-320],dl
+mov [_shim_vram+ebp-320],dl
 add ecx,01E000000h
 adc cx,0
 sub bp,160*3
@@ -2324,11 +2448,13 @@ sub bp,160
 _@seeko56:
 add eax,ecx
 adc ax,-1
+
+
 _@seek57:
 add si,[theloop_xsina1]
-mov bx,[esi]
+mov bx,[_w1dta+esi]
 add di,[theloop_ysina1]
-add bx,[edi]
+add bx,[_w2dta+edi]
 add bx,-250
 cmp ax,bx
 jge short _@seeko57
@@ -2337,17 +2463,17 @@ shr dl,1
 _@hit57:
 add eax,03A000002h
 adc ax,0
-mov [ebp],dl
+mov [_shim_vram+ebp],dl
 cmp ax,bx
 jge short _@seek1a57
 add eax,03A000002h
 adc ax,0
-mov [ebp-160],dl
+mov [_shim_vram+ebp-160],dl
 cmp ax,bx
 jge short _@seek2a57
 add eax,03A000002h
 adc ax,0
-mov [ebp-320],dl
+mov [_shim_vram+ebp-320],dl
 add ecx,01E000000h
 adc cx,0
 sub bp,160*3
@@ -2364,11 +2490,13 @@ sub bp,160
 _@seeko57:
 add eax,ecx
 adc ax,-1
+
+
 _@seek58:
 add si,[theloop_xsina1]
-mov bx,[esi]
+mov bx,[_w1dta+esi]
 add di,[theloop_ysina1]
-add bx,[edi]
+add bx,[_w2dta+edi]
 add bx,-248
 cmp ax,bx
 jge short _@seeko58
@@ -2377,17 +2505,17 @@ shr dl,1
 _@hit58:
 add eax,044000002h
 adc ax,0
-mov [ebp],dl
+mov [_shim_vram+ebp],dl
 cmp ax,bx
 jge short _@seek1a58
 add eax,044000002h
 adc ax,0
-mov [ebp-160],dl
+mov [_shim_vram+ebp-160],dl
 cmp ax,bx
 jge short _@seek2a58
 add eax,044000002h
 adc ax,0
-mov [ebp-320],dl
+mov [_shim_vram+ebp-320],dl
 add ecx,01E000000h
 adc cx,0
 sub bp,160*3
@@ -2404,11 +2532,13 @@ sub bp,160
 _@seeko58:
 add eax,ecx
 adc ax,-1
+
+
 _@seek59:
 add si,[theloop_xsina1]
-mov bx,[esi]
+mov bx,[_w1dta+esi]
 add di,[theloop_ysina1]
-add bx,[edi]
+add bx,[_w2dta+edi]
 add bx,-247
 cmp ax,bx
 jge short _@seeko59
@@ -2417,17 +2547,17 @@ shr dl,1
 _@hit59:
 add eax,04E000002h
 adc ax,0
-mov [ebp],dl
+mov [_shim_vram+ebp],dl
 cmp ax,bx
 jge short _@seek1a59
 add eax,04E000002h
 adc ax,0
-mov [ebp-160],dl
+mov [_shim_vram+ebp-160],dl
 cmp ax,bx
 jge short _@seek2a59
 add eax,04E000002h
 adc ax,0
-mov [ebp-320],dl
+mov [_shim_vram+ebp-320],dl
 add ecx,01E000000h
 adc cx,0
 sub bp,160*3
@@ -2444,11 +2574,13 @@ sub bp,160
 _@seeko59:
 add eax,ecx
 adc ax,-1
+
+
 _@seek60:
 add si,[theloop_xsina1]
-mov bx,[esi]
+mov bx,[_w1dta+esi]
 add di,[theloop_ysina1]
-add bx,[edi]
+add bx,[_w2dta+edi]
 add bx,-246
 cmp ax,bx
 jge short _@seeko60
@@ -2457,17 +2589,17 @@ shr dl,1
 _@hit60:
 add eax,058000002h
 adc ax,0
-mov [ebp],dl
+mov [_shim_vram+ebp],dl
 cmp ax,bx
 jge short _@seek1a60
 add eax,058000002h
 adc ax,0
-mov [ebp-160],dl
+mov [_shim_vram+ebp-160],dl
 cmp ax,bx
 jge short _@seek2a60
 add eax,058000002h
 adc ax,0
-mov [ebp-320],dl
+mov [_shim_vram+ebp-320],dl
 add ecx,01E000000h
 adc cx,0
 sub bp,160*3
@@ -2484,11 +2616,13 @@ sub bp,160
 _@seeko60:
 add eax,ecx
 adc ax,-1
+
+
 _@seek61:
 add si,[theloop_xsina1]
-mov bx,[esi]
+mov bx,[_w1dta+esi]
 add di,[theloop_ysina1]
-add bx,[edi]
+add bx,[_w2dta+edi]
 add bx,-244
 cmp ax,bx
 jge short _@seeko61
@@ -2497,17 +2631,17 @@ shr dl,1
 _@hit61:
 add eax,062000002h
 adc ax,0
-mov [ebp],dl
+mov [_shim_vram+ebp],dl
 cmp ax,bx
 jge short _@seek1a61
 add eax,062000002h
 adc ax,0
-mov [ebp-160],dl
+mov [_shim_vram+ebp-160],dl
 cmp ax,bx
 jge short _@seek2a61
 add eax,062000002h
 adc ax,0
-mov [ebp-320],dl
+mov [_shim_vram+ebp-320],dl
 add ecx,01E000000h
 adc cx,0
 sub bp,160*3
@@ -2524,11 +2658,13 @@ sub bp,160
 _@seeko61:
 add eax,ecx
 adc ax,-1
+
+
 _@seek62:
 add si,[theloop_xsina1]
-mov bx,[esi]
+mov bx,[_w1dta+esi]
 add di,[theloop_ysina1]
-add bx,[edi]
+add bx,[_w2dta+edi]
 add bx,-243
 cmp ax,bx
 jge short _@seeko62
@@ -2537,17 +2673,17 @@ shr dl,1
 _@hit62:
 add eax,06C000002h
 adc ax,0
-mov [ebp],dl
+mov [_shim_vram+ebp],dl
 cmp ax,bx
 jge short _@seek1a62
 add eax,06C000002h
 adc ax,0
-mov [ebp-160],dl
+mov [_shim_vram+ebp-160],dl
 cmp ax,bx
 jge short _@seek2a62
 add eax,06C000002h
 adc ax,0
-mov [ebp-320],dl
+mov [_shim_vram+ebp-320],dl
 add ecx,01E000000h
 adc cx,0
 sub bp,160*3
@@ -2564,11 +2700,13 @@ sub bp,160
 _@seeko62:
 add eax,ecx
 adc ax,-1
+
+
 _@seek63:
 add si,[theloop_xsina1]
-mov bx,[esi]
+mov bx,[_w1dta+esi]
 add di,[theloop_ysina1]
-add bx,[edi]
+add bx,[_w2dta+edi]
 add bx,-241
 cmp ax,bx
 jge short _@seeko63
@@ -2577,17 +2715,17 @@ shr dl,1
 _@hit63:
 add eax,076000002h
 adc ax,0
-mov [ebp],dl
+mov [_shim_vram+ebp],dl
 cmp ax,bx
 jge short _@seek1a63
 add eax,076000002h
 adc ax,0
-mov [ebp-160],dl
+mov [_shim_vram+ebp-160],dl
 cmp ax,bx
 jge short _@seek2a63
 add eax,076000002h
 adc ax,0
-mov [ebp-320],dl
+mov [_shim_vram+ebp-320],dl
 add ecx,01E000000h
 adc cx,0
 sub bp,160*3
@@ -2604,11 +2742,13 @@ sub bp,160
 _@seeko63:
 add eax,ecx
 adc ax,-1
+
+
 _@seek64:
 add si,[theloop_xsina2]
-mov bx,[esi]
+mov bx,[_w1dta+esi]
 add di,[theloop_ysina2]
-add bx,[edi]
+add bx,[_w2dta+edi]
 add bx,-240
 cmp ax,bx
 jge short _@seeko64
@@ -2617,17 +2757,17 @@ shr dl,1
 _@hit64:
 add eax,080000002h
 adc ax,0
-mov [ebp],dl
+mov [_shim_vram+ebp],dl
 cmp ax,bx
 jge short _@seek1a64
 add eax,080000002h
 adc ax,0
-mov [ebp-160],dl
+mov [_shim_vram+ebp-160],dl
 cmp ax,bx
 jge short _@seek2a64
 add eax,080000002h
 adc ax,0
-mov [ebp-320],dl
+mov [_shim_vram+ebp-320],dl
 add ecx,01E000000h
 adc cx,0
 sub bp,160*3
@@ -2645,11 +2785,13 @@ _@seeko64:
 add eax,ecx
 adc eax,ecx
 adc ax,-1
+
+
 _@seek66:
 add si,[theloop_xsina2]
-mov bx,[esi]
+mov bx,[_w1dta+esi]
 add di,[theloop_ysina2]
-add bx,[edi]
+add bx,[_w2dta+edi]
 add bx,-237
 cmp ax,bx
 jge short _@seeko66
@@ -2658,17 +2800,17 @@ shr dl,1
 _@hit66:
 add eax,094000002h
 adc ax,0
-mov [ebp],dl
+mov [_shim_vram+ebp],dl
 cmp ax,bx
 jge short _@seek1a66
 add eax,094000002h
 adc ax,0
-mov [ebp-160],dl
+mov [_shim_vram+ebp-160],dl
 cmp ax,bx
 jge short _@seek2a66
 add eax,094000002h
 adc ax,0
-mov [ebp-320],dl
+mov [_shim_vram+ebp-320],dl
 add ecx,01E000000h
 adc cx,0
 sub bp,160*3
@@ -2686,11 +2828,13 @@ _@seeko66:
 add eax,ecx
 adc eax,ecx
 adc ax,-1
+
+
 _@seek68:
 add si,[theloop_xsina2]
-mov bx,[esi]
+mov bx,[_w1dta+esi]
 add di,[theloop_ysina2]
-add bx,[edi]
+add bx,[_w2dta+edi]
 add bx,-234
 cmp ax,bx
 jge short _@seeko68
@@ -2699,17 +2843,17 @@ shr dl,1
 _@hit68:
 add eax,0A8000002h
 adc ax,0
-mov [ebp],dl
+mov [_shim_vram+ebp],dl
 cmp ax,bx
 jge short _@seek1a68
 add eax,0A8000002h
 adc ax,0
-mov [ebp-160],dl
+mov [_shim_vram+ebp-160],dl
 cmp ax,bx
 jge short _@seek2a68
 add eax,0A8000002h
 adc ax,0
-mov [ebp-320],dl
+mov [_shim_vram+ebp-320],dl
 add ecx,01E000000h
 adc cx,0
 sub bp,160*3
@@ -2727,11 +2871,13 @@ _@seeko68:
 add eax,ecx
 adc eax,ecx
 adc ax,-1
+
+
 _@seek70:
 add si,[theloop_xsina2]
-mov bx,[esi]
+mov bx,[_w1dta+esi]
 add di,[theloop_ysina2]
-add bx,[edi]
+add bx,[_w2dta+edi]
 add bx,-232
 cmp ax,bx
 jge short _@seeko70
@@ -2740,17 +2886,17 @@ shr dl,1
 _@hit70:
 add eax,0BC000002h
 adc ax,0
-mov [ebp],dl
+mov [_shim_vram+ebp],dl
 cmp ax,bx
 jge short _@seek1a70
 add eax,0BC000002h
 adc ax,0
-mov [ebp-160],dl
+mov [_shim_vram+ebp-160],dl
 cmp ax,bx
 jge short _@seek2a70
 add eax,0BC000002h
 adc ax,0
-mov [ebp-320],dl
+mov [_shim_vram+ebp-320],dl
 add ecx,01E000000h
 adc cx,0
 sub bp,160*3
@@ -2768,11 +2914,13 @@ _@seeko70:
 add eax,ecx
 adc eax,ecx
 adc ax,-1
+
+
 _@seek72:
 add si,[theloop_xsina2]
-mov bx,[esi]
+mov bx,[_w1dta+esi]
 add di,[theloop_ysina2]
-add bx,[edi]
+add bx,[_w2dta+edi]
 add bx,-229
 cmp ax,bx
 jge short _@seeko72
@@ -2781,17 +2929,17 @@ shr dl,1
 _@hit72:
 add eax,0D0000002h
 adc ax,0
-mov [ebp],dl
+mov [_shim_vram+ebp],dl
 cmp ax,bx
 jge short _@seek1a72
 add eax,0D0000002h
 adc ax,0
-mov [ebp-160],dl
+mov [_shim_vram+ebp-160],dl
 cmp ax,bx
 jge short _@seek2a72
 add eax,0D0000002h
 adc ax,0
-mov [ebp-320],dl
+mov [_shim_vram+ebp-320],dl
 add ecx,01E000000h
 adc cx,0
 sub bp,160*3
@@ -2809,11 +2957,13 @@ _@seeko72:
 add eax,ecx
 adc eax,ecx
 adc ax,-1
+
+
 _@seek74:
 add si,[theloop_xsina2]
-mov bx,[esi]
+mov bx,[_w1dta+esi]
 add di,[theloop_ysina2]
-add bx,[edi]
+add bx,[_w2dta+edi]
 add bx,-227
 cmp ax,bx
 jge short _@seeko74
@@ -2822,17 +2972,17 @@ shr dl,1
 _@hit74:
 add eax,0E4000002h
 adc ax,0
-mov [ebp],dl
+mov [_shim_vram+ebp],dl
 cmp ax,bx
 jge short _@seek1a74
 add eax,0E4000002h
 adc ax,0
-mov [ebp-160],dl
+mov [_shim_vram+ebp-160],dl
 cmp ax,bx
 jge short _@seek2a74
 add eax,0E4000002h
 adc ax,0
-mov [ebp-320],dl
+mov [_shim_vram+ebp-320],dl
 add ecx,01E000000h
 adc cx,0
 sub bp,160*3
@@ -2850,11 +3000,13 @@ _@seeko74:
 add eax,ecx
 adc eax,ecx
 adc ax,-1
+
+
 _@seek76:
 add si,[theloop_xsina2]
-mov bx,[esi]
+mov bx,[_w1dta+esi]
 add di,[theloop_ysina2]
-add bx,[edi]
+add bx,[_w2dta+edi]
 add bx,-226
 cmp ax,bx
 jge short _@seeko76
@@ -2863,17 +3015,17 @@ shr dl,1
 _@hit76:
 add eax,0F8000002h
 adc ax,0
-mov [ebp],dl
+mov [_shim_vram+ebp],dl
 cmp ax,bx
 jge short _@seek1a76
 add eax,0F8000002h
 adc ax,0
-mov [ebp-160],dl
+mov [_shim_vram+ebp-160],dl
 cmp ax,bx
 jge short _@seek2a76
 add eax,0F8000002h
 adc ax,0
-mov [ebp-320],dl
+mov [_shim_vram+ebp-320],dl
 add ecx,01E000000h
 adc cx,0
 sub bp,160*3
@@ -2891,11 +3043,13 @@ _@seeko76:
 add eax,ecx
 adc eax,ecx
 adc ax,-1
+
+
 _@seek78:
 add si,[theloop_xsina2]
-mov bx,[esi]
+mov bx,[_w1dta+esi]
 add di,[theloop_ysina2]
-add bx,[edi]
+add bx,[_w2dta+edi]
 add bx,-225
 cmp ax,bx
 jge short _@seeko78
@@ -2904,17 +3058,17 @@ shr dl,1
 _@hit78:
 add eax,00C000003h
 adc ax,0
-mov [ebp],dl
+mov [_shim_vram+ebp],dl
 cmp ax,bx
 jge short _@seek1a78
 add eax,00C000003h
 adc ax,0
-mov [ebp-160],dl
+mov [_shim_vram+ebp-160],dl
 cmp ax,bx
 jge short _@seek2a78
 add eax,00C000003h
 adc ax,0
-mov [ebp-320],dl
+mov [_shim_vram+ebp-320],dl
 add ecx,01E000000h
 adc cx,0
 sub bp,160*3
@@ -2932,11 +3086,13 @@ _@seeko78:
 add eax,ecx
 adc eax,ecx
 adc ax,-1
+
+
 _@seek80:
 add si,[theloop_xsina2]
-mov bx,[esi]
+mov bx,[_w1dta+esi]
 add di,[theloop_ysina2]
-add bx,[edi]
+add bx,[_w2dta+edi]
 add bx,-224
 cmp ax,bx
 jge short _@seeko80
@@ -2945,17 +3101,17 @@ shr dl,1
 _@hit80:
 add eax,020000003h
 adc ax,0
-mov [ebp],dl
+mov [_shim_vram+ebp],dl
 cmp ax,bx
 jge short _@seek1a80
 add eax,020000003h
 adc ax,0
-mov [ebp-160],dl
+mov [_shim_vram+ebp-160],dl
 cmp ax,bx
 jge short _@seek2a80
 add eax,020000003h
 adc ax,0
-mov [ebp-320],dl
+mov [_shim_vram+ebp-320],dl
 add ecx,01E000000h
 adc cx,0
 sub bp,160*3
@@ -2973,11 +3129,13 @@ _@seeko80:
 add eax,ecx
 adc eax,ecx
 adc ax,-1
+
+
 _@seek82:
 add si,[theloop_xsina2]
-mov bx,[esi]
+mov bx,[_w1dta+esi]
 add di,[theloop_ysina2]
-add bx,[edi]
+add bx,[_w2dta+edi]
 add bx,-225
 cmp ax,bx
 jge short _@seeko82
@@ -2986,17 +3144,17 @@ shr dl,1
 _@hit82:
 add eax,034000003h
 adc ax,0
-mov [ebp],dl
+mov [_shim_vram+ebp],dl
 cmp ax,bx
 jge short _@seek1a82
 add eax,034000003h
 adc ax,0
-mov [ebp-160],dl
+mov [_shim_vram+ebp-160],dl
 cmp ax,bx
 jge short _@seek2a82
 add eax,034000003h
 adc ax,0
-mov [ebp-320],dl
+mov [_shim_vram+ebp-320],dl
 add ecx,01E000000h
 adc cx,0
 sub bp,160*3
@@ -3014,11 +3172,13 @@ _@seeko82:
 add eax,ecx
 adc eax,ecx
 adc ax,-1
+
+
 _@seek84:
 add si,[theloop_xsina2]
-mov bx,[esi]
+mov bx,[_w1dta+esi]
 add di,[theloop_ysina2]
-add bx,[edi]
+add bx,[_w2dta+edi]
 add bx,-226
 cmp ax,bx
 jge short _@seeko84
@@ -3027,17 +3187,17 @@ shr dl,1
 _@hit84:
 add eax,048000003h
 adc ax,0
-mov [ebp],dl
+mov [_shim_vram+ebp],dl
 cmp ax,bx
 jge short _@seek1a84
 add eax,048000003h
 adc ax,0
-mov [ebp-160],dl
+mov [_shim_vram+ebp-160],dl
 cmp ax,bx
 jge short _@seek2a84
 add eax,048000003h
 adc ax,0
-mov [ebp-320],dl
+mov [_shim_vram+ebp-320],dl
 add ecx,01E000000h
 adc cx,0
 sub bp,160*3
@@ -3055,11 +3215,13 @@ _@seeko84:
 add eax,ecx
 adc eax,ecx
 adc ax,-1
+
+
 _@seek86:
 add si,[theloop_xsina2]
-mov bx,[esi]
+mov bx,[_w1dta+esi]
 add di,[theloop_ysina2]
-add bx,[edi]
+add bx,[_w2dta+edi]
 add bx,-227
 cmp ax,bx
 jge short _@seeko86
@@ -3068,17 +3230,17 @@ shr dl,1
 _@hit86:
 add eax,05C000003h
 adc ax,0
-mov [ebp],dl
+mov [_shim_vram+ebp],dl
 cmp ax,bx
 jge short _@seek1a86
 add eax,05C000003h
 adc ax,0
-mov [ebp-160],dl
+mov [_shim_vram+ebp-160],dl
 cmp ax,bx
 jge short _@seek2a86
 add eax,05C000003h
 adc ax,0
-mov [ebp-320],dl
+mov [_shim_vram+ebp-320],dl
 add ecx,01E000000h
 adc cx,0
 sub bp,160*3
@@ -3096,11 +3258,13 @@ _@seeko86:
 add eax,ecx
 adc eax,ecx
 adc ax,-1
+
+
 _@seek88:
 add si,[theloop_xsina2]
-mov bx,[esi]
+mov bx,[_w1dta+esi]
 add di,[theloop_ysina2]
-add bx,[edi]
+add bx,[_w2dta+edi]
 add bx,-229
 cmp ax,bx
 jge short _@seeko88
@@ -3109,17 +3273,17 @@ shr dl,1
 _@hit88:
 add eax,070000003h
 adc ax,0
-mov [ebp],dl
+mov [_shim_vram+ebp],dl
 cmp ax,bx
 jge short _@seek1a88
 add eax,070000003h
 adc ax,0
-mov [ebp-160],dl
+mov [_shim_vram+ebp-160],dl
 cmp ax,bx
 jge short _@seek2a88
 add eax,070000003h
 adc ax,0
-mov [ebp-320],dl
+mov [_shim_vram+ebp-320],dl
 add ecx,01E000000h
 adc cx,0
 sub bp,160*3
@@ -3137,11 +3301,13 @@ _@seeko88:
 add eax,ecx
 adc eax,ecx
 adc ax,-1
+
+
 _@seek90:
 add si,[theloop_xsina2]
-mov bx,[esi]
+mov bx,[_w1dta+esi]
 add di,[theloop_ysina2]
-add bx,[edi]
+add bx,[_w2dta+edi]
 add bx,-232
 cmp ax,bx
 jge short _@seeko90
@@ -3150,17 +3316,17 @@ shr dl,1
 _@hit90:
 add eax,084000003h
 adc ax,0
-mov [ebp],dl
+mov [_shim_vram+ebp],dl
 cmp ax,bx
 jge short _@seek1a90
 add eax,084000003h
 adc ax,0
-mov [ebp-160],dl
+mov [_shim_vram+ebp-160],dl
 cmp ax,bx
 jge short _@seek2a90
 add eax,084000003h
 adc ax,0
-mov [ebp-320],dl
+mov [_shim_vram+ebp-320],dl
 add ecx,01E000000h
 adc cx,0
 sub bp,160*3
@@ -3178,11 +3344,13 @@ _@seeko90:
 add eax,ecx
 adc eax,ecx
 adc ax,-1
+
+
 _@seek92:
 add si,[theloop_xsina2]
-mov bx,[esi]
+mov bx,[_w1dta+esi]
 add di,[theloop_ysina2]
-add bx,[edi]
+add bx,[_w2dta+edi]
 add bx,-234
 cmp ax,bx
 jge short _@seeko92
@@ -3191,17 +3359,17 @@ shr dl,1
 _@hit92:
 add eax,098000003h
 adc ax,0
-mov [ebp],dl
+mov [_shim_vram+ebp],dl
 cmp ax,bx
 jge short _@seek1a92
 add eax,098000003h
 adc ax,0
-mov [ebp-160],dl
+mov [_shim_vram+ebp-160],dl
 cmp ax,bx
 jge short _@seek2a92
 add eax,098000003h
 adc ax,0
-mov [ebp-320],dl
+mov [_shim_vram+ebp-320],dl
 add ecx,01E000000h
 adc cx,0
 sub bp,160*3
@@ -3219,11 +3387,13 @@ _@seeko92:
 add eax,ecx
 adc eax,ecx
 adc ax,-1
+
+
 _@seek94:
 add si,[theloop_xsina2]
-mov bx,[esi]
+mov bx,[_w1dta+esi]
 add di,[theloop_ysina2]
-add bx,[edi]
+add bx,[_w2dta+edi]
 add bx,-237
 cmp ax,bx
 jge short _@seeko94
@@ -3232,17 +3402,17 @@ shr dl,1
 _@hit94:
 add eax,0AC000003h
 adc ax,0
-mov [ebp],dl
+mov [_shim_vram+ebp],dl
 cmp ax,bx
 jge short _@seek1a94
 add eax,0AC000003h
 adc ax,0
-mov [ebp-160],dl
+mov [_shim_vram+ebp-160],dl
 cmp ax,bx
 jge short _@seek2a94
 add eax,0AC000003h
 adc ax,0
-mov [ebp-320],dl
+mov [_shim_vram+ebp-320],dl
 add ecx,01E000000h
 adc cx,0
 sub bp,160*3
@@ -3260,11 +3430,13 @@ _@seeko94:
 add eax,ecx
 adc eax,ecx
 adc ax,-1
+
+
 _@seek96:
 add si,[theloop_xsina2]
-mov bx,[esi]
+mov bx,[_w1dta+esi]
 add di,[theloop_ysina2]
-add bx,[edi]
+add bx,[_w2dta+edi]
 add bx,-240
 cmp ax,bx
 jge short _@seeko96
@@ -3273,17 +3445,17 @@ shr dl,1
 _@hit96:
 add eax,0C0000003h
 adc ax,0
-mov [ebp],dl
+mov [_shim_vram+ebp],dl
 cmp ax,bx
 jge short _@seek1a96
 add eax,0C0000003h
 adc ax,0
-mov [ebp-160],dl
+mov [_shim_vram+ebp-160],dl
 cmp ax,bx
 jge short _@seek2a96
 add eax,0C0000003h
 adc ax,0
-mov [ebp-320],dl
+mov [_shim_vram+ebp-320],dl
 add ecx,01E000000h
 adc cx,0
 sub bp,160*3
@@ -3301,11 +3473,13 @@ _@seeko96:
 add eax,ecx
 adc eax,ecx
 adc ax,-1
+
+
 _@seek98:
 add si,[theloop_xsina2]
-mov bx,[esi]
+mov bx,[_w1dta+esi]
 add di,[theloop_ysina2]
-add bx,[edi]
+add bx,[_w2dta+edi]
 add bx,-243
 cmp ax,bx
 jge short _@seeko98
@@ -3314,17 +3488,17 @@ shr dl,1
 _@hit98:
 add eax,0D4000003h
 adc ax,0
-mov [ebp],dl
+mov [_shim_vram+ebp],dl
 cmp ax,bx
 jge short _@seek1a98
 add eax,0D4000003h
 adc ax,0
-mov [ebp-160],dl
+mov [_shim_vram+ebp-160],dl
 cmp ax,bx
 jge short _@seek2a98
 add eax,0D4000003h
 adc ax,0
-mov [ebp-320],dl
+mov [_shim_vram+ebp-320],dl
 add ecx,01E000000h
 adc cx,0
 sub bp,160*3
@@ -3342,11 +3516,13 @@ _@seeko98:
 add eax,ecx
 adc eax,ecx
 adc ax,-1
+
+
 _@seek100:
 add si,[theloop_xsina2]
-mov bx,[esi]
+mov bx,[_w1dta+esi]
 add di,[theloop_ysina2]
-add bx,[edi]
+add bx,[_w2dta+edi]
 add bx,-246
 cmp ax,bx
 jge short _@seeko100
@@ -3355,17 +3531,17 @@ shr dl,1
 _@hit100:
 add eax,0E8000003h
 adc ax,0
-mov [ebp],dl
+mov [_shim_vram+ebp],dl
 cmp ax,bx
 jge short _@seek1a100
 add eax,0E8000003h
 adc ax,0
-mov [ebp-160],dl
+mov [_shim_vram+ebp-160],dl
 cmp ax,bx
 jge short _@seek2a100
 add eax,0E8000003h
 adc ax,0
-mov [ebp-320],dl
+mov [_shim_vram+ebp-320],dl
 add ecx,01E000000h
 adc cx,0
 sub bp,160*3
@@ -3383,11 +3559,13 @@ _@seeko100:
 add eax,ecx
 adc eax,ecx
 adc ax,-1
+
+
 _@seek102:
 add si,[theloop_xsina2]
-mov bx,[esi]
+mov bx,[_w1dta+esi]
 add di,[theloop_ysina2]
-add bx,[edi]
+add bx,[_w2dta+edi]
 add bx,-248
 cmp ax,bx
 jge short _@seeko102
@@ -3396,17 +3574,17 @@ shr dl,1
 _@hit102:
 add eax,0FC000003h
 adc ax,0
-mov [ebp],dl
+mov [_shim_vram+ebp],dl
 cmp ax,bx
 jge short _@seek1a102
 add eax,0FC000003h
 adc ax,0
-mov [ebp-160],dl
+mov [_shim_vram+ebp-160],dl
 cmp ax,bx
 jge short _@seek2a102
 add eax,0FC000003h
 adc ax,0
-mov [ebp-320],dl
+mov [_shim_vram+ebp-320],dl
 add ecx,01E000000h
 adc cx,0
 sub bp,160*3
@@ -3424,11 +3602,13 @@ _@seeko102:
 add eax,ecx
 adc eax,ecx
 adc ax,-1
+
+
 _@seek104:
 add si,[theloop_xsina2]
-mov bx,[esi]
+mov bx,[_w1dta+esi]
 add di,[theloop_ysina2]
-add bx,[edi]
+add bx,[_w2dta+edi]
 add bx,-251
 cmp ax,bx
 jge short _@seeko104
@@ -3437,17 +3617,17 @@ shr dl,1
 _@hit104:
 add eax,010000004h
 adc ax,0
-mov [ebp],dl
+mov [_shim_vram+ebp],dl
 cmp ax,bx
 jge short _@seek1a104
 add eax,010000004h
 adc ax,0
-mov [ebp-160],dl
+mov [_shim_vram+ebp-160],dl
 cmp ax,bx
 jge short _@seek2a104
 add eax,010000004h
 adc ax,0
-mov [ebp-320],dl
+mov [_shim_vram+ebp-320],dl
 add ecx,01E000000h
 adc cx,0
 sub bp,160*3
@@ -3465,11 +3645,13 @@ _@seeko104:
 add eax,ecx
 adc eax,ecx
 adc ax,-1
+
+
 _@seek106:
 add si,[theloop_xsina2]
-mov bx,[esi]
+mov bx,[_w1dta+esi]
 add di,[theloop_ysina2]
-add bx,[edi]
+add bx,[_w2dta+edi]
 add bx,-253
 cmp ax,bx
 jge short _@seeko106
@@ -3478,17 +3660,17 @@ shr dl,1
 _@hit106:
 add eax,024000004h
 adc ax,0
-mov [ebp],dl
+mov [_shim_vram+ebp],dl
 cmp ax,bx
 jge short _@seek1a106
 add eax,024000004h
 adc ax,0
-mov [ebp-160],dl
+mov [_shim_vram+ebp-160],dl
 cmp ax,bx
 jge short _@seek2a106
 add eax,024000004h
 adc ax,0
-mov [ebp-320],dl
+mov [_shim_vram+ebp-320],dl
 add ecx,01E000000h
 adc cx,0
 sub bp,160*3
@@ -3506,11 +3688,13 @@ _@seeko106:
 add eax,ecx
 adc eax,ecx
 adc ax,-1
+
+
 _@seek108:
 add si,[theloop_xsina2]
-mov bx,[esi]
+mov bx,[_w1dta+esi]
 add di,[theloop_ysina2]
-add bx,[edi]
+add bx,[_w2dta+edi]
 add bx,-254
 cmp ax,bx
 jge short _@seeko108
@@ -3519,17 +3703,17 @@ shr dl,1
 _@hit108:
 add eax,038000004h
 adc ax,0
-mov [ebp],dl
+mov [_shim_vram+ebp],dl
 cmp ax,bx
 jge short _@seek1a108
 add eax,038000004h
 adc ax,0
-mov [ebp-160],dl
+mov [_shim_vram+ebp-160],dl
 cmp ax,bx
 jge short _@seek2a108
 add eax,038000004h
 adc ax,0
-mov [ebp-320],dl
+mov [_shim_vram+ebp-320],dl
 add ecx,01E000000h
 adc cx,0
 sub bp,160*3
@@ -3547,11 +3731,13 @@ _@seeko108:
 add eax,ecx
 adc eax,ecx
 adc ax,-1
+
+
 _@seek110:
 add si,[theloop_xsina2]
-mov bx,[esi]
+mov bx,[_w1dta+esi]
 add di,[theloop_ysina2]
-add bx,[edi]
+add bx,[_w2dta+edi]
 add bx,-255
 cmp ax,bx
 jge short _@seeko110
@@ -3560,17 +3746,17 @@ shr dl,1
 _@hit110:
 add eax,04C000004h
 adc ax,0
-mov [ebp],dl
+mov [_shim_vram+ebp],dl
 cmp ax,bx
 jge short _@seek1a110
 add eax,04C000004h
 adc ax,0
-mov [ebp-160],dl
+mov [_shim_vram+ebp-160],dl
 cmp ax,bx
 jge short _@seek2a110
 add eax,04C000004h
 adc ax,0
-mov [ebp-320],dl
+mov [_shim_vram+ebp-320],dl
 add ecx,01E000000h
 adc cx,0
 sub bp,160*3
@@ -3588,11 +3774,13 @@ _@seeko110:
 add eax,ecx
 adc eax,ecx
 adc ax,-1
+
+
 _@seek112:
 add si,[theloop_xsina2]
-mov bx,[esi]
+mov bx,[_w1dta+esi]
 add di,[theloop_ysina2]
-add bx,[edi]
+add bx,[_w2dta+edi]
 add bx,-256
 cmp ax,bx
 jge short _@seeko112
@@ -3601,17 +3789,17 @@ shr dl,1
 _@hit112:
 add eax,060000004h
 adc ax,0
-mov [ebp],dl
+mov [_shim_vram+ebp],dl
 cmp ax,bx
 jge short _@seek1a112
 add eax,060000004h
 adc ax,0
-mov [ebp-160],dl
+mov [_shim_vram+ebp-160],dl
 cmp ax,bx
 jge short _@seek2a112
 add eax,060000004h
 adc ax,0
-mov [ebp-320],dl
+mov [_shim_vram+ebp-320],dl
 add ecx,01E000000h
 adc cx,0
 sub bp,160*3
@@ -3629,11 +3817,13 @@ _@seeko112:
 add eax,ecx
 adc eax,ecx
 adc ax,-1
+
+
 _@seek114:
 add si,[theloop_xsina2]
-mov bx,[esi]
+mov bx,[_w1dta+esi]
 add di,[theloop_ysina2]
-add bx,[edi]
+add bx,[_w2dta+edi]
 add bx,-255
 cmp ax,bx
 jge short _@seeko114
@@ -3642,17 +3832,17 @@ shr dl,1
 _@hit114:
 add eax,074000004h
 adc ax,0
-mov [ebp],dl
+mov [_shim_vram+ebp],dl
 cmp ax,bx
 jge short _@seek1a114
 add eax,074000004h
 adc ax,0
-mov [ebp-160],dl
+mov [_shim_vram+ebp-160],dl
 cmp ax,bx
 jge short _@seek2a114
 add eax,074000004h
 adc ax,0
-mov [ebp-320],dl
+mov [_shim_vram+ebp-320],dl
 add ecx,01E000000h
 adc cx,0
 sub bp,160*3
@@ -3670,11 +3860,13 @@ _@seeko114:
 add eax,ecx
 adc eax,ecx
 adc ax,-1
+
+
 _@seek116:
 add si,[theloop_xsina2]
-mov bx,[esi]
+mov bx,[_w1dta+esi]
 add di,[theloop_ysina2]
-add bx,[edi]
+add bx,[_w2dta+edi]
 add bx,-254
 cmp ax,bx
 jge short _@seeko116
@@ -3683,17 +3875,17 @@ shr dl,1
 _@hit116:
 add eax,088000004h
 adc ax,0
-mov [ebp],dl
+mov [_shim_vram+ebp],dl
 cmp ax,bx
 jge short _@seek1a116
 add eax,088000004h
 adc ax,0
-mov [ebp-160],dl
+mov [_shim_vram+ebp-160],dl
 cmp ax,bx
 jge short _@seek2a116
 add eax,088000004h
 adc ax,0
-mov [ebp-320],dl
+mov [_shim_vram+ebp-320],dl
 add ecx,01E000000h
 adc cx,0
 sub bp,160*3
@@ -3711,11 +3903,13 @@ _@seeko116:
 add eax,ecx
 adc eax,ecx
 adc ax,-1
+
+
 _@seek118:
 add si,[theloop_xsina2]
-mov bx,[esi]
+mov bx,[_w1dta+esi]
 add di,[theloop_ysina2]
-add bx,[edi]
+add bx,[_w2dta+edi]
 add bx,-253
 cmp ax,bx
 jge short _@seeko118
@@ -3724,17 +3918,17 @@ shr dl,1
 _@hit118:
 add eax,09C000004h
 adc ax,0
-mov [ebp],dl
+mov [_shim_vram+ebp],dl
 cmp ax,bx
 jge short _@seek1a118
 add eax,09C000004h
 adc ax,0
-mov [ebp-160],dl
+mov [_shim_vram+ebp-160],dl
 cmp ax,bx
 jge short _@seek2a118
 add eax,09C000004h
 adc ax,0
-mov [ebp-320],dl
+mov [_shim_vram+ebp-320],dl
 add ecx,01E000000h
 adc cx,0
 sub bp,160*3
@@ -3752,11 +3946,13 @@ _@seeko118:
 add eax,ecx
 adc eax,ecx
 adc ax,-1
+
+
 _@seek120:
 add si,[theloop_xsina2]
-mov bx,[esi]
+mov bx,[_w1dta+esi]
 add di,[theloop_ysina2]
-add bx,[edi]
+add bx,[_w2dta+edi]
 add bx,-251
 cmp ax,bx
 jge short _@seeko120
@@ -3765,17 +3961,17 @@ shr dl,1
 _@hit120:
 add eax,0B0000004h
 adc ax,0
-mov [ebp],dl
+mov [_shim_vram+ebp],dl
 cmp ax,bx
 jge short _@seek1a120
 add eax,0B0000004h
 adc ax,0
-mov [ebp-160],dl
+mov [_shim_vram+ebp-160],dl
 cmp ax,bx
 jge short _@seek2a120
 add eax,0B0000004h
 adc ax,0
-mov [ebp-320],dl
+mov [_shim_vram+ebp-320],dl
 add ecx,01E000000h
 adc cx,0
 sub bp,160*3
@@ -3793,11 +3989,13 @@ _@seeko120:
 add eax,ecx
 adc eax,ecx
 adc ax,-1
+
+
 _@seek122:
 add si,[theloop_xsina2]
-mov bx,[esi]
+mov bx,[_w1dta+esi]
 add di,[theloop_ysina2]
-add bx,[edi]
+add bx,[_w2dta+edi]
 add bx,-248
 cmp ax,bx
 jge short _@seeko122
@@ -3806,17 +4004,17 @@ shr dl,1
 _@hit122:
 add eax,0C4000004h
 adc ax,0
-mov [ebp],dl
+mov [_shim_vram+ebp],dl
 cmp ax,bx
 jge short _@seek1a122
 add eax,0C4000004h
 adc ax,0
-mov [ebp-160],dl
+mov [_shim_vram+ebp-160],dl
 cmp ax,bx
 jge short _@seek2a122
 add eax,0C4000004h
 adc ax,0
-mov [ebp-320],dl
+mov [_shim_vram+ebp-320],dl
 add ecx,01E000000h
 adc cx,0
 sub bp,160*3
@@ -3834,11 +4032,13 @@ _@seeko122:
 add eax,ecx
 adc eax,ecx
 adc ax,-1
+
+
 _@seek124:
 add si,[theloop_xsina2]
-mov bx,[esi]
+mov bx,[_w1dta+esi]
 add di,[theloop_ysina2]
-add bx,[edi]
+add bx,[_w2dta+edi]
 add bx,-246
 cmp ax,bx
 jge short _@seeko124
@@ -3847,17 +4047,17 @@ shr dl,1
 _@hit124:
 add eax,0D8000004h
 adc ax,0
-mov [ebp],dl
+mov [_shim_vram+ebp],dl
 cmp ax,bx
 jge short _@seek1a124
 add eax,0D8000004h
 adc ax,0
-mov [ebp-160],dl
+mov [_shim_vram+ebp-160],dl
 cmp ax,bx
 jge short _@seek2a124
 add eax,0D8000004h
 adc ax,0
-mov [ebp-320],dl
+mov [_shim_vram+ebp-320],dl
 add ecx,01E000000h
 adc cx,0
 sub bp,160*3
@@ -3875,11 +4075,13 @@ _@seeko124:
 add eax,ecx
 adc eax,ecx
 adc ax,-1
+
+
 _@seek126:
 add si,[theloop_xsina2]
-mov bx,[esi]
+mov bx,[_w1dta+esi]
 add di,[theloop_ysina2]
-add bx,[edi]
+add bx,[_w2dta+edi]
 add bx,-243
 cmp ax,bx
 jge short _@seeko126
@@ -3888,17 +4090,17 @@ shr dl,1
 _@hit126:
 add eax,0EC000004h
 adc ax,0
-mov [ebp],dl
+mov [_shim_vram+ebp],dl
 cmp ax,bx
 jge short _@seek1a126
 add eax,0EC000004h
 adc ax,0
-mov [ebp-160],dl
+mov [_shim_vram+ebp-160],dl
 cmp ax,bx
 jge short _@seek2a126
 add eax,0EC000004h
 adc ax,0
-mov [ebp-320],dl
+mov [_shim_vram+ebp-320],dl
 add ecx,01E000000h
 adc cx,0
 sub bp,160*3
@@ -3916,11 +4118,13 @@ _@seeko126:
 add eax,ecx
 adc eax,ecx
 adc ax,-1
+
+
 _@seek128:
 add si,[theloop_xsina2]
-mov bx,[esi]
+mov bx,[_w1dta+esi]
 add di,[theloop_ysina2]
-add bx,[edi]
+add bx,[_w2dta+edi]
 add bx,-240
 cmp ax,bx
 jge short _@seeko128
@@ -3929,17 +4133,17 @@ shr dl,1
 _@hit128:
 add eax,000000005h
 adc ax,0
-mov [ebp],dl
+mov [_shim_vram+ebp],dl
 cmp ax,bx
 jge short _@seek1a128
 add eax,000000005h
 adc ax,0
-mov [ebp-160],dl
+mov [_shim_vram+ebp-160],dl
 cmp ax,bx
 jge short _@seek2a128
 add eax,000000005h
 adc ax,0
-mov [ebp-320],dl
+mov [_shim_vram+ebp-320],dl
 add ecx,01E000000h
 adc cx,0
 sub bp,160*3
@@ -3957,11 +4161,13 @@ _@seeko128:
 add eax,ecx
 adc eax,ecx
 adc ax,-1
+
+
 _@seek130:
 add si,[theloop_xsina2]
-mov bx,[esi]
+mov bx,[_w1dta+esi]
 add di,[theloop_ysina2]
-add bx,[edi]
+add bx,[_w2dta+edi]
 add bx,-237
 cmp ax,bx
 jge short _@seeko130
@@ -3970,17 +4176,17 @@ shr dl,1
 _@hit130:
 add eax,014000005h
 adc ax,0
-mov [ebp],dl
+mov [_shim_vram+ebp],dl
 cmp ax,bx
 jge short _@seek1a130
 add eax,014000005h
 adc ax,0
-mov [ebp-160],dl
+mov [_shim_vram+ebp-160],dl
 cmp ax,bx
 jge short _@seek2a130
 add eax,014000005h
 adc ax,0
-mov [ebp-320],dl
+mov [_shim_vram+ebp-320],dl
 add ecx,01E000000h
 adc cx,0
 sub bp,160*3
@@ -3998,11 +4204,13 @@ _@seeko130:
 add eax,ecx
 adc eax,ecx
 adc ax,-1
+
+
 _@seek132:
 add si,[theloop_xsina2]
-mov bx,[esi]
+mov bx,[_w1dta+esi]
 add di,[theloop_ysina2]
-add bx,[edi]
+add bx,[_w2dta+edi]
 add bx,-234
 cmp ax,bx
 jge short _@seeko132
@@ -4011,17 +4219,17 @@ shr dl,1
 _@hit132:
 add eax,028000005h
 adc ax,0
-mov [ebp],dl
+mov [_shim_vram+ebp],dl
 cmp ax,bx
 jge short _@seek1a132
 add eax,028000005h
 adc ax,0
-mov [ebp-160],dl
+mov [_shim_vram+ebp-160],dl
 cmp ax,bx
 jge short _@seek2a132
 add eax,028000005h
 adc ax,0
-mov [ebp-320],dl
+mov [_shim_vram+ebp-320],dl
 add ecx,01E000000h
 adc cx,0
 sub bp,160*3
@@ -4039,11 +4247,13 @@ _@seeko132:
 add eax,ecx
 adc eax,ecx
 adc ax,-1
+
+
 _@seek134:
 add si,[theloop_xsina2]
-mov bx,[esi]
+mov bx,[_w1dta+esi]
 add di,[theloop_ysina2]
-add bx,[edi]
+add bx,[_w2dta+edi]
 add bx,-232
 cmp ax,bx
 jge short _@seeko134
@@ -4052,17 +4262,17 @@ shr dl,1
 _@hit134:
 add eax,03C000005h
 adc ax,0
-mov [ebp],dl
+mov [_shim_vram+ebp],dl
 cmp ax,bx
 jge short _@seek1a134
 add eax,03C000005h
 adc ax,0
-mov [ebp-160],dl
+mov [_shim_vram+ebp-160],dl
 cmp ax,bx
 jge short _@seek2a134
 add eax,03C000005h
 adc ax,0
-mov [ebp-320],dl
+mov [_shim_vram+ebp-320],dl
 add ecx,01E000000h
 adc cx,0
 sub bp,160*3
@@ -4080,11 +4290,13 @@ _@seeko134:
 add eax,ecx
 adc eax,ecx
 adc ax,-1
+
+
 _@seek136:
 add si,[theloop_xsina2]
-mov bx,[esi]
+mov bx,[_w1dta+esi]
 add di,[theloop_ysina2]
-add bx,[edi]
+add bx,[_w2dta+edi]
 add bx,-229
 cmp ax,bx
 jge short _@seeko136
@@ -4093,17 +4305,17 @@ shr dl,1
 _@hit136:
 add eax,050000005h
 adc ax,0
-mov [ebp],dl
+mov [_shim_vram+ebp],dl
 cmp ax,bx
 jge short _@seek1a136
 add eax,050000005h
 adc ax,0
-mov [ebp-160],dl
+mov [_shim_vram+ebp-160],dl
 cmp ax,bx
 jge short _@seek2a136
 add eax,050000005h
 adc ax,0
-mov [ebp-320],dl
+mov [_shim_vram+ebp-320],dl
 add ecx,01E000000h
 adc cx,0
 sub bp,160*3
@@ -4121,11 +4333,13 @@ _@seeko136:
 add eax,ecx
 adc eax,ecx
 adc ax,-1
+
+
 _@seek138:
 add si,[theloop_xsina2]
-mov bx,[esi]
+mov bx,[_w1dta+esi]
 add di,[theloop_ysina2]
-add bx,[edi]
+add bx,[_w2dta+edi]
 add bx,-227
 cmp ax,bx
 jge short _@seeko138
@@ -4134,17 +4348,17 @@ shr dl,1
 _@hit138:
 add eax,064000005h
 adc ax,0
-mov [ebp],dl
+mov [_shim_vram+ebp],dl
 cmp ax,bx
 jge short _@seek1a138
 add eax,064000005h
 adc ax,0
-mov [ebp-160],dl
+mov [_shim_vram+ebp-160],dl
 cmp ax,bx
 jge short _@seek2a138
 add eax,064000005h
 adc ax,0
-mov [ebp-320],dl
+mov [_shim_vram+ebp-320],dl
 add ecx,01E000000h
 adc cx,0
 sub bp,160*3
@@ -4162,11 +4376,13 @@ _@seeko138:
 add eax,ecx
 adc eax,ecx
 adc ax,-1
+
+
 _@seek140:
 add si,[theloop_xsina2]
-mov bx,[esi]
+mov bx,[_w1dta+esi]
 add di,[theloop_ysina2]
-add bx,[edi]
+add bx,[_w2dta+edi]
 add bx,-226
 cmp ax,bx
 jge short _@seeko140
@@ -4175,17 +4391,17 @@ shr dl,1
 _@hit140:
 add eax,078000005h
 adc ax,0
-mov [ebp],dl
+mov [_shim_vram+ebp],dl
 cmp ax,bx
 jge short _@seek1a140
 add eax,078000005h
 adc ax,0
-mov [ebp-160],dl
+mov [_shim_vram+ebp-160],dl
 cmp ax,bx
 jge short _@seek2a140
 add eax,078000005h
 adc ax,0
-mov [ebp-320],dl
+mov [_shim_vram+ebp-320],dl
 add ecx,01E000000h
 adc cx,0
 sub bp,160*3
@@ -4203,11 +4419,13 @@ _@seeko140:
 add eax,ecx
 adc eax,ecx
 adc ax,-1
+
+
 _@seek142:
 add si,[theloop_xsina2]
-mov bx,[esi]
+mov bx,[_w1dta+esi]
 add di,[theloop_ysina2]
-add bx,[edi]
+add bx,[_w2dta+edi]
 add bx,-225
 cmp ax,bx
 jge short _@seeko142
@@ -4216,17 +4434,17 @@ shr dl,1
 _@hit142:
 add eax,08C000005h
 adc ax,0
-mov [ebp],dl
+mov [_shim_vram+ebp],dl
 cmp ax,bx
 jge short _@seek1a142
 add eax,08C000005h
 adc ax,0
-mov [ebp-160],dl
+mov [_shim_vram+ebp-160],dl
 cmp ax,bx
 jge short _@seek2a142
 add eax,08C000005h
 adc ax,0
-mov [ebp-320],dl
+mov [_shim_vram+ebp-320],dl
 add ecx,01E000000h
 adc cx,0
 sub bp,160*3
@@ -4244,11 +4462,13 @@ _@seeko142:
 add eax,ecx
 adc eax,ecx
 adc ax,-1
+
+
 _@seek144:
 add si,[theloop_xsina2]
-mov bx,[esi]
+mov bx,[_w1dta+esi]
 add di,[theloop_ysina2]
-add bx,[edi]
+add bx,[_w2dta+edi]
 add bx,-224
 cmp ax,bx
 jge short _@seeko144
@@ -4257,17 +4477,17 @@ shr dl,1
 _@hit144:
 add eax,0A0000005h
 adc ax,0
-mov [ebp],dl
+mov [_shim_vram+ebp],dl
 cmp ax,bx
 jge short _@seek1a144
 add eax,0A0000005h
 adc ax,0
-mov [ebp-160],dl
+mov [_shim_vram+ebp-160],dl
 cmp ax,bx
 jge short _@seek2a144
 add eax,0A0000005h
 adc ax,0
-mov [ebp-320],dl
+mov [_shim_vram+ebp-320],dl
 add ecx,01E000000h
 adc cx,0
 sub bp,160*3
@@ -4285,11 +4505,13 @@ _@seeko144:
 add eax,ecx
 adc eax,ecx
 adc ax,-1
+
+
 _@seek146:
 add si,[theloop_xsina2]
-mov bx,[esi]
+mov bx,[_w1dta+esi]
 add di,[theloop_ysina2]
-add bx,[edi]
+add bx,[_w2dta+edi]
 add bx,-225
 cmp ax,bx
 jge short _@seeko146
@@ -4298,17 +4520,17 @@ shr dl,1
 _@hit146:
 add eax,0B4000005h
 adc ax,0
-mov [ebp],dl
+mov [_shim_vram+ebp],dl
 cmp ax,bx
 jge short _@seek1a146
 add eax,0B4000005h
 adc ax,0
-mov [ebp-160],dl
+mov [_shim_vram+ebp-160],dl
 cmp ax,bx
 jge short _@seek2a146
 add eax,0B4000005h
 adc ax,0
-mov [ebp-320],dl
+mov [_shim_vram+ebp-320],dl
 add ecx,01E000000h
 adc cx,0
 sub bp,160*3
@@ -4326,11 +4548,13 @@ _@seeko146:
 add eax,ecx
 adc eax,ecx
 adc ax,-1
+
+
 _@seek148:
 add si,[theloop_xsina2]
-mov bx,[esi]
+mov bx,[_w1dta+esi]
 add di,[theloop_ysina2]
-add bx,[edi]
+add bx,[_w2dta+edi]
 add bx,-226
 cmp ax,bx
 jge short _@seeko148
@@ -4339,17 +4563,17 @@ shr dl,1
 _@hit148:
 add eax,0C8000005h
 adc ax,0
-mov [ebp],dl
+mov [_shim_vram+ebp],dl
 cmp ax,bx
 jge short _@seek1a148
 add eax,0C8000005h
 adc ax,0
-mov [ebp-160],dl
+mov [_shim_vram+ebp-160],dl
 cmp ax,bx
 jge short _@seek2a148
 add eax,0C8000005h
 adc ax,0
-mov [ebp-320],dl
+mov [_shim_vram+ebp-320],dl
 add ecx,01E000000h
 adc cx,0
 sub bp,160*3
@@ -4367,11 +4591,13 @@ _@seeko148:
 add eax,ecx
 adc eax,ecx
 adc ax,-1
+
+
 _@seek150:
 add si,[theloop_xsina2]
-mov bx,[esi]
+mov bx,[_w1dta+esi]
 add di,[theloop_ysina2]
-add bx,[edi]
+add bx,[_w2dta+edi]
 add bx,-227
 cmp ax,bx
 jge short _@seeko150
@@ -4380,17 +4606,17 @@ shr dl,1
 _@hit150:
 add eax,0DC000005h
 adc ax,0
-mov [ebp],dl
+mov [_shim_vram+ebp],dl
 cmp ax,bx
 jge short _@seek1a150
 add eax,0DC000005h
 adc ax,0
-mov [ebp-160],dl
+mov [_shim_vram+ebp-160],dl
 cmp ax,bx
 jge short _@seek2a150
 add eax,0DC000005h
 adc ax,0
-mov [ebp-320],dl
+mov [_shim_vram+ebp-320],dl
 add ecx,01E000000h
 adc cx,0
 sub bp,160*3
@@ -4408,11 +4634,13 @@ _@seeko150:
 add eax,ecx
 adc eax,ecx
 adc ax,-1
+
+
 _@seek152:
 add si,[theloop_xsina2]
-mov bx,[esi]
+mov bx,[_w1dta+esi]
 add di,[theloop_ysina2]
-add bx,[edi]
+add bx,[_w2dta+edi]
 add bx,-229
 cmp ax,bx
 jge short _@seeko152
@@ -4421,17 +4649,17 @@ shr dl,1
 _@hit152:
 add eax,0F0000005h
 adc ax,0
-mov [ebp],dl
+mov [_shim_vram+ebp],dl
 cmp ax,bx
 jge short _@seek1a152
 add eax,0F0000005h
 adc ax,0
-mov [ebp-160],dl
+mov [_shim_vram+ebp-160],dl
 cmp ax,bx
 jge short _@seek2a152
 add eax,0F0000005h
 adc ax,0
-mov [ebp-320],dl
+mov [_shim_vram+ebp-320],dl
 add ecx,01E000000h
 adc cx,0
 sub bp,160*3
@@ -4449,11 +4677,13 @@ _@seeko152:
 add eax,ecx
 adc eax,ecx
 adc ax,-1
+
+
 _@seek154:
 add si,[theloop_xsina2]
-mov bx,[esi]
+mov bx,[_w1dta+esi]
 add di,[theloop_ysina2]
-add bx,[edi]
+add bx,[_w2dta+edi]
 add bx,-232
 cmp ax,bx
 jge short _@seeko154
@@ -4462,17 +4692,17 @@ shr dl,1
 _@hit154:
 add eax,004000006h
 adc ax,0
-mov [ebp],dl
+mov [_shim_vram+ebp],dl
 cmp ax,bx
 jge short _@seek1a154
 add eax,004000006h
 adc ax,0
-mov [ebp-160],dl
+mov [_shim_vram+ebp-160],dl
 cmp ax,bx
 jge short _@seek2a154
 add eax,004000006h
 adc ax,0
-mov [ebp-320],dl
+mov [_shim_vram+ebp-320],dl
 add ecx,01E000000h
 adc cx,0
 sub bp,160*3
@@ -4490,11 +4720,13 @@ _@seeko154:
 add eax,ecx
 adc eax,ecx
 adc ax,-1
+
+
 _@seek156:
 add si,[theloop_xsina2]
-mov bx,[esi]
+mov bx,[_w1dta+esi]
 add di,[theloop_ysina2]
-add bx,[edi]
+add bx,[_w2dta+edi]
 add bx,-234
 cmp ax,bx
 jge short _@seeko156
@@ -4503,17 +4735,17 @@ shr dl,1
 _@hit156:
 add eax,018000006h
 adc ax,0
-mov [ebp],dl
+mov [_shim_vram+ebp],dl
 cmp ax,bx
 jge short _@seek1a156
 add eax,018000006h
 adc ax,0
-mov [ebp-160],dl
+mov [_shim_vram+ebp-160],dl
 cmp ax,bx
 jge short _@seek2a156
 add eax,018000006h
 adc ax,0
-mov [ebp-320],dl
+mov [_shim_vram+ebp-320],dl
 add ecx,01E000000h
 adc cx,0
 sub bp,160*3
@@ -4531,11 +4763,13 @@ _@seeko156:
 add eax,ecx
 adc eax,ecx
 adc ax,-1
+
+
 _@seek158:
 add si,[theloop_xsina2]
-mov bx,[esi]
+mov bx,[_w1dta+esi]
 add di,[theloop_ysina2]
-add bx,[edi]
+add bx,[_w2dta+edi]
 add bx,-237
 cmp ax,bx
 jge short _@seeko158
@@ -4544,17 +4778,17 @@ shr dl,1
 _@hit158:
 add eax,02C000006h
 adc ax,0
-mov [ebp],dl
+mov [_shim_vram+ebp],dl
 cmp ax,bx
 jge short _@seek1a158
 add eax,02C000006h
 adc ax,0
-mov [ebp-160],dl
+mov [_shim_vram+ebp-160],dl
 cmp ax,bx
 jge short _@seek2a158
 add eax,02C000006h
 adc ax,0
-mov [ebp-320],dl
+mov [_shim_vram+ebp-320],dl
 add ecx,01E000000h
 adc cx,0
 sub bp,160*3
@@ -4572,11 +4806,13 @@ _@seeko158:
 add eax,ecx
 adc eax,ecx
 adc ax,-1
+
+
 _@seek160:
 add si,[theloop_xsina2]
-mov bx,[esi]
+mov bx,[_w1dta+esi]
 add di,[theloop_ysina2]
-add bx,[edi]
+add bx,[_w2dta+edi]
 add bx,-240
 cmp ax,bx
 jge short _@seeko160
@@ -4585,17 +4821,17 @@ shr dl,1
 _@hit160:
 add eax,040000006h
 adc ax,0
-mov [ebp],dl
+mov [_shim_vram+ebp],dl
 cmp ax,bx
 jge short _@seek1a160
 add eax,040000006h
 adc ax,0
-mov [ebp-160],dl
+mov [_shim_vram+ebp-160],dl
 cmp ax,bx
 jge short _@seek2a160
 add eax,040000006h
 adc ax,0
-mov [ebp-320],dl
+mov [_shim_vram+ebp-320],dl
 add ecx,01E000000h
 adc cx,0
 sub bp,160*3
@@ -4613,11 +4849,13 @@ _@seeko160:
 add eax,ecx
 adc eax,ecx
 adc ax,-1
+
+
 _@seek162:
 add si,[theloop_xsina2]
-mov bx,[esi]
+mov bx,[_w1dta+esi]
 add di,[theloop_ysina2]
-add bx,[edi]
+add bx,[_w2dta+edi]
 add bx,-243
 cmp ax,bx
 jge short _@seeko162
@@ -4626,17 +4864,17 @@ shr dl,1
 _@hit162:
 add eax,054000006h
 adc ax,0
-mov [ebp],dl
+mov [_shim_vram+ebp],dl
 cmp ax,bx
 jge short _@seek1a162
 add eax,054000006h
 adc ax,0
-mov [ebp-160],dl
+mov [_shim_vram+ebp-160],dl
 cmp ax,bx
 jge short _@seek2a162
 add eax,054000006h
 adc ax,0
-mov [ebp-320],dl
+mov [_shim_vram+ebp-320],dl
 add ecx,01E000000h
 adc cx,0
 sub bp,160*3
@@ -4654,11 +4892,13 @@ _@seeko162:
 add eax,ecx
 adc eax,ecx
 adc ax,-1
+
+
 _@seek164:
 add si,[theloop_xsina2]
-mov bx,[esi]
+mov bx,[_w1dta+esi]
 add di,[theloop_ysina2]
-add bx,[edi]
+add bx,[_w2dta+edi]
 add bx,-246
 cmp ax,bx
 jge short _@seeko164
@@ -4667,17 +4907,17 @@ shr dl,1
 _@hit164:
 add eax,068000006h
 adc ax,0
-mov [ebp],dl
+mov [_shim_vram+ebp],dl
 cmp ax,bx
 jge short _@seek1a164
 add eax,068000006h
 adc ax,0
-mov [ebp-160],dl
+mov [_shim_vram+ebp-160],dl
 cmp ax,bx
 jge short _@seek2a164
 add eax,068000006h
 adc ax,0
-mov [ebp-320],dl
+mov [_shim_vram+ebp-320],dl
 add ecx,01E000000h
 adc cx,0
 sub bp,160*3
@@ -4695,11 +4935,13 @@ _@seeko164:
 add eax,ecx
 adc eax,ecx
 adc ax,-1
+
+
 _@seek166:
 add si,[theloop_xsina2]
-mov bx,[esi]
+mov bx,[_w1dta+esi]
 add di,[theloop_ysina2]
-add bx,[edi]
+add bx,[_w2dta+edi]
 add bx,-248
 cmp ax,bx
 jge short _@seeko166
@@ -4708,17 +4950,17 @@ shr dl,1
 _@hit166:
 add eax,07C000006h
 adc ax,0
-mov [ebp],dl
+mov [_shim_vram+ebp],dl
 cmp ax,bx
 jge short _@seek1a166
 add eax,07C000006h
 adc ax,0
-mov [ebp-160],dl
+mov [_shim_vram+ebp-160],dl
 cmp ax,bx
 jge short _@seek2a166
 add eax,07C000006h
 adc ax,0
-mov [ebp-320],dl
+mov [_shim_vram+ebp-320],dl
 add ecx,01E000000h
 adc cx,0
 sub bp,160*3
@@ -4736,11 +4978,13 @@ _@seeko166:
 add eax,ecx
 adc eax,ecx
 adc ax,-1
+
+
 _@seek168:
 add si,[theloop_xsina2]
-mov bx,[esi]
+mov bx,[_w1dta+esi]
 add di,[theloop_ysina2]
-add bx,[edi]
+add bx,[_w2dta+edi]
 add bx,-251
 cmp ax,bx
 jge short _@seeko168
@@ -4749,17 +4993,17 @@ shr dl,1
 _@hit168:
 add eax,090000006h
 adc ax,0
-mov [ebp],dl
+mov [_shim_vram+ebp],dl
 cmp ax,bx
 jge short _@seek1a168
 add eax,090000006h
 adc ax,0
-mov [ebp-160],dl
+mov [_shim_vram+ebp-160],dl
 cmp ax,bx
 jge short _@seek2a168
 add eax,090000006h
 adc ax,0
-mov [ebp-320],dl
+mov [_shim_vram+ebp-320],dl
 add ecx,01E000000h
 adc cx,0
 sub bp,160*3
@@ -4777,11 +5021,13 @@ _@seeko168:
 add eax,ecx
 adc eax,ecx
 adc ax,-1
+
+
 _@seek170:
 add si,[theloop_xsina2]
-mov bx,[esi]
+mov bx,[_w1dta+esi]
 add di,[theloop_ysina2]
-add bx,[edi]
+add bx,[_w2dta+edi]
 add bx,-253
 cmp ax,bx
 jge short _@seeko170
@@ -4790,17 +5036,17 @@ shr dl,1
 _@hit170:
 add eax,0A4000006h
 adc ax,0
-mov [ebp],dl
+mov [_shim_vram+ebp],dl
 cmp ax,bx
 jge short _@seek1a170
 add eax,0A4000006h
 adc ax,0
-mov [ebp-160],dl
+mov [_shim_vram+ebp-160],dl
 cmp ax,bx
 jge short _@seek2a170
 add eax,0A4000006h
 adc ax,0
-mov [ebp-320],dl
+mov [_shim_vram+ebp-320],dl
 add ecx,01E000000h
 adc cx,0
 sub bp,160*3
@@ -4818,11 +5064,13 @@ _@seeko170:
 add eax,ecx
 adc eax,ecx
 adc ax,-1
+
+
 _@seek172:
 add si,[theloop_xsina2]
-mov bx,[esi]
+mov bx,[_w1dta+esi]
 add di,[theloop_ysina2]
-add bx,[edi]
+add bx,[_w2dta+edi]
 add bx,-254
 cmp ax,bx
 jge short _@seeko172
@@ -4831,17 +5079,17 @@ shr dl,1
 _@hit172:
 add eax,0B8000006h
 adc ax,0
-mov [ebp],dl
+mov [_shim_vram+ebp],dl
 cmp ax,bx
 jge short _@seek1a172
 add eax,0B8000006h
 adc ax,0
-mov [ebp-160],dl
+mov [_shim_vram+ebp-160],dl
 cmp ax,bx
 jge short _@seek2a172
 add eax,0B8000006h
 adc ax,0
-mov [ebp-320],dl
+mov [_shim_vram+ebp-320],dl
 add ecx,01E000000h
 adc cx,0
 sub bp,160*3
@@ -4859,11 +5107,13 @@ _@seeko172:
 add eax,ecx
 adc eax,ecx
 adc ax,-1
+
+
 _@seek174:
 add si,[theloop_xsina2]
-mov bx,[esi]
+mov bx,[_w1dta+esi]
 add di,[theloop_ysina2]
-add bx,[edi]
+add bx,[_w2dta+edi]
 add bx,-255
 cmp ax,bx
 jge short _@seeko174
@@ -4872,17 +5122,17 @@ shr dl,1
 _@hit174:
 add eax,0CC000006h
 adc ax,0
-mov [ebp],dl
+mov [_shim_vram+ebp],dl
 cmp ax,bx
 jge short _@seek1a174
 add eax,0CC000006h
 adc ax,0
-mov [ebp-160],dl
+mov [_shim_vram+ebp-160],dl
 cmp ax,bx
 jge short _@seek2a174
 add eax,0CC000006h
 adc ax,0
-mov [ebp-320],dl
+mov [_shim_vram+ebp-320],dl
 add ecx,01E000000h
 adc cx,0
 sub bp,160*3
@@ -4900,11 +5150,13 @@ _@seeko174:
 add eax,ecx
 adc eax,ecx
 adc ax,-1
+
+
 _@seek176:
 add si,[theloop_xsina2]
-mov bx,[esi]
+mov bx,[_w1dta+esi]
 add di,[theloop_ysina2]
-add bx,[edi]
+add bx,[_w2dta+edi]
 add bx,-256
 cmp ax,bx
 jge short _@seeko176
@@ -4913,17 +5165,17 @@ shr dl,1
 _@hit176:
 add eax,0E0000006h
 adc ax,0
-mov [ebp],dl
+mov [_shim_vram+ebp],dl
 cmp ax,bx
 jge short _@seek1a176
 add eax,0E0000006h
 adc ax,0
-mov [ebp-160],dl
+mov [_shim_vram+ebp-160],dl
 cmp ax,bx
 jge short _@seek2a176
 add eax,0E0000006h
 adc ax,0
-mov [ebp-320],dl
+mov [_shim_vram+ebp-320],dl
 add ecx,01E000000h
 adc cx,0
 sub bp,160*3
@@ -4941,11 +5193,13 @@ _@seeko176:
 add eax,ecx
 adc eax,ecx
 adc ax,-1
+
+
 _@seek178:
 add si,[theloop_xsina2]
-mov bx,[esi]
+mov bx,[_w1dta+esi]
 add di,[theloop_ysina2]
-add bx,[edi]
+add bx,[_w2dta+edi]
 add bx,-255
 cmp ax,bx
 jge short _@seeko178
@@ -4954,17 +5208,17 @@ shr dl,1
 _@hit178:
 add eax,0F4000006h
 adc ax,0
-mov [ebp],dl
+mov [_shim_vram+ebp],dl
 cmp ax,bx
 jge short _@seek1a178
 add eax,0F4000006h
 adc ax,0
-mov [ebp-160],dl
+mov [_shim_vram+ebp-160],dl
 cmp ax,bx
 jge short _@seek2a178
 add eax,0F4000006h
 adc ax,0
-mov [ebp-320],dl
+mov [_shim_vram+ebp-320],dl
 add ecx,01E000000h
 adc cx,0
 sub bp,160*3
@@ -4982,11 +5236,13 @@ _@seeko178:
 add eax,ecx
 adc eax,ecx
 adc ax,-1
+
+
 _@seek180:
 add si,[theloop_xsina2]
-mov bx,[esi]
+mov bx,[_w1dta+esi]
 add di,[theloop_ysina2]
-add bx,[edi]
+add bx,[_w2dta+edi]
 add bx,-254
 cmp ax,bx
 jge short _@seeko180
@@ -4995,17 +5251,17 @@ shr dl,1
 _@hit180:
 add eax,008000007h
 adc ax,0
-mov [ebp],dl
+mov [_shim_vram+ebp],dl
 cmp ax,bx
 jge short _@seek1a180
 add eax,008000007h
 adc ax,0
-mov [ebp-160],dl
+mov [_shim_vram+ebp-160],dl
 cmp ax,bx
 jge short _@seek2a180
 add eax,008000007h
 adc ax,0
-mov [ebp-320],dl
+mov [_shim_vram+ebp-320],dl
 add ecx,01E000000h
 adc cx,0
 sub bp,160*3
@@ -5023,11 +5279,13 @@ _@seeko180:
 add eax,ecx
 adc eax,ecx
 adc ax,-1
+
+
 _@seek182:
 add si,[theloop_xsina2]
-mov bx,[esi]
+mov bx,[_w1dta+esi]
 add di,[theloop_ysina2]
-add bx,[edi]
+add bx,[_w2dta+edi]
 add bx,-253
 cmp ax,bx
 jge short _@seeko182
@@ -5036,17 +5294,17 @@ shr dl,1
 _@hit182:
 add eax,01C000007h
 adc ax,0
-mov [ebp],dl
+mov [_shim_vram+ebp],dl
 cmp ax,bx
 jge short _@seek1a182
 add eax,01C000007h
 adc ax,0
-mov [ebp-160],dl
+mov [_shim_vram+ebp-160],dl
 cmp ax,bx
 jge short _@seek2a182
 add eax,01C000007h
 adc ax,0
-mov [ebp-320],dl
+mov [_shim_vram+ebp-320],dl
 add ecx,01E000000h
 adc cx,0
 sub bp,160*3
@@ -5064,11 +5322,13 @@ _@seeko182:
 add eax,ecx
 adc eax,ecx
 adc ax,-1
+
+
 _@seek184:
 add si,[theloop_xsina2]
-mov bx,[esi]
+mov bx,[_w1dta+esi]
 add di,[theloop_ysina2]
-add bx,[edi]
+add bx,[_w2dta+edi]
 add bx,-251
 cmp ax,bx
 jge short _@seeko184
@@ -5077,17 +5337,17 @@ shr dl,1
 _@hit184:
 add eax,030000007h
 adc ax,0
-mov [ebp],dl
+mov [_shim_vram+ebp],dl
 cmp ax,bx
 jge short _@seek1a184
 add eax,030000007h
 adc ax,0
-mov [ebp-160],dl
+mov [_shim_vram+ebp-160],dl
 cmp ax,bx
 jge short _@seek2a184
 add eax,030000007h
 adc ax,0
-mov [ebp-320],dl
+mov [_shim_vram+ebp-320],dl
 add ecx,01E000000h
 adc cx,0
 sub bp,160*3
@@ -5105,11 +5365,13 @@ _@seeko184:
 add eax,ecx
 adc eax,ecx
 adc ax,-1
+
+
 _@seek186:
 add si,[theloop_xsina2]
-mov bx,[esi]
+mov bx,[_w1dta+esi]
 add di,[theloop_ysina2]
-add bx,[edi]
+add bx,[_w2dta+edi]
 add bx,-248
 cmp ax,bx
 jge short _@seeko186
@@ -5118,17 +5380,17 @@ shr dl,1
 _@hit186:
 add eax,044000007h
 adc ax,0
-mov [ebp],dl
+mov [_shim_vram+ebp],dl
 cmp ax,bx
 jge short _@seek1a186
 add eax,044000007h
 adc ax,0
-mov [ebp-160],dl
+mov [_shim_vram+ebp-160],dl
 cmp ax,bx
 jge short _@seek2a186
 add eax,044000007h
 adc ax,0
-mov [ebp-320],dl
+mov [_shim_vram+ebp-320],dl
 add ecx,01E000000h
 adc cx,0
 sub bp,160*3
@@ -5146,11 +5408,13 @@ _@seeko186:
 add eax,ecx
 adc eax,ecx
 adc ax,-1
+
+
 _@seek188:
 add si,[theloop_xsina2]
-mov bx,[esi]
+mov bx,[_w1dta+esi]
 add di,[theloop_ysina2]
-add bx,[edi]
+add bx,[_w2dta+edi]
 add bx,-246
 cmp ax,bx
 jge short _@seeko188
@@ -5159,17 +5423,17 @@ shr dl,1
 _@hit188:
 add eax,058000007h
 adc ax,0
-mov [ebp],dl
+mov [_shim_vram+ebp],dl
 cmp ax,bx
 jge short _@seek1a188
 add eax,058000007h
 adc ax,0
-mov [ebp-160],dl
+mov [_shim_vram+ebp-160],dl
 cmp ax,bx
 jge short _@seek2a188
 add eax,058000007h
 adc ax,0
-mov [ebp-320],dl
+mov [_shim_vram+ebp-320],dl
 add ecx,01E000000h
 adc cx,0
 sub bp,160*3
@@ -5187,11 +5451,13 @@ _@seeko188:
 add eax,ecx
 adc eax,ecx
 adc ax,-1
+
+
 _@seek190:
 add si,[theloop_xsina2]
-mov bx,[esi]
+mov bx,[_w1dta+esi]
 add di,[theloop_ysina2]
-add bx,[edi]
+add bx,[_w2dta+edi]
 add bx,-243
 cmp ax,bx
 jge short _@seeko190
@@ -5200,17 +5466,17 @@ shr dl,1
 _@hit190:
 add eax,06C000007h
 adc ax,0
-mov [ebp],dl
+mov [_shim_vram+ebp],dl
 cmp ax,bx
 jge short _@seek1a190
 add eax,06C000007h
 adc ax,0
-mov [ebp-160],dl
+mov [_shim_vram+ebp-160],dl
 cmp ax,bx
 jge short _@seek2a190
 add eax,06C000007h
 adc ax,0
-mov [ebp-320],dl
+mov [_shim_vram+ebp-320],dl
 add ecx,01E000000h
 adc cx,0
 sub bp,160*3
@@ -5228,6 +5494,10 @@ _@seeko190:
 add eax,ecx
 adc eax,ecx
 adc ax,-1
+
+
 _@seek192:
 _@seekr192:
+
+pop ebp
 ret
