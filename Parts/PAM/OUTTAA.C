@@ -16,10 +16,12 @@ extern	int frame_count;
 extern  char *cop_pal;
 extern  int do_pal;
 
-//extern	init_uframe(int seg);
-extern	ulosta_frame(int start);
+extern	void init_uframe(char * seg);
+extern	void ulosta_frame(char * start);
 extern 	char pam_memblock[];
 extern 	char pam_pal[];
+
+void setpalarea( char * p, int offset, int count );
 
 int	wfade[100]=    {63,32,16,8,4,2,1,0,0,0,
 			0,0,0,0,0,0,0,0,0,0,
@@ -27,7 +29,7 @@ int	wfade[100]=    {63,32,16,8,4,2,1,0,0,0,
 			1,2,4,6,9,14,20,28,37,46,
 			56,63,63,63,63,63,63,63,63,63,63,63,63,63,63,63,63,63,63};
 
-pam_main()
+void pam_main()
 	{
 	int	a,f=0,p=0,frames;
 	unsigned  m=65535,b,segp;

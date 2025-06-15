@@ -1,6 +1,7 @@
 #include <dos.h>
 #include <stdio.h>
 #include <conio.h>
+#include <memory.h>
 //#include "tweak.h"
 #include "../dis/dis.h"
 #include "../../shims.h"
@@ -21,7 +22,11 @@ char fadepal[256*3];
 extern char hzpic[];
 extern void outline(char *f, char *t);
 extern void ascrolltext(int scrl, int *dtau);
-char	* vmem=(char *)0x0a0000000L;
+
+void setpalarea( char * p, int offset, int count );
+
+#define vmem shim_vram
+
 int	mmask[4]={0x0102,0x0202,0x0402,0x0802};
 
 char (* vvmem)[176];
@@ -50,7 +55,7 @@ int	a=0,p=0,alku_tptr=0;
 void alku_init();
 void prtc( int x, int y, char * txt );
 void dofade( char * pal1, char * pal2 );
-void fdofade( char * pal1, char * pal2, int a );
+int fdofade( char * pal1, char * pal2, int a );
 void addtext( int tx, int ty, char * txt );
 void maketext( int scrl );
 void scrolltext( int scrl );
@@ -97,7 +102,7 @@ void alku_main()
 	while(dis_sync()<4 && !dis_exit());
 
 	memcpy(fadepal,fade1,768);
-	cop_fadepal=picin;
+	cop_fadepal=(char*)picin;
 	cop_dofade=128;
 	for(a=1,p=1,f=0,frame_count=0;cop_dofade!=0 && !dis_exit();)
   {
@@ -111,12 +116,12 @@ void alku_main()
 	for(f=60;a<320 && !dis_exit();)
 		{
 		if(f==0) {
-			cop_fadepal=textin;
+			cop_fadepal=(char*)textin;
 			cop_dofade=64;
 			f+=20;
 			}
 		else if(f==50) {
-			cop_fadepal=textout;
+			cop_fadepal= (char *)textout;
 			cop_dofade=64;
 			f++;
 			}
@@ -352,13 +357,14 @@ void dofade(char *pal1, char *pal2)
 	}
 char	fuckpal[768];
 
-void fdofade(char *pal1, char *pal2, int a)
+int fdofade(char *pal1, char *pal2, int a)
 	{
 	int	b,c;
 
 	if(a<0 || a>64) return(0);
 	for(b=0;b<768;b++) fuckpal[b]=(pal1[b]*(64-a)+pal2[b]*a>>6);
 	cop_pal=fuckpal; do_pal=1;
+  return 0;
 	}
 
 void addtext(int tx,int ty,char *txt)
@@ -510,7 +516,7 @@ void fmaketext(int scrl)
 
 void ffonapois()
 	{
-  unsigned int * vvmem = shim_vram;// MK_FP( 0x0a000, 0 );
+  unsigned int * vvmem = ( unsigned int * )shim_vram;// MK_FP( 0x0a000, 0 );
 	unsigned a;
 
 	shim_outp(0x3c4,0x0102);

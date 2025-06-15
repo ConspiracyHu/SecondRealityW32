@@ -1,3 +1,6 @@
+#include <memory.h>
+#include "../../shims.h"
+
 struct st_readp
 {
 	short	magic;

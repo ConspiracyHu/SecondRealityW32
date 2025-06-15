@@ -11,12 +11,14 @@ int dis_indemo()
   return 1;
 }
 
+void demo_vsync();
 int dis_waitb()
 {
   demo_vsync();
   return 1;
 }
 
+unsigned char demo_wantstoquit();
 int dis_exit()
 {
   return demo_wantstoquit();
@@ -46,7 +48,7 @@ int dis_musrow( int code )
   return 0;
 }
 
-void dis_setcopper( int routine_number, void ( *routine )( ) )
+void dis_setcopper( int routine_number, void ( *routine )( void ) )
 {
 }
 

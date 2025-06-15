@@ -117,9 +117,9 @@ void do_scroll()
 
 void init()
 	{
-	int	x,y,a,b;
+	int	x,y,b;
 
-  a = fopen( "Data/endscrol.txt", "rb"); fread( text, 60000, 1, a ); fclose( a );
+  FILE * a = fopen( "Data/endscrol.txt", "rb"); fread( text, 60000, 1, a ); fclose( a );
 
 	for(x=0;x<1500 && *fonaorder;)
 	{

@@ -12,6 +12,7 @@ extern char jl_pic[];
 extern void jl_setborder(int);
 extern void inittwk();
 extern void linezoom(char * dst, char * src, int);
+void	readp( char * dest, int row, char * src );
 
 void setpalarea( char * p, int offset, int count )
 {
@@ -117,7 +118,7 @@ void	doit(void)
 	}
 }
 
-void jplogo_main()
+int jplogo_main()
 {
 	int	frame,halt=0,storea=0;
 	int	a,b,c,d,y,ya,ysz,ysza,xsc,spd=10,la;

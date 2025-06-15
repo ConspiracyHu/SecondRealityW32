@@ -14,7 +14,7 @@ void shim_setpal( int idx, unsigned char r, unsigned char g, unsigned char b )
   shim_palette[ idx ] = (r << 2) | ( g << 10 ) | ( b << 18 );
 }
 
-void shim_outp( int reg, int value )
+void shim_outp( int reg, unsigned int value )
 {
   switch ( reg )
   {
