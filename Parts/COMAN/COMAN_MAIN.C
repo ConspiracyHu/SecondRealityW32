@@ -101,13 +101,13 @@ void	coman_doit(void)
 			//outp(0x3d4,0x0c);
 			//outp(0x3d5,0x80);
 			frame+=(frepeat=dis_waitb());
-			docopy(shim_vram+5*startrise);
+			docopy(shim_vram+5*16*startrise); // *16 = segment multiplier
 			break;
 		case 1 :
 			//outp(0x3d4,0x0c);
 			//outp(0x3d5,0x00);
 			frame+=(frepeat=dis_waitb());
-			docopy(shim_vram+5*startrise);
+			docopy(shim_vram+5*16*startrise);
 			break;
 		}
     demo_blit();
