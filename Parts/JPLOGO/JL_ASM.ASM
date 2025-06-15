@@ -138,7 +138,6 @@ _linezoom:
 	;out dx,ax
 	;inc dx
 	xor eax,eax
-  mov edx, [zoomt+ebx]
-	call	edx
+	call	[zoomt+ebx]
 	pop	ebp
 	ret
