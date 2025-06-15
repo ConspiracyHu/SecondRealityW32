@@ -5,11 +5,9 @@ segment .data
 global _wave1,_wave2,_vbuf,_cameralevel
 _wave1	dw	0,0
 _wave2	dw	0,0
-_vbuf	dw	0,0
+;_vbuf	dw	0,0
+extern _vbuf
 _cameralevel dw 0
-
-global _shim_vram
-extern _shim_vram
 
 global _coman_sin1024
 %include "sin1024.inc"
@@ -161,7 +159,7 @@ _docopy:
 	mov	ax,0f02h
 	;out	dx,ax
 	mov	edi,[esp+8]
-	mov	esi,_shim_vram
+	mov	esi,_vbuf
 	add esi,60*160
 	add	edi,52*80
 	mov	ecx,18*80/4
@@ -201,7 +199,7 @@ _docopy:
 ;	mov	ds,ax
 ;	mov	si,OFFSET _combguse+60*160
 	xor	eax,eax
-	mov	edi,_shim_vram
+	mov	edi,_vbuf
 	add edi,68*160
 	mov	ecx,30*160/4/4
 @@cl1:	mov	[edi],eax

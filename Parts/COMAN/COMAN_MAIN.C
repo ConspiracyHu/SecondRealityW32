@@ -27,7 +27,7 @@ int	flip;
 
 //extern int *wave1;
 //extern int *wave2;
-extern unsigned char *vbuf;
+unsigned char vbuf[ 16384 * 4 ];
 extern int cameralevel;
 
 char * vram = shim_vram;// ( char far * )0xa0000000L;
@@ -161,7 +161,7 @@ void coman_main()
 	{
 		palette[x]=combg[16+x];
 	}
-	vbuf=halloc(16384,4);
+	//vbuf=halloc(16384,4);
 	for(y=0;y<90;y++)
 	{
 		for(x=0;x<80;x++)
