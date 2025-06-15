@@ -29,6 +29,9 @@
     <ClCompile Include="Parts\ALKU\ALKU_MAIN.C">
       <Filter>Parts\01-IntroScroll</Filter>
     </ClCompile>
+    <ClCompile Include="Parts\COMAN\MAIN.C">
+      <Filter>Parts\17-VoxelWater</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Graphics.h" />
@@ -59,6 +62,9 @@
     </Filter>
     <Filter Include="Parts\01-IntroScroll">
       <UniqueIdentifier>{53556962-13bc-4283-a965-87491e0a79b4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Parts\17-VoxelWater">
+      <UniqueIdentifier>{cc236c22-f955-4b11-be34-d1a96a7d7319}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -131,6 +137,18 @@
     <None Include="Parts\ALKU\FONA.INC">
       <Filter>Parts\01-IntroScroll</Filter>
     </None>
+    <None Include="Parts\COMAN\SIN1024.INC">
+      <Filter>Parts\17-VoxelWater</Filter>
+    </None>
+    <None Include="Parts\COMAN\THELOOP.INC">
+      <Filter>Parts\17-VoxelWater</Filter>
+    </None>
+    <None Include="Parts\COMAN\W1DTA.BIN">
+      <Filter>Parts\17-VoxelWater</Filter>
+    </None>
+    <None Include="Parts\COMAN\W2DTA.BIN">
+      <Filter>Parts\17-VoxelWater</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <YASM Include="Parts\ALKU\ALKU_ASMYT.ASM">
@@ -168,6 +186,12 @@
     </YASM>
     <YASM Include="Parts\ENDSCRL\FONA.ASM">
       <Filter>Parts\22-Endscroll</Filter>
+    </YASM>
+    <YASM Include="Parts\COMAN\ASM.ASM">
+      <Filter>Parts\17-VoxelWater</Filter>
+    </YASM>
+    <YASM Include="Parts\COMAN\THELOOP.ASM">
+      <Filter>Parts\17-VoxelWater</Filter>
     </YASM>
   </ItemGroup>
 </Project>
