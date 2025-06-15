@@ -1,0 +1,14 @@
+name: build-all
+on: [push]
+jobs:
+  build:
+    runs-on: self-hosted
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v1
+    - name: Setup MSBuild
+      uses: microsoft/setup-msbuild@v2
+    - name: Build Debug|X86
+      run: msbuild .\SecondRealityW32.sln /p:Configuration=Debug /p:Platform=x86
+    - name: Build Release|X86
+      run: msbuild .\SecondRealityW32.sln /p:Configuration=Release /p:Platform=x86
