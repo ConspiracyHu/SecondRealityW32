@@ -169,6 +169,7 @@
   </ItemGroup>
   <ItemGroup>
     <YASM Include="Parts\COMAN\COMAN_ASM.ASM" />
+    <YASM Include="Parts\COMAN\COMAN_DATA.ASM" />
     <YASM Include="Parts\COMAN\THELOOP.ASM" />
     <YASM Include="Parts\DOTS\DOTS_ASM.ASM">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>

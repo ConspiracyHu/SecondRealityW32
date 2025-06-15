@@ -196,5 +196,8 @@
     <YASM Include="Parts\COMAN\THELOOP.ASM">
       <Filter>Parts\17-VoxelWater</Filter>
     </YASM>
+    <YASM Include="Parts\COMAN\COMAN_DATA.ASM">
+      <Filter>Parts\17-VoxelWater</Filter>
+    </YASM>
   </ItemGroup>
 </Project>

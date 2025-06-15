@@ -1,9 +1,15 @@
 #include <stdio.h>
 #include <conio.h>
+#include <memory.h>
 #include <malloc.h>
 #include "..\dis\dis.h"
+#include "..\..\shims.h"
 
 #define noCALCW12
+
+void setpalarea( char * p, int offset, int count );
+void docol( int xw, int yw, int xa, int ya, int b );
+void docopy( char * ptr );
 
 char combg[16];
 
@@ -17,7 +23,6 @@ extern char combguse[];
 
 int	flip;
 
-int wavesin[]=
 #include "wave.h"
 
 extern int *wave1;
@@ -25,24 +30,17 @@ extern int *wave2;
 extern unsigned char *vbuf;
 extern int cameralevel;
 
-char far *vram=(char far *)0xa0000000L;
-char far *vram2=(char far *)0xa8000000L;
+char * vram = shim_vram;// ( char far * )0xa0000000L;
+char *vram2= shim_vram;//(char far *)0xa8000000L;
 
 extern int sin1024[];
 
 char	palette[768];
 
-char	*shiftstatus=(char *)0x0417;
-int	waitb()
-{
-	//if(*shiftstatus&16) setborder(0);
-	while(!(inp(0x3da)&8));
-	while((inp(0x3da)&8));
-	//if(*shiftstatus&16) setborder(127);
-	return(1);
-}
+//char	*shiftstatus=(char *)0x0417;
+#define waitb dis_waitb
 
-void	doit(void)
+void	coman_doit(void)
 {
 	unsigned int u,v,uc;
 	int	startrise=160,frepeat=1;
@@ -115,14 +113,14 @@ void	doit(void)
 	}
 }
 
-main()
+void coman_main()
 {
 	unsigned int u,v,uc;
 	int	a,b,x,y,xa,ya,j,k,xw,yw;
 	int	rot=0,rsin,rcos,xwav=0,ywav=0;
 	dis_partstart();
-	_asm mov ax,13h
-	_asm int 10h
+	//_asm mov ax,13h
+	//_asm int 10h
 
 	for(a=0;a<256;a++)
 	{
@@ -212,12 +210,12 @@ main()
 	wave1=w1dta;
 	wave2=w2dta;
 	#endif
-	inittwk();
+	//inittwk();
 	memset(vram,0,64000);
 	dis_waitb();
 	setpalarea(palette,0,256);
 
-	doit();
+	coman_doit();
 
 	if(!dis_indemo())
 	{	

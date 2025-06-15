@@ -8,6 +8,7 @@ extern "C" void end_main();
 extern "C" void endscrl_main();
 extern "C" void pam_main();
 extern "C" void alku_main();
+extern "C" void coman_main();
 
 extern "C" void rotate( int, int, int, int );
 
@@ -72,9 +73,9 @@ int main()
   screen32 = new unsigned int[ shim_vram_x * shim_vram_y ];
   ZeroMemory( screen32, shim_vram_x * shim_vram_y * sizeof( unsigned int ) );
 
-  width = 320;
-  height = 400;
-  alku_main();
+  //width = 320;
+  //height = 400;
+  //alku_main();
 
   //dots_main( 0, NULL );
 
@@ -90,6 +91,8 @@ int main()
   //endscrl_main();
 
   //pam_main();
+
+  coman_main();
 
   delete[] screen32;
 
