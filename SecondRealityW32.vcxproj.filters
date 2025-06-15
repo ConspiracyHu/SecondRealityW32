@@ -133,41 +133,41 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <CustomBuild Include="Parts\DOTS\DOTS_ASM.ASM">
+    <YASM Include="Parts\ALKU\ALKU_ASMYT.ASM">
+      <Filter>Parts\01-IntroScroll</Filter>
+    </YASM>
+    <YASM Include="Parts\ALKU\ALKU_INCLUDE.ASM">
+      <Filter>Parts\01-IntroScroll</Filter>
+    </YASM>
+    <YASM Include="Parts\PAM\PAM_ASMYT.ASM">
+      <Filter>Parts\03-IntroPraxisBlast</Filter>
+    </YASM>
+    <YASM Include="Parts\PAM\PAM_INCLUDE.ASM">
+      <Filter>Parts\03-IntroPraxisBlast</Filter>
+    </YASM>
+    <YASM Include="Parts\LENS\LENS_ASM.ASM">
+      <Filter>Parts\11-12-Lens</Filter>
+    </YASM>
+    <YASM Include="Parts\LENS\LENS_DATA.ASM">
+      <Filter>Parts\11-12-Lens</Filter>
+    </YASM>
+    <YASM Include="Parts\DOTS\DOTS_ASM.ASM">
       <Filter>Parts\15-Dots</Filter>
-    </CustomBuild>
-    <CustomBuild Include="Parts\JPLOGO\JL_ASM.ASM">
+    </YASM>
+    <YASM Include="Parts\JPLOGO\JL_ASM.ASM">
       <Filter>Parts\18-JellyLogo</Filter>
-    </CustomBuild>
-    <CustomBuild Include="Parts\JPLOGO\JL_PIC.ASM">
+    </YASM>
+    <YASM Include="Parts\JPLOGO\JL_PIC.ASM">
       <Filter>Parts\18-JellyLogo</Filter>
-    </CustomBuild>
-    <CustomBuild Include="Parts\LENS\LENS_ASM.ASM">
-      <Filter>Parts\11-12-Lens</Filter>
-    </CustomBuild>
-    <CustomBuild Include="Parts\LENS\LENS_DATA.ASM">
-      <Filter>Parts\11-12-Lens</Filter>
-    </CustomBuild>
-    <CustomBuild Include="Parts\END\END_ASM.ASM">
+    </YASM>
+    <YASM Include="Parts\END\END_ASM.ASM">
       <Filter>Parts\21-EndPic</Filter>
-    </CustomBuild>
-    <CustomBuild Include="Parts\END\END_DATA.ASM">
+    </YASM>
+    <YASM Include="Parts\END\END_DATA.ASM">
       <Filter>Parts\21-EndPic</Filter>
-    </CustomBuild>
-    <CustomBuild Include="Parts\ENDSCRL\FONA.ASM">
+    </YASM>
+    <YASM Include="Parts\ENDSCRL\FONA.ASM">
       <Filter>Parts\22-Endscroll</Filter>
-    </CustomBuild>
-    <CustomBuild Include="Parts\PAM\PAM_INCLUDE.ASM">
-      <Filter>Parts\03-IntroPraxisBlast</Filter>
-    </CustomBuild>
-    <CustomBuild Include="Parts\PAM\PAM_ASMYT.ASM">
-      <Filter>Parts\03-IntroPraxisBlast</Filter>
-    </CustomBuild>
-    <CustomBuild Include="Parts\ALKU\ALKU_ASMYT.ASM">
-      <Filter>Parts\01-IntroScroll</Filter>
-    </CustomBuild>
-    <CustomBuild Include="Parts\ALKU\ALKU_INCLUDE.ASM">
-      <Filter>Parts\01-IntroScroll</Filter>
-    </CustomBuild>
+    </YASM>
   </ItemGroup>
 </Project>
