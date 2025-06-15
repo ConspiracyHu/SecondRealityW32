@@ -2,7 +2,7 @@ name: build-all
 on: [push]
 jobs:
   build:
-    runs-on: self-hosted
+    runs-on: windows-latest
     steps:
     - name: Checkout
       uses: actions/checkout@v1
