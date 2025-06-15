@@ -176,6 +176,7 @@
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)%(Filename).obj</Outputs>
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">yasm-1.2.0-win32.exe -f win32  -g cv8 -X vc %(FullPath) -o $(IntDir)%(Filename).obj</Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)%(Filename).obj</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Assembling %(Filename)%(Extension)</Message>
     </CustomBuild>
     <CustomBuild Include="Parts\ALKU\ALKU_ASMYT.ASM">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
@@ -191,6 +192,7 @@
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)%(Filename).obj</Outputs>
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">yasm-1.2.0-win32.exe -f win32  -g cv8 -X vc %(FullPath) -o $(IntDir)%(Filename).obj</Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)%(Filename).obj</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Assembling %(Filename)%(Extension)</Message>
     </CustomBuild>
     <None Include="Parts\ALKU\FONA.INC">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
@@ -224,6 +226,7 @@
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)%(Filename).obj</Outputs>
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">yasm-1.2.0-win32.exe -f win32  -g cv8 -X vc %(FullPath) -o $(IntDir)%(Filename).obj</Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)%(Filename).obj</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Assembling %(Filename)%(Extension)</Message>
     </CustomBuild>
     <None Include="Parts\DOTS\CLINK.INC">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
@@ -257,6 +260,7 @@
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)%(Filename).obj</Outputs>
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">yasm-1.2.0-win32.exe -f win32  -g cv8 -X vc %(FullPath) -o $(IntDir)%(Filename).obj</Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)%(Filename).obj</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Assembling %(Filename)%(Extension)</Message>
     </CustomBuild>
     <CustomBuild Include="Parts\END\END_ASM.ASM">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
@@ -272,6 +276,7 @@
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)%(Filename).obj</Outputs>
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">yasm-1.2.0-win32.exe -f win32  -g cv8 -X vc %(FullPath) -o $(IntDir)%(Filename).obj</Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)%(Filename).obj</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Assembling %(Filename)%(Extension)</Message>
     </CustomBuild>
     <CustomBuild Include="Parts\END\END_DATA.ASM">
       <FileType>Document</FileType>
@@ -287,6 +292,7 @@
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)%(Filename).obj</Outputs>
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">yasm-1.2.0-win32.exe -f win32  -g cv8 -X vc %(FullPath) -o $(IntDir)%(Filename).obj</Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)%(Filename).obj</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Assembling %(Filename)%(Extension)</Message>
     </CustomBuild>
     <CustomBuild Include="Parts\ENDSCRL\FONA.ASM">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
@@ -302,6 +308,7 @@
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)%(Filename).obj</Outputs>
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">yasm-1.2.0-win32.exe -f win32  -g cv8 -X vc %(FullPath) -o $(IntDir)%(Filename).obj</Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)%(Filename).obj</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Assembling %(Filename)%(Extension)</Message>
     </CustomBuild>
     <None Include="Parts\END\PIC.UH">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
@@ -329,6 +336,7 @@
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)%(Filename).obj</Outputs>
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">yasm-1.2.0-win32.exe -f win32  -g cv8 -X vc %(FullPath) -o $(IntDir)%(Filename).obj</Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)%(Filename).obj</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Assembling %(Filename)%(Extension)</Message>
     </CustomBuild>
     <None Include="Parts\JPLOGO\SIN1024.INC">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
@@ -356,6 +364,7 @@
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)%(Filename).obj</Outputs>
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">yasm-1.2.0-win32.exe -f win32  -g cv8 -X vc %(FullPath) -o $(IntDir)%(Filename).obj</Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)%(Filename).obj</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Assembling %(Filename)%(Extension)</Message>
     </CustomBuild>
     <None Include="Parts\LENS\LENS.EX0">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
@@ -413,6 +422,7 @@
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)%(Filename).obj</Outputs>
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">yasm-1.2.0-win32.exe -f win32  -g cv8 -X vc %(FullPath) -o $(IntDir)%(Filename).obj</Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)%(Filename).obj</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Assembling %(Filename)%(Extension)</Message>
     </CustomBuild>
     <CustomBuild Include="Parts\PAM\PAM_ASMYT.ASM">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
@@ -428,6 +438,7 @@
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)%(Filename).obj</Outputs>
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">yasm-1.2.0-win32.exe -f win32  -g cv8 -X vc %(FullPath) -o $(IntDir)%(Filename).obj</Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)%(Filename).obj</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Assembling %(Filename)%(Extension)</Message>
     </CustomBuild>
     <CustomBuild Include="Parts\PAM\PAM_INCLUDE.ASM">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
@@ -443,6 +454,7 @@
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)%(Filename).obj</Outputs>
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">yasm-1.2.0-win32.exe -f win32  -g cv8 -X vc %(FullPath) -o $(IntDir)%(Filename).obj</Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)%(Filename).obj</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Assembling %(Filename)%(Extension)</Message>
     </CustomBuild>
     <None Include="Parts\PAM\OUT.IN0">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
