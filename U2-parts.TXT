@@ -18,3 +18,5 @@
 19  db      'Vector Part II',0             / 'VISU    ' /  'U2E.EXE',0
 20  db      'Endpictureflash (?)         ' / '        ' / 
 21  db      'Credits/Greetings scrl. (?) ' / 'END     ' /  'ENDLOGO.EXE',0
+22                                           'CREDITS ' /  'CRED.EXE',0
+23                                           'ENDSCRL ' /  'ENDSCRL.EXE',0

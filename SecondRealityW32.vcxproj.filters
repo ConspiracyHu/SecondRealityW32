@@ -21,7 +21,7 @@
       <Filter>Parts\21-EndPic</Filter>
     </ClCompile>
     <ClCompile Include="Parts\ENDSCRL\ENDSCRL_MAIN.C">
-      <Filter>Parts\22-Endscroll</Filter>
+      <Filter>Parts\23-Endscroll</Filter>
     </ClCompile>
     <ClCompile Include="Parts\PAM\OUTTAA.C">
       <Filter>Parts\03-IntroPraxisBlast</Filter>
@@ -57,9 +57,6 @@
     <Filter Include="Parts\21-EndPic">
       <UniqueIdentifier>{86c1373c-04ae-485b-a3df-e1dec86c21ac}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Parts\22-Endscroll">
-      <UniqueIdentifier>{b5280ce2-4192-462c-bfa4-270ba28c9413}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Parts\03-IntroPraxisBlast">
       <UniqueIdentifier>{f701f20d-cae8-4bff-9c0d-e40e68fe31c7}</UniqueIdentifier>
     </Filter>
@@ -68,6 +65,9 @@
     </Filter>
     <Filter Include="Parts\17-VoxelWater">
       <UniqueIdentifier>{cc236c22-f955-4b11-be34-d1a96a7d7319}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Parts\23-Endscroll">
+      <UniqueIdentifier>{b5280ce2-4192-462c-bfa4-270ba28c9413}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -188,7 +188,7 @@
       <Filter>Parts\21-EndPic</Filter>
     </YASM>
     <YASM Include="Parts\ENDSCRL\FONA.ASM">
-      <Filter>Parts\22-Endscroll</Filter>
+      <Filter>Parts\23-Endscroll</Filter>
     </YASM>
     <YASM Include="Parts\COMAN\COMAN_ASM.ASM">
       <Filter>Parts\17-VoxelWater</Filter>
