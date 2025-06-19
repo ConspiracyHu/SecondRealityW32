@@ -94,6 +94,22 @@ void	coman_doit(void)
 				ywav+=ya*4;
 			}
 		}
+
+    frame+=(frepeat=dis_waitb());
+
+    unsigned char * src = vbuf + 60 * 160; // add esi,60*160
+    unsigned char * dst = shim_vram + 52 * 320 + startrise * 320; // add	edi,52*80
+    int height = 18 * 20 - startrise; // mov	ecx,18*80/4
+    for ( int x = 0; x < 320 * height; x++ )
+    {
+      *dst++ = *( src + 80 );
+      *dst++ = *( src + 80 );
+      *dst++ = *src;
+      *dst++ = *src;
+      src++;
+    }
+    memset( vbuf + 68 * 160, 0, 30 * 160 );
+    /*
 		flip++; if(flip>1) flip=0;
 		switch(flip)
 		{
@@ -110,6 +126,7 @@ void	coman_doit(void)
 			docopy(shim_vram+5*16*startrise);
 			break;
 		}
+    */
     demo_blit();
 	}
 }
