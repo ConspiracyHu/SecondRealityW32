@@ -36,26 +36,26 @@ void	readp(char *dest,int row,char *src)
 		push	edi
 		mov	ecx,bytes
 		mov esi,src
-		add	cx,si
+		add	ecx,esi
 		mov edi,dest
 	l1:	mov	al,[esi]
-		inc	si
+		inc	esi
 		or	al,al
 		jns	l2
 		mov	ah,al
 		and	ah,7fh	
 		mov	al,[esi]
-		inc	si
+		inc	esi
 	l4:	mov	[edi],al
-		inc	di
+		inc	edi
 		dec	ah
 		jnz	l4
-		cmp	si,cx
+		cmp	esi,ecx
 		jb	l1
 		jmp	l3
 	l2:	mov	[edi],al
 		inc	di
-		cmp	si,cx
+		cmp	esi,ecx
 		jb	l1
 	l3:
 		pop	edi

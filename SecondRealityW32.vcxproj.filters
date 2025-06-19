@@ -30,7 +30,7 @@
       <Filter>Parts\01-IntroScroll</Filter>
     </ClCompile>
     <ClCompile Include="Parts\COMAN\COMAN_MAIN.C">
-      <Filter>Parts\17-VoxelWater</Filter>
+      <Filter>Parts\17-ComancheVoxel</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -38,7 +38,7 @@
     <ClInclude Include="Parts\DIS\dis.h" />
     <ClInclude Include="shims.h" />
     <ClInclude Include="Parts\COMAN\WAVE.H">
-      <Filter>Parts\17-VoxelWater</Filter>
+      <Filter>Parts\17-ComancheVoxel</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -63,11 +63,11 @@
     <Filter Include="Parts\01-IntroScroll">
       <UniqueIdentifier>{53556962-13bc-4283-a965-87491e0a79b4}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Parts\17-VoxelWater">
-      <UniqueIdentifier>{cc236c22-f955-4b11-be34-d1a96a7d7319}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Parts\23-Endscroll">
       <UniqueIdentifier>{b5280ce2-4192-462c-bfa4-270ba28c9413}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Parts\17-ComancheVoxel">
+      <UniqueIdentifier>{cc236c22-f955-4b11-be34-d1a96a7d7319}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -141,16 +141,16 @@
       <Filter>Parts\01-IntroScroll</Filter>
     </None>
     <None Include="Parts\COMAN\SIN1024.INC">
-      <Filter>Parts\17-VoxelWater</Filter>
+      <Filter>Parts\17-ComancheVoxel</Filter>
     </None>
     <None Include="Parts\COMAN\THELOOP.INC">
-      <Filter>Parts\17-VoxelWater</Filter>
+      <Filter>Parts\17-ComancheVoxel</Filter>
     </None>
     <None Include="Parts\COMAN\W1DTA.BIN">
-      <Filter>Parts\17-VoxelWater</Filter>
+      <Filter>Parts\17-ComancheVoxel</Filter>
     </None>
     <None Include="Parts\COMAN\W2DTA.BIN">
-      <Filter>Parts\17-VoxelWater</Filter>
+      <Filter>Parts\17-ComancheVoxel</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
@@ -191,13 +191,13 @@
       <Filter>Parts\23-Endscroll</Filter>
     </YASM>
     <YASM Include="Parts\COMAN\COMAN_ASM.ASM">
-      <Filter>Parts\17-VoxelWater</Filter>
+      <Filter>Parts\17-ComancheVoxel</Filter>
     </YASM>
     <YASM Include="Parts\COMAN\THELOOP.ASM">
-      <Filter>Parts\17-VoxelWater</Filter>
+      <Filter>Parts\17-ComancheVoxel</Filter>
     </YASM>
     <YASM Include="Parts\COMAN\COMAN_DATA.ASM">
-      <Filter>Parts\17-VoxelWater</Filter>
+      <Filter>Parts\17-ComancheVoxel</Filter>
     </YASM>
   </ItemGroup>
 </Project>

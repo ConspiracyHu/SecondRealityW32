@@ -77,22 +77,26 @@ int main()
   //height = 400;
   //alku_main();
 
+  //pam_main();
+  //lens_main();
+  
   //dots_main( 0, NULL );
+
+  //coman_main();
+
+  width = 320;
+  height = 400;
+  jplogo_main();
 
   //width = 320;
   //height = 400;
-  //jplogo_main();
-
-  //lens_main();
   //end_main();
 
   //width = 640;
   //height = 350;
   //endscrl_main();
 
-  //pam_main();
 
-  coman_main();
 
   delete[] screen32;
 

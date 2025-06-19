@@ -103,10 +103,10 @@ void end_main()
 	readp(palette,-1,end_pic);
 	for(y=0;y<400;y++)
 	{
-		readp(rowbuf,y,end_pic);
-		lineblit(vram+(unsigned)y*80U,rowbuf);
+		readp(vram+y*320,y,end_pic);
+		//lineblit(vram+(unsigned)y*80U,rowbuf);
 	}
-	
+  
 	for(c=0;c<=128;c++)
 	{
 		for(a=0;a<768-3;a++) pal2[a]=((128-c)*63+palette[a]*c)/128;
