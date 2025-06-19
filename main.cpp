@@ -51,9 +51,17 @@ bool demo_wantstoquit()
 }
 
 extern "C" void demo_vsync();
+unsigned int lastVblank = 0;
 void demo_vsync()
 {
-  Sleep( 1000 / 60 );
+  const unsigned int now = GetTickCount();
+  const unsigned int cycle = 1000 / 60;
+  const unsigned int elapsed = now - lastVblank;
+  if ( elapsed < cycle )
+  {
+    Sleep( cycle - elapsed );
+  }
+  lastVblank = now;
 }
 
 int main()
