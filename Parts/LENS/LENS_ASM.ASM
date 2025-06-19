@@ -288,6 +288,9 @@ _yadd	dd	0
 %define ZOOMXW	160
 %define ZOOMYW	100
 
+global _zoomer_planar_buffer
+extern _zoomer_planar_buffer
+
 section .code
 
 global _rotate
@@ -301,11 +304,11 @@ _rotate:
 	shl	eax,16
 	mov	[_ypos],eax
 	
-	mov	eax,[esp+16] ; xa
+	mov	eax,[esp+20] ; xa
 	cwde
 	shl	eax,6
 	mov	ebx,eax
-	mov	eax,[esp+20] ; ya
+	mov	eax,[esp+16] ; ya
 	cwde
 	shl	eax,6
 	
@@ -354,27 +357,23 @@ _rotate:
 	adc	al,bl
 	add	di,dx
 	adc	ah,bh
-  cwde
-	mov	dword [@@moda+zzz+3],eax
+	mov	word [@@moda+zzz+4],ax
 	add	si,cx
 	adc	al,bl
 	add	di,dx
 	adc	ah,bh
-  cwde
-	mov	dword [@@modb+zzz+3],eax
+	mov	word [@@modb+zzz+4],ax
 	add	si,cx
 	adc	al,bl
 	add	di,dx
 	adc	ah,bh
-  cwde
-	mov	dword [@@moda+zzz+10],eax
+	mov	word [@@moda+zzz+14],ax
 	add	si,cx
 	adc	al,bl
 	add	di,dx
 	adc	ah,bh
-  cwde
-	mov	dword [@@modb+zzz+10],eax
-	%assign zzz zzz+3*7
+	mov	word [@@modb+zzz+14],ax
+	%assign zzz zzz+27
 	%endrep
 	
 	;aspect ratio
@@ -387,10 +386,10 @@ _rotate:
 	sar	eax,8
 	mov	[_yadd],eax
 	
-	mov edi,_shim_vram
+	mov edi,_zoomer_planar_buffer
 	add edi,-1000h
 	
-	mov	cx,ZOOMYW
+	mov	ecx,ZOOMYW
 @@2:	mov	ebx,[_ypos]
 	add	ebx,[_yadd]
 	mov	[_ypos],ebx
@@ -405,13 +404,16 @@ _rotate:
 	;mov	dx,3c4h
 	;mov	ax,0302h
 	;out	dx,ax
+  xor ebx,ebx
 @@moda:
   %assign zzz 1000h
 	%rep	ZOOMXW/4
-	mov	al,[ebp+esi+1234h]	;4
-	mov	ah,[ebp+esi+1234h]	;4
+  lea bx,[si+1234h]
+	mov	al,[ebp+ebx]	;4
+  lea bx,[si+1234h]
+	mov	ah,[ebp+ebx]	;4
 	mov	[edi+zzz],ax		;5
-	%assign zzz zzz+2
+	%assign zzz zzz+4
 	%endrep
 	;mov	dx,3c4h
 	;mov	ax,0c02h
@@ -419,14 +421,16 @@ _rotate:
 @@modb:
   %assign zzz 1000h
 	%rep	ZOOMXW/4
-	mov	al,[ebp+esi+1234h]	;4
-	mov	ah,[ebp+esi+1234h]	;4
-	mov	[edi+zzz],ax		;5
-	%assign zzz zzz+2
+  lea bx,[si+1234h]
+	mov	al,[ebp+ebx]	;4
+  lea bx,[si+1234h]
+	mov	ah,[ebp+ebx]	;4
+	mov	[edi+2+zzz],ax		;5
+	%assign zzz zzz+4
 	%endrep
 	;
-	add	di,80
-	dec	cx
+	add	edi,80*2
+	dec	ecx
 	jz	@@1
 	jmp	@@2
 @@1:	

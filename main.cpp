@@ -96,7 +96,7 @@ int main()
 
   // 11  db      'Lens (PSI)                  ' / '        ' / 
   // 12  db      'Rotazoomer (PSI)            ' / 'LENS    ' /  'LNS&ZOOM.EXE',0
-  //lens_main();
+  lens_main();
 
   // 13  db      'Plasma (WILDF)              ' / '        ' / 
 
@@ -127,9 +127,9 @@ int main()
   // 22                                           'CREDITS ' /  'CRED.EXE',0
 
   // 23                                           'ENDSCRL ' /  'ENDSCRL.EXE',0
-  width = 640;
-  height = 350;
-  endscrl_main();
+  //width = 640;
+  //height = 350;
+  //endscrl_main();
   
   delete[] screen32;
 

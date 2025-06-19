@@ -41,6 +41,7 @@ int	lenswid,lenshig,lensxs,lensys;
 char	palette[768];
 
 //char	*shiftstatus=(char *)0x0417;
+char zoomer_planar_buffer[ 320 * 200 ];
 
 inline int	waitb()
 {
@@ -272,6 +273,26 @@ void	part3(void)
 			xa=pathdata2[frame*4+2];
 			ya=pathdata2[frame*4+3];
 			rotate(x,y,xa,ya);
+      unsigned char * src = zoomer_planar_buffer;
+      unsigned char * dst = shim_vram;
+      for ( int y = 0; y < 100; y++ )
+      {
+        unsigned char * linesrc = src;
+        for ( int x = 0; x < 160; x++ )
+        {
+          *dst++ = *linesrc;
+          *dst++ = *linesrc;
+          linesrc++;
+        }
+        linesrc = src;
+        for ( int x = 0; x < 160; x++ )
+        {
+          *dst++ = *linesrc;
+          *dst++ = *linesrc;
+          linesrc++;
+        }
+        src += 160;
+      }
 			#endif
 			frame+=waitb();
 			if(frame>2000-128)
