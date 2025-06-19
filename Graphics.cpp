@@ -250,8 +250,19 @@ void Graphics::HandleMessages()
 
 void Graphics::Update( void * _buffer, int _width, int _height )
 {
-  int zoomedX = _width * mIntegerZoom;
-  int zoomedY = _height * mIntegerZoom;
+  int zoom = mIntegerZoom;
+  if ( zoom == -1 )
+  {
+    zoom = 1;
+    while ( _width * zoom <= mPhysicalWidth && _height * zoom <= mPhysicalHeight )
+    {
+      zoom++;
+    }
+    zoom--;
+  }
+
+  int zoomedX = _width * zoom;
+  int zoomedY = _height * zoom;
   int mCenterX = ( mPhysicalWidth - zoomedX ) / 2;
   int mCenterY = ( mPhysicalHeight - zoomedY ) / 2;
 
@@ -263,18 +274,18 @@ void Graphics::Update( void * _buffer, int _width, int _height )
   {
     unsigned int * srcline = NULL;
 
-    for ( int yz = 0; yz < mIntegerZoom; yz++ )
+    for ( int yz = 0; yz < zoom; yz++ )
     {
       srcline = src;
       for ( int x = 0; x < _width; x++ )
       {
-        for ( int xz = 0; xz < mIntegerZoom; xz++ )
+        for ( int xz = 0; xz < zoom; xz++ )
         {
           *( dst++ ) = *srcline;
         }
         srcline++;
       }
-      dst += mPhysicalWidth - ( _width * mIntegerZoom );
+      dst += mPhysicalWidth - ( _width * zoom );
     }
     src = srcline;
   }

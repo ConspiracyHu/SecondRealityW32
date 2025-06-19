@@ -65,7 +65,7 @@ int main()
   int windowWidth = 1280;
   int windowHeight = 960;
   bool fullscreen = false;
-  if ( !graphics.Init( GetModuleHandle( NULL ), windowWidth, windowHeight, 2, fullscreen ) )
+  if ( !graphics.Init( GetModuleHandle( NULL ), windowWidth, windowHeight, -1, fullscreen ) )
   {
     return false;
   }
@@ -73,31 +73,64 @@ int main()
   screen32 = new unsigned int[ shim_vram_x * shim_vram_y ];
   ZeroMemory( screen32, shim_vram_x * shim_vram_y * sizeof( unsigned int ) );
 
+  // 1   db      'Alkutekstit I (WILDF)       ' / 'ALKU    ' /  'ALKU.EXE',0
   //width = 320;
   //height = 400;
   //alku_main();
 
+  // 2   db      'Alkutekstit II (PSI)        ' / 'VISU    ' /  'U2A.EXE',0
+  // 3   db      'Alkutekstit III (TRUG/WILDF)' / 'PAM     ' /  'PAM.EXE',0
   //pam_main();
+
+  //                                            / 'BEG     ' /  'BEGLOGO.EXE',0
+
+  // 4   db      'Glenz (PSI)                 ' / 'GLENZ   ' /  'GLENZ.EXE',0
+
+  // 5   db      'Dottitunneli (TRUG)         ' / 'TUNNELI ' /  'TUNNELI.EXE',0
+
+  // 6   db      'Techno (PSI)                ' / 'TECHNO  ' /  'TECHNO.EXE',0
+
+  // 7   db      'Panicfake (WILDF)           ' / 'PANIC   ' /  'PANICEND.EXE',0
+
+  // 8   db      'Vuori-Scrolli (TRUG)        ' / 'FOREST  ' /  'MNTSCRL.EXE',0
+
+  // 11  db      'Lens (PSI)                  ' / '        ' / 
+  // 12  db      'Rotazoomer (PSI)            ' / 'LENS    ' /  'LNS&ZOOM.EXE',0
   //lens_main();
-  
+
+  // 13  db      'Plasma (WILDF)              ' / '        ' / 
+
+  // 14  db      'Plasmacube (WILDF)          ' / 'PLZPART ' /  'PLZPART.EXE',0
+
+  // 15  db      'MiniVectorBalls (PSI)       ' / 'DOTS    ' /  'MINVBALL.EXE',0
   //dots_main( 0, NULL );
 
+  // 16  db      'Peilipalloscroll (TRUG)     ' / 'WATER   ' /  'RAYSCRL.EXE',0
+
+  // 17  db      '3D-Sinusfield (PSI)         ' / 'COMAN   ' /  '3DSINFLD.EXE',0
   //coman_main();
 
-  width = 320;
-  height = 400;
-  jplogo_main();
+  // 18  db      'Jellypic (PSI)              ' / 'JPLOGO  ' /  'JPLOGO.EXE',0
+  //width = 320;
+  //height = 400;
+  //jplogo_main();
 
+  // 19  db      'Vector Part II',0             / 'VISU    ' /  'U2E.EXE',0
+
+  // 20  db      'Endpictureflash (?)         ' / '        ' / 
   //width = 320;
   //height = 400;
   //end_main();
 
-  //width = 640;
-  //height = 350;
-  //endscrl_main();
+  // 21  db      'Credits/Greetings scrl. (?) ' / 'END     ' /  'ENDLOGO.EXE',0
 
+  // 22                                           'CREDITS ' /  'CRED.EXE',0
 
-
+  // 23                                           'ENDSCRL ' /  'ENDSCRL.EXE',0
+  width = 640;
+  height = 350;
+  endscrl_main();
+  
   delete[] screen32;
 
   graphics.Close();
