@@ -100,12 +100,12 @@ void	coman_doit(void)
     unsigned char * src = vbuf + 60 * 160; // add esi,60*160
     unsigned char * dst = shim_vram + 52 * 320 + startrise * 320; // add	edi,52*80
     int height = 18 * 20 - startrise; // mov	ecx,18*80/4
-    for ( int x = 0; x < 320 * height; x++ )
+    for ( int x = 0; x < 160 * height; x++ )
     {
-      *dst++ = *( src + 80 );
-      *dst++ = *( src + 80 );
       *dst++ = *src;
       *dst++ = *src;
+      *dst++ = *( src + 80 );
+      *dst++ = *( src + 80 );
       src++;
     }
     memset( vbuf + 68 * 160, 0, 30 * 160 );
