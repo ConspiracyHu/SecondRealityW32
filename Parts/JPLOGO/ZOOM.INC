@@ -1,4 +1,8 @@
 section .data
+
+global _lens_demux_scanline
+extern _lens_demux_scanline
+
 zoomt:
 dd @zoom0
 dd @zoom140
@@ -215,7 +219,7 @@ mov [edi+66],ax
 mov [edi+68],ax
 mov [edi+70],ax
 mov al,1
-; out dx,al
+call _lens_demux_scanline
 xor al,al
 mov ah,[esi+3]
 mov [edi+22],ax
@@ -271,7 +275,7 @@ mov al,[esi+176]
 mov ah,[esi+181]
 mov [edi+56],ax
 mov al,2
-; out dx,al
+call _lens_demux_scanline
 xor al,al
 mov ah,[esi+4]
 mov [edi+22],ax
@@ -327,7 +331,7 @@ mov al,[esi+177]
 mov ah,[esi+182]
 mov [edi+56],ax
 mov al,4
-; out dx,al
+call _lens_demux_scanline
 mov al,[esi+0]
 mov ah,[esi+5]
 mov [edi+22],ax
@@ -383,7 +387,7 @@ mov al,[esi+178]
 mov ah,[esi+184]
 mov [edi+56],ax
 mov al,8
-; out dx,al
+call _lens_demux_scanline
 mov al,[esi+1]
 mov ah,[esi+7]
 mov [edi+22],ax
@@ -455,7 +459,7 @@ mov [edi+66],ax
 mov [edi+68],ax
 mov [edi+70],ax
 mov al,1
-; out dx,al
+call _lens_demux_scanline
 xor al,al
 mov ah,[esi+4]
 mov [edi+22],ax
@@ -511,7 +515,7 @@ mov al,[esi+175]
 mov ah,[esi+180]
 mov [edi+56],ax
 mov al,2
-; out dx,al
+call _lens_demux_scanline
 mov al,[esi+0]
 mov ah,[esi+5]
 mov [edi+22],ax
@@ -567,7 +571,7 @@ mov al,[esi+176]
 mov ah,[esi+181]
 mov [edi+56],ax
 mov al,4
-; out dx,al
+call _lens_demux_scanline
 mov al,[esi+1]
 mov ah,[esi+6]
 mov [edi+22],ax
@@ -623,7 +627,7 @@ mov al,[esi+177]
 mov ah,[esi+182]
 mov [edi+56],ax
 mov al,8
-; out dx,al
+call _lens_demux_scanline
 mov al,[esi+3]
 mov ah,[esi+8]
 mov [edi+22],ax
@@ -695,7 +699,7 @@ mov [edi+68],ax
 mov [edi+70],ax
 mov [edi+59],al
 mov al,1
-; out dx,al
+call _lens_demux_scanline
 mov al,[esi+0]
 mov ah,[esi+5]
 mov [edi+22],ax
@@ -753,7 +757,7 @@ mov [edi+56],ax
 mov al,[esi+184]
 mov [edi+58],al
 mov al,2
-; out dx,al
+call _lens_demux_scanline
 mov al,[esi+1]
 mov ah,[esi+6]
 mov [edi+22],ax
@@ -811,7 +815,7 @@ mov [edi+56],ax
 xor al,al
 mov [edi+58],al
 mov al,4
-; out dx,al
+call _lens_demux_scanline
 mov al,[esi+3]
 mov ah,[esi+8]
 mov [edi+22],ax
@@ -869,7 +873,7 @@ mov [edi+56],ax
 xor al,al
 mov [edi+58],al
 mov al,8
-; out dx,al
+call _lens_demux_scanline
 mov al,[esi+4]
 mov ah,[esi+9]
 mov [edi+22],ax
@@ -943,7 +947,7 @@ mov [edi+70],ax
 mov [edi+20],al
 mov [edi+59],al
 mov al,1
-; out dx,al
+call _lens_demux_scanline
 xor ah,ah
 mov [edi+21],ah
 mov al,[esi+1]
@@ -1003,7 +1007,7 @@ mov [edi+56],ax
 mov al,[esi+182]
 mov [edi+58],al
 mov al,2
-; out dx,al
+call _lens_demux_scanline
 xor ah,ah
 mov [edi+21],ah
 mov al,[esi+3]
@@ -1063,7 +1067,7 @@ mov [edi+56],ax
 mov al,[esi+184]
 mov [edi+58],al
 mov al,4
-; out dx,al
+call _lens_demux_scanline
 xor ah,ah
 mov [edi+21],ah
 mov al,[esi+4]
@@ -1123,7 +1127,7 @@ mov [edi+56],ax
 xor al,al
 mov [edi+58],al
 mov al,8
-; out dx,al
+call _lens_demux_scanline
 mov ah,[esi+0]
 mov [edi+21],ah
 mov al,[esi+5]
@@ -1199,7 +1203,7 @@ mov [edi+70],ax
 mov [edi+20],al
 mov [edi+59],al
 mov al,1
-; out dx,al
+call _lens_demux_scanline
 xor ah,ah
 mov [edi+21],ah
 mov al,[esi+2]
@@ -1259,7 +1263,7 @@ mov [edi+56],ax
 mov al,[esi+181]
 mov [edi+58],al
 mov al,2
-; out dx,al
+call _lens_demux_scanline
 xor ah,ah
 mov [edi+21],ah
 mov al,[esi+4]
@@ -1319,7 +1323,7 @@ mov [edi+56],ax
 mov al,[esi+183]
 mov [edi+58],al
 mov al,4
-; out dx,al
+call _lens_demux_scanline
 mov ah,[esi+0]
 mov [edi+21],ah
 mov al,[esi+5]
@@ -1379,7 +1383,7 @@ mov [edi+56],ax
 mov al,[esi+184]
 mov [edi+58],al
 mov al,8
-; out dx,al
+call _lens_demux_scanline
 mov ah,[esi+1]
 mov [edi+21],ah
 mov al,[esi+6]
@@ -1455,7 +1459,7 @@ mov [edi+70],ax
 mov [edi+20],al
 mov [edi+59],al
 mov al,1
-; out dx,al
+call _lens_demux_scanline
 xor ah,ah
 mov [edi+21],ah
 mov al,[esi+4]
@@ -1515,7 +1519,7 @@ mov [edi+56],ax
 mov al,[esi+180]
 mov [edi+58],al
 mov al,2
-; out dx,al
+call _lens_demux_scanline
 mov ah,[esi+0]
 mov [edi+21],ah
 mov al,[esi+5]
@@ -1575,7 +1579,7 @@ mov [edi+56],ax
 mov al,[esi+181]
 mov [edi+58],al
 mov al,4
-; out dx,al
+call _lens_demux_scanline
 mov ah,[esi+1]
 mov [edi+21],ah
 mov al,[esi+6]
@@ -1635,7 +1639,7 @@ mov [edi+56],ax
 mov al,[esi+183]
 mov [edi+58],al
 mov al,8
-; out dx,al
+call _lens_demux_scanline
 mov ah,[esi+2]
 mov [edi+21],ah
 mov al,[esi+7]
@@ -1710,7 +1714,7 @@ mov [edi+68],ax
 mov [edi+70],ax
 mov [edi+20],al
 mov al,1
-; out dx,al
+call _lens_demux_scanline
 mov ah,[esi+0]
 mov [edi+21],ah
 mov al,[esi+5]
@@ -1771,7 +1775,7 @@ mov al,[esi+179]
 mov ah,[esi+184]
 mov [edi+58],ax
 mov al,2
-; out dx,al
+call _lens_demux_scanline
 mov ah,[esi+1]
 mov [edi+21],ah
 mov al,[esi+6]
@@ -1832,7 +1836,7 @@ mov al,[esi+180]
 xor ah,ah
 mov [edi+58],ax
 mov al,4
-; out dx,al
+call _lens_demux_scanline
 mov ah,[esi+2]
 mov [edi+21],ah
 mov al,[esi+7]
@@ -1893,7 +1897,7 @@ mov al,[esi+181]
 xor ah,ah
 mov [edi+58],ax
 mov al,8
-; out dx,al
+call _lens_demux_scanline
 mov ah,[esi+4]
 mov [edi+21],ah
 mov al,[esi+8]
@@ -1968,7 +1972,7 @@ mov [edi+66],ax
 mov [edi+68],ax
 mov [edi+70],ax
 mov al,1
-; out dx,al
+call _lens_demux_scanline
 xor al,al
 mov ah,[esi+1]
 mov [edi+20],ax
@@ -2030,7 +2034,7 @@ mov al,[esi+178]
 mov ah,[esi+183]
 mov [edi+58],ax
 mov al,2
-; out dx,al
+call _lens_demux_scanline
 xor al,al
 mov ah,[esi+2]
 mov [edi+20],ax
@@ -2092,7 +2096,7 @@ mov al,[esi+179]
 mov ah,[esi+184]
 mov [edi+58],ax
 mov al,4
-; out dx,al
+call _lens_demux_scanline
 xor al,al
 mov ah,[esi+4]
 mov [edi+20],ax
@@ -2154,7 +2158,7 @@ mov al,[esi+180]
 xor ah,ah
 mov [edi+58],ax
 mov al,8
-; out dx,al
+call _lens_demux_scanline
 mov al,[esi+0]
 mov ah,[esi+5]
 mov [edi+20],ax
@@ -2230,7 +2234,7 @@ mov [edi+66],ax
 mov [edi+68],ax
 mov [edi+70],ax
 mov al,1
-; out dx,al
+call _lens_demux_scanline
 xor al,al
 mov ah,[esi+2]
 mov [edi+20],ax
@@ -2292,7 +2296,7 @@ mov al,[esi+177]
 mov ah,[esi+181]
 mov [edi+58],ax
 mov al,2
-; out dx,al
+call _lens_demux_scanline
 xor al,al
 mov ah,[esi+4]
 mov [edi+20],ax
@@ -2354,7 +2358,7 @@ mov al,[esi+178]
 mov ah,[esi+183]
 mov [edi+58],ax
 mov al,4
-; out dx,al
+call _lens_demux_scanline
 mov al,[esi+0]
 mov ah,[esi+5]
 mov [edi+20],ax
@@ -2416,7 +2420,7 @@ mov al,[esi+179]
 mov ah,[esi+184]
 mov [edi+58],ax
 mov al,8
-; out dx,al
+call _lens_demux_scanline
 mov al,[esi+1]
 mov ah,[esi+6]
 mov [edi+20],ax
@@ -2492,7 +2496,7 @@ mov [edi+66],ax
 mov [edi+68],ax
 mov [edi+70],ax
 mov al,1
-; out dx,al
+call _lens_demux_scanline
 xor al,al
 mov ah,[esi+3]
 mov [edi+20],ax
@@ -2554,7 +2558,7 @@ mov al,[esi+176]
 mov ah,[esi+180]
 mov [edi+58],ax
 mov al,2
-; out dx,al
+call _lens_demux_scanline
 mov al,[esi+0]
 mov ah,[esi+5]
 mov [edi+20],ax
@@ -2616,7 +2620,7 @@ mov al,[esi+177]
 mov ah,[esi+182]
 mov [edi+58],ax
 mov al,4
-; out dx,al
+call _lens_demux_scanline
 mov al,[esi+1]
 mov ah,[esi+6]
 mov [edi+20],ax
@@ -2678,7 +2682,7 @@ mov al,[esi+178]
 mov ah,[esi+183]
 mov [edi+58],ax
 mov al,8
-; out dx,al
+call _lens_demux_scanline
 mov al,[esi+2]
 mov ah,[esi+7]
 mov [edi+20],ax
@@ -2754,7 +2758,7 @@ mov [edi+68],ax
 mov [edi+70],ax
 mov [edi+61],al
 mov al,1
-; out dx,al
+call _lens_demux_scanline
 mov al,[esi+0]
 mov ah,[esi+5]
 mov [edi+20],ax
@@ -2818,7 +2822,7 @@ mov [edi+58],ax
 mov al,[esi+184]
 mov [edi+60],al
 mov al,2
-; out dx,al
+call _lens_demux_scanline
 mov al,[esi+1]
 mov ah,[esi+6]
 mov [edi+20],ax
@@ -2882,7 +2886,7 @@ mov [edi+58],ax
 xor al,al
 mov [edi+60],al
 mov al,4
-; out dx,al
+call _lens_demux_scanline
 mov al,[esi+2]
 mov ah,[esi+7]
 mov [edi+20],ax
@@ -2946,7 +2950,7 @@ mov [edi+58],ax
 xor al,al
 mov [edi+60],al
 mov al,8
-; out dx,al
+call _lens_demux_scanline
 mov al,[esi+3]
 mov ah,[esi+8]
 mov [edi+20],ax
@@ -3024,7 +3028,7 @@ mov [edi+70],ax
 mov [edi+18],al
 mov [edi+61],al
 mov al,1
-; out dx,al
+call _lens_demux_scanline
 xor ah,ah
 mov [edi+19],ah
 mov al,[esi+1]
@@ -3090,7 +3094,7 @@ mov [edi+58],ax
 mov al,[esi+183]
 mov [edi+60],al
 mov al,2
-; out dx,al
+call _lens_demux_scanline
 xor ah,ah
 mov [edi+19],ah
 mov al,[esi+2]
@@ -3156,7 +3160,7 @@ mov [edi+58],ax
 mov al,[esi+184]
 mov [edi+60],al
 mov al,4
-; out dx,al
+call _lens_demux_scanline
 xor ah,ah
 mov [edi+19],ah
 mov al,[esi+3]
@@ -3222,7 +3226,7 @@ mov [edi+58],ax
 xor al,al
 mov [edi+60],al
 mov al,8
-; out dx,al
+call _lens_demux_scanline
 mov ah,[esi+0]
 mov [edi+19],ah
 mov al,[esi+5]
@@ -3302,7 +3306,7 @@ mov [edi+70],ax
 mov [edi+18],al
 mov [edi+61],al
 mov al,1
-; out dx,al
+call _lens_demux_scanline
 xor ah,ah
 mov [edi+19],ah
 mov al,[esi+2]
@@ -3368,7 +3372,7 @@ mov [edi+58],ax
 mov al,[esi+182]
 mov [edi+60],al
 mov al,2
-; out dx,al
+call _lens_demux_scanline
 xor ah,ah
 mov [edi+19],ah
 mov al,[esi+3]
@@ -3434,7 +3438,7 @@ mov [edi+58],ax
 mov al,[esi+183]
 mov [edi+60],al
 mov al,4
-; out dx,al
+call _lens_demux_scanline
 mov ah,[esi+0]
 mov [edi+19],ah
 mov al,[esi+4]
@@ -3500,7 +3504,7 @@ mov [edi+58],ax
 mov al,[esi+184]
 mov [edi+60],al
 mov al,8
-; out dx,al
+call _lens_demux_scanline
 mov ah,[esi+1]
 mov [edi+19],ah
 mov al,[esi+6]
@@ -3580,7 +3584,7 @@ mov [edi+70],ax
 mov [edi+18],al
 mov [edi+61],al
 mov al,1
-; out dx,al
+call _lens_demux_scanline
 xor ah,ah
 mov [edi+19],ah
 mov al,[esi+3]
@@ -3646,7 +3650,7 @@ mov [edi+58],ax
 mov al,[esi+181]
 mov [edi+60],al
 mov al,2
-; out dx,al
+call _lens_demux_scanline
 mov ah,[esi+0]
 mov [edi+19],ah
 mov al,[esi+4]
@@ -3712,7 +3716,7 @@ mov [edi+58],ax
 mov al,[esi+182]
 mov [edi+60],al
 mov al,4
-; out dx,al
+call _lens_demux_scanline
 mov ah,[esi+1]
 mov [edi+19],ah
 mov al,[esi+6]
@@ -3778,7 +3782,7 @@ mov [edi+58],ax
 mov al,[esi+183]
 mov [edi+60],al
 mov al,8
-; out dx,al
+call _lens_demux_scanline
 mov ah,[esi+2]
 mov [edi+19],ah
 mov al,[esi+7]
@@ -3857,7 +3861,7 @@ mov [edi+68],ax
 mov [edi+70],ax
 mov [edi+18],al
 mov al,1
-; out dx,al
+call _lens_demux_scanline
 mov ah,[esi+0]
 mov [edi+19],ah
 mov al,[esi+4]
@@ -3924,7 +3928,7 @@ mov al,[esi+180]
 mov ah,[esi+184]
 mov [edi+60],ax
 mov al,2
-; out dx,al
+call _lens_demux_scanline
 mov ah,[esi+1]
 mov [edi+19],ah
 mov al,[esi+5]
@@ -3991,7 +3995,7 @@ mov al,[esi+181]
 xor ah,ah
 mov [edi+60],ax
 mov al,4
-; out dx,al
+call _lens_demux_scanline
 mov ah,[esi+2]
 mov [edi+19],ah
 mov al,[esi+7]
@@ -4058,7 +4062,7 @@ mov al,[esi+182]
 xor ah,ah
 mov [edi+60],ax
 mov al,8
-; out dx,al
+call _lens_demux_scanline
 mov ah,[esi+3]
 mov [edi+19],ah
 mov al,[esi+8]
@@ -4137,7 +4141,7 @@ mov [edi+66],ax
 mov [edi+68],ax
 mov [edi+70],ax
 mov al,1
-; out dx,al
+call _lens_demux_scanline
 xor al,al
 mov ah,[esi+1]
 mov [edi+18],ax
@@ -4205,7 +4209,7 @@ mov al,[esi+179]
 mov ah,[esi+183]
 mov [edi+60],ax
 mov al,2
-; out dx,al
+call _lens_demux_scanline
 xor al,al
 mov ah,[esi+2]
 mov [edi+18],ax
@@ -4273,7 +4277,7 @@ mov al,[esi+180]
 mov ah,[esi+184]
 mov [edi+60],ax
 mov al,4
-; out dx,al
+call _lens_demux_scanline
 xor al,al
 mov ah,[esi+3]
 mov [edi+18],ax
@@ -4341,7 +4345,7 @@ mov al,[esi+181]
 xor ah,ah
 mov [edi+60],ax
 mov al,8
-; out dx,al
+call _lens_demux_scanline
 mov al,[esi+0]
 mov ah,[esi+4]
 mov [edi+18],ax
@@ -4421,7 +4425,7 @@ mov [edi+66],ax
 mov [edi+68],ax
 mov [edi+70],ax
 mov al,1
-; out dx,al
+call _lens_demux_scanline
 xor al,al
 mov ah,[esi+2]
 mov [edi+18],ax
@@ -4489,7 +4493,7 @@ mov al,[esi+178]
 mov ah,[esi+182]
 mov [edi+60],ax
 mov al,2
-; out dx,al
+call _lens_demux_scanline
 xor al,al
 mov ah,[esi+3]
 mov [edi+18],ax
@@ -4557,7 +4561,7 @@ mov al,[esi+179]
 mov ah,[esi+183]
 mov [edi+60],ax
 mov al,4
-; out dx,al
+call _lens_demux_scanline
 mov al,[esi+0]
 mov ah,[esi+4]
 mov [edi+18],ax
@@ -4625,7 +4629,7 @@ mov al,[esi+180]
 mov ah,[esi+184]
 mov [edi+60],ax
 mov al,8
-; out dx,al
+call _lens_demux_scanline
 mov al,[esi+1]
 mov ah,[esi+5]
 mov [edi+18],ax
@@ -4705,7 +4709,7 @@ mov [edi+66],ax
 mov [edi+68],ax
 mov [edi+70],ax
 mov al,1
-; out dx,al
+call _lens_demux_scanline
 xor al,al
 mov ah,[esi+3]
 mov [edi+18],ax
@@ -4773,7 +4777,7 @@ mov al,[esi+177]
 mov ah,[esi+181]
 mov [edi+60],ax
 mov al,2
-; out dx,al
+call _lens_demux_scanline
 mov al,[esi+0]
 mov ah,[esi+4]
 mov [edi+18],ax
@@ -4841,7 +4845,7 @@ mov al,[esi+178]
 mov ah,[esi+182]
 mov [edi+60],ax
 mov al,4
-; out dx,al
+call _lens_demux_scanline
 mov al,[esi+1]
 mov ah,[esi+5]
 mov [edi+18],ax
@@ -4909,7 +4913,7 @@ mov al,[esi+179]
 mov ah,[esi+183]
 mov [edi+60],ax
 mov al,8
-; out dx,al
+call _lens_demux_scanline
 mov al,[esi+2]
 mov ah,[esi+6]
 mov [edi+18],ax
@@ -4989,7 +4993,7 @@ mov [edi+68],ax
 mov [edi+70],ax
 mov [edi+63],al
 mov al,1
-; out dx,al
+call _lens_demux_scanline
 mov al,[esi+0]
 mov ah,[esi+4]
 mov [edi+18],ax
@@ -5059,7 +5063,7 @@ mov [edi+60],ax
 mov al,[esi+184]
 mov [edi+62],al
 mov al,2
-; out dx,al
+call _lens_demux_scanline
 mov al,[esi+1]
 mov ah,[esi+5]
 mov [edi+18],ax
@@ -5129,7 +5133,7 @@ mov [edi+60],ax
 xor al,al
 mov [edi+62],al
 mov al,4
-; out dx,al
+call _lens_demux_scanline
 mov al,[esi+2]
 mov ah,[esi+6]
 mov [edi+18],ax
@@ -5199,7 +5203,7 @@ mov [edi+60],ax
 xor al,al
 mov [edi+62],al
 mov al,8
-; out dx,al
+call _lens_demux_scanline
 mov al,[esi+3]
 mov ah,[esi+7]
 mov [edi+18],ax
@@ -5281,7 +5285,7 @@ mov [edi+70],ax
 mov [edi+16],al
 mov [edi+63],al
 mov al,1
-; out dx,al
+call _lens_demux_scanline
 xor ah,ah
 mov [edi+17],ah
 mov al,[esi+1]
@@ -5353,7 +5357,7 @@ mov [edi+60],ax
 mov al,[esi+183]
 mov [edi+62],al
 mov al,2
-; out dx,al
+call _lens_demux_scanline
 xor ah,ah
 mov [edi+17],ah
 mov al,[esi+2]
@@ -5425,7 +5429,7 @@ mov [edi+60],ax
 mov al,[esi+184]
 mov [edi+62],al
 mov al,4
-; out dx,al
+call _lens_demux_scanline
 xor ah,ah
 mov [edi+17],ah
 mov al,[esi+3]
@@ -5497,7 +5501,7 @@ mov [edi+60],ax
 xor al,al
 mov [edi+62],al
 mov al,8
-; out dx,al
+call _lens_demux_scanline
 mov ah,[esi+0]
 mov [edi+17],ah
 mov al,[esi+4]
@@ -5581,7 +5585,7 @@ mov [edi+70],ax
 mov [edi+16],al
 mov [edi+63],al
 mov al,1
-; out dx,al
+call _lens_demux_scanline
 xor ah,ah
 mov [edi+17],ah
 mov al,[esi+2]
@@ -5653,7 +5657,7 @@ mov [edi+60],ax
 mov al,[esi+182]
 mov [edi+62],al
 mov al,2
-; out dx,al
+call _lens_demux_scanline
 xor ah,ah
 mov [edi+17],ah
 mov al,[esi+3]
@@ -5725,7 +5729,7 @@ mov [edi+60],ax
 mov al,[esi+183]
 mov [edi+62],al
 mov al,4
-; out dx,al
+call _lens_demux_scanline
 mov ah,[esi+0]
 mov [edi+17],ah
 mov al,[esi+4]
@@ -5797,7 +5801,7 @@ mov [edi+60],ax
 mov al,[esi+184]
 mov [edi+62],al
 mov al,8
-; out dx,al
+call _lens_demux_scanline
 mov ah,[esi+1]
 mov [edi+17],ah
 mov al,[esi+5]
@@ -5881,7 +5885,7 @@ mov [edi+70],ax
 mov [edi+16],al
 mov [edi+63],al
 mov al,1
-; out dx,al
+call _lens_demux_scanline
 xor ah,ah
 mov [edi+17],ah
 mov al,[esi+3]
@@ -5953,7 +5957,7 @@ mov [edi+60],ax
 mov al,[esi+181]
 mov [edi+62],al
 mov al,2
-; out dx,al
+call _lens_demux_scanline
 mov ah,[esi+0]
 mov [edi+17],ah
 mov al,[esi+4]
@@ -6025,7 +6029,7 @@ mov [edi+60],ax
 mov al,[esi+182]
 mov [edi+62],al
 mov al,4
-; out dx,al
+call _lens_demux_scanline
 mov ah,[esi+1]
 mov [edi+17],ah
 mov al,[esi+5]
@@ -6097,7 +6101,7 @@ mov [edi+60],ax
 mov al,[esi+183]
 mov [edi+62],al
 mov al,8
-; out dx,al
+call _lens_demux_scanline
 mov ah,[esi+2]
 mov [edi+17],ah
 mov al,[esi+6]
@@ -6180,7 +6184,7 @@ mov [edi+68],ax
 mov [edi+70],ax
 mov [edi+16],al
 mov al,1
-; out dx,al
+call _lens_demux_scanline
 mov ah,[esi+0]
 mov [edi+17],ah
 mov al,[esi+4]
@@ -6253,7 +6257,7 @@ mov al,[esi+180]
 mov ah,[esi+184]
 mov [edi+62],ax
 mov al,2
-; out dx,al
+call _lens_demux_scanline
 mov ah,[esi+1]
 mov [edi+17],ah
 mov al,[esi+5]
@@ -6326,7 +6330,7 @@ mov al,[esi+181]
 xor ah,ah
 mov [edi+62],ax
 mov al,4
-; out dx,al
+call _lens_demux_scanline
 mov ah,[esi+2]
 mov [edi+17],ah
 mov al,[esi+6]
@@ -6399,7 +6403,7 @@ mov al,[esi+182]
 xor ah,ah
 mov [edi+62],ax
 mov al,8
-; out dx,al
+call _lens_demux_scanline
 mov ah,[esi+3]
 mov [edi+17],ah
 mov al,[esi+7]
@@ -6482,7 +6486,7 @@ mov [edi+66],ax
 mov [edi+68],ax
 mov [edi+70],ax
 mov al,1
-; out dx,al
+call _lens_demux_scanline
 xor al,al
 mov ah,[esi+1]
 mov [edi+16],ax
@@ -6556,7 +6560,7 @@ mov al,[esi+179]
 mov ah,[esi+183]
 mov [edi+62],ax
 mov al,2
-; out dx,al
+call _lens_demux_scanline
 xor al,al
 mov ah,[esi+2]
 mov [edi+16],ax
@@ -6630,7 +6634,7 @@ mov al,[esi+180]
 mov ah,[esi+184]
 mov [edi+62],ax
 mov al,4
-; out dx,al
+call _lens_demux_scanline
 xor al,al
 mov ah,[esi+3]
 mov [edi+16],ax
@@ -6704,7 +6708,7 @@ mov al,[esi+181]
 xor ah,ah
 mov [edi+62],ax
 mov al,8
-; out dx,al
+call _lens_demux_scanline
 mov al,[esi+0]
 mov ah,[esi+4]
 mov [edi+16],ax
@@ -6788,7 +6792,7 @@ mov [edi+66],ax
 mov [edi+68],ax
 mov [edi+70],ax
 mov al,1
-; out dx,al
+call _lens_demux_scanline
 xor al,al
 mov ah,[esi+2]
 mov [edi+16],ax
@@ -6862,7 +6866,7 @@ mov al,[esi+178]
 mov ah,[esi+182]
 mov [edi+62],ax
 mov al,2
-; out dx,al
+call _lens_demux_scanline
 xor al,al
 mov ah,[esi+3]
 mov [edi+16],ax
@@ -6936,7 +6940,7 @@ mov al,[esi+179]
 mov ah,[esi+183]
 mov [edi+62],ax
 mov al,4
-; out dx,al
+call _lens_demux_scanline
 mov al,[esi+0]
 mov ah,[esi+4]
 mov [edi+16],ax
@@ -7010,7 +7014,7 @@ mov al,[esi+180]
 mov ah,[esi+184]
 mov [edi+62],ax
 mov al,8
-; out dx,al
+call _lens_demux_scanline
 mov al,[esi+1]
 mov ah,[esi+5]
 mov [edi+16],ax
@@ -7094,7 +7098,7 @@ mov [edi+66],ax
 mov [edi+68],ax
 mov [edi+70],ax
 mov al,1
-; out dx,al
+call _lens_demux_scanline
 xor al,al
 mov ah,[esi+3]
 mov [edi+16],ax
@@ -7168,7 +7172,7 @@ mov al,[esi+177]
 mov ah,[esi+181]
 mov [edi+62],ax
 mov al,2
-; out dx,al
+call _lens_demux_scanline
 mov al,[esi+0]
 mov ah,[esi+4]
 mov [edi+16],ax
@@ -7242,7 +7246,7 @@ mov al,[esi+178]
 mov ah,[esi+182]
 mov [edi+62],ax
 mov al,4
-; out dx,al
+call _lens_demux_scanline
 mov al,[esi+1]
 mov ah,[esi+5]
 mov [edi+16],ax
@@ -7316,7 +7320,7 @@ mov al,[esi+179]
 mov ah,[esi+183]
 mov [edi+62],ax
 mov al,8
-; out dx,al
+call _lens_demux_scanline
 mov al,[esi+2]
 mov ah,[esi+6]
 mov [edi+16],ax
@@ -7400,7 +7404,7 @@ mov [edi+68],ax
 mov [edi+70],ax
 mov [edi+65],al
 mov al,1
-; out dx,al
+call _lens_demux_scanline
 mov al,[esi+0]
 mov ah,[esi+4]
 mov [edi+16],ax
@@ -7476,7 +7480,7 @@ mov [edi+62],ax
 mov al,[esi+184]
 mov [edi+64],al
 mov al,2
-; out dx,al
+call _lens_demux_scanline
 mov al,[esi+1]
 mov ah,[esi+5]
 mov [edi+16],ax
@@ -7552,7 +7556,7 @@ mov [edi+62],ax
 xor al,al
 mov [edi+64],al
 mov al,4
-; out dx,al
+call _lens_demux_scanline
 mov al,[esi+2]
 mov ah,[esi+6]
 mov [edi+16],ax
@@ -7628,7 +7632,7 @@ mov [edi+62],ax
 xor al,al
 mov [edi+64],al
 mov al,8
-; out dx,al
+call _lens_demux_scanline
 mov al,[esi+3]
 mov ah,[esi+7]
 mov [edi+16],ax
@@ -7714,7 +7718,7 @@ mov [edi+70],ax
 mov [edi+14],al
 mov [edi+65],al
 mov al,1
-; out dx,al
+call _lens_demux_scanline
 xor ah,ah
 mov [edi+15],ah
 mov al,[esi+1]
@@ -7792,7 +7796,7 @@ mov [edi+62],ax
 mov al,[esi+183]
 mov [edi+64],al
 mov al,2
-; out dx,al
+call _lens_demux_scanline
 xor ah,ah
 mov [edi+15],ah
 mov al,[esi+2]
@@ -7870,7 +7874,7 @@ mov [edi+62],ax
 mov al,[esi+184]
 mov [edi+64],al
 mov al,4
-; out dx,al
+call _lens_demux_scanline
 xor ah,ah
 mov [edi+15],ah
 mov al,[esi+3]
@@ -7948,7 +7952,7 @@ mov [edi+62],ax
 xor al,al
 mov [edi+64],al
 mov al,8
-; out dx,al
+call _lens_demux_scanline
 mov ah,[esi+0]
 mov [edi+15],ah
 mov al,[esi+4]
@@ -8036,7 +8040,7 @@ mov [edi+70],ax
 mov [edi+14],al
 mov [edi+65],al
 mov al,1
-; out dx,al
+call _lens_demux_scanline
 xor ah,ah
 mov [edi+15],ah
 mov al,[esi+2]
@@ -8114,7 +8118,7 @@ mov [edi+62],ax
 mov al,[esi+182]
 mov [edi+64],al
 mov al,2
-; out dx,al
+call _lens_demux_scanline
 xor ah,ah
 mov [edi+15],ah
 mov al,[esi+3]
@@ -8192,7 +8196,7 @@ mov [edi+62],ax
 mov al,[esi+183]
 mov [edi+64],al
 mov al,4
-; out dx,al
+call _lens_demux_scanline
 mov ah,[esi+0]
 mov [edi+15],ah
 mov al,[esi+4]
@@ -8270,7 +8274,7 @@ mov [edi+62],ax
 mov al,[esi+184]
 mov [edi+64],al
 mov al,8
-; out dx,al
+call _lens_demux_scanline
 mov ah,[esi+1]
 mov [edi+15],ah
 mov al,[esi+5]
@@ -8358,7 +8362,7 @@ mov [edi+70],ax
 mov [edi+14],al
 mov [edi+65],al
 mov al,1
-; out dx,al
+call _lens_demux_scanline
 xor ah,ah
 mov [edi+15],ah
 mov al,[esi+3]
@@ -8436,7 +8440,7 @@ mov [edi+62],ax
 mov al,[esi+181]
 mov [edi+64],al
 mov al,2
-; out dx,al
+call _lens_demux_scanline
 mov ah,[esi+0]
 mov [edi+15],ah
 mov al,[esi+4]
@@ -8514,7 +8518,7 @@ mov [edi+62],ax
 mov al,[esi+182]
 mov [edi+64],al
 mov al,4
-; out dx,al
+call _lens_demux_scanline
 mov ah,[esi+1]
 mov [edi+15],ah
 mov al,[esi+5]
@@ -8592,7 +8596,7 @@ mov [edi+62],ax
 mov al,[esi+183]
 mov [edi+64],al
 mov al,8
-; out dx,al
+call _lens_demux_scanline
 mov ah,[esi+2]
 mov [edi+15],ah
 mov al,[esi+6]
@@ -8679,7 +8683,7 @@ mov [edi+68],ax
 mov [edi+70],ax
 mov [edi+14],al
 mov al,1
-; out dx,al
+call _lens_demux_scanline
 mov ah,[esi+0]
 mov [edi+15],ah
 mov al,[esi+4]
@@ -8758,7 +8762,7 @@ mov al,[esi+180]
 mov ah,[esi+184]
 mov [edi+64],ax
 mov al,2
-; out dx,al
+call _lens_demux_scanline
 mov ah,[esi+1]
 mov [edi+15],ah
 mov al,[esi+5]
@@ -8837,7 +8841,7 @@ mov al,[esi+181]
 xor ah,ah
 mov [edi+64],ax
 mov al,4
-; out dx,al
+call _lens_demux_scanline
 mov ah,[esi+2]
 mov [edi+15],ah
 mov al,[esi+6]
@@ -8916,7 +8920,7 @@ mov al,[esi+182]
 xor ah,ah
 mov [edi+64],ax
 mov al,8
-; out dx,al
+call _lens_demux_scanline
 mov ah,[esi+3]
 mov [edi+15],ah
 mov al,[esi+6]
@@ -9003,7 +9007,7 @@ mov [edi+66],ax
 mov [edi+68],ax
 mov [edi+70],ax
 mov al,1
-; out dx,al
+call _lens_demux_scanline
 xor al,al
 mov ah,[esi+1]
 mov [edi+14],ax
@@ -9083,7 +9087,7 @@ mov al,[esi+180]
 mov ah,[esi+183]
 mov [edi+64],ax
 mov al,2
-; out dx,al
+call _lens_demux_scanline
 xor al,al
 mov ah,[esi+2]
 mov [edi+14],ax
@@ -9163,7 +9167,7 @@ mov al,[esi+180]
 mov ah,[esi+184]
 mov [edi+64],ax
 mov al,4
-; out dx,al
+call _lens_demux_scanline
 xor al,al
 mov ah,[esi+3]
 mov [edi+14],ax
@@ -9243,7 +9247,7 @@ mov al,[esi+181]
 xor ah,ah
 mov [edi+64],ax
 mov al,8
-; out dx,al
+call _lens_demux_scanline
 mov al,[esi+0]
 mov ah,[esi+4]
 mov [edi+14],ax
@@ -9331,7 +9335,7 @@ mov [edi+66],ax
 mov [edi+68],ax
 mov [edi+70],ax
 mov al,1
-; out dx,al
+call _lens_demux_scanline
 xor al,al
 mov ah,[esi+2]
 mov [edi+14],ax
@@ -9411,7 +9415,7 @@ mov al,[esi+179]
 mov ah,[esi+182]
 mov [edi+64],ax
 mov al,2
-; out dx,al
+call _lens_demux_scanline
 xor al,al
 mov ah,[esi+3]
 mov [edi+14],ax
@@ -9491,7 +9495,7 @@ mov al,[esi+180]
 mov ah,[esi+183]
 mov [edi+64],ax
 mov al,4
-; out dx,al
+call _lens_demux_scanline
 mov al,[esi+0]
 mov ah,[esi+4]
 mov [edi+14],ax
@@ -9571,7 +9575,7 @@ mov al,[esi+180]
 mov ah,[esi+184]
 mov [edi+64],ax
 mov al,8
-; out dx,al
+call _lens_demux_scanline
 mov al,[esi+1]
 mov ah,[esi+5]
 mov [edi+14],ax
@@ -9659,7 +9663,7 @@ mov [edi+66],ax
 mov [edi+68],ax
 mov [edi+70],ax
 mov al,1
-; out dx,al
+call _lens_demux_scanline
 xor al,al
 mov ah,[esi+3]
 mov [edi+14],ax
@@ -9739,7 +9743,7 @@ mov al,[esi+178]
 mov ah,[esi+181]
 mov [edi+64],ax
 mov al,2
-; out dx,al
+call _lens_demux_scanline
 mov al,[esi+0]
 mov ah,[esi+4]
 mov [edi+14],ax
@@ -9819,7 +9823,7 @@ mov al,[esi+179]
 mov ah,[esi+182]
 mov [edi+64],ax
 mov al,4
-; out dx,al
+call _lens_demux_scanline
 mov al,[esi+1]
 mov ah,[esi+4]
 mov [edi+14],ax
@@ -9899,7 +9903,7 @@ mov al,[esi+180]
 mov ah,[esi+183]
 mov [edi+64],ax
 mov al,8
-; out dx,al
+call _lens_demux_scanline
 mov al,[esi+2]
 mov ah,[esi+5]
 mov [edi+14],ax
@@ -9987,7 +9991,7 @@ mov [edi+68],ax
 mov [edi+70],ax
 mov [edi+67],al
 mov al,1
-; out dx,al
+call _lens_demux_scanline
 mov al,[esi+0]
 mov ah,[esi+4]
 mov [edi+14],ax
@@ -10069,7 +10073,7 @@ mov [edi+64],ax
 mov al,[esi+184]
 mov [edi+66],al
 mov al,2
-; out dx,al
+call _lens_demux_scanline
 mov al,[esi+1]
 mov ah,[esi+4]
 mov [edi+14],ax
@@ -10151,7 +10155,7 @@ mov [edi+64],ax
 xor al,al
 mov [edi+66],al
 mov al,4
-; out dx,al
+call _lens_demux_scanline
 mov al,[esi+2]
 mov ah,[esi+5]
 mov [edi+14],ax
@@ -10233,7 +10237,7 @@ mov [edi+64],ax
 xor al,al
 mov [edi+66],al
 mov al,8
-; out dx,al
+call _lens_demux_scanline
 mov al,[esi+3]
 mov ah,[esi+6]
 mov [edi+14],ax
@@ -10323,7 +10327,7 @@ mov [edi+70],ax
 mov [edi+12],al
 mov [edi+67],al
 mov al,1
-; out dx,al
+call _lens_demux_scanline
 xor ah,ah
 mov [edi+13],ah
 mov al,[esi+1]
@@ -10407,7 +10411,7 @@ mov [edi+64],ax
 mov al,[esi+183]
 mov [edi+66],al
 mov al,2
-; out dx,al
+call _lens_demux_scanline
 xor ah,ah
 mov [edi+13],ah
 mov al,[esi+2]
@@ -10491,7 +10495,7 @@ mov [edi+64],ax
 mov al,[esi+184]
 mov [edi+66],al
 mov al,4
-; out dx,al
+call _lens_demux_scanline
 xor ah,ah
 mov [edi+13],ah
 mov al,[esi+3]
@@ -10575,7 +10579,7 @@ mov [edi+64],ax
 xor al,al
 mov [edi+66],al
 mov al,8
-; out dx,al
+call _lens_demux_scanline
 mov ah,[esi+0]
 mov [edi+13],ah
 mov al,[esi+4]
@@ -10667,7 +10671,7 @@ mov [edi+70],ax
 mov [edi+12],al
 mov [edi+67],al
 mov al,1
-; out dx,al
+call _lens_demux_scanline
 xor ah,ah
 mov [edi+13],ah
 mov al,[esi+2]
@@ -10751,7 +10755,7 @@ mov [edi+64],ax
 mov al,[esi+182]
 mov [edi+66],al
 mov al,2
-; out dx,al
+call _lens_demux_scanline
 xor ah,ah
 mov [edi+13],ah
 mov al,[esi+3]
@@ -10835,7 +10839,7 @@ mov [edi+64],ax
 mov al,[esi+183]
 mov [edi+66],al
 mov al,4
-; out dx,al
+call _lens_demux_scanline
 mov ah,[esi+0]
 mov [edi+13],ah
 mov al,[esi+3]
@@ -10919,7 +10923,7 @@ mov [edi+64],ax
 mov al,[esi+184]
 mov [edi+66],al
 mov al,8
-; out dx,al
+call _lens_demux_scanline
 mov ah,[esi+1]
 mov [edi+13],ah
 mov al,[esi+4]
@@ -11011,7 +11015,7 @@ mov [edi+70],ax
 mov [edi+12],al
 mov [edi+67],al
 mov al,1
-; out dx,al
+call _lens_demux_scanline
 xor ah,ah
 mov [edi+13],ah
 mov al,[esi+3]
@@ -11095,7 +11099,7 @@ mov [edi+64],ax
 mov al,[esi+182]
 mov [edi+66],al
 mov al,2
-; out dx,al
+call _lens_demux_scanline
 mov ah,[esi+0]
 mov [edi+13],ah
 mov al,[esi+3]
@@ -11179,7 +11183,7 @@ mov [edi+64],ax
 mov al,[esi+182]
 mov [edi+66],al
 mov al,4
-; out dx,al
+call _lens_demux_scanline
 mov ah,[esi+1]
 mov [edi+13],ah
 mov al,[esi+4]
@@ -11263,7 +11267,7 @@ mov [edi+64],ax
 mov al,[esi+183]
 mov [edi+66],al
 mov al,8
-; out dx,al
+call _lens_demux_scanline
 mov ah,[esi+2]
 mov [edi+13],ah
 mov al,[esi+5]
@@ -11354,7 +11358,7 @@ mov [edi+68],ax
 mov [edi+70],ax
 mov [edi+12],al
 mov al,1
-; out dx,al
+call _lens_demux_scanline
 mov ah,[esi+0]
 mov [edi+13],ah
 mov al,[esi+3]
@@ -11439,7 +11443,7 @@ mov al,[esi+181]
 mov ah,[esi+184]
 mov [edi+66],ax
 mov al,2
-; out dx,al
+call _lens_demux_scanline
 mov ah,[esi+1]
 mov [edi+13],ah
 mov al,[esi+4]
@@ -11524,7 +11528,7 @@ mov al,[esi+182]
 xor ah,ah
 mov [edi+66],ax
 mov al,4
-; out dx,al
+call _lens_demux_scanline
 mov ah,[esi+2]
 mov [edi+13],ah
 mov al,[esi+5]
@@ -11609,7 +11613,7 @@ mov al,[esi+182]
 xor ah,ah
 mov [edi+66],ax
 mov al,8
-; out dx,al
+call _lens_demux_scanline
 mov ah,[esi+3]
 mov [edi+13],ah
 mov al,[esi+6]
@@ -11700,7 +11704,7 @@ mov [edi+10],ax
 mov [edi+68],ax
 mov [edi+70],ax
 mov al,1
-; out dx,al
+call _lens_demux_scanline
 xor al,al
 mov ah,[esi+1]
 mov [edi+12],ax
@@ -11786,7 +11790,7 @@ mov al,[esi+180]
 mov ah,[esi+183]
 mov [edi+66],ax
 mov al,2
-; out dx,al
+call _lens_demux_scanline
 xor al,al
 mov ah,[esi+2]
 mov [edi+12],ax
@@ -11872,7 +11876,7 @@ mov al,[esi+181]
 mov ah,[esi+184]
 mov [edi+66],ax
 mov al,4
-; out dx,al
+call _lens_demux_scanline
 xor al,al
 mov ah,[esi+3]
 mov [edi+12],ax
@@ -11958,7 +11962,7 @@ mov al,[esi+182]
 xor ah,ah
 mov [edi+66],ax
 mov al,8
-; out dx,al
+call _lens_demux_scanline
 mov al,[esi+0]
 mov ah,[esi+3]
 mov [edi+12],ax
@@ -12050,7 +12054,7 @@ mov [edi+10],ax
 mov [edi+68],ax
 mov [edi+70],ax
 mov al,1
-; out dx,al
+call _lens_demux_scanline
 xor al,al
 mov ah,[esi+2]
 mov [edi+12],ax
@@ -12136,7 +12140,7 @@ mov al,[esi+179]
 mov ah,[esi+182]
 mov [edi+66],ax
 mov al,2
-; out dx,al
+call _lens_demux_scanline
 xor al,al
 mov ah,[esi+3]
 mov [edi+12],ax
@@ -12222,7 +12226,7 @@ mov al,[esi+180]
 mov ah,[esi+183]
 mov [edi+66],ax
 mov al,4
-; out dx,al
+call _lens_demux_scanline
 mov al,[esi+0]
 mov ah,[esi+3]
 mov [edi+12],ax
@@ -12308,7 +12312,7 @@ mov al,[esi+181]
 mov ah,[esi+184]
 mov [edi+66],ax
 mov al,8
-; out dx,al
+call _lens_demux_scanline
 mov al,[esi+1]
 mov ah,[esi+4]
 mov [edi+12],ax
@@ -12400,7 +12404,7 @@ mov [edi+10],ax
 mov [edi+68],ax
 mov [edi+70],ax
 mov al,1
-; out dx,al
+call _lens_demux_scanline
 xor al,al
 mov ah,[esi+2]
 mov [edi+12],ax
@@ -12486,7 +12490,7 @@ mov al,[esi+178]
 mov ah,[esi+182]
 mov [edi+66],ax
 mov al,2
-; out dx,al
+call _lens_demux_scanline
 mov al,[esi+0]
 mov ah,[esi+3]
 mov [edi+12],ax
@@ -12572,7 +12576,7 @@ mov al,[esi+179]
 mov ah,[esi+183]
 mov [edi+66],ax
 mov al,4
-; out dx,al
+call _lens_demux_scanline
 mov al,[esi+1]
 mov ah,[esi+4]
 mov [edi+12],ax
@@ -12658,7 +12662,7 @@ mov al,[esi+180]
 mov ah,[esi+183]
 mov [edi+66],ax
 mov al,8
-; out dx,al
+call _lens_demux_scanline
 mov al,[esi+2]
 mov ah,[esi+5]
 mov [edi+12],ax
@@ -12750,7 +12754,7 @@ mov [edi+10],ax
 mov [edi+70],ax
 mov [edi+69],al
 mov al,1
-; out dx,al
+call _lens_demux_scanline
 mov al,[esi+0]
 mov ah,[esi+3]
 mov [edi+12],ax
@@ -12838,7 +12842,7 @@ mov [edi+66],ax
 mov al,[esi+184]
 mov [edi+68],al
 mov al,2
-; out dx,al
+call _lens_demux_scanline
 mov al,[esi+1]
 mov ah,[esi+4]
 mov [edi+12],ax
@@ -12926,7 +12930,7 @@ mov [edi+66],ax
 xor al,al
 mov [edi+68],al
 mov al,4
-; out dx,al
+call _lens_demux_scanline
 mov al,[esi+2]
 mov ah,[esi+5]
 mov [edi+12],ax
@@ -13014,7 +13018,7 @@ mov [edi+66],ax
 xor al,al
 mov [edi+68],al
 mov al,8
-; out dx,al
+call _lens_demux_scanline
 mov al,[esi+2]
 mov ah,[esi+6]
 mov [edi+12],ax
@@ -13108,7 +13112,7 @@ mov [edi+70],ax
 mov [edi+10],al
 mov [edi+69],al
 mov al,1
-; out dx,al
+call _lens_demux_scanline
 xor ah,ah
 mov [edi+11],ah
 mov al,[esi+1]
@@ -13198,7 +13202,7 @@ mov [edi+66],ax
 mov al,[esi+183]
 mov [edi+68],al
 mov al,2
-; out dx,al
+call _lens_demux_scanline
 xor ah,ah
 mov [edi+11],ah
 mov al,[esi+2]
@@ -13288,7 +13292,7 @@ mov [edi+66],ax
 mov al,[esi+184]
 mov [edi+68],al
 mov al,4
-; out dx,al
+call _lens_demux_scanline
 xor ah,ah
 mov [edi+11],ah
 mov al,[esi+2]
@@ -13378,7 +13382,7 @@ mov [edi+66],ax
 xor al,al
 mov [edi+68],al
 mov al,8
-; out dx,al
+call _lens_demux_scanline
 mov ah,[esi+0]
 mov [edi+11],ah
 mov al,[esi+3]
@@ -13474,7 +13478,7 @@ mov [edi+70],ax
 mov [edi+10],al
 mov [edi+69],al
 mov al,1
-; out dx,al
+call _lens_demux_scanline
 xor ah,ah
 mov [edi+11],ah
 mov al,[esi+2]
@@ -13564,7 +13568,7 @@ mov [edi+66],ax
 mov al,[esi+183]
 mov [edi+68],al
 mov al,2
-; out dx,al
+call _lens_demux_scanline
 xor ah,ah
 mov [edi+11],ah
 mov al,[esi+2]
@@ -13654,7 +13658,7 @@ mov [edi+66],ax
 mov al,[esi+183]
 mov [edi+68],al
 mov al,4
-; out dx,al
+call _lens_demux_scanline
 mov ah,[esi+0]
 mov [edi+11],ah
 mov al,[esi+3]
@@ -13744,7 +13748,7 @@ mov [edi+66],ax
 mov al,[esi+184]
 mov [edi+68],al
 mov al,8
-; out dx,al
+call _lens_demux_scanline
 mov ah,[esi+1]
 mov [edi+11],ah
 mov al,[esi+4]
@@ -13840,7 +13844,7 @@ mov [edi+70],ax
 mov [edi+10],al
 mov [edi+69],al
 mov al,1
-; out dx,al
+call _lens_demux_scanline
 xor ah,ah
 mov [edi+11],ah
 mov al,[esi+2]
@@ -13930,7 +13934,7 @@ mov [edi+66],ax
 mov al,[esi+182]
 mov [edi+68],al
 mov al,2
-; out dx,al
+call _lens_demux_scanline
 mov ah,[esi+0]
 mov [edi+11],ah
 mov al,[esi+3]
@@ -14020,7 +14024,7 @@ mov [edi+66],ax
 mov al,[esi+183]
 mov [edi+68],al
 mov al,4
-; out dx,al
+call _lens_demux_scanline
 mov ah,[esi+1]
 mov [edi+11],ah
 mov al,[esi+4]
@@ -14110,7 +14114,7 @@ mov [edi+66],ax
 mov al,[esi+183]
 mov [edi+68],al
 mov al,8
-; out dx,al
+call _lens_demux_scanline
 mov ah,[esi+2]
 mov [edi+11],ah
 mov al,[esi+5]
@@ -14205,7 +14209,7 @@ mov [edi+8],ax
 mov [edi+70],ax
 mov [edi+10],al
 mov al,1
-; out dx,al
+call _lens_demux_scanline
 mov ah,[esi+0]
 mov [edi+11],ah
 mov al,[esi+3]
@@ -14296,7 +14300,7 @@ mov al,[esi+181]
 mov ah,[esi+184]
 mov [edi+68],ax
 mov al,2
-; out dx,al
+call _lens_demux_scanline
 mov ah,[esi+1]
 mov [edi+11],ah
 mov al,[esi+4]
@@ -14387,7 +14391,7 @@ mov al,[esi+182]
 xor ah,ah
 mov [edi+68],ax
 mov al,4
-; out dx,al
+call _lens_demux_scanline
 mov ah,[esi+2]
 mov [edi+11],ah
 mov al,[esi+5]
@@ -14478,7 +14482,7 @@ mov al,[esi+183]
 xor ah,ah
 mov [edi+68],ax
 mov al,8
-; out dx,al
+call _lens_demux_scanline
 mov ah,[esi+2]
 mov [edi+11],ah
 mov al,[esi+6]
@@ -14573,7 +14577,7 @@ ret
 mov [edi+8],ax
 mov [edi+70],ax
 mov al,1
-; out dx,al
+call _lens_demux_scanline
 xor al,al
 mov ah,[esi+1]
 mov [edi+10],ax
@@ -14665,7 +14669,7 @@ mov al,[esi+180]
 mov ah,[esi+183]
 mov [edi+68],ax
 mov al,2
-; out dx,al
+call _lens_demux_scanline
 xor al,al
 mov ah,[esi+2]
 mov [edi+10],ax
@@ -14757,7 +14761,7 @@ mov al,[esi+181]
 mov ah,[esi+184]
 mov [edi+68],ax
 mov al,4
-; out dx,al
+call _lens_demux_scanline
 xor al,al
 mov ah,[esi+2]
 mov [edi+10],ax
@@ -14849,7 +14853,7 @@ mov al,[esi+182]
 xor ah,ah
 mov [edi+68],ax
 mov al,8
-; out dx,al
+call _lens_demux_scanline
 mov al,[esi+0]
 mov ah,[esi+3]
 mov [edi+10],ax
@@ -14945,7 +14949,7 @@ ret
 mov [edi+8],ax
 mov [edi+70],ax
 mov al,1
-; out dx,al
+call _lens_demux_scanline
 xor al,al
 mov ah,[esi+2]
 mov [edi+10],ax
@@ -15037,7 +15041,7 @@ mov al,[esi+180]
 mov ah,[esi+183]
 mov [edi+68],ax
 mov al,2
-; out dx,al
+call _lens_demux_scanline
 xor al,al
 mov ah,[esi+2]
 mov [edi+10],ax
@@ -15129,7 +15133,7 @@ mov al,[esi+180]
 mov ah,[esi+183]
 mov [edi+68],ax
 mov al,4
-; out dx,al
+call _lens_demux_scanline
 mov al,[esi+0]
 mov ah,[esi+3]
 mov [edi+10],ax
@@ -15221,7 +15225,7 @@ mov al,[esi+181]
 mov ah,[esi+184]
 mov [edi+68],ax
 mov al,8
-; out dx,al
+call _lens_demux_scanline
 mov al,[esi+1]
 mov ah,[esi+4]
 mov [edi+10],ax
@@ -15317,7 +15321,7 @@ ret
 mov [edi+8],ax
 mov [edi+70],ax
 mov al,1
-; out dx,al
+call _lens_demux_scanline
 xor al,al
 mov ah,[esi+2]
 mov [edi+10],ax
@@ -15409,7 +15413,7 @@ mov al,[esi+179]
 mov ah,[esi+182]
 mov [edi+68],ax
 mov al,2
-; out dx,al
+call _lens_demux_scanline
 mov al,[esi+0]
 mov ah,[esi+3]
 mov [edi+10],ax
@@ -15501,7 +15505,7 @@ mov al,[esi+180]
 mov ah,[esi+183]
 mov [edi+68],ax
 mov al,4
-; out dx,al
+call _lens_demux_scanline
 mov al,[esi+1]
 mov ah,[esi+4]
 mov [edi+10],ax
@@ -15593,7 +15597,7 @@ mov al,[esi+180]
 mov ah,[esi+183]
 mov [edi+68],ax
 mov al,8
-; out dx,al
+call _lens_demux_scanline
 mov al,[esi+2]
 mov ah,[esi+5]
 mov [edi+10],ax
@@ -15689,7 +15693,7 @@ ret
 mov [edi+8],ax
 mov [edi+71],al
 mov al,1
-; out dx,al
+call _lens_demux_scanline
 mov al,[esi+0]
 mov ah,[esi+3]
 mov [edi+10],ax
@@ -15783,7 +15787,7 @@ mov [edi+68],ax
 mov al,[esi+184]
 mov [edi+70],al
 mov al,2
-; out dx,al
+call _lens_demux_scanline
 mov al,[esi+1]
 mov ah,[esi+4]
 mov [edi+10],ax
@@ -15877,7 +15881,7 @@ mov [edi+68],ax
 xor al,al
 mov [edi+70],al
 mov al,4
-; out dx,al
+call _lens_demux_scanline
 mov al,[esi+2]
 mov ah,[esi+5]
 mov [edi+10],ax
@@ -15971,7 +15975,7 @@ mov [edi+68],ax
 xor al,al
 mov [edi+70],al
 mov al,8
-; out dx,al
+call _lens_demux_scanline
 mov al,[esi+2]
 mov ah,[esi+5]
 mov [edi+10],ax
@@ -16069,7 +16073,7 @@ ret
 mov [edi+8],al
 mov [edi+71],al
 mov al,1
-; out dx,al
+call _lens_demux_scanline
 xor ah,ah
 mov [edi+9],ah
 mov al,[esi+1]
@@ -16165,7 +16169,7 @@ mov [edi+68],ax
 mov al,[esi+183]
 mov [edi+70],al
 mov al,2
-; out dx,al
+call _lens_demux_scanline
 xor ah,ah
 mov [edi+9],ah
 mov al,[esi+2]
@@ -16261,7 +16265,7 @@ mov [edi+68],ax
 mov al,[esi+184]
 mov [edi+70],al
 mov al,4
-; out dx,al
+call _lens_demux_scanline
 xor ah,ah
 mov [edi+9],ah
 mov al,[esi+2]
@@ -16357,7 +16361,7 @@ mov [edi+68],ax
 xor al,al
 mov [edi+70],al
 mov al,8
-; out dx,al
+call _lens_demux_scanline
 mov ah,[esi+0]
 mov [edi+9],ah
 mov al,[esi+3]
@@ -16457,7 +16461,7 @@ ret
 mov [edi+8],al
 mov [edi+71],al
 mov al,1
-; out dx,al
+call _lens_demux_scanline
 xor ah,ah
 mov [edi+9],ah
 mov al,[esi+2]
@@ -16553,7 +16557,7 @@ mov [edi+68],ax
 mov al,[esi+183]
 mov [edi+70],al
 mov al,2
-; out dx,al
+call _lens_demux_scanline
 xor ah,ah
 mov [edi+9],ah
 mov al,[esi+2]
@@ -16649,7 +16653,7 @@ mov [edi+68],ax
 mov al,[esi+183]
 mov [edi+70],al
 mov al,4
-; out dx,al
+call _lens_demux_scanline
 mov ah,[esi+0]
 mov [edi+9],ah
 mov al,[esi+3]
@@ -16745,7 +16749,7 @@ mov [edi+68],ax
 mov al,[esi+184]
 mov [edi+70],al
 mov al,8
-; out dx,al
+call _lens_demux_scanline
 mov ah,[esi+1]
 mov [edi+9],ah
 mov al,[esi+4]

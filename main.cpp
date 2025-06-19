@@ -79,9 +79,9 @@ int main()
 
   //dots_main( 0, NULL );
 
-  //width = 320;
-  //height = 400;
-  //jplogo_main();
+  width = 320;
+  height = 400;
+  jplogo_main();
 
   //lens_main();
   //end_main();
@@ -92,7 +92,7 @@ int main()
 
   //pam_main();
 
-  coman_main();
+  //coman_main();
 
   delete[] screen32;
 

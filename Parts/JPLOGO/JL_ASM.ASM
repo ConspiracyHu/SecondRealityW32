@@ -137,7 +137,10 @@ _linezoom:
 	;mov ax,0f02h
 	;out dx,ax
 	;inc dx
+  mov al, 15
+  call _lens_demux_scanline
+
 	xor eax,eax
-	call	[zoomt+ebx]
+	call [zoomt+ebx]
 	pop	ebp
 	ret

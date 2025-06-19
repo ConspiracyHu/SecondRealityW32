@@ -20,7 +20,7 @@ void setpalarea( char * p, int offset, int count )
   for ( int c = 0; c < count * 3; c++ ) shim_outp( 0x3c9, p[ c ] );
 }
 
-#define vram shim_vram
+#define vram shim_paged_vram_scratch
 
 char	rowdata1[200][186];
 char	rowdata2[200][186];
@@ -43,7 +43,7 @@ void	scrolly(int y)
 {
 	int	a;
 	a=y*80;
-  shim_setstartpixel( a );
+  shim_setstartpixel( a * 4 );
 //	_asm
 //	{
 //		mov	dx,3d4h
@@ -77,12 +77,87 @@ int	calc(int y,int c)
 	} 
 }
 
+unsigned int lens_current_plane_mask = 0;
+unsigned char * lens_scanline_chunky = 0;
+unsigned char lens_scanline_plane_buffer[ 80 ];
+unsigned char * lens_scanline_plane_bufferptr = lens_scanline_plane_buffer;
+void __declspec( naked ) lens_demux_scanline()
+{
+  __asm
+  {
+    push ebp
+    mov ebp, esp
+    sub esp, 4
+    pushad
+
+    mov ebx, [lens_current_plane_mask]
+    test ebx, 1
+    jz _not1
+      mov esi, lens_scanline_plane_bufferptr
+      mov edi, lens_scanline_chunky
+      mov ecx, 80
+
+      da_loop_1:
+        movsb
+        add edi, 3
+      loop da_loop_1
+    _not1:
+
+    test ebx, 2
+    jz _not2
+      mov esi, lens_scanline_plane_bufferptr
+      mov edi, lens_scanline_chunky
+      inc edi
+      mov ecx, 80
+
+      da_loop_2:
+        movsb
+        add edi, 3
+      loop da_loop_2
+    _not2:
+
+    test ebx, 4
+    jz _not3
+      mov esi, lens_scanline_plane_bufferptr
+      mov edi, lens_scanline_chunky
+      add edi, 2
+      mov ecx, 80
+
+      da_loop_3:
+        movsb
+        add edi, 3
+      loop da_loop_3
+    _not3:
+
+    test ebx, 8
+    jz _not4
+      mov esi, lens_scanline_plane_bufferptr
+      mov edi, lens_scanline_chunky
+      add edi, 3
+      mov ecx, 80
+
+      da_loop_4:
+        movsb
+        add edi, 3
+      loop da_loop_4
+    _not4:
+
+    movzx eax, al
+    mov [lens_current_plane_mask], eax
+
+    popad
+    mov esp, ebp
+    pop ebp
+    retn
+  }
+}
+
 void	doit(void)
 {
 	int	frame=0,halt=0,storea=0,ysb=0;
 	int	a,b,c,y,ysz,ysza,xsc,spd=10,la,y1,y2;
 	//while(!dis_exit() && dis_musplus()<4);
-	while(!dis_exit() && frame<700)
+  while(!dis_exit() && frame<700)
 	{
 		//if(*shiftstatus&16) jl_setborder(0);
 		c=waitb();
@@ -99,8 +174,14 @@ void	doit(void)
 		{
 			if(y<y1 || y>=y2)
 			{
-				linezoom(vram+y*80,NULL,0);
-			}
+        lens_scanline_chunky = shim_vram + y * 320;
+        linezoom(lens_scanline_plane_buffer,NULL,0);
+        __asm
+        {
+          xor al, al
+          call lens_demux_scanline
+        }
+      }
 			else 
 			{
 				b=(long)(y-y1)*400L/(long)(y2-y1);
@@ -108,8 +189,14 @@ void	doit(void)
 				a&=~1;
 				if(lasty[y]!=b || lasts[y]!=a)
 				{
-					linezoom(vram+y*80,row[b],a);
-					lasty[y]=b;
+          lens_scanline_chunky = shim_vram + y * 320;
+					linezoom(lens_scanline_plane_buffer,row[b],a);
+          __asm
+          {
+            xor al, al
+            call lens_demux_scanline
+          }
+          lasty[ y ] = b;
 					lasts[y]=a;
 				}
 			}
@@ -218,9 +305,15 @@ int jplogo_main()
 	dis_waitb();
 	scrolly(400);
 	dis_waitb();
-	for(y=0;y<400;y++)
+  for ( y = 0; y < 400; y++ )
 	{
-		linezoom(vram+y*80,row[y],184);
+    lens_scanline_chunky = shim_vram + y * 320;
+		linezoom(lens_scanline_plane_buffer,row[y],184);
+    __asm
+    {
+      xor al, al
+      call lens_demux_scanline
+    }
 	}
 	a=64; y=400*64;
 	while(y>0)
@@ -228,7 +321,7 @@ int jplogo_main()
 		y-=a;
 		a+=6;
 		if(y<0) y=0;
-		scrolly(y/64);
+    scrolly(y/64);
 		dis_waitb();
     demo_blit();
 	}
