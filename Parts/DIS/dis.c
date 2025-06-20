@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include "dis.h"
+#include "../../shims.h"
 
 int dis_version()
 {
@@ -26,6 +27,7 @@ int dis_exit()
 
 void dis_partstart()
 {
+  memset( shim_vram, 0, shim_vram_x * shim_vram_y );
 }
 
 void * dis_msgarea( int areanumber )

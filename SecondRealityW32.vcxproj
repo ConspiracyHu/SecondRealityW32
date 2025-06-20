@@ -156,6 +156,8 @@
     <ClCompile Include="Parts\DOTS\DOTS_MAIN.C" />
     <ClCompile Include="Parts\ENDSCRL\ENDSCRL_MAIN.C" />
     <ClCompile Include="Parts\END\END.C" />
+    <ClCompile Include="Parts\GLENZ\MAIN.C" />
+    <ClCompile Include="Parts\GLENZ\ZOOMER.C" />
     <ClCompile Include="Parts\JPLOGO\JP.C" />
     <ClCompile Include="Parts\COMMON.C" />
     <ClCompile Include="Parts\LENS\LENS_MAIN.C" />
@@ -170,6 +172,7 @@
     <ClInclude Include="shims.h" />
   </ItemGroup>
   <ItemGroup>
+    <YASM Include="..\SecondReality\GLENZ\MATH.ASM" />
     <YASM Include="Parts\BEG\BEG_DATA.ASM" />
     <YASM Include="Parts\COMAN\COMAN_ASM.ASM" />
     <YASM Include="Parts\COMAN\COMAN_DATA.ASM" />
@@ -246,6 +249,18 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </None>
+    <YASM Include="Parts\GLENZ\ADATA.ASM" />
+    <YASM Include="Parts\GLENZ\GLENZ_DATA.ASM" />
+    <YASM Include="Parts\GLENZ\NEW.ASM" />
+    <YASM Include="Parts\GLENZ\VEC.ASM" />
+    <YASM Include="Parts\GLENZ\VECCMD.ASM" />
+    <YASM Include="Parts\GLENZ\VID.ASM" />
+    <YASM Include="Parts\GLENZ\VIDINIT.ASM" />
+    <YASM Include="Parts\GLENZ\VIDMISC.ASM" />
+    <YASM Include="Parts\GLENZ\VIDNRM.ASM" />
+    <YASM Include="Parts\GLENZ\VIDPOLY.ASM" />
+    <YASM Include="Parts\GLENZ\VIDTWE.ASM" />
+    <YASM Include="Parts\GLENZ\ZOOM.ASM" />
     <YASM Include="Parts\JPLOGO\JL_ASM.ASM">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
       <FileType>Document</FileType>
@@ -279,6 +294,10 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </None>
+    <None Include="Parts\GLENZ\FC.UH" />
+    <None Include="Parts\GLENZ\ZOOMLOOP.INC">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </None>
     <None Include="Parts\JPLOGO\ICEKNGDM.UP">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>

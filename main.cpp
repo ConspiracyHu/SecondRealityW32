@@ -89,12 +89,12 @@ int main()
 
   // 2   db      'Alkutekstit II (PSI)        ' / 'VISU    ' /  'U2A.EXE',0
   // 3   db      'Alkutekstit III (TRUG/WILDF)' / 'PAM     ' /  'PAM.EXE',0
-  //pam_main();
+  pam_main();
 
   //                                            / 'BEG     ' /  'BEGLOGO.EXE',0
-  width = 320;
-  height = 400;
-  beg_main();
+  //width = 320;
+  //height = 400;
+  //beg_main();
 
   // 4   db      'Glenz (PSI)                 ' / 'GLENZ   ' /  'GLENZ.EXE',0
 
@@ -108,6 +108,8 @@ int main()
 
   // 11  db      'Lens (PSI)                  ' / '        ' / 
   // 12  db      'Rotazoomer (PSI)            ' / 'LENS    ' /  'LNS&ZOOM.EXE',0
+  //width = 320;
+  //height = 200;
   //lens_main();
 
   // 13  db      'Plasma (WILDF)              ' / '        ' / 
@@ -115,11 +117,15 @@ int main()
   // 14  db      'Plasmacube (WILDF)          ' / 'PLZPART ' /  'PLZPART.EXE',0
 
   // 15  db      'MiniVectorBalls (PSI)       ' / 'DOTS    ' /  'MINVBALL.EXE',0
+  //width = 320;
+  //height = 200;
   //dots_main( 0, NULL );
 
   // 16  db      'Peilipalloscroll (TRUG)     ' / 'WATER   ' /  'RAYSCRL.EXE',0
 
   // 17  db      '3D-Sinusfield (PSI)         ' / 'COMAN   ' /  '3DSINFLD.EXE',0
+  //width = 320;
+  //height = 200;
   //coman_main();
 
   // 18  db      'Jellypic (PSI)              ' / 'JPLOGO  ' /  'JPLOGO.EXE',0
@@ -130,11 +136,11 @@ int main()
   // 19  db      'Vector Part II',0             / 'VISU    ' /  'U2E.EXE',0
 
   // 20  db      'Endpictureflash (?)         ' / '        ' / 
+
+  // 21  db      'Credits/Greetings scrl. (?) ' / 'END     ' /  'ENDLOGO.EXE',0
   //width = 320;
   //height = 400;
   //end_main();
-
-  // 21  db      'Credits/Greetings scrl. (?) ' / 'END     ' /  'ENDLOGO.EXE',0
 
   // 22                                           'CREDITS ' /  'CRED.EXE',0
 
