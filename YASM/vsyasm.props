@@ -18,8 +18,8 @@
       <ObjectFile>$(IntDir)%(Filename).obj</ObjectFile>
       <PreProc>0</PreProc>
       <Parser>0</Parser>
-      <CommandLineTemplate Condition="'$(Platform)' == 'Win32'">"$(YasmPath)"yasm-1.3.0-win32.exe -Xvc -f win32 [AllOptions] [AdditionalOptions] [Inputs]</CommandLineTemplate>
-      <CommandLineTemplate Condition="'$(Platform)' == 'x64'">"$(YasmPath)"yasm-1.3.0-win32.exe -Xvc -f win64 [AllOptions] [AdditionalOptions] [Inputs]</CommandLineTemplate>
+      <CommandLineTemplate Condition="'$(Platform)' == 'Win32'">"$(YasmPath)"yasm-1.3.0-win64.exe -Xvc -f win32 [AllOptions] [AdditionalOptions] [Inputs]</CommandLineTemplate>
+      <CommandLineTemplate Condition="'$(Platform)' == 'x64'">"$(YasmPath)"yasm-1.3.0-win64.exe -Xvc -f win64 [AllOptions] [AdditionalOptions] [Inputs]</CommandLineTemplate>
       <Outputs>%(ObjectFile)</Outputs>
       <ExecutionDescription>Assembling %(Filename)%(Extension)</ExecutionDescription>
       <ShowOnlyRuleProperties>false</ShowOnlyRuleProperties>
