@@ -6,7 +6,6 @@
     <ClCompile Include="Parts\DOTS\DOTS_MAIN.C">
       <Filter>Parts\15-Dots</Filter>
     </ClCompile>
-    <ClCompile Include="Parts\DIS\dis.c" />
     <ClCompile Include="shims.c" />
     <ClCompile Include="Parts\JPLOGO\JP.C">
       <Filter>Parts\18-JellyLogo</Filter>
@@ -32,16 +31,30 @@
     <ClCompile Include="Parts\COMMON.C">
       <Filter>Parts</Filter>
     </ClCompile>
+    <ClCompile Include="Parts\GLENZ\GLENZ_MAIN.C">
+      <Filter>Parts\04-Glenz</Filter>
+    </ClCompile>
+    <ClCompile Include="Parts\DIS\dis.c">
+      <Filter>Parts\DIS</Filter>
+    </ClCompile>
+    <ClCompile Include="Parts\GLENZ\ZOOMER.C">
+      <Filter>Parts\04-Glenz</Filter>
+    </ClCompile>
+    <ClCompile Include="Parts\BEG\BEG.C">
+      <Filter>Parts\03b-BeginTitleScreen</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Graphics.h" />
-    <ClInclude Include="Parts\DIS\dis.h" />
     <ClInclude Include="shims.h" />
     <ClInclude Include="Parts\COMAN\WAVE.H">
       <Filter>Parts\17-ComancheVoxel</Filter>
     </ClInclude>
     <ClInclude Include="Parts\COMMON.H">
       <Filter>Parts</Filter>
+    </ClInclude>
+    <ClInclude Include="Parts\DIS\dis.h">
+      <Filter>Parts\DIS</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -71,6 +84,15 @@
     </Filter>
     <Filter Include="Parts\17-ComancheVoxel">
       <UniqueIdentifier>{cc236c22-f955-4b11-be34-d1a96a7d7319}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Parts\04-Glenz">
+      <UniqueIdentifier>{52f24579-f26b-46a2-83ed-9050ee17c057}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Parts\DIS">
+      <UniqueIdentifier>{075ac59b-1522-46cc-a49f-388868fcdd52}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Parts\03b-BeginTitleScreen">
+      <UniqueIdentifier>{dd337c00-93cc-441f-91d4-73ef4ffd70b4}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -155,6 +177,30 @@
     <None Include="Parts\COMAN\W2DTA.BIN">
       <Filter>Parts\17-ComancheVoxel</Filter>
     </None>
+    <None Include="Parts\GLENZ\ZOOMLOOP.INC">
+      <Filter>Parts\04-Glenz</Filter>
+    </None>
+    <None Include="Parts\GLENZ\SIN1024.INC">
+      <Filter>Parts\04-Glenz</Filter>
+    </None>
+    <None Include="Parts\GLENZ\MATHSIN.INC">
+      <Filter>Parts\04-Glenz</Filter>
+    </None>
+    <None Include="Parts\GLENZ\FC.UH">
+      <Filter>Parts\04-Glenz</Filter>
+    </None>
+    <None Include="Parts\GLENZ\ASM.INC">
+      <Filter>Parts\04-Glenz</Filter>
+    </None>
+    <None Include="Parts\GLENZ\AOBJ.INC">
+      <Filter>Parts\04-Glenz</Filter>
+    </None>
+    <None Include="Parts\GLENZ\ADATA.INC">
+      <Filter>Parts\04-Glenz</Filter>
+    </None>
+    <None Include="Parts\BEG\SRTITLE.UP">
+      <Filter>Parts\03b-BeginTitleScreen</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <YASM Include="Parts\ALKU\ALKU_ASMYT.ASM">
@@ -201,6 +247,45 @@
     </YASM>
     <YASM Include="Parts\COMAN\COMAN_DATA.ASM">
       <Filter>Parts\17-ComancheVoxel</Filter>
+    </YASM>
+    <YASM Include="Parts\GLENZ\GLENZ_DATA.ASM">
+      <Filter>Parts\04-Glenz</Filter>
+    </YASM>
+    <YASM Include="Parts\GLENZ\VEC.ASM">
+      <Filter>Parts\04-Glenz</Filter>
+    </YASM>
+    <YASM Include="Parts\GLENZ\VID.ASM">
+      <Filter>Parts\04-Glenz</Filter>
+    </YASM>
+    <YASM Include="Parts\GLENZ\VIDINIT.ASM">
+      <Filter>Parts\04-Glenz</Filter>
+    </YASM>
+    <YASM Include="Parts\GLENZ\VIDMISC.ASM">
+      <Filter>Parts\04-Glenz</Filter>
+    </YASM>
+    <YASM Include="Parts\GLENZ\VIDNRM.ASM">
+      <Filter>Parts\04-Glenz</Filter>
+    </YASM>
+    <YASM Include="Parts\GLENZ\VIDPOLY.ASM">
+      <Filter>Parts\04-Glenz</Filter>
+    </YASM>
+    <YASM Include="Parts\GLENZ\VIDTWE.ASM">
+      <Filter>Parts\04-Glenz</Filter>
+    </YASM>
+    <YASM Include="Parts\GLENZ\ZOOM.ASM">
+      <Filter>Parts\04-Glenz</Filter>
+    </YASM>
+    <YASM Include="Parts\GLENZ\NEW.ASM">
+      <Filter>Parts\04-Glenz</Filter>
+    </YASM>
+    <YASM Include="Parts\GLENZ\MATH.ASM">
+      <Filter>Parts\04-Glenz</Filter>
+    </YASM>
+    <YASM Include="Parts\GLENZ\ADATA.ASM">
+      <Filter>Parts\04-Glenz</Filter>
+    </YASM>
+    <YASM Include="Parts\BEG\BEG_DATA.ASM">
+      <Filter>Parts\03b-BeginTitleScreen</Filter>
     </YASM>
   </ItemGroup>
 </Project>
