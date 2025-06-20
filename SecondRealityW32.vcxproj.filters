@@ -11,9 +11,6 @@
     <ClCompile Include="Parts\JPLOGO\JP.C">
       <Filter>Parts\18-JellyLogo</Filter>
     </ClCompile>
-    <ClCompile Include="Parts\JPLOGO\READP.C">
-      <Filter>Parts\18-JellyLogo</Filter>
-    </ClCompile>
     <ClCompile Include="Parts\LENS\LENS_MAIN.C">
       <Filter>Parts\11-12-Lens</Filter>
     </ClCompile>
@@ -32,6 +29,9 @@
     <ClCompile Include="Parts\COMAN\COMAN_MAIN.C">
       <Filter>Parts\17-ComancheVoxel</Filter>
     </ClCompile>
+    <ClCompile Include="Parts\COMMON.C">
+      <Filter>Parts</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Graphics.h" />
@@ -39,6 +39,9 @@
     <ClInclude Include="shims.h" />
     <ClInclude Include="Parts\COMAN\WAVE.H">
       <Filter>Parts\17-ComancheVoxel</Filter>
+    </ClInclude>
+    <ClInclude Include="Parts\COMMON.H">
+      <Filter>Parts</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

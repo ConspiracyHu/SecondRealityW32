@@ -3,11 +3,11 @@
 #include <memory.h>
 #include <malloc.h>
 #include "..\dis\dis.h"
+#include "..\common.h"
 #include "..\..\shims.h"
 
 #define noCALCW12
 
-void setpalarea( char * p, int offset, int count );
 void docol( int xw, int yw, int xa, int ya, int b );
 void docopy( char * ptr );
 

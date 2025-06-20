@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "..\dis\dis.h"
+#include "..\common.h"
 #include "..\..\shims.h"
 
 FILE	*f1;
@@ -12,13 +13,6 @@ extern char jl_pic[];
 extern void jl_setborder(int);
 extern void inittwk();
 extern void linezoom(char * dst, char * src, int);
-void	readp( char * dest, int row, char * src );
-
-void setpalarea( char * p, int offset, int count )
-{
-  shim_outp( 0x3c8, offset );
-  for ( int c = 0; c < count * 3; c++ ) shim_outp( 0x3c9, p[ c ] );
-}
 
 #define vram shim_paged_vram_scratch
 

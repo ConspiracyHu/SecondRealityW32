@@ -1,11 +1,10 @@
 #include <stdio.h>
 #include "..\dis\dis.h"
+#include "..\common.h"
 #include "..\..\shims.h"
 
 //#include "readp.c"
-void	readp( char * dest, int row, char * src );
 void lineblit( char *, char * );
-void setpalarea( char * p, int offset, int count );
 
 extern char end_pic[];
 

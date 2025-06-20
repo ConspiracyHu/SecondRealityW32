@@ -2,6 +2,7 @@
 #include <conio.h>
 #include <dos.h>
 #include "..\dis\dis.h"
+#include "..\common.h"
 #include "..\..\shims.h"
 //#pragma	 inline
 
@@ -20,8 +21,6 @@ extern	void init_uframe(char * seg);
 extern	void ulosta_frame(char * start);
 extern 	char pam_memblock[];
 extern 	char pam_pal[];
-
-void setpalarea( char * p, int offset, int count );
 
 int	wfade[100]=    {63,32,16,8,4,2,1,0,0,0,
 			0,0,0,0,0,0,0,0,0,0,

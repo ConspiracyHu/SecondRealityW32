@@ -4,6 +4,7 @@
 #include <malloc.h>
 #include <math.h>
 #include "..\dis\dis.h"
+#include "..\common.h"
 #include "..\..\shims.h"
 
 extern char lensex0[];
@@ -17,7 +18,6 @@ extern char lensexb[];
 void dorow(  int *, int, int, int );
 void dorow2( int *, int, int, int );
 void dorow3( int *, int, int, int );
-void setpalarea( char * p, int offset, int count );
 void rotate( int, int, int, int );
 
 #define noSAVEPATH

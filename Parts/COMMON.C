@@ -1,5 +1,5 @@
 #include <memory.h>
-#include "../../shims.h"
+#include "../shims.h"
 
 struct st_readp
 {
@@ -61,4 +61,10 @@ void	readp(char *dest,int row,char *src)
 		pop	edi
 		pop	esi
 	}
+}
+
+void setpalarea( char * p, int offset, int count )
+{
+  shim_outp( 0x3c8, offset );
+  for ( int c = 0; c < count * 3; c++ ) shim_outp( 0x3c9, p[ c ] );
 }

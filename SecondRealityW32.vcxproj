@@ -156,7 +156,7 @@
     <ClCompile Include="Parts\ENDSCRL\ENDSCRL_MAIN.C" />
     <ClCompile Include="Parts\END\END.C" />
     <ClCompile Include="Parts\JPLOGO\JP.C" />
-    <ClCompile Include="Parts\JPLOGO\READP.C" />
+    <ClCompile Include="Parts\COMMON.C" />
     <ClCompile Include="Parts\LENS\LENS_MAIN.C" />
     <ClCompile Include="Parts\PAM\OUTTAA.C" />
     <ClCompile Include="shims.c" />
@@ -164,6 +164,7 @@
   <ItemGroup>
     <ClInclude Include="Graphics.h" />
     <ClInclude Include="Parts\COMAN\WAVE.H" />
+    <ClInclude Include="Parts\COMMON.H" />
     <ClInclude Include="Parts\DIS\dis.h" />
     <ClInclude Include="shims.h" />
   </ItemGroup>

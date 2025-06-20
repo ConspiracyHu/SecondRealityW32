@@ -4,6 +4,7 @@
 #include <memory.h>
 //#include "tweak.h"
 #include "../dis/dis.h"
+#include "../common.h"
 #include "../../shims.h"
 
 #define SCRLF 9
@@ -22,8 +23,6 @@ char fadepal[256*3];
 extern char hzpic[];
 extern void outline(char *f, char *t);
 extern void ascrolltext(int scrl, int *dtau);
-
-void setpalarea( char * p, int offset, int count );
 
 #define vmem shim_vram
 
