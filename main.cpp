@@ -13,6 +13,7 @@ extern "C" void alku_main();
 extern "C" void coman_main();
 
 extern "C" void rotate( int, int, int, int );
+extern "C" void rotlist();
 
 unsigned int * screen32;
 
@@ -71,6 +72,7 @@ int main()
   // self-modifying code in rotozoomer, wahey!
   DWORD old = 0;
   VirtualProtect( &rotate, 8192, PAGE_EXECUTE_READWRITE, &old );
+  VirtualProtect( &rotlist, 8192, PAGE_EXECUTE_READWRITE, &old );
 
   int windowWidth = 1280;
   int windowHeight = 960;

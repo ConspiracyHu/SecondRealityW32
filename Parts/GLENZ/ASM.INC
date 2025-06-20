@@ -6,32 +6,32 @@
 	%endmacro
 
 %MACRO LOADDS 0
-	mov	ax,SEG rows
-	mov	ds,ax
+;	mov	ax,SEG rows
+;	mov	ds,ax
 	%endmacro
 
 %macro LOADGS 0
-	mov	ax,SEG rows
-	mov	gs,ax
+;	mov	ax,SEG rows
+;	mov	gs,ax
 	%endmacro
 
 %macro movpar	2 ;reg,par ;loads parameter [par(0..)] to register [reg]
-	mov	%1,word [bp+%2*2+6]
+	mov	%1,[esp+8+%2]
 	%endmacro
 
 %macro CBEG 0	;C/Assembler procedure begin
-	push	bp
-	mov	bp,sp
-	push	si
-	push	di
-	push	ds
+	push	ebp
+;	mov	bp,sp
+;	push	si
+;	push	di
+;	push	ds
 	%endmacro
 
 %macro CEND 0	;C/Assembler procedure end
-	pop	ds
-	pop	di
-	pop	si
-	pop	bp
+;	pop	ds
+;	pop	di
+;	pop	si
+	pop	ebp
 	ret
 	%endmacro
 

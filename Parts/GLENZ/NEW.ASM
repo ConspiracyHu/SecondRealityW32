@@ -15,12 +15,12 @@ siend	dw	0
 
 %define NROWS 256
 %define MAXLINES 512
-ndp0	dw 0			;toggling pointer inside newdata1
-ndp	dw 0			;pointer inside newdata1
-nec	dw 0			;pointer to next free in ne
-nlc	dw 0			;items in horizontal list
+ndp0	dd 0			;toggling pointer inside newdata1
+ndp	dd 0			;pointer inside newdata1
+nec	dd 0			;pointer to next free in ne
+nlc	dd 0			;items in horizontal list
 ;ALIGN 4
-nep	times NROWS dw 0
+nep	times NROWS dd 0
 ;ALIGN 4
 ne	times MAXLINES * 16 db 0
 %define NE_X		0  ;dd
@@ -43,11 +43,11 @@ ng_init:
 	xor	ax,8000h
 	mov	[ndp0],ax
 	mov	[ndp],ax
-	mov	cx,NROWS/2
-	mov	ax,cs
-	mov	es,ax
+	mov	ecx,NROWS
+	;mov	ax,cs
+	;mov	es,ax
 	xor	eax,eax
-	mov	di,nep
+	mov	edi,nep
 	rep	stosd
 	mov	eax,newdata1
 	cmp	word [eax],0

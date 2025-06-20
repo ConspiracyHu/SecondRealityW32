@@ -38,7 +38,7 @@ extern int cclipedges(int *,int *,long *); // modifies given point list
 extern int cprojlist(long *,long *);
 extern int ccliplist(long *);
 extern int cdrawpolylist(int *);
-extern int cmatrix_yxz(int,int,int,int *);
+extern int cmatrix_yxz(short, short, short, short *);
 extern int cpolylist(int *polylist,int *polys,int *edges,long *points3);
 extern int ceasypolylist(int *polylist,int *polys,long *points3);
 
@@ -248,7 +248,7 @@ int epolysb[]={
 
 0};
 int polylist[256];
-int matrix[9];
+short matrix[9];
 
 extern  char    backpal[16*3];
 char    pal[768];

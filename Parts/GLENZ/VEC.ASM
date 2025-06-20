@@ -7,9 +7,9 @@ section .data
 global _lightshift
 _lightshift db	0
 count	dw	0
-edgesoff dw	0
-pointsoff dw	0
-cntoff	dw	0
+edgesoff dd	0
+pointsoff dd	0
+cntoff	dd	0
 
 global _backpal	
 _backpal times 16 db 16,16,16
@@ -24,20 +24,25 @@ rolused	times	256 db 0
 
 clipz	dd	2200
 
+;ALIGN 2
+global _demomode
+_demomode dd	demo_glz
+	dd	demo_glz
+	dd	demo_glz2
+
 section .code
 
 global _csetmatrix
 _csetmatrix:
 	CBEG
 	LOADDS
-	mov	eax,[bp+10]
+	mov	eax,[esp+12]
 	mov	[_xadd],eax		
-	mov	eax,[bp+14]
+	mov	eax,[esp+16]
 	mov	[_yadd],eax		
-	mov	eax,[bp+18]
+	mov	eax,[esp+20]
 	mov	[_zadd],eax		
-	mov	si,[bp+6]
-	mov	ds,word [bp+8]
+	mov	esi,[esp+8]
 	call	setmatrix
 	CEND
 
@@ -45,21 +50,17 @@ _csetmatrix:
 global _crotlist
 _crotlist:
 	CBEG
-	mov	si,[bp+10]
-	mov	ds,word [bp+12]
-	mov	di,[bp+6]
-	mov	es,word [bp+8]
-	call	rotlist
+	mov	esi,[esp+12]
+	mov	edi,[esp+8]
+	call	_rotlist
 	CEND
 
 
 global _cprojlist
 _cprojlist:
 	CBEG
-	mov	si,[bp+10]
-	mov	ds,word [bp+12]
-	mov	di,[bp+6]
-	mov	es,word [bp+8]
+	mov	esi,[esp+12]
+	mov	edi,[esp+8]
 	call	projlist
 	CEND
 
@@ -67,8 +68,7 @@ _cprojlist:
 global _ccliplist
 _ccliplist:
 	CBEG
-	mov	si,[bp+6]
-	mov	ds,word [bp+8]
+	mov	esi,[esp+8]
 	call	cliplist
 	CEND
 
@@ -77,34 +77,35 @@ global setmatrix
 setmatrix:
 	;ds:si=matrix
 	movsx	eax,word [esi+0]
-	mov	dword [2+mtrm00],eax
+	mov	dword [1+mtrm00],eax
 	movsx	eax,word [esi+2]
-	mov	dword [2+mtrm02],eax
+	mov	dword [1+mtrm02],eax
 	movsx	eax,word [esi+4]
-	mov	dword [2+mtrm04],eax
+	mov	dword [1+mtrm04],eax
 	movsx	eax,word [esi+6]
-	mov	dword [2+mtrm06],eax
+	mov	dword [1+mtrm06],eax
 	movsx	eax,word [esi+8]
-	mov	dword [2+mtrm08],eax
+	mov	dword [1+mtrm08],eax
 	movsx	eax,word [esi+10]
-	mov	dword [2+mtrm10],eax
+	mov	dword [1+mtrm10],eax
 	movsx	eax,word [esi+12]
-	mov	dword [2+mtrm12],eax
+	mov	dword [1+mtrm12],eax
 	movsx	eax,word [esi+14]
-	mov	dword [2+mtrm14],eax
+	mov	dword [1+mtrm14],eax
 	movsx	eax,word [esi+16]
-	mov	dword [2+mtrm16],eax
+	mov	dword [1+mtrm16],eax
 	ret
 
 
 ;ALIGN 2
 
-rotlist:
+global _rotlist
+_rotlist:
 	;pointlist@DS:SI=>pointlist@ES:DI
-	push	di
+	push	edi
 	LOADGS
 	mov	cx,[esi]
-	add	si,4
+	add	esi,4
 	mov	[count],cx
 	mov	ax,[edi]
 	add	[edi],cx
@@ -116,8 +117,8 @@ rotlist:
 	add	di,4
 
 nrup1:	;rotate with matrix
-	push	si
-	push	di
+	push	esi
+	push	edi
 	mov	ebp,[esi+8]
 	mov	edi,[esi+4]
 	mov	esi,[esi+0]
@@ -164,8 +165,8 @@ mtrm16:	mov	eax,12345678h
 	shld	ecx,ebx,17
 	pop	edx
 	pop	eax
-	pop	di
-	pop	si
+	pop	edi
+	pop	esi
 	;
 	add	eax,[_xadd]
 	mov	[edi+0],eax
@@ -174,20 +175,20 @@ mtrm16:	mov	eax,12345678h
 	add	edx,[_zadd]
 	mov	[edi+8],edx
 	;next point
-	add	si,12
-	add	di,12
+	add	esi,12
+	add	edi,12
 	dec word	[count]
 	jnz	nrup1
-	pop	di
+	pop	edi
 	ret
 
 
 projlist:
 	;pointlist@DS:SI=>projectedpointlist@ES:DI
-	push	di
+	push	edi
 	LOADGS
 	mov	cx,[esi]
-	add	si,4
+	add	esi,4
 	mov	[count],cx
 	mov	ax,[edi]
 	add	[edi],cx
@@ -205,7 +206,7 @@ projlist:
 	
 	;project
 
-	xor	bp,bp
+	xor	ebp,ebp
 	mov	dword [edi+8],ebx
 	cmp	ebx,[projminz]
 	jge	@@2
@@ -238,20 +239,20 @@ projlist:
 @@5:	mov	[edi+4],bp ;store visiblity flags
 	
 	;next point
-	add	si,12
-	add	di,12
+	add	esi,12
+	add	edi,12
 	dec	word [count]
 	jnz	@@1
-	pop	di
+	pop	edi
 	ret
 
 
 cliplist:
 	;pointlist@DS:SI
-	push	di
+	push	edi
 	LOADGS
 	mov	cx,[esi]
-	add	si,4
+	add	esi,4
 
 @@1:	;rotate with matrix
 	mov	eax,[esi+4]
@@ -260,10 +261,10 @@ cliplist:
 	mov	dword [esi+4],1500
 @@2:
 	;next point
-	add	si,12
+	add	esi,12
 	dec	cx
 	jnz	@@1
-	pop	di
+	pop	edi
 	ret
 
 adddot:
@@ -271,16 +272,17 @@ adddot:
 	je	@@3
 	mov	bp,ax
 	;add dot
-	push	bx
+	push	ebx
 	mov	bx,ax
 	shl	bx,1
 	add	bx,ax
 	shl	bx,2
-	add	bx,[pointsoff]
+	add	ebx,[pointsoff]
 	mov	eax,[ebx]
 	stosd
-	pop	bx
-@@3:	ret
+	pop	ebx
+@@3:
+  ret
 
 
 checkhiddenbx:
@@ -492,7 +494,7 @@ demo_glz:
 	mov	al,[_backpal+zzz*3+2]
 	shr	al,2
 	add	bh,al
-	setpalxxx
+	;setpalxxx
 	mov	bx,di
 	mov	cx,si
 	%assign zzz zzz+1
@@ -502,24 +504,16 @@ demo_glz:
 	pop	si
 @@xx:	ret
 
-
-;ALIGN 2
-global _demomode
-_demomode dd	demo_glz
-	dd	demo_glz
-	dd	demo_glz2
-
 global _ceasypolylist
 _ceasypolylist: ;polylist,polys,points3
 	CBEG
-	mov	di,[ebp+6]
-	mov	es,word [ebp+8]
-	mov	si,[ebp+10]
-	mov	ds,word [ebp+12]
-	mov	ax,[ebp+14]
-	add	ax,4
-	mov	[pointsoff],ax
-	mov	gs,word [ebp+16]
+	mov	edi,[esp+8]
+	;mov	es,word [ebp+8]
+	mov	esi,[esp+12]
+	;mov	ds,word [ebp+12]
+	add	eax,4
+	mov	[pointsoff],eax
+	;mov	gs,word [ebp+16]
 	mov	bp,-1
 @@2:	lodsw
 	cmp	ax,0
@@ -527,7 +521,7 @@ _ceasypolylist: ;polylist,polys,points3
 	add	di,2
 	mov	cx,ax
 	movsw
-	mov	[cntoff],di
+	mov	[cntoff],edi
 @@3:	push	cx
 	mov	ax,[esi]
 	add	si,2
@@ -572,8 +566,7 @@ global _cglenzpolylist
 _cglenzpolylist:
 	CBEG
 	LOADDS
-	movpar	di,0
-	movpar	es,1
+	movpar	esi,0
 	mov	ax,1
 	call	__newgroup
 	CEND
