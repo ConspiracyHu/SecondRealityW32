@@ -37,9 +37,9 @@
 
 %macro setborder 1
 	mov	al,%1
-	push	ax
+;	push	ax
 ;	call	_setborder
-	add	sp,2
+;	add	sp,2
 	%endmacro
 
 %macro LOOP_LARGE 1
