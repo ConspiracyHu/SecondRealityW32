@@ -1,6 +1,7 @@
 #include "Graphics.h"
 #include "shims.h"
 
+extern "C" void beg_main();
 extern "C" void dots_main( int argc, char * argv[] );
 extern "C" void jplogo_main();
 extern "C" void lens_main();
@@ -91,6 +92,9 @@ int main()
   //pam_main();
 
   //                                            / 'BEG     ' /  'BEGLOGO.EXE',0
+  width = 320;
+  height = 400;
+  beg_main();
 
   // 4   db      'Glenz (PSI)                 ' / 'GLENZ   ' /  'GLENZ.EXE',0
 
@@ -104,7 +108,7 @@ int main()
 
   // 11  db      'Lens (PSI)                  ' / '        ' / 
   // 12  db      'Rotazoomer (PSI)            ' / 'LENS    ' /  'LNS&ZOOM.EXE',0
-  lens_main();
+  //lens_main();
 
   // 13  db      'Plasma (WILDF)              ' / '        ' / 
 

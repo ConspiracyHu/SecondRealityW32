@@ -150,6 +150,7 @@
     <ClCompile Include="Graphics.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Parts\ALKU\ALKU_MAIN.C" />
+    <ClCompile Include="Parts\BEG\BEG.C" />
     <ClCompile Include="Parts\COMAN\COMAN_MAIN.C" />
     <ClCompile Include="Parts\DIS\dis.c" />
     <ClCompile Include="Parts\DOTS\DOTS_MAIN.C" />
@@ -169,6 +170,7 @@
     <ClInclude Include="shims.h" />
   </ItemGroup>
   <ItemGroup>
+    <YASM Include="Parts\BEG\BEG_DATA.ASM" />
     <YASM Include="Parts\COMAN\COMAN_ASM.ASM" />
     <YASM Include="Parts\COMAN\COMAN_DATA.ASM" />
     <YASM Include="Parts\COMAN\THELOOP.ASM" />
@@ -211,6 +213,9 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
     </YASM>
+    <None Include="Parts\BEG\SRTITLE.UP">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </None>
     <None Include="Parts\COMAN\SIN1024.INC">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </None>
