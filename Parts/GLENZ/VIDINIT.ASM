@@ -1,13 +1,13 @@
-SC_INDEX        equ     3c4h    ;Sequence Controller Index register
-GC_INDEX        equ     3ceh    ;Graphics Controller Index register
-CRTC_INDEX      equ     3d4h    ;CRT Controller Index register
-MEMORY_MODE     equ     4       ;Memory Mode register index in SC
-UNDERLINE       equ     14h     ;Underline Location reg index in CRTC
-MODE_CONTROL    equ     17h     ;Mode Control register index in CRTC
-GRAPHICS_MODE   equ     5       ;Graphics Mode register index in GC
-MISCELLANEOUS   equ     6       ;Miscellaneous register index in GC
+%define SC_INDEX            3c4h    ;Sequence Controller Index register
+%define GC_INDEX            3ceh    ;Graphics Controller Index register
+%define CRTC_INDEX          3d4h    ;CRT Controller Index register
+%define MEMORY_MODE         4       ;Memory Mode register index in SC
+%define UNDERLINE           14h     ;Underline Location reg index in CRTC
+%define MODE_CONTROL        17h     ;Mode Control register index in CRTC
+%define GRAPHICS_MODE       5       ;Graphics Mode register index in GC
+%define MISCELLANEOUS       6       ;Miscellaneous register index in GC
 
-hseq1 LABEL WORD ;0=start
+hseq1: ;0=start
 	dw	479	;display enable end
 	dw	485	;start vertical blank
 	dw	490	;start vertical retrace
@@ -16,15 +16,33 @@ hseq1 LABEL WORD ;0=start
 	dw	510	;vertical total
 	dw	480+1	;200/350/400/480=lines/monitor, +1=double scanning
 	
-hseq2 LABEL WORD ;0=start
+hseq2: ;0=start
 	dw	349	;display enable end
 	dw	354	;start vertical blank
 	dw	360+50	;start vertical retrace
 	dw	375+100	;end vertical retrace
 	dw	395+100	;end vertical blank
 	dw	399+100	;vertical total
-	
-tweak320x200 PROC NEAR
+
+hseq3: ;0=start
+	dw	349	;display enable end
+	dw	355	;start vertical blank
+	dw	395	;start vertical retrace
+	dw	405	;end vertical retrace
+	dw	445	;end vertical blank
+	dw	455	;vertical total
+	dw	350	;200/350/400/480=lines/monitor, +1=double scanning
+
+hseq4: ;0=start
+	dw	349	;display enable end
+	dw	355	;start vertical blank
+	dw	395	;start vertical retrace
+	dw	405	;end vertical retrace
+	dw	450	;end vertical blank
+	dw	455	;vertical total
+	dw	350	;200/350/400/480=lines/monitor, +1=double scanning
+
+tweak320x200:
 ;
 ; First, go to normal 320x200 256-color mode, which is really a
 ; 320x400 256-color mode with each line scanned twice.
@@ -52,7 +70,7 @@ reclr:	out	dx,al
 	out     dx,al
 	inc     dx
 	in      al,dx
-	and     al,not 08h      ;turn off chain 4
+	and     al,~ 08h      ;turn off chain 4
 	or      al,04h          ;turn off odd/even
 	out     dx,al
 	mov     dx,GC_INDEX
@@ -60,14 +78,14 @@ reclr:	out	dx,al
 	out     dx,al
 	inc     dx
 	in      al,dx
-	and     al,not 10h      ;turn off odd/even
+	and     al,~ 10h      ;turn off odd/even
 	out     dx,al
 	dec     dx
 	mov     al,MISCELLANEOUS
 	out     dx,al
 	inc     dx
 	in      al,dx
-	and     al,not 02h      ;turn off chain
+	and     al,~ 02h      ;turn off chain
 	out     dx,al
 
 ;
@@ -79,7 +97,7 @@ reclr:	out	dx,al
 ;	out     dx,al
 	inc     dx
 ;	in      al,dx
-	and     al,not 5fh      ;set maximum scan line = 0
+	and     al,~5fh      ;set maximum scan line = 0
 	OR      AL,1
 ;	out     dx,al
 	dec     dx
@@ -91,7 +109,7 @@ reclr:	out	dx,al
 	out     dx,al
 	inc     dx
 	in      al,dx
-	and     al,not 40h      ;turn off doubleword
+	and     al,~40h      ;turn off doubleword
 	out     dx,al
 	dec     dx
 	mov     al,MODE_CONTROL
@@ -125,7 +143,7 @@ reclr:	out	dx,al
 	out     dx,al
 	inc     dx
 	in      al,dx
-	and     al,not 08h      ;turn off chain 4
+	and     al,~08h      ;turn off chain 4
 	or      al,04h          ;turn off odd/even
 	out     dx,al
 	mov     dx,GC_INDEX
@@ -133,14 +151,14 @@ reclr:	out	dx,al
 	out     dx,al
 	inc     dx
 	in      al,dx
-	and     al,not 10h      ;turn off odd/even
+	and     al,~10h      ;turn off odd/even
 	out     dx,al
 	dec     dx
 	mov     al,MISCELLANEOUS
 	out     dx,al
 	inc     dx
 	in      al,dx
-	and     al,not 02h      ;turn off chain
+	and     al,~02h      ;turn off chain
 	out     dx,al
 
 	mov     dx,SC_INDEX
@@ -160,7 +178,7 @@ reclr:	out	dx,al
 	out     dx,al
 	inc     dx
 	in      al,dx
-	and     al,not 5fh      ;set maximum scan line = 0
+	and     al,~5fh      ;set maximum scan line = 0
 	OR      AL,1
 	out     dx,al
 	dec     dx
@@ -172,7 +190,7 @@ reclr:	out	dx,al
 	out     dx,al
 	inc     dx
 	in      al,dx
-	and     al,not 40h      ;turn off doubleword
+	and     al,~40h      ;turn off doubleword
 	out     dx,al
 	dec     dx
 	mov     al,MODE_CONTROL
@@ -189,16 +207,16 @@ reclr:	out	dx,al
 	out	dx,ax ;width>=320
 	
 	ret
-tweak320x200 ENDP
 
-sethseq PROC NEAR ;ds:si=hseq
+
+sethseq: ;ds:si=hseq
 	mov	bl,1fh 	;overflow
 	mov	bh,40h	;maximum scan line
-	test	word ptr ds:[si+12],1
+	test	word [esi+12],1
 	jz	sss9
 	or	bh,80h
 sss9:
-	mov	ax,ds:[si+0]
+	mov	ax,[esi+0]
 	test	ax,256
 	jz	sss3
 	or	bl,2
@@ -210,7 +228,7 @@ sss4:	mov	ah,al
 	mov	al,12h
 	out	dx,ax
 	
-	mov	ax,ds:[si+2]
+	mov	ax,[esi+2]
 	test	ax,256
 	jz	sss1
 	or	bl,8
@@ -222,7 +240,7 @@ sss2:	mov	ah,al
 	mov	al,15h
 	out	dx,ax
 	
-	mov	ax,ds:[si+4]
+	mov	ax,[esi+4]
 	test	ax,256
 	jz	sss7
 	or	bl,4
@@ -234,7 +252,7 @@ sss8:	mov	ah,al
 	mov	al,10h
 	out	dx,ax
 	
-	mov	ax,ds:[si+6]
+	mov	ax,[esi+6]
 	mov	ah,al
 	and	ah,15
 	or	ah,20h ;disable vertical int
@@ -242,13 +260,13 @@ sss8:	mov	ah,al
 	mov	al,11h
 	out	dx,ax
 	
-	mov	ax,ds:[si+8]
+	mov	ax,[esi+8]
 	mov	ah,al
 	mov	dx,3d4h
 	mov	al,16h
 	out	dx,ax
 	
-	mov	ax,ds:[si+10]
+	mov	ax,[esi+10]
 	test	ax,256
 	jz	sss5
 	or	bl,1
@@ -270,8 +288,8 @@ sss6:	mov	ah,al
 	mov	ah,bh
 	out	dx,ax
 
-	mov	ax,ds:[si+12]
-	and	ax,not 1
+	mov	ax,[esi+12]
+	and	ax,~1
 	mov	bh,0
 	cmp	ax,350
 	jne	sss10
@@ -289,9 +307,9 @@ sss12:	mov	dx,3cch
 	mov	dx,3c2h
 	out	dx,al
 	ret
-sethseq ENDP
 
-vptbl	dw	06a00h	; horz total 
+
+vptbl:	dw	06a00h	; horz total 
 	dw	05901h	; horz displayed
 	dw	05a02h	; start horz blanking
 	dw	08d03h	; end horz blanking
@@ -308,9 +326,9 @@ vptbl	dw	06a00h	; horz total
 	dw	05d15h	; v blank start
 	dw	00016h	; v blank end
 	dw	0e317h	; turn on byte mode
-vpend	label	word
+vpend:
 
-mode13x	proc
+mode13x:
 	push	ds
 	mov	ax,cs
 	mov	ds,ax
@@ -353,15 +371,15 @@ mode13x	proc
 	out	dx,al		;    write protect
 	dec	dx		; point to index
 	cld
-	mov	si,offset vptbl
-	mov	cx,((offset vpend)-(offset vptbl)) shr 1
+	mov	si,vptbl
+	mov	cx,(vpend-vptbl)/2
 outlp:	lodsw
 	out	dx,ax
 	loop	outlp
 
 	mov	ax,cs
 	mov	ds,ax
-	mov	si,OFFSET hseq2
+	mov	si,hseq2
 	call	sethseq
 
 ;	mov	dx,3dah
@@ -374,9 +392,9 @@ outlp:	lodsw
 
 	pop	ds
 	ret
-mode13x	endp
 
-tweak640x400 PROC NEAR
+
+tweak640x400:
 ;
 ; First, go to normal 320x200 256-color mode, which is really a
 ; 320x400 256-color mode with each line scanned twice.
@@ -396,7 +414,7 @@ tweak640x400 PROC NEAR
 	out     dx,al
 	inc     dx
 	in      al,dx
-	and     al,not 08h      ;turn off chain 4
+	and     al,~08h      ;turn off chain 4
 	or      al,04h          ;turn off odd/even
 	out     dx,al
 	mov     dx,GC_INDEX
@@ -404,14 +422,14 @@ tweak640x400 PROC NEAR
 	out     dx,al
 	inc     dx
 	in      al,dx
-	and     al,not 10h      ;turn off odd/even
+	and     al,~10h      ;turn off odd/even
 	out     dx,al
 	dec     dx
 	mov     al,MISCELLANEOUS
 	out     dx,al
 	inc     dx
 	in      al,dx
-	and     al,not 02h      ;turn off chain
+	and     al,~02h      ;turn off chain
 	out     dx,al
 	ret
 ;
@@ -422,7 +440,7 @@ tweak640x400 PROC NEAR
 	out     dx,al
 	inc     dx
 	in      al,dx
-	and     al,not 40h      ;turn off doubleword
+	and     al,~40h      ;turn off doubleword
 	out     dx,al
 	dec     dx
 	mov     al,MODE_CONTROL
@@ -435,18 +453,9 @@ tweak640x400 PROC NEAR
 	out     dx,al
 	
 	ret
-tweak640x400 ENDP
 
-hseq3 LABEL WORD ;0=start
-	dw	349	;display enable end
-	dw	355	;start vertical blank
-	dw	395	;start vertical retrace
-	dw	405	;end vertical retrace
-	dw	445	;end vertical blank
-	dw	455	;vertical total
-	dw	350	;200/350/400/480=lines/monitor, +1=double scanning
 
-tweak360x350	proc
+tweak360x350:
 	push	ds
 	mov	ax,cs
 	mov	ds,ax
@@ -489,31 +498,22 @@ tweak360x350	proc
 	out	dx,al		;    write protect
 	dec	dx		; point to index
 	cld
-	mov	si,offset vptbl
-	mov	cx,((offset vpend)-(offset vptbl)) shr 1
+	mov	si,vptbl
+	mov	cx,(vpend-vptbl)/2
 outlpn:	lodsw
 	out	dx,ax
 	loop	outlpn
 
 	mov	ax,cs
 	mov	ds,ax
-	mov	si,OFFSET hseq3
+	mov	si,hseq3
 	call	sethseq
 
 	pop	ds
 	ret
-tweak360x350 endp
 
-hseq4 LABEL WORD ;0=start
-	dw	349	;display enable end
-	dw	355	;start vertical blank
-	dw	395	;start vertical retrace
-	dw	405	;end vertical retrace
-	dw	450	;end vertical blank
-	dw	455	;vertical total
-	dw	350	;200/350/400/480=lines/monitor, +1=double scanning
 
-tweak320x350	proc
+tweak320x350:
 	call	tweak360x350
 	ret
-tweak320x350 endp
+

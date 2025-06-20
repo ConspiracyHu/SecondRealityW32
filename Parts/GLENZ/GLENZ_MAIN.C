@@ -1,13 +1,21 @@
 #include <stdio.h>
 #include <math.h>
 #include <conio.h>
+#include <memory.h>
 #include <dos.h>
 #include <stdlib.h>
 #include "..\dis\dis.h"
+#include "..\common.h"
+#include "..\..\shims.h"
 
 extern int sin1024[];
 
 extern void zoomer1(char *pic);
+extern void zoomer2(char *pic);
+
+void cglenzinit();
+void cglenzpolylist( int * polylist );
+void cglenzdone();
 
 char bgpic[65535];
 
@@ -15,7 +23,8 @@ extern char fc[];
 char *fcrow[100];
 char *fcrow2[16];
 
-char far *vram=(char far *)0xa0000000L;
+//char far *vram=(char far *)0xa0000000L;
+#define vram shim_vram
 
 extern char lightshift;
 
@@ -249,28 +258,29 @@ int testlist[]={
 3,20, 10,100, 90,50, 99,150,
 0};
 
-void    waitb(void)
-{
-    while(!(inp(0x3da)&8));
-    while((inp(0x3da)&8));
-}
+// void    waitb(void)
+// {
+//     while(!(inp(0x3da)&8));
+//     while((inp(0x3da)&8));
+//}
+#define waitb dis_waitb
 
 char tmppal[768];
 
 int repeat=0;
 int frame=0;
 
-#pragma check_stack(off)
-void _loadds copper(void)
+//#pragma check_stack(off)
+void copper(void)
 {
 	int	a;
 	repeat++;
-        outp(0x3c8,0);
-        for(a=0;a<16*3;a++) outp(0x3c9,pal[a]);
+  shim_outp(0x3c8,0);
+        for(a=0;a<16*3;a++) shim_outp(0x3c9,pal[a]);
 }
-#pragma check_stack(on)
-    
-main()
+//#pragma check_stack(on)
+
+void glenz_main()
 {
     int a,b,c,x,y,rx,ry,rz,n=8,p1,p2,r,g,zpos=7500,y1,y2,rya,ypos,yposa;
     int ya,yy,boingm=6,boingd=7;
@@ -287,21 +297,23 @@ main()
 
     dis_partstart();
 
-    while(!dis_exit() && dis_musplus()<-19) ;
-    dis_setmframe(0);
+    //while(!dis_exit() && dis_musplus()<-19) ;
+    //dis_setmframe(0);
 
-    zoomer2();
+    //zoomer2();
 
-    _asm mov dx,3c4h
-    _asm mov ax,0f02h
-    _asm out dx,ax
+    //_asm mov dx,3c4h
+    //_asm mov ax,0f02h
+    //_asm out dx,ax
     memset(vram,0,65535);
+    /*
     _asm
     {
         mov ax,13h
         int 010h
     }
-    testasm();
+    */
+    //testasm();
 
     for(a=0;a<100;a++)
     {
@@ -312,10 +324,10 @@ main()
         fcrow2[a]=fc+768+16+a*320+100*320;
     }
     
-    outp(0x3c8,0);
-    for(a=0;a<768;a++) outp(0x3c9,0);
-    outp(0x3c8,0);
-    for(a=0;a<16*3;a++) outp(0x3c9,fc[a+16]);
+    shim_outp(0x3c8,0);
+    for(a=0;a<768;a++) shim_outp(0x3c9,0);
+    shim_outp(0x3c8,0);
+    for(a=0;a<16*3;a++) shim_outp(0x3c9,fc[a+16]);
     yy=0; ya=0;
     while(!dis_exit())
     {
@@ -347,10 +359,11 @@ main()
             if(c>7) memset(pd,0,320);
             else memcpy(pd,fcrow2[c],320);
         }
+        demo_blit();
         waitb();
     }
     
-    while(!dis_exit() && dis_getmframe()<300);
+    //while(!dis_exit() && dis_getmframe()<300);
     dis_waitb();
 
     //initnewgroup();
@@ -386,10 +399,10 @@ main()
 	*pp++=g;
 	*pp++=b;
     }
-    outp(0x3c8,0);
+    shim_outp(0x3c8,0);
     for(a=0;a<768;a++)
     {
-        outp(0x3c9,tmppal[a]);
+      shim_outp(0x3c9,tmppal[a]);
     }
     lightshift=9;
     rx=ry=rz=0;
@@ -397,22 +410,22 @@ main()
     dis_waitb();
     memcpy(bgpic,vram,64000);
     
-    while(!dis_exit() && dis_getmframe()<333);
+    //while(!dis_exit() && dis_getmframe()<333);
 
     memcpy(pal,backpal,16*3);
     dis_partstart();
     dis_waitb();
 
-    outp(0x3c7,0);
-    for(a=0;a<16*3;a++) pal[a]=inp(0x3c9);
-    dis_setcopper(0,copper);
+    shim_outp(0x3c7,0);
+    for(a=0;a<16*3;a++) pal[a]= shim_inp(0x3c9);
+    //dis_setcopper(0,copper);
     while(frame<7000 && !dis_exit())
     {
         a=dis_musplus(); if(a<0 && a>-16) break;
         
 	repeat=dis_waitb();
-        outp(0x3c8,0);
-        for(a=0;a<16*3;a++) outp(0x3c9,pal[a]);
+  shim_outp(0x3c8,0);
+        for(a=0;a<16*3;a++) shim_outp(0x3c9,pal[a]);
 	
 	while(repeat--)
         {
@@ -638,6 +651,7 @@ main()
         }
         
         cglenzdone();
+        demo_blit();
     }
     dis_setcopper(0,NULL);
     if(!dis_indemo())

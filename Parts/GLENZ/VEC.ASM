@@ -1,98 +1,113 @@
-include asm.inc
+%include "asm.inc"
 
-extrn __newgroup:far
+extern __newgroup
 
-text__vec SEGMENT para public 'CODE'
-	ASSUME cs:text__vec
+section .data
 
-.386
-
-PUBLIC _lightshift
+global _lightshift
 _lightshift db	0
+count	dw	0
+edgesoff dw	0
+pointsoff dw	0
+cntoff	dw	0
 
-PUBLIC _csetmatrix
-_csetmatrix PROC FAR
+global _backpal	
+_backpal times 16 db 16,16,16
+	
+back1	db	0,4,8
+back2	db	4,0,0
+back3	db	7,0,0
+back4	db	13,0,0
+
+rolcol	times	256 db 0
+rolused	times	256 db 0
+
+clipz	dd	2200
+
+section .code
+
+global _csetmatrix
+_csetmatrix:
 	CBEG
 	LOADDS
 	mov	eax,[bp+10]
-	mov	ds:xadd,eax		
+	mov	[_xadd],eax		
 	mov	eax,[bp+14]
-	mov	ds:yadd,eax		
+	mov	[_yadd],eax		
 	mov	eax,[bp+18]
-	mov	ds:zadd,eax		
+	mov	[_zadd],eax		
 	mov	si,[bp+6]
-	mov	ds,word ptr [bp+8]
+	mov	ds,word [bp+8]
 	call	setmatrix
 	CEND
-_csetmatrix ENDP
 
-PUBLIC _crotlist
-_crotlist PROC FAR
+
+global _crotlist
+_crotlist:
 	CBEG
 	mov	si,[bp+10]
-	mov	ds,word ptr [bp+12]
+	mov	ds,word [bp+12]
 	mov	di,[bp+6]
-	mov	es,word ptr [bp+8]
+	mov	es,word [bp+8]
 	call	rotlist
 	CEND
-_crotlist ENDP
 
-PUBLIC _cprojlist
-_cprojlist PROC FAR
+
+global _cprojlist
+_cprojlist:
 	CBEG
 	mov	si,[bp+10]
-	mov	ds,word ptr [bp+12]
+	mov	ds,word [bp+12]
 	mov	di,[bp+6]
-	mov	es,word ptr [bp+8]
+	mov	es,word [bp+8]
 	call	projlist
 	CEND
-_cprojlist ENDP
 
-PUBLIC _ccliplist
-_ccliplist PROC FAR
+
+global _ccliplist
+_ccliplist:
 	CBEG
 	mov	si,[bp+6]
-	mov	ds,word ptr [bp+8]
+	mov	ds,word [bp+8]
 	call	cliplist
 	CEND
-_ccliplist ENDP
 
-PUBLIC setmatrix
-setmatrix PROC FAR
+
+global setmatrix
+setmatrix:
 	;ds:si=matrix
-	movsx	eax,word ptr ds:[si+0]
-	mov	dword ptr cs:[2+mtrm00],eax
-	movsx	eax,word ptr ds:[si+2]
-	mov	dword ptr cs:[2+mtrm02],eax
-	movsx	eax,word ptr ds:[si+4]
-	mov	dword ptr cs:[2+mtrm04],eax
-	movsx	eax,word ptr ds:[si+6]
-	mov	dword ptr cs:[2+mtrm06],eax
-	movsx	eax,word ptr ds:[si+8]
-	mov	dword ptr cs:[2+mtrm08],eax
-	movsx	eax,word ptr ds:[si+10]
-	mov	dword ptr cs:[2+mtrm10],eax
-	movsx	eax,word ptr ds:[si+12]
-	mov	dword ptr cs:[2+mtrm12],eax
-	movsx	eax,word ptr ds:[si+14]
-	mov	dword ptr cs:[2+mtrm14],eax
-	movsx	eax,word ptr ds:[si+16]
-	mov	dword ptr cs:[2+mtrm16],eax
+	movsx	eax,word [esi+0]
+	mov	dword [2+mtrm00],eax
+	movsx	eax,word [esi+2]
+	mov	dword [2+mtrm02],eax
+	movsx	eax,word [esi+4]
+	mov	dword [2+mtrm04],eax
+	movsx	eax,word [esi+6]
+	mov	dword [2+mtrm06],eax
+	movsx	eax,word [esi+8]
+	mov	dword [2+mtrm08],eax
+	movsx	eax,word [esi+10]
+	mov	dword [2+mtrm10],eax
+	movsx	eax,word [esi+12]
+	mov	dword [2+mtrm12],eax
+	movsx	eax,word [esi+14]
+	mov	dword [2+mtrm14],eax
+	movsx	eax,word [esi+16]
+	mov	dword [2+mtrm16],eax
 	ret
-setmatrix ENDP
 
-ALIGN 2
-count	dw	0
 
-rotlist PROC FAR
+;ALIGN 2
+
+rotlist:
 	;pointlist@DS:SI=>pointlist@ES:DI
 	push	di
 	LOADGS
-	mov	cx,ds:[si]
+	mov	cx,[esi]
 	add	si,4
-	mov	cs:count,cx
-	mov	ax,es:[di]
-	add	es:[di],cx
+	mov	[count],cx
+	mov	ax,[edi]
+	add	[edi],cx
 	mov	bx,ax
 	shl	ax,1
 	add	ax,bx
@@ -103,9 +118,9 @@ rotlist PROC FAR
 nrup1:	;rotate with matrix
 	push	si
 	push	di
-	mov	ebp,ds:[si+8]
-	mov	edi,ds:[si+4]
-	mov	esi,ds:[si+0]
+	mov	ebp,[esi+8]
+	mov	edi,[esi+4]
+	mov	esi,[esi+0]
 mtrm00:	mov	eax,12345678h
 	imul	esi
 	mov	ebx,eax
@@ -152,30 +167,30 @@ mtrm16:	mov	eax,12345678h
 	pop	di
 	pop	si
 	;
-	add	eax,gs:xadd
-	mov	es:[di+0],eax
-	add	ecx,gs:yadd
-	mov	es:[di+4],ecx
-	add	edx,gs:zadd
-	mov	es:[di+8],edx
+	add	eax,[_xadd]
+	mov	[edi+0],eax
+	add	ecx,[_yadd]
+	mov	[edi+4],ecx
+	add	edx,[_zadd]
+	mov	[edi+8],edx
 	;next point
 	add	si,12
 	add	di,12
-	dec	cs:count
+	dec word	[count]
 	jnz	nrup1
 	pop	di
 	ret
-rotlist ENDP
 
-projlist PROC FAR
+
+projlist:
 	;pointlist@DS:SI=>projectedpointlist@ES:DI
 	push	di
 	LOADGS
-	mov	cx,ds:[si]
+	mov	cx,[esi]
 	add	si,4
-	mov	cs:count,cx
-	mov	ax,es:[di]
-	add	es:[di],cx
+	mov	[count],cx
+	mov	ax,[edi]
+	add	[edi],cx
 	mov	bx,ax
 	shl	ax,1
 	add	ax,bx
@@ -184,65 +199,65 @@ projlist PROC FAR
 	add	di,4
 
 @@1:	;rotate with matrix
-	mov	ebx,ds:[si+8]
-	mov	eax,ds:[si+4]
-	mov	ecx,ds:[si+0]
+	mov	ebx,[esi+8]
+	mov	eax,[esi+4]
+	mov	ecx,[esi+0]
 	
 	;project
 
 	xor	bp,bp
-	mov	dword ptr es:[di+8],ebx
-	cmp	ebx,gs:projminz
+	mov	dword [edi+8],ebx
+	cmp	ebx,[projminz]
 	jge	@@2
-	mov	ebx,gs:projminz
+	mov	ebx,[projminz]
 	or	bp,16
 @@2:	;
-	imul	gs:projymul
+	imul	dword [projymul]
 	idiv	ebx
-	add	ax,gs:projyadd
-	cmp	ax,gs:wmaxy
+	add	ax,[projyadd]
+	cmp	ax,[wmaxy]
 	jng	@@41
 	or	bp,8
-@@41:	cmp	ax,gs:wminy
+@@41:	cmp	ax,[wminy]
 	jnl	@@42
 	or	bp,4
-@@42:	mov	es:[di+2],ax ;store Y
+@@42:	mov	[edi+2],ax ;store Y
 	;
-	mov	eax,gs:projxmul
+	mov	eax,[projxmul]
 	imul	ecx
 	idiv	ebx
-	add	ax,gs:projxadd
-	cmp	ax,gs:wmaxx
+	add	ax,[projxadd]
+	cmp	ax,[wmaxx]
 	jng	@@43
 	or	bp,2
-@@43:	cmp	ax,gs:wminx
+@@43:	cmp	ax,[wminx]
 	jnl	@@44
 	or	bp,1
-@@44:	mov	es:[di+0],ax ;store X
+@@44:	mov	[edi+0],ax ;store X
 
-@@5:	mov	es:[di+4],bp ;store visiblity flags
+@@5:	mov	[edi+4],bp ;store visiblity flags
 	
 	;next point
 	add	si,12
 	add	di,12
-	dec	cs:count
+	dec	word [count]
 	jnz	@@1
 	pop	di
 	ret
-projlist ENDP
 
-cliplist PROC FAR
+
+cliplist:
 	;pointlist@DS:SI
 	push	di
 	LOADGS
-	mov	cx,ds:[si]
+	mov	cx,[esi]
 	add	si,4
 
 @@1:	;rotate with matrix
-	mov	eax,ds:[si+4]
+	mov	eax,[esi+4]
 	cmp	eax,1500
 	jl	@@2
-	mov	dword ptr ds:[si+4],1500
+	mov	dword [esi+4],1500
 @@2:
 	;next point
 	add	si,12
@@ -250,14 +265,8 @@ cliplist PROC FAR
 	jnz	@@1
 	pop	di
 	ret
-cliplist ENDP
 
-ALIGN 2
-edgesoff dw	0
-pointsoff dw	0
-cntoff	dw	0
-
-adddot PROC NEAR
+adddot:
 	cmp	ax,bp
 	je	@@3
 	mov	bp,ax
@@ -267,26 +276,26 @@ adddot PROC NEAR
 	shl	bx,1
 	add	bx,ax
 	shl	bx,2
-	add	bx,cs:pointsoff
-	mov	eax,gs:[bx]
+	add	bx,[pointsoff]
+	mov	eax,[ebx]
 	stosd
 	pop	bx
 @@3:	ret
-adddot ENDP
 
-checkhiddenbx PROC NEAR
+
+checkhiddenbx:
 	push	si
-	mov	ax,es:[bx]
-	mov	si,es:[bx+2]
-	sub	ax,es:[bx+4]
-	sub	si,es:[bx+8+2]
+	mov	ax,[ebx]
+	mov	si,[ebx+2]
+	sub	ax,[ebx+4]
+	sub	si,[ebx+8+2]
 	imul	si
 	push	ax
 	push	dx
-	mov	ax,es:[bx+2]
-	mov	si,es:[bx]
-	sub	ax,es:[bx+4+2]
-	sub	si,es:[bx+8]
+	mov	ax,[ebx+2]
+	mov	si,[ebx]
+	sub	ax,[ebx+4+2]
+	sub	si,[ebx+8]
 	imul	si
 	pop	cx
 	pop	si
@@ -301,23 +310,23 @@ checkhiddenbx PROC NEAR
 	ret
 @@1:	stc
 	ret
-checkhiddenbx ENDP
 
-PUBLIC _cpolylist
-_cpolylist PROC FAR ;polylist,polys,edges,points3
+
+global _cpolylist
+_cpolylist: ;polylist,polys,edges,points3
 	CBEG
 	mov	di,[bp+6]
-	mov	es,word ptr [bp+8]
+	mov	es,word [bp+8]
 	mov	si,[bp+10]
-	mov	ds,word ptr [bp+12]
+	mov	ds,word [bp+12]
 	mov	ax,[bp+14]
 	add	ax,4
-	mov	cs:edgesoff,ax
-	mov	fs,word ptr [bp+16]
+	mov	[edgesoff],ax
+	mov	fs,word [bp+16]
 	mov	ax,[bp+18]
 	add	ax,4
-	mov	cs:pointsoff,ax
-	mov	gs,word ptr [bp+20]
+	mov	[pointsoff],ax
+	mov	gs,word [bp+20]
 	mov	bp,-1
 @@2:	lodsw
 	cmp	ax,0
@@ -325,109 +334,98 @@ _cpolylist PROC FAR ;polylist,polys,edges,points3
 	add	di,2
 	mov	cx,ax
 	movsw
-	mov	cs:cntoff,di
+	mov	[cntoff],di
 @@3:	push	cx
-	mov	bx,ds:[si]
+	mov	bx,[esi]
 	add	si,2
 	shl	bx,3
-	add	bx,cs:edgesoff
-	test	word ptr fs:[bx+4],8000h
+	add	bx,[edgesoff]
+	test	word [ebx+4],8000h
 	jnz	@@7
-	mov	ax,fs:[bx+2]
+	mov	ax,[ebx+2]
 	cmp	ax,bp
 	je	@@5
-	mov	ax,fs:[bx]
+	mov	ax,[ebx]
 	call	adddot
-	mov	ax,fs:[bx+2]
+	mov	ax,[ebx+2]
 	call	adddot
 @@7:	pop	cx
 	loop	@@3
 	jmp	@@6
-@@5:	mov	ax,fs:[bx+2]
+@@5:	mov	ax,[ebx+2]
 	call	adddot
-	mov	ax,fs:[bx]
+	mov	ax,[ebx]
 	call	adddot
 	pop	cx
 	loop	@@3
-@@6:	mov	bx,cs:cntoff
-	mov	eax,es:[bx]
-	cmp	eax,es:[di-4]
+@@6:	mov	bx,[cntoff]
+	mov	eax,[ebx]
+	cmp	eax,[edi-4]
 	jne	@@4
 	sub	di,4
 @@4:	mov	ax,di
-	sub	ax,cs:cntoff
+	sub	ax,[cntoff]
 	shr	ax,2
-	mov	es:[bx-4],ax
+	mov	[ebx-4],ax
 	call	checkhiddenbx
 	jnc	@@2
-	xor	word ptr es:[bx-2],8000h
+	xor	word [ebx-2],8000h
 	jmp	@@2
-@@1:	mov	word ptr es:[di],0
+@@1:	mov	word [edi],0
 	CEND
-_cpolylist ENDP
 
-setpalxxx MACRO
-	local	l1,l2,l3
+
+%macro setpalxxx 0
+	;local	l1,l2,l3
 	mov	al,cl
 	cmp	al,64
-	jb	l1
+	jb	%%l1
 	mov	al,63
-l1:	out	dx,al
+%%l1:	out	dx,al
 	mov	al,bl
 	cmp	al,64
-	jb	l2
+	jb	%%l2
 	mov	al,63
-l2:	out	dx,al
+%%l2:	out	dx,al
 	mov	al,bh
 	cmp	al,64
-	jb	l3
+	jb	%%l3
 	mov	al,63
-l3:	out	dx,al
-	ENDM
+%%l3:	out	dx,al
+%endmacro
 
-public _backpal	
-_backpal db	16 dup(16,16,16)
-	
-back1	db	0,4,8
-back2	db	4,0,0
-back3	db	7,0,0
-back4	db	13,0,0
-
-rolcol	db	256 dup(0)
-rolused	db	256 dup(0)
-
-demo_norm PROC NEAR
+demo_norm:
 	ret
-demo_norm ENDP
 
-demo_glz2 PROC NEAR
+
+demo_glz2:
 	jc	@@1
-	mov	al,es:[bx-2]
+	mov	al,[ebx-2]
 	shr	al,1
 	and	al,1
-	mov	es:[bx-2],al
+	mov	[ebx-2],al
 @@1:	ret
-demo_glz2 ENDP
 
-demo_glz PROC NEAR
+
+demo_glz:
 	jnc	@@7 ;visible
-	mov	ax,es:[bx-2]
+	mov	ax,[ebx-2]
 	push	bx
 	push	ax
 	mov	bl,al
 	xor	bh,bh
-	mov	al,cs:rolcol[bx]
-	mov	byte ptr cs:rolcol[bx],0
+	mov	al,[rolcol+ebx]
+	mov	byte [rolcol+ebx],0
 	mov	bl,al
-	mov	cs:rolused[bx],0
+	mov	byte [rolused+ebx],0
 	pop	ax
 	pop	bx
 	shr	al,1
 	and	al,1
 	shl	al,2
-	mov	es:[bx-2],ax
+	mov	[ebx-2],ax
 	ret
-@@7:	mov	cl,cs:_lightshift
+@@7:	mov	cl,[_lightshift]
 	cmp	cl,9
 	je	@@x9
 	shrd	ax,dx,8
@@ -447,23 +445,23 @@ demo_glz PROC NEAR
 @@s2:	mov	ah,al
 	;
 	push	bx
-	movzx	bx,es:[bx-2]
-	mov	al,cs:rolcol[bx]
+	movzx	bx,[ebx-2]
+	mov	al,[rolcol+ebx]
 	cmp	al,0
 	jne	@@rc1
 	mov	cx,15
 	mov	bp,2
-@@rc3:	cmp	cs:rolused[bp],0
+@@rc3:	cmp	byte [rolused+ebp],0
 	je	@@rc4
 	add	bp,2
 	loop	@@rc3
 @@rc4:	mov	ax,bp
-@@rc2:	mov	cs:rolcol[bx],al
-	mov	cs:rolused[bp],1
+@@rc2:	mov	[rolcol+ebx],al
+	mov	byte [rolused+ebp],1
 @@rc1:	pop	bx
-	mov	bp,es:[bx-2]
+	mov	bp,[ebx-2]
 	shl	al,3
-	mov	es:[bx-2],al
+	mov	[ebx-2],al
 	
 	mov	dx,3c8h
 	out	dx,al
@@ -483,45 +481,45 @@ demo_glz PROC NEAR
 	mov	si,cx
 	mov	di,bx
 	
-	zzz=0
-	REPT	16
-	mov	al,cs:_backpal[zzz*3+0]
+	%assign zzz 0
+	%rep	16
+	mov	al,[_backpal+zzz*3+0]
 	shr	al,2
 	add	cl,al
-	mov	al,cs:_backpal[zzz*3+1]
+	mov	al,[_backpal+zzz*3+1]
 	shr	al,2
 	add	bl,al
-	mov	al,cs:_backpal[zzz*3+2]
+	mov	al,[_backpal+zzz*3+2]
 	shr	al,2
 	add	bh,al
 	setpalxxx
 	mov	bx,di
 	mov	cx,si
-	zzz=zzz+1
-	ENDM
+	%assign zzz zzz+1
+	%endrep
 	
 	pop	di
 	pop	si
 @@xx:	ret
-demo_glz ENDP
 
-ALIGN 2
-PUBLIC _demomode
-_demomode dw	OFFSET demo_glz
-	dw	OFFSET demo_glz
-	dw	OFFSET demo_glz2
 
-PUBLIC _ceasypolylist
-_ceasypolylist PROC FAR ;polylist,polys,points3
+;ALIGN 2
+global _demomode
+_demomode dd	demo_glz
+	dd	demo_glz
+	dd	demo_glz2
+
+global _ceasypolylist
+_ceasypolylist: ;polylist,polys,points3
 	CBEG
-	mov	di,[bp+6]
-	mov	es,word ptr [bp+8]
-	mov	si,[bp+10]
-	mov	ds,word ptr [bp+12]
-	mov	ax,[bp+14]
+	mov	di,[ebp+6]
+	mov	es,word [ebp+8]
+	mov	si,[ebp+10]
+	mov	ds,word [ebp+12]
+	mov	ax,[ebp+14]
 	add	ax,4
-	mov	cs:pointsoff,ax
-	mov	gs,word ptr [bp+16]
+	mov	[pointsoff],ax
+	mov	gs,word [ebp+16]
 	mov	bp,-1
 @@2:	lodsw
 	cmp	ax,0
@@ -529,49 +527,49 @@ _ceasypolylist PROC FAR ;polylist,polys,points3
 	add	di,2
 	mov	cx,ax
 	movsw
-	mov	cs:cntoff,di
+	mov	[cntoff],di
 @@3:	push	cx
-	mov	ax,ds:[si]
+	mov	ax,[esi]
 	add	si,2
 	call	adddot
 	pop	cx
 	loop	@@3
-@@6:	mov	bx,cs:cntoff
-	mov	eax,es:[bx]
-	cmp	eax,es:[di-4]
+@@6:	mov	bx,[cntoff]
+	mov	eax,[ebx]
+	cmp	eax,[edi-4]
 	jne	@@4
 	sub	di,4
 @@4:	mov	ax,di
-	sub	ax,cs:cntoff
+	sub	ax,[cntoff]
 	shr	ax,2
-	mov	es:[bx-4],ax
+	mov	[ebx-4],ax
 	call	checkhiddenbx
-	call	cs:_demomode ;sets colors etc / hidden faces flipped
+	call	[_demomode] ;sets colors etc / hidden faces flipped
 	jmp	@@2
-@@1:	mov	word ptr es:[di],0
+@@1:	mov	word [edi],0
 	CEND
-_ceasypolylist ENDP
 
-PUBLIC _cglenzinit
-_cglenzinit PROC FAR
+
+global _cglenzinit
+_cglenzinit:
 	CBEG
 	LOADDS
 	mov	ax,0
 	call	__newgroup
 	CEND
-_cglenzinit ENDP
 
-PUBLIC _cglenzdone
-_cglenzdone PROC FAR
+
+global _cglenzdone
+_cglenzdone:
 	CBEG
 	LOADDS
 	mov	ax,2
 	call	__newgroup
 	CEND
-_cglenzdone ENDP
 
-PUBLIC _cglenzpolylist
-_cglenzpolylist PROC FAR
+
+global _cglenzpolylist
+_cglenzpolylist:
 	CBEG
 	LOADDS
 	movpar	di,0
@@ -579,69 +577,65 @@ _cglenzpolylist PROC FAR
 	mov	ax,1
 	call	__newgroup
 	CEND
-_cglenzpolylist ENDP
 
-PUBLIC _cdrawpolylist
-_cdrawpolylist PROC FAR
+
+global _cdrawpolylist
+_cdrawpolylist:
 	CBEG
 	LOADDS
 	movpar	di,0
-	mov	es,word ptr [bp+8]
+	mov	es,word [bp+8]
 	call	VIDPOLYGROUP
 	CEND
-_cdrawpolylist ENDP
 
-ALIGN 4
-clipz	dd	2200
-
-clipsidi PROC NEAR
+clipsidi:
 	;si=point1(hidden), di=point2
 	;adds new point to pointlist (fs:bp-4)
 	;returns number of new point (si)
 	push	bx
-	mov	ecx,fs:[di+8]
+	mov	ecx,[edi+8]
 	mov	edx,ecx
-	sub	ecx,fs:[si+8]
+	sub	ecx,[esi+8]
 	;cx=length of entire edge
-	sub	edx,cs:clipz
+	sub	edx,[clipz]
 	;dx=length of clipped edge
 	xor	eax,eax
 	div	ecx
 	shr	eax,16
 	mov	ecx,eax
 	;ecx=multiplier (0..65535)
-	mov	eax,fs:[si]
-	sub	eax,fs:[di]
+	mov	eax,[esi]
+	sub	eax,[edi]
 	imul	ecx
 	shld	edx,eax,16
-	add	edx,fs:[di]
+	add	edx,[edi]
 	push	edx ;X
-	mov	eax,fs:[si+4]
-	sub	eax,fs:[di+4]
+	mov	eax,[esi+4]
+	sub	eax,[edi+4]
 	imul	ecx
 	shld	edx,eax,16
-	add	edx,fs:[di+4] ;edx=Y
+	add	edx,[edi+4] ;edx=Y
 	;
-	mov	bx,fs:[bp-4]
+	mov	bx,[ebp-4]
 	inc	bx
-	mov	fs:[bp-4],bx
+	mov	[ebp-4],bx
 	dec	bx
 	mov	si,bx
 	shl	bx,1
 	add	bx,si
 	shl	bx,2
 	add	bx,bp
-	mov	fs:[bx+4],edx
+	mov	[ebx+4],edx
 	pop	edx
-	mov	fs:[bx],edx
-	mov	edx,cs:clipz
-	mov	fs:[bx+8],edx
+	mov	[ebx],edx
+	mov	edx,[clipz]
+	mov	[ebx+8],edx
 	pop	bx
 	ret
-clipsidi ENDP
 
-PUBLIC _cclipedges
-_cclipedges PROC FAR ;(destedges,edges,points)
+
+global _cclipedges
+_cclipedges: ;(destedges,edges,points)
 	CBEG
 	movpar	bx,0
 	movpar	es,1
@@ -649,9 +643,9 @@ _cclipedges PROC FAR ;(destedges,edges,points)
 	movpar	ds,3
 	movpar	fs,5
 	movpar	bp,4
-	mov	cx,ds:[si]
+	mov	cx,[esi]
 	add	si,4
-	mov	es:[bx],cx
+	mov	[ebx],cx
 	add	bx,4
 	add	bp,4
 	;
@@ -659,17 +653,17 @@ _cclipedges PROC FAR ;(destedges,edges,points)
 	push	si
 	push	di
 	push	bx
-	mov	ax,ds:[si+4]
-	mov	es:[bx+4],ax
-	mov	di,ds:[si+2]
-	mov	es:[bx+2],di
+	mov	ax,[esi+4]
+	mov	[ebx+4],ax
+	mov	di,[esi+2]
+	mov	[ebx+2],di
 	mov	ax,di
 	shl	di,1
 	add	di,ax
 	shl	di,2
 	add	di,bp
-	mov	si,ds:[si]
-	mov	es:[bx],si
+	mov	si,[esi]
+	mov	[ebx],si
 	mov	ax,si
 	shl	si,1
 	add	si,ax
@@ -677,12 +671,12 @@ _cclipedges PROC FAR ;(destedges,edges,points)
 	add	si,bp
 	;
 	xor	cx,cx
-	mov	eax,fs:[si+8] ;Z
-	cmp	eax,cs:clipz
+	mov	eax,[esi+8] ;Z
+	cmp	eax,[clipz]
 	jge	@@2
 	or	cx,1
-@@2:	mov	edx,fs:[di+8] ;Z
-	cmp	edx,cs:clipz
+@@2:	mov	edx,[edi+8] ;Z
+	cmp	edx,[clipz]
 	jge	@@3
 	or	cx,2
 @@3:	;
@@ -690,18 +684,18 @@ _cclipedges PROC FAR ;(destedges,edges,points)
 	je	@@4
 	cmp	cx,3
 	jne	@@5
-	or	word ptr es:[bx+4],8000h
+	or	word [ebx+4],8000h
 	jmp	@@4
 @@5:	cmp	cx,1
 	jne	@@6
 	;si hidden
 	call	clipsidi
-	mov	es:[bx],si
+	mov	[ebx],si
 	jmp	@@4
 @@6:	;di hidden
 	xchg	si,di
 	call	clipsidi
-	mov	es:[bx+2],si
+	mov	[ebx+2],si
 @@4:	pop	bx
 	add	bx,8
 	pop	di
@@ -709,10 +703,5 @@ _cclipedges PROC FAR ;(destedges,edges,points)
 	pop	si
 	add	si,8
 	pop	cx
-	loop	@@1
+	LOOP_LARGE	@@1
 	CEND
-_cclipedges ENDP
-
-text__vec ENDS
-	END
-	

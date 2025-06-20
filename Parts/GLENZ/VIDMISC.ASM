@@ -1,6 +1,6 @@
 
-forcesetborder MACRO color
-	local	l1
+%macro forcesetborder 1 ; color
+	;local	l1
 	push	ax
 	push	dx
 	mov	dx,3dah
@@ -8,28 +8,28 @@ forcesetborder MACRO color
 	mov	dx,3c0h
 	mov	al,11h+32
 	out	dx,al
-	mov	al,color
+	mov	al,%1
 	out	dx,al
 	pop	dx
 	pop	ax
-	ENDM
+%endmacro
 	
-PUBLIC _setborder
-_setborder PROC FAR
+global _setborder
+_setborder:
 	CBEG
 	push	cx
 	mov	cx,[bp+6]
 	forcesetborder cl
 	pop	cx
 	CEND
-_setborder ENDP
 
-fwaitborder PROC FAR
+
+fwaitborder:
 	call	waitborder
 	ret
-fwaitborder ENDP
+
 	
-waitborder PROC NEAR
+waitborder:
 	mov	dx,3dah
 wbr1:	in	al,dx
 	test	al,8
@@ -38,9 +38,9 @@ wbr2:	in	al,dx
 	test	al,8
 	jz	wbr2
 	ret
-waitborder ENDP
 
-clearpal PROC NEAR
+
+clearpal:
 	cli
 	call	waitborder
 	mov	dx,3c8h
@@ -53,4 +53,4 @@ clp1:	out	dx,al
 	call	waitborder
 	sti
 	ret
-clearpal ENDP
+

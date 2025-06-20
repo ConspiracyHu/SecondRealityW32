@@ -3,8 +3,11 @@
 #include <stdlib.h>
 #include <string.h>
 #include "..\dis\dis.h"
+#include "..\common.h"
+#include "..\..\shims.h"
 
-static char *vram=(char *)0xa0000000L;
+//static char *vram=(char *)0xa0000000L;
+#define vram shim_vram
 
 static char *bg;
 
@@ -23,19 +26,19 @@ void	zoomer2(char *pic)
 	int	zly,zy,zya;
 	int	zly2,zy2;
 
-	_asm
-	{
-		mov	dx,3c4h
-		mov	ax,0f02h
-		out	dx,ax
-	}	
-	outp(0x3c7,0);
-	for(a=0;a<768;a++) pal1[a]=inp(0x3c9);
+// 	_asm
+// 	{
+// 		mov	dx,3c4h
+// 		mov	ax,0f02h
+// 		out	dx,ax
+// 	}	
+  shim_outp(0x3c7,0);
+	for(a=0;a<768;a++) pal1[a]=shim_inp(0x3c9);
 
 	zy=0; zya=0; zly=0;
 	zy2=0; zly2=0;
 	frame=0;
-	while(!kbhit())
+	while(!dis_exit())
 	{
 		if(zy==260) break;
 		zly=zy;
@@ -68,10 +71,10 @@ void	zoomer2(char *pic)
 		setpalarea(pal2,0,128);
 	}
 	v=vram+(194)*80;
-	outp(0x3c8,0);
-	outp(0x3c9,0);
-	outp(0x3c9,0);
-	outp(0x3c9,0);
+	shim_outp(0x3c8,0);
+	shim_outp(0x3c9,0);
+	shim_outp(0x3c9,0);
+	shim_outp(0x3c9,0);
 	v=vram+(0)*80;
 	for(y=0;y<=399;y++)
 	{
@@ -97,7 +100,7 @@ void	zoomer1(char *pic)
 	{
 		bg[200*326+q]=7;
 	}
-	while(!kbhit() && frame<=128)
+	while(!dis_exit() && frame<=128)
 	{
 		q=(int)((long)frame*(long)frame/128L)*2;
 		dist=320-(320-245)*frame/128;

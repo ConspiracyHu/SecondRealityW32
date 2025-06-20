@@ -2,6 +2,7 @@
 #include "shims.h"
 
 extern "C" void beg_main();
+extern "C" void glenz_main();
 extern "C" void dots_main( int argc, char * argv[] );
 extern "C" void jplogo_main();
 extern "C" void lens_main();
@@ -89,7 +90,7 @@ int main()
 
   // 2   db      'Alkutekstit II (PSI)        ' / 'VISU    ' /  'U2A.EXE',0
   // 3   db      'Alkutekstit III (TRUG/WILDF)' / 'PAM     ' /  'PAM.EXE',0
-  pam_main();
+  //pam_main();
 
   //                                            / 'BEG     ' /  'BEGLOGO.EXE',0
   //width = 320;
@@ -97,6 +98,7 @@ int main()
   //beg_main();
 
   // 4   db      'Glenz (PSI)                 ' / 'GLENZ   ' /  'GLENZ.EXE',0
+  glenz_main();
 
   // 5   db      'Dottitunneli (TRUG)         ' / 'TUNNELI ' /  'TUNNELI.EXE',0
 

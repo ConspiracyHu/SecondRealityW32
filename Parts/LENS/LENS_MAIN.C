@@ -327,7 +327,7 @@ void lens_main()
 	if(!fade) exit(1);
 	fade2=halloc(20000,1);
 	if(!fade2) exit(1);
-	setvmode(0x13);
+	//setvmode(0x13);
 	shim_outp(0x3c8,0);
 	for(a=0;a<768;a++) shim_outp(0x3c9,0);
 	#ifndef SAVEPATH

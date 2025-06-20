@@ -62,6 +62,7 @@ extern short gravity;
 extern short gravitybottom;
 extern short gravityd;
 
+/*
 void setborder(int color)
 {
   unsigned char color8 = color;
@@ -76,6 +77,7 @@ void setborder(int color)
 		out	dx,al
 	}
 }
+*/
 
 int	cols[]={
 0,0,0,

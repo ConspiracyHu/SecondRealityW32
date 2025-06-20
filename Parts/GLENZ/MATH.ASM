@@ -1,10 +1,8 @@
-include asm.inc
-text__math SEGMENT para public 'CODE'
-	ASSUME cs:text__math
-	
-.386
+%include "asm.inc"
 
-include mathsin.inc
+section .data
+
+%include "mathsin.inc"
 	
 ;rotate sins/coss
 rxsin	dw	0
@@ -14,68 +12,71 @@ rycos	dw	0
 rzsin	dw	0
 rzcos	dw	0
 
-checkdeg MACRO reg
-	local	l0,l1,l2
-l0:	cmp	reg,3600
-	jb	l1
-	jl	l2
-	;>3600
-	sub	reg,3600
-	jmp	l0
-l2:	;<0
-	add	reg,3600
-	jmp	l0
-l1:	ENDM
+section .code
 
-public _cmatrix_yxz
-_cmatrix_yxz PROC FAR
+;checkdeg MACRO reg
+%macro checkdeg 1
+	;local	l0,l1,l2
+%%l0:	cmp	%1,3600
+	jb	%%l1
+	jl	%%l2
+	;>3600
+	sub	%1,3600
+	jmp	%%l0
+%%l2:	;<0
+	add	%1,3600
+	jmp	%%l0
+%%l1:
+%endmacro
+
+global _cmatrix_yxz
+_cmatrix_yxz:
 	CBEG
 	movpar	ds,4
 	movpar	si,3
 	mov	di,si
 	movpar	ax,0 ;rotx
-	mov	ds:[si+2],ax
+	mov	[esi+2],ax
 	movpar	ax,1 ;roty
-	mov	ds:[si+0],ax
+	mov	[esi+0],ax
 	movpar	ax,2 ;rotz
-	mov	ds:[si+4],ax
+	mov	[esi+4],ax
 	call	calcmatrix
 	CEND
-_cmatrix_yxz ENDP
 
-calcmatrix PROC NEAR ;rY*rX*rZ
-	;ds:[si+0]=rotx
-	;ds:[si+2]=roty
-	;ds:[si+4]=rotz
-	;dest: ds:[di]
+calcmatrix: ;rY*rX*rZ
+	;[esi+0]=rotx
+	;[esi+2]=roty
+	;[esi+4]=rotz
+	;dest: [edi]
 	;load values, check 'em and calc sin/cos
 	;ROT-X
-	mov	bx,ds:[si]
+	mov	bx,[esi]
 	checkdeg bx
-	mov	ds:[si],bx
+	mov	[esi],bx
 	shl	bx,1
-	mov	ax,cs:sintable16[bx]
-	mov	cs:rxsin,ax
-	mov	ax,cs:costable16[bx]
-	mov	cs:rxcos,ax
+	mov	ax,[sintable16+bx]
+	mov	[rxsin],ax
+	mov	ax,[costable16+bx]
+	mov	[rxcos],ax
 	;ROT-Y
-	mov	bx,ds:[si+2]
+	mov	bx,[esi+2]
 	checkdeg bx
-	mov	ds:[si+2],bx
+	mov	[esi+2],bx
 	shl	bx,1
-	mov	ax,cs:sintable16[bx]
-	mov	cs:rysin,ax
-	mov	ax,cs:costable16[bx]
-	mov	cs:rycos,ax
+	mov	ax,[sintable16+bx]
+	mov	[rysin],ax
+	mov	ax,[costable16+bx]
+	mov	[rycos],ax
 	;ROT-Z
-	mov	bx,ds:[si+4]
+	mov	bx,[esi+4]
 	checkdeg bx
-	mov	ds:[si+4],bx
+	mov	[esi+4],bx
 	shl	bx,1
-	mov	ax,cs:sintable16[bx]
-	mov	cs:rzsin,ax
-	mov	ax,cs:costable16[bx]
-	mov	cs:rzcos,ax
+	mov	ax,[sintable16+bx]
+	mov	[rzsin],ax
+	mov	ax,[costable16+bx]
+	mov	[rzcos],ax
 	
 	;matrix equations: rY*rX*rZ
 	; 0=Ycos*Zcos-		 2=Xsin*Ysin*Zcos+	 4=-Xcos*Ysin
@@ -85,202 +86,200 @@ calcmatrix PROC NEAR ;rY*rX*rZ
 	;12=Xsin*Ycos*Zsin+	14=Ysin*Zsin-		16=Xcos*Ycos
 	;   Ysin*Zcos		   Xsin*Ycos*Zcos\
 
-	mov	ax,cs:rysin
-	imul	cs:rzsin
+	mov	ax,[rysin]
+	imul word	[rzsin]
 	shld	dx,ax,1
-	mov	ds:[di+14],dx ;14a
+	mov	[edi+14],dx ;14a
 	
-	mov	ax,cs:rycos
-	imul	cs:rzcos
+	mov	ax,[rycos]
+	imul word	[rzcos]
 	shld	dx,ax,1
-	mov	ds:[di+0],dx ;0a
+	mov	[edi+0],dx ;0a
 	
 	mov	ax,dx
-	imul	cs:rxsin
+	imul word	[rxsin]
 	shld	dx,ax,1
-	sub	ds:[di+14],dx ;14b
+	sub	[edi+14],dx ;14b
 	
-	mov	ax,cs:rxsin
-	imul	cs:rysin
+	mov	ax,[rxsin]
+	imul word	[rysin]
 	shld	dx,ax,1
 	mov	cx,dx
 	
-	mov	ax,cs:rzsin
-	imul	dx
+	mov	ax,[rzsin]
+	imul word	dx
 	shld	dx,ax,1
-	sub	ds:[di+0],dx ;0b
+	sub	[edi+0],dx ;0b
 
-	mov	ax,cs:rzcos
-	imul	cx
+	mov	ax,[rzcos]
+	imul word	cx
 	shld	dx,ax,1
-	mov	ds:[di+2],dx ;2a
+	mov	[edi+2],dx ;2a
 	
-	mov	ax,cs:rycos
-	imul	cs:rzsin
+	mov	ax,[rycos]
+	imul word	[rzsin]
 	shld	dx,ax,1
-	add	ds:[di+2],dx ;2b
+	add	[edi+2],dx ;2b
 	
-	mov	ax,cs:rxsin
-	imul	dx
+	mov	ax,[rxsin]
+	imul word	dx
 	shld	dx,ax,1
-	mov	ds:[di+12],dx ;12a
+	mov	[edi+12],dx ;12a
 	
-	mov	ax,cs:rysin
-	imul	cs:rzcos
+	mov	ax,[rysin]
+	imul word	[rzcos]
 	shld	dx,ax,1
-	add	ds:[di+12],dx ;12b
+	add	[edi+12],dx ;12b
 	
-	mov	ax,cs:rxcos
-	imul	cs:rzsin
+	mov	ax,[rxcos]
+	imul word	[rzsin]
 	shld	dx,ax,1
 	neg	dx
-	mov	ds:[di+6],dx ;6
+	mov	[edi+6],dx ;6
 
-	mov	ax,cs:rxcos
-	imul	cs:rzcos
+	mov	ax,[rxcos]
+	imul word	[rzcos]
 	shld	dx,ax,1
-	mov	ds:[di+8],dx ;8
+	mov	[edi+8],dx ;8
 
-	mov	ax,cs:rxcos
-	imul	cs:rysin
+	mov	ax,[rxcos]
+	imul word	[rysin]
 	shld	dx,ax,1
 	neg	dx
-	mov	ds:[di+4],dx ;4
+	mov	[edi+4],dx ;4
 
-	mov	ax,cs:rxcos
-	imul	cs:rycos
+	mov	ax,[rxcos]
+	imul word	[rycos]
 	shld	dx,ax,1
-	mov	ds:[di+16],dx ;16
+	mov	[edi+16],dx ;16
 	
-	mov	ax,cs:rxsin
-	mov	ds:[di+10],ax ;10
+	mov	ax,[rxsin]
+	mov	[edi+10],ax ;10
 
 	ret
-calcmatrix ENDP
 
-calcmatrixsep PROC NEAR ;calc 3 separate matrices
-	;ds:[si+0]=rotx
-	;ds:[si+2]=roty
-	;ds:[si+4]=rotz
-	;dest: ds:[di]
+calcmatrixsep: ;calc 3 separate matrices
+	;[esi+0]=rotx
+	;[esi+2]=roty
+	;[esi+4]=rotz
+	;dest: [edi]
 	;load values, check 'em and calc sin/cos
 	;ROT-X
-	mov	bx,ds:[si]
+	mov	bx,[esi]
 	checkdeg bx
-	mov	ds:[si],bx
+	mov	[esi],bx
 	shl	bx,1
-	mov	ax,cs:sintable16[bx]
-	mov	cs:rxsin,ax
-	mov	ax,cs:costable16[bx]
-	mov	cs:rxcos,ax
+	mov	ax,[sintable16+bx]
+	mov	[rxsin],ax
+	mov	ax,[costable16+bx]
+	mov	[rxcos],ax
 	;ROT-Y
-	mov	bx,ds:[si+2]
+	mov	bx,[esi+2]
 	checkdeg bx
-	mov	ds:[si+2],bx
+	mov	[esi+2],bx
 	shl	bx,1
-	mov	ax,cs:sintable16[bx]
-	mov	cs:rysin,ax
-	mov	ax,cs:costable16[bx]
-	mov	cs:rycos,ax
+	mov	ax,[sintable16+bx]
+	mov	[rysin],ax
+	mov	ax,[costable16+bx]
+	mov	[rycos],ax
 	;ROT-Z
-	mov	bx,ds:[si+4]
+	mov	bx,[esi+4]
 	checkdeg bx
-	mov	ds:[si+4],bx
+	mov	[esi+4],bx
 	shl	bx,1
-	mov	ax,cs:sintable16[bx]
-	mov	cs:rzsin,ax
-	mov	ax,cs:costable16[bx]
-	mov	cs:rzcos,ax
+	mov	ax,[sintable16+bx]
+	mov	[rzsin],ax
+	mov	ax,[costable16+bx]
+	mov	[rzcos],ax
 	mov	bx,0
 	mov	cx,32767
 	
 	;rX
-	mov	ds:[di+0],cx
-	mov	ds:[di+2],bx
-	mov	ds:[di+4],bx
-	mov	ds:[di+6],bx
-	mov	ax,cs:rxcos
-	mov	ds:[di+8],ax
-	mov	ax,cs:rxsin
-	mov	ds:[di+10],ax
-	mov	ds:[di+12],bx
-	mov	ax,cs:rxsin
+	mov	[edi+0],cx
+	mov	[edi+2],bx
+	mov	[edi+4],bx
+	mov	[edi+6],bx
+	mov	ax,[rxcos]
+	mov	[edi+8],ax
+	mov	ax,[rxsin]
+	mov	[edi+10],ax
+	mov	[edi+12],bx
+	mov	ax,[rxsin]
 	neg	ax
-	mov	ds:[di+14],ax
-	mov	ax,cs:rxcos
-	mov	ds:[di+16],ax
+	mov	[edi+14],ax
+	mov	ax,[rxcos]
+	mov	[edi+16],ax
 	add	di,18
 	
 	;rY
-	mov	ax,cs:rycos
-	mov	ds:[di+0],ax
-	mov	ds:[di+2],bx
-	mov	ax,cs:rysin
+	mov	ax,[rycos]
+	mov	[edi+0],ax
+	mov	[edi+2],bx
+	mov	ax,[rysin]
 	neg	ax
-	mov	ds:[di+4],ax
-	mov	ds:[di+6],bx
-	mov	ds:[di+8],cx
-	mov	ds:[di+10],bx
-	mov	ax,cs:rysin
-	mov	ds:[di+12],ax
-	mov	ds:[di+14],bx
-	mov	ax,cs:rycos
-	mov	ds:[di+16],ax
+	mov	[edi+4],ax
+	mov	[edi+6],bx
+	mov	[edi+8],cx
+	mov	[edi+10],bx
+	mov	ax,[rysin]
+	mov	[edi+12],ax
+	mov	[edi+14],bx
+	mov	ax,[rycos]
+	mov	[edi+16],ax
 	add	di,18
 	
 	;rZ
-	mov	ax,cs:rzcos
-	mov	ds:[di+0],ax
-	mov	ax,cs:rzsin
-	mov	ds:[di+2],ax
-	mov	ds:[di+4],bx
-	mov	ax,cs:rzsin
+	mov	ax,[rzcos]
+	mov	[edi+0],ax
+	mov	ax,[rzsin]
+	mov	[edi+2],ax
+	mov	[edi+4],bx
+	mov	ax,[rzsin]
 	neg	ax
-	mov	ds:[di+6],ax
-	mov	ax,cs:rzcos
-	mov	ds:[di+8],ax
-	mov	ds:[di+10],bx
-	mov	ds:[di+12],bx
-	mov	ds:[di+14],bx
-	mov	ds:[di+16],cx
+	mov	[edi+6],ax
+	mov	ax,[rzcos]
+	mov	[edi+8],ax
+	mov	[edi+10],bx
+	mov	[edi+12],bx
+	mov	[edi+14],bx
+	mov	[edi+16],cx
 	add	di,18
 	
 	ret
-calcmatrixsep ENDP
 
-calcmatrix0 PROC NEAR ;rX*rY*rZ
-	;ds:[si]=rotx
-	;ds:[si]=roty
-	;ds:[si]=rotz
-	;dest: ds:[di]
+calcmatrix0: ;rX*rY*rZ
+	;[esi]=rotx
+	;[esi]=roty
+	;[esi]=rotz
+	;dest: [edi]
 	;load values, check 'em and calc sin/cos
 	;ROT-X
-	mov	bx,ds:[si]
+	mov	bx,[esi]
 	checkdeg bx
-	mov	ds:[si],bx
+	mov	[esi],bx
 	shl	bx,1
-	mov	ax,cs:sintable16[bx]
-	mov	cs:rxsin,ax
-	mov	ax,cs:costable16[bx]
-	mov	cs:rxcos,ax
+	mov	ax,[sintable16+bx]
+	mov	[rxsin],ax
+	mov	ax,[costable16+bx]
+	mov	[rxcos],ax
 	;ROT-Y
-	mov	bx,ds:[si+2]
+	mov	bx,[esi+2]
 	checkdeg bx
-	mov	ds:[si+2],bx
+	mov	[esi+2],bx
 	shl	bx,1
-	mov	ax,cs:sintable16[bx]
-	mov	cs:rysin,ax
-	mov	ax,cs:costable16[bx]
-	mov	cs:rycos,ax
+	mov	ax,[sintable16+bx]
+	mov	[rysin],ax
+	mov	ax,[costable16+bx]
+	mov	[rycos],ax
 	;ROT-Z
-	mov	bx,ds:[si+4]
+	mov	bx,[esi+4]
 	checkdeg bx
-	mov	ds:[si+4],bx
+	mov	[esi+4],bx
 	shl	bx,1
-	mov	ax,cs:sintable16[bx]
-	mov	cs:rzsin,ax
-	mov	ax,cs:costable16[bx]
-	mov	cs:rzcos,ax
+	mov	ax,[sintable16+bx]
+	mov	[rzsin],ax
+	mov	ax,[costable16+bx]
+	mov	[rzcos],ax
 	
 	;matrix equations: rX*rY*rZ ;rZ*rY*rX
 	; 0=Ycos*Zcos		 2=Ycos*Zsin		 4=-Ysin
@@ -291,103 +290,102 @@ calcmatrix0 PROC NEAR ;rX*rY*rZ
 	
 	;calculate rotation matrix
 	;0,2,10,16,4
-	mov	bx,cs:rycos
-	mov	ax,cs:rzcos
+	mov	bx,[rycos]
+	mov	ax,[rzcos]
 	imul	bx
 	shld	dx,ax,1
-	mov	ds:[di+0],dx
+	mov	[edi+0],dx
 	;
-	mov	ax,cs:rzsin
+	mov	ax,[rzsin]
 	imul	bx
 	shld	dx,ax,1
-	mov	ds:[di+2],dx
+	mov	[edi+2],dx
 	;
-	mov	ax,cs:rxsin
+	mov	ax,[rxsin]
 	imul	bx
 	shld	dx,ax,1
-	mov	ds:[di+10],dx
+	mov	[edi+10],dx
 	;
-	mov	ax,cs:rxcos
+	mov	ax,[rxcos]
 	imul	bx
 	shld	dx,ax,1
-	mov	ds:[di+16],dx
+	mov	[edi+16],dx
 	;
-	mov	ax,cs:rysin
+	mov	ax,[rysin]
 	neg	ax
-	mov	ds:[di+4],ax
+	mov	[edi+4],ax
 	;6,8
-	mov	ax,cs:rxsin
-	imul	cs:rysin
+	mov	ax,[rxsin]
+	imul word	[rysin]
 	shld	dx,ax,1
 	mov	cx,dx
 	;
 	mov	ax,cx
-	imul	cs:rzcos
+	imul word	[rzcos]
 	shld	dx,ax,1
-	mov	ds:[di+6],dx
+	mov	[edi+6],dx
 	;
 	mov	ax,cx
-	imul	cs:rzsin
+	imul word	[rzsin]
 	shld	dx,ax,1
-	mov	ds:[di+8],dx
+	mov	[edi+8],dx
 	;
-	mov	bx,cs:rxcos
-	mov	ax,cs:rzsin
-	imul	bx
+	mov	bx,[rxcos]
+	mov	ax,[rzsin]
+	imul word	bx
 	shld	dx,ax,1
-	sub	ds:[di+6],dx
+	sub	[edi+6],dx
 	;
-	mov	ax,cs:rzcos
-	imul	bx
+	mov	ax,[rzcos]
+	imul word	bx
 	shld	dx,ax,1
-	add	ds:[di+8],dx
+	add	[edi+8],dx
 	;12,14
-	mov	ax,cs:rxcos
-	imul	cs:rysin
+	mov	ax,[rxcos]
+	imul word	[rysin]
 	shld	dx,ax,1
 	mov	cx,dx
 	;
 	mov	ax,cx
-	imul	cs:rzcos
+	imul word	[rzcos]
 	shld	dx,ax,1
-	mov	ds:[di+12],dx
+	mov	[edi+12],dx
 	;
 	mov	ax,cx
-	imul	cs:rzsin
+	imul word	[rzsin]
 	shld	dx,ax,1
-	mov	ds:[di+14],dx
+	mov	[edi+14],dx
 	;
-	mov	bx,cs:rxsin
-	mov	ax,cs:rzsin
+	mov	bx,[rxsin]
+	mov	ax,[rzsin]
 	imul	bx
 	shld	dx,ax,1
-	add	ds:[di+12],dx
+	add	[edi+12],dx
 	;
-	mov	ax,cs:rzcos
+	mov	ax,[rzcos]
 	imul	bx
 	shld	dx,ax,1
-	sub	ds:[di+14],dx
+	sub	[edi+14],dx
 
 	ret
-calcmatrix0 ENDP
 
-mulmacro MACRO	row,col
-	mov	ax,ds:[si+0+row*6]
-	imul	word ptr es:[di+0+col*2]
+%macro mulmacro 2;	row,col
+	mov	ax,[esi+0+%1*6]
+	imul	word [edi+0+%2*2]
 	mov	cx,dx
 	mov	bx,ax
-	mov	ax,ds:[si+2+row*6]
-	imul	word ptr es:[di+6+col*2]
+	mov	ax,[esi+2+%1*6]
+	imul	word [edi+6+%2*2]
 	add	cx,dx
 	add	bx,ax
-	mov	ax,ds:[si+4+row*6]
-	imul	word ptr es:[di+12+col*2]
+	mov	ax,[esi+4+%1*6]
+	imul	word [edi+12+%2*2]
 	add	cx,dx
 	add	bx,ax
 	shld	cx,bx,1
-	ENDM
+%endmacro
 
-mulmatrices PROC NEAR
+mulmatrices:
 	;ds:si=matrix1,es:di=matrix2 => ds:si (overwrite)
 	mulmacro 0,0
 	push	cx
@@ -409,18 +407,13 @@ mulmatrices PROC NEAR
 	push	cx
 	mulmacro 2,2
 
-	mov	ds:[si+4+12],cx
-	pop	word ptr ds:[si+2+12]
-	pop	word ptr ds:[si+0+12]
-	pop	word ptr ds:[si+4+6]
-	pop	word ptr ds:[si+2+6]
-	pop	word ptr ds:[si+0+6]
-	pop	word ptr ds:[si+4]
-	pop	word ptr ds:[si+2]
-	pop	word ptr ds:[si+0]
+	mov	[esi+4+12],cx
+	pop	word [esi+2+12]
+	pop	word [esi+0+12]
+	pop	word [esi+4+6]
+	pop	word [esi+2+6]
+	pop	word [esi+0+6]
+	pop	word [esi+4]
+	pop	word [esi+2]
+	pop	word [esi+0]
 	ret
-mulmatrices ENDP
-	
-text__math ENDS
-	END
-	

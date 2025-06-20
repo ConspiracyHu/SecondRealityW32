@@ -1,10 +1,6 @@
-text__zoom SEGMENT para public 'CODE2'
-	ASSUME cs:text__zoom
-LOCALS
-.386
-
-PUBLIC _zoom
-_zoom PROC FAR
+section .code
+global _zoom
+_zoom:
 	push	bp
 	mov	bp,sp
 	push	si
@@ -21,13 +17,10 @@ _zoom PROC FAR
 	pop	si
 	pop	bp
 	ret
-_zoom ENDP
 
-include zoomloop.inc
+%include "zoomloop.inc"
 
-PUBLIC _sin1024
-include sin1024.inc
-	
-text__zoom ENDS
-END
+section .data
 
+global _glenz_sin1024
+%include "sin1024.inc"

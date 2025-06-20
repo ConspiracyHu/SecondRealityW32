@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <memory.h>
 #include "dis.h"
 #include "../../shims.h"
 
