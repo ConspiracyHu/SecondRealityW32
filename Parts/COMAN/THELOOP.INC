@@ -33,11 +33,8 @@ theloop_heigth dw 0
 
 segment .code
 
-global _vbuf
 extern _vbuf
-global _w1dta
 extern _w1dta
-global _w2dta
 extern _w2dta
 
 theloop:

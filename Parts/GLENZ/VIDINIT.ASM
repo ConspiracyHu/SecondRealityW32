@@ -371,7 +371,7 @@ mode13x:
 	out	dx,al		;    write protect
 	dec	dx		; point to index
 	cld
-	mov	si,vptbl
+	mov	esi,vptbl
 	mov	cx,(vpend-vptbl)/2
 outlp:	lodsw
 	out	dx,ax
@@ -379,7 +379,7 @@ outlp:	lodsw
 
 	mov	ax,cs
 	mov	ds,ax
-	mov	si,hseq2
+	mov	esi,hseq2
 	call	sethseq
 
 ;	mov	dx,3dah
@@ -498,7 +498,7 @@ tweak360x350:
 	out	dx,al		;    write protect
 	dec	dx		; point to index
 	cld
-	mov	si,vptbl
+	mov	esi,vptbl
 	mov	cx,(vpend-vptbl)/2
 outlpn:	lodsw
 	out	dx,ax
@@ -506,7 +506,7 @@ outlpn:	lodsw
 
 	mov	ax,cs
 	mov	ds,ax
-	mov	si,hseq3
+	mov	esi,hseq3
 	call	sethseq
 
 	pop	ds

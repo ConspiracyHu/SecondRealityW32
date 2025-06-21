@@ -32,8 +32,8 @@ _inittwk:
 	out	dx,al
 	inc	dx
 	mov	cx,768
-@@1:	out	dx,al
-	loop	@@1
+.@@1:	out	dx,al
+	loop	.@@1
 	;400 rows
 	mov	dx,3d4h
 	mov	ax,00009h
@@ -129,9 +129,9 @@ _linezoom:
 	mov esi,[esp+12]
 	mov	ebx,[esp+16]
 	cmp	ebx,318
-	jbe	@@1
+	jbe	.@@1
 	mov	ebx,318
-@@1:	and	ebx,~1
+.@@1:	and	ebx,~1
   shl ebx,1
 	;mov dx,3c4h
 	;mov ax,0f02h

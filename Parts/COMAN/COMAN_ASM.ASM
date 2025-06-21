@@ -1,8 +1,7 @@
-global theloop
 extern theloop
 
 segment .data
-global _wave1,_wave2,_vbuf,_cameralevel
+global _wave1,_wave2,_cameralevel
 _wave1	dw	0,0
 _wave2	dw	0,0
 ;_vbuf	dw	0,0

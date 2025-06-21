@@ -152,7 +152,7 @@ nrlineto:
 	;set insider point as begin of line
 	cmp	dx,[wmaxx]
 	ja	nrlt4
-	cmp	bx,wmaxy
+	cmp	bx,[wmaxy]
 	ja	nrlt4
 	jmp	nrlt5 ;dx,bx is inside, no changes
 nrlt4:	;dx,bx outside, swap
@@ -161,7 +161,7 @@ nrlt4:	;dx,bx outside, swap
 	;check with new bx,dx
 	cmp	dx,[wmaxx]
 	ja	nrlt6
-	cmp	bx,wmaxy
+	cmp	bx,[wmaxy]
 	ja	nrlt6
 	jmp	nrlt5 ;dx,bx is inside
 

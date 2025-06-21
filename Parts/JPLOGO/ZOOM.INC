@@ -1,6 +1,5 @@
 section .data
 
-global _lens_demux_scanline
 extern _lens_demux_scanline
 
 zoomt:

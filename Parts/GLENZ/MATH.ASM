@@ -165,31 +165,31 @@ calcmatrixsep: ;calc 3 separate matrices
 	;dest: [edi]
 	;load values, check 'em and calc sin/cos
 	;ROT-X
-	mov	bx,[esi]
+	movzx	ebx, word [esi]
 	checkdeg bx
 	mov	[esi],bx
 	shl	bx,1
-	mov	ax,[sintable16+bx]
+	mov	ax,[sintable16+ebx]
 	mov	[rxsin],ax
-	mov	ax,[costable16+bx]
+	mov	ax,[costable16+ebx]
 	mov	[rxcos],ax
 	;ROT-Y
-	mov	bx,[esi+2]
+	movzx	ebx, word [esi+2]
 	checkdeg bx
 	mov	[esi+2],bx
 	shl	bx,1
-	mov	ax,[sintable16+bx]
+	mov	ax,[sintable16+ebx]
 	mov	[rysin],ax
-	mov	ax,[costable16+bx]
+	mov	ax,[costable16+ebx]
 	mov	[rycos],ax
 	;ROT-Z
-	mov	bx,[esi+4]
+	movzx	ebx, word [esi+4]
 	checkdeg bx
 	mov	[esi+4],bx
 	shl	bx,1
-	mov	ax,[sintable16+bx]
+	mov	ax,[sintable16+ebx]
 	mov	[rzsin],ax
-	mov	ax,[costable16+bx]
+	mov	ax,[costable16+ebx]
 	mov	[rzcos],ax
 	mov	bx,0
 	mov	cx,32767
@@ -254,31 +254,31 @@ calcmatrix0: ;rX*rY*rZ
 	;dest: [edi]
 	;load values, check 'em and calc sin/cos
 	;ROT-X
-	mov	bx,[esi]
+	movzx	ebx, word [esi]
 	checkdeg bx
 	mov	[esi],bx
 	shl	bx,1
-	mov	ax,[sintable16+bx]
+	mov	ax,[sintable16+ebx]
 	mov	[rxsin],ax
-	mov	ax,[costable16+bx]
+	mov	ax,[costable16+ebx]
 	mov	[rxcos],ax
 	;ROT-Y
-	mov	bx,[esi+2]
+	movzx	ebx, word [esi+2]
 	checkdeg bx
 	mov	[esi+2],bx
 	shl	bx,1
-	mov	ax,[sintable16+bx]
+	mov	ax,[sintable16+ebx]
 	mov	[rysin],ax
-	mov	ax,[costable16+bx]
+	mov	ax,[costable16+ebx]
 	mov	[rycos],ax
 	;ROT-Z
-	mov	bx,[esi+4]
+	movzx	ebx, word [esi+4]
 	checkdeg bx
 	mov	[esi+4],bx
 	shl	bx,1
-	mov	ax,[sintable16+bx]
+	mov	ax,[sintable16+ebx]
 	mov	[rzsin],ax
-	mov	ax,[costable16+bx]
+	mov	ax,[costable16+ebx]
 	mov	[rzcos],ax
 	
 	;matrix equations: rX*rY*rZ ;rZ*rY*rX

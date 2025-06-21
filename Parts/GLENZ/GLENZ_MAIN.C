@@ -32,7 +32,7 @@ extern int _ndebug1;
 
 extern char asmtestmode;
 
-extern int csetmatrix(int *,long,long,long);
+extern int csetmatrix(short *,long,long,long);
 extern int crotlist(long *,long *);
 extern int cclipedges(int *,int *,long *); // modifies given point list
 extern int cprojlist(long *,long *);
@@ -40,7 +40,7 @@ extern int ccliplist(long *);
 extern int cdrawpolylist(int *);
 extern int cmatrix_yxz(short, short, short, short *);
 extern int cpolylist(int *polylist,int *polys,int *edges,long *points3);
-extern int ceasypolylist(int *polylist,int *polys,long *points3);
+extern int ceasypolylist(int *polylist,unsigned short *polys,long *points3);
 
 extern int demomode[];
 
@@ -54,7 +54,7 @@ long    cubepoints[]={8,
 999,999,999,
 -999,999,999
 };
-int cubeepolys[]={
+unsigned short cubeepolys[]={
 4,0x4002,0,1,2,3,
 4,0x4004,4,5,6,7,
 4,0x4008,0,1,5,4,
@@ -173,7 +173,7 @@ int edges[64]={12,0,
 2,6,0,0,
 3,7,0,0};
 int edges2[64];
-int polys[64]={
+unsigned short polys[64]={
 4,0x4010,0,1,2,3,
 4,0x4008,0,8,4,9,
 4,0x4010,1,9,5,10,
@@ -182,7 +182,7 @@ int polys[64]={
 4,0x4080,4,5,6,7,
 0};
 
-int epolys[]={
+unsigned short epolys[]={
 3,0x4002,0,1,8,
 3,0x4004,1,2,8,
 3,0x4006,2,3,8,
@@ -215,7 +215,7 @@ int epolys[]={
 
 0};
 
-int epolysb[]={
+unsigned short epolysb[]={
 3,0x4004,0,1,8,
 3,0x4002,1,2,8,
 3,0x4004,2,3,8,

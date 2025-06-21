@@ -9,7 +9,6 @@ _rotpic90 dw	0,0
 
 section .code
 
-global _shim_vram
 extern _shim_vram
 
 %macro DOWORD 2
@@ -42,9 +41,9 @@ _dorow:
 	mov	cx,[esi+2]
 	movzx	esi, word [esi]
 	cmp	cx,4
-	jge	@@2
-	jmp	@@0
-@@2:
+	jge	.@@2
+	jmp	.@@0
+.@@2:
   add esi, [esp+8] ; +ds:
   mov ax,[esi]
   movsx eax, ax
@@ -53,7 +52,7 @@ _dorow:
   add edi, [_back]
 	add	esi,2
 	test	ebp,1
-	jz	@@1
+	jz	.@@1
 	movsx	ebx, word [esi]
 	add	esi,2
 	mov	al,[edi+ebx] ;fs
@@ -61,7 +60,7 @@ _dorow:
 	mov	[_shim_vram+ebp],al
 	inc	ebp
 	dec	ecx
-@@1:	push	ecx
+.@@1:	push	ecx
 	shr	ecx,1
 	sub	esi,320
 	sub	ebp,320
@@ -82,16 +81,16 @@ _dorow:
 
 	neg	eax
 	;bx=-count*21
-	add	eax,@@l
+	add	eax,.@@l
 	jmp	eax
 	%assign zzz 64
 	%rep	64
 	%assign zzz zzz-1
 	DOWORD	320+zzz*2,320+zzz*4
 	%endrep
-@@l:	pop	ecx
+.@@l:	pop	ecx
 	test	cx,1
-	jz	@@0
+	jz	.@@0
 	and	cx,~1
 	add	bp,cx
 	add	cx,cx
@@ -100,7 +99,7 @@ _dorow:
 	mov	al,[edi]
 	or	ax,dx
 	mov	[ebp+320],al
-@@0:	
+.@@0:	
 	pop ebp
 	ret
 
@@ -118,7 +117,7 @@ _dorow2:
 	mov	cx,[esi+2] ; fs
 	movzx	esi, word [esi]   ; fs
 	or	cx,cx
-	jcxz	@@0
+	jcxz	.@@0
 
 	mov	edx, [esp+20]    ; M
 	mov	dh, dl
@@ -141,7 +140,7 @@ _dorow2:
   ; es:si => esi (vram)
   ; fs:bp => ebp (lens)
 
-@@3:
+.@@3:
   movsx	ebx, word [ebp+2]
 	mov	al, [ebx+edi]
 	or	al, dl
@@ -149,9 +148,9 @@ _dorow2:
 	add	ebp, 4
 	mov	[ebx+esi], al
 	dec	cx
-	jnz	@@3
+	jnz	.@@3
 	
-@@0:
+.@@0:
 	pop ebp
 	ret
 
@@ -166,24 +165,24 @@ _dorow3:
 	movzx	esi, word [esi]   ; fs
   add	esi,[esp+8] ; ptr
 	or	cx,cx
-	jcxz	@@0
+	jcxz	.@@0
 	mov	edi, [esp+12] ; U
 	add	di, [esi] ; fs
 	add	esi, 2
 
   push ebp
   mov ebp,[_back]
-@@3:
+.@@3:
   movsx	ebx, word [esi] ; fs
   add ebx, edi
 	add	esi, 2
 	mov	al,[ebp+ebx] ; ds
 	mov	[_shim_vram+ebx],al ; es
 	dec	cx
-	jnz	@@3
+	jnz	.@@3
   pop ebp
 	
-@@0:
+.@@0:
 	pop ebp
 	ret
 
@@ -214,8 +213,8 @@ _dorow3:
 ;	out	dx,al
 ;	inc	dx
 ;	mov	cx,768
-;@@1:	out	dx,al
-;	loop	@@1
+;.@@1:	out	dx,al
+;	loop	.@@1
 ;	;400 rows
 ;	mov	dx,3d4h
 ;	mov	ax,00009h
@@ -288,7 +287,6 @@ _yadd	dd	0
 %define ZOOMXW	160
 %define ZOOMYW	100
 
-global _zoomer_planar_buffer
 extern _zoomer_planar_buffer
 
 section .code
@@ -317,13 +315,13 @@ _rotate:
 	
 	mov	ebp,[_rotpic]
 	cmp	ecx,0
-	jge	@@s1
+	jge	.@@s1
 	neg	ecx
-@@s1:	cmp	edx,0
-	jge	@@s2
+.@@s1:	cmp	edx,0
+	jge	.@@s2
 	neg	edx
-@@s2:	cmp	ecx,edx
-	jle	@@s3
+.@@s2:	cmp	ecx,edx
+	jle	.@@s3
 	
 	mov	ebp,[_rotpic90]
 	xchg	eax,ebx
@@ -335,7 +333,7 @@ _rotate:
 	mov	[_xpos],ecx
 	mov	[_ypos],edx
 	
-@@s3:
+.@@s3:
   mov	[_xadd],eax
 	mov	[_yadd],ebx
 	
@@ -357,22 +355,22 @@ _rotate:
 	adc	al,bl
 	add	di,dx
 	adc	ah,bh
-	mov	word [@@moda+zzz+4],ax
+	mov	word [.@@moda+zzz+4],ax
 	add	si,cx
 	adc	al,bl
 	add	di,dx
 	adc	ah,bh
-	mov	word [@@modb+zzz+4],ax
+	mov	word [.@@modb+zzz+4],ax
 	add	si,cx
 	adc	al,bl
 	add	di,dx
 	adc	ah,bh
-	mov	word [@@moda+zzz+14],ax
+	mov	word [.@@moda+zzz+14],ax
 	add	si,cx
 	adc	al,bl
 	add	di,dx
 	adc	ah,bh
-	mov	word [@@modb+zzz+14],ax
+	mov	word [.@@modb+zzz+14],ax
 	%assign zzz zzz+27
 	%endrep
 	
@@ -390,7 +388,7 @@ _rotate:
 	add edi,-1000h
 	
 	mov	ecx,ZOOMYW
-@@2:	mov	ebx,[_ypos]
+.@@2:	mov	ebx,[_ypos]
 	add	ebx,[_yadd]
 	mov	[_ypos],ebx
 	shr	ebx,8
@@ -405,7 +403,7 @@ _rotate:
 	;mov	ax,0302h
 	;out	dx,ax
   xor ebx,ebx
-@@moda:
+.@@moda:
   %assign zzz 1000h
 	%rep	ZOOMXW/4
   lea bx,[si+1234h]
@@ -418,7 +416,7 @@ _rotate:
 	;mov	dx,3c4h
 	;mov	ax,0c02h
 	;out	dx,ax
-@@modb:
+.@@modb:
   %assign zzz 1000h
 	%rep	ZOOMXW/4
   lea bx,[si+1234h]
@@ -431,9 +429,9 @@ _rotate:
 	;
 	add	edi,80*2
 	dec	ecx
-	jz	@@1
-	jmp	@@2
-@@1:	
+	jz	.@@1
+	jmp	.@@2
+.@@1:	
 	pop	ebp
 	ret
 	
@@ -465,13 +463,13 @@ _rotatez:
 	
 	mov	ds,[_rotpic+2]
 	cmp	ecx,0
-	jge	@@s1
+	jge	.@@s1
 	neg	ecx
-@@s1:	cmp	edx,0
-	jge	@@s2
+.@@s1:	cmp	edx,0
+	jge	.@@s2
 	neg	edx
-@@s2:	cmp	ecx,edx
-	jle	@@s3
+.@@s2:	cmp	ecx,edx
+	jle	.@@s3
 	
 	mov	ds,[_rotpic90+2]
 	xchg	eax,ebx
@@ -483,7 +481,7 @@ _rotatez:
 	mov	[_xpos],ecx
 	mov	[_ypos],edx
 	
-@@s3:	mov	[_xadd],eax
+.@@s3:	mov	[_xadd],eax
 	mov	[_yadd],ebx
 	
 	xor	ax,ax
@@ -504,22 +502,22 @@ _rotatez:
 	adc	al,bl
 	add	di,dx
 	adc	ah,bh
-	mov	word [@@moda+zzz+2],ax
+	mov	word [.@@moda+zzz+2],ax
 	add	si,cx
 	adc	al,bl
 	add	di,dx
 	adc	ah,bh
-	mov	word [@@modb+zzz+2],ax
+	mov	word [.@@modb+zzz+2],ax
 	add	si,cx
 	adc	al,bl
 	add	di,dx
 	adc	ah,bh
-	mov	word [@@moda+zzz+6],ax
+	mov	word [.@@moda+zzz+6],ax
 	add	si,cx
 	adc	al,bl
 	add	di,dx
 	adc	ah,bh
-	mov	word [@@modb+zzz+6],ax
+	mov	word [.@@modb+zzz+6],ax
 	%assign zzz zzz+13
 	%endrep
 	
@@ -537,7 +535,7 @@ _rotatez:
 	add edi,-1000h
 	
 	mov	cx,ZOOMYW
-@@2:	mov	ebx,[_ypos]
+.@@2:	mov	ebx,[_ypos]
 	add	ebx,[_yadd]
 	mov	[_ypos],ebx
 	shr	ebx,8
@@ -553,7 +551,7 @@ _rotatez:
 	mov	dx,3c4h
 	mov	ax,0302h
 	out	dx,ax
-@@moda:
+.@@moda:
   %assign zzz 1000h
 	%rep	ZOOMXW/4
 	mov	al,[esi+1234h]	;4
@@ -564,7 +562,7 @@ _rotatez:
 	mov	dx,3c4h
 	mov	ax,0c02h
 	out	dx,ax
-@@modb:
+.@@modb:
   %assign zzz 1000h
 	%rep	ZOOMXW/4
 	mov	al,[esi+1234h]	;4
@@ -575,9 +573,9 @@ _rotatez:
 	;
 	add	di,80
 	dec	cx
-	jz	@@1
-	jmp	@@2
-@@1:	
+	jz	.@@1
+	jmp	.@@2
+.@@1:	
 	pop	ds
 	pop	di
 	pop	si

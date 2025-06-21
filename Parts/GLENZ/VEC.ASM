@@ -199,7 +199,7 @@ projlist:
 	add	di,ax
 	add	di,4
 
-@@1:	;rotate with matrix
+.@@1:	;rotate with matrix
 	mov	ebx,[esi+8]
 	mov	eax,[esi+4]
 	mov	ecx,[esi+0]
@@ -209,40 +209,40 @@ projlist:
 	xor	ebp,ebp
 	mov	dword [edi+8],ebx
 	cmp	ebx,[projminz]
-	jge	@@2
+	jge	.@@2
 	mov	ebx,[projminz]
 	or	bp,16
-@@2:	;
+.@@2:	;
 	imul	dword [projymul]
 	idiv	ebx
 	add	ax,[projyadd]
 	cmp	ax,[wmaxy]
-	jng	@@41
+	jng	.@@41
 	or	bp,8
-@@41:	cmp	ax,[wminy]
-	jnl	@@42
+.@@41:	cmp	ax,[wminy]
+	jnl	.@@42
 	or	bp,4
-@@42:	mov	[edi+2],ax ;store Y
+.@@42:	mov	[edi+2],ax ;store Y
 	;
 	mov	eax,[projxmul]
 	imul	ecx
 	idiv	ebx
 	add	ax,[projxadd]
 	cmp	ax,[wmaxx]
-	jng	@@43
+	jng	.@@43
 	or	bp,2
-@@43:	cmp	ax,[wminx]
-	jnl	@@44
+.@@43:	cmp	ax,[wminx]
+	jnl	.@@44
 	or	bp,1
-@@44:	mov	[edi+0],ax ;store X
+.@@44:	mov	[edi+0],ax ;store X
 
-@@5:	mov	[edi+4],bp ;store visiblity flags
+.@@5:	mov	[edi+4],bp ;store visiblity flags
 	
 	;next point
 	add	esi,12
 	add	edi,12
 	dec	word [count]
-	jnz	@@1
+	jnz	.@@1
 	pop	edi
 	ret
 
@@ -254,34 +254,35 @@ cliplist:
 	mov	cx,[esi]
 	add	esi,4
 
-@@1:	;rotate with matrix
+.@@1:	;rotate with matrix
 	mov	eax,[esi+4]
 	cmp	eax,1500
-	jl	@@2
+	jl	.@@2
 	mov	dword [esi+4],1500
-@@2:
+.@@2:
 	;next point
 	add	esi,12
 	dec	cx
-	jnz	@@1
+	jnz	.@@1
 	pop	edi
 	ret
 
 adddot:
 	cmp	ax,bp
-	je	@@3
+	je	.@@3
 	mov	bp,ax
 	;add dot
 	push	ebx
-	mov	bx,ax
-	shl	bx,1
-	add	bx,ax
-	shl	bx,2
+  movzx eax,ax
+	mov	ebx,eax
+	shl	ebx,1
+	add	ebx,eax
+	shl	ebx,2
 	add	ebx,[pointsoff]
-	mov	eax,[ebx]
+	mov	eax,[edx+ebx] ;edx=gs
 	stosd
 	pop	ebx
-@@3:
+.@@3:
   ret
 
 
@@ -307,10 +308,10 @@ checkhiddenbx:
 	sbb	dx,cx
 	pop	si
 	cmp	dx,0
-	jl	@@1
+	jl	.@@1
 	clc
 	ret
-@@1:	stc
+.@@1:	stc
 	ret
 
 
@@ -330,50 +331,50 @@ _cpolylist: ;polylist,polys,edges,points3
 	mov	[pointsoff],ax
 	mov	gs,word [bp+20]
 	mov	bp,-1
-@@2:	lodsw
+.@@2:	lodsw
 	cmp	ax,0
-	je	@@1
+	je	.@@1
 	add	di,2
 	mov	cx,ax
 	movsw
 	mov	[cntoff],di
-@@3:	push	cx
+.@@3:	push	cx
 	mov	bx,[esi]
 	add	si,2
 	shl	bx,3
 	add	bx,[edgesoff]
 	test	word [ebx+4],8000h
-	jnz	@@7
+	jnz	.@@7
 	mov	ax,[ebx+2]
 	cmp	ax,bp
-	je	@@5
+	je	.@@5
 	mov	ax,[ebx]
 	call	adddot
 	mov	ax,[ebx+2]
 	call	adddot
-@@7:	pop	cx
-	loop	@@3
-	jmp	@@6
-@@5:	mov	ax,[ebx+2]
+.@@7:	pop	cx
+	loop	.@@3
+	jmp	.@@6
+.@@5:	mov	ax,[ebx+2]
 	call	adddot
 	mov	ax,[ebx]
 	call	adddot
 	pop	cx
-	loop	@@3
-@@6:	mov	bx,[cntoff]
+	loop	.@@3
+.@@6:	mov	bx,[cntoff]
 	mov	eax,[ebx]
 	cmp	eax,[edi-4]
-	jne	@@4
+	jne	.@@4
 	sub	di,4
-@@4:	mov	ax,di
+.@@4:	mov	ax,di
 	sub	ax,[cntoff]
 	shr	ax,2
 	mov	[ebx-4],ax
 	call	checkhiddenbx
-	jnc	@@2
+	jnc	.@@2
 	xor	word [ebx-2],8000h
-	jmp	@@2
-@@1:	mov	word [edi],0
+	jmp	.@@2
+.@@1:	mov	word [edi],0
 	CEND
 
 
@@ -401,16 +402,16 @@ demo_norm:
 
 
 demo_glz2:
-	jc	@@1
+	jc	.@@1
 	mov	al,[ebx-2]
 	shr	al,1
 	and	al,1
 	mov	[ebx-2],al
-@@1:	ret
+.@@1:	ret
 
 
 demo_glz:
-	jnc	@@7 ;visible
+	jnc	.@@7 ;visible
 	mov	ax,[ebx-2]
 	push	bx
 	push	ax
@@ -427,59 +428,59 @@ demo_glz:
 	shl	al,2
 	mov	[ebx-2],ax
 	ret
-@@7:	mov	cl,[_lightshift]
+.@@7:	mov	cl,[_lightshift]
 	cmp	cl,9
-	je	@@x9
+	je	.@@x9
 	shrd	ax,dx,8
 	push	ax	
 	shrd	ax,dx,1
 	pop	dx
 	add	ax,dx
-	jmp	@@x10
-@@x9:	mov	cl,7
+	jmp	.@@x10
+.@@x9:	mov	cl,7
 	shrd	ax,dx,cl
-@@x10:	cmp	ax,0
-	jge	@@s1
+.@@x10:	cmp	ax,0
+	jge	.@@s1
 	mov	ax,0
-@@s1:	cmp	ax,63
-	jle	@@s2
+.@@s1:	cmp	ax,63
+	jle	.@@s2
 	mov	ax,63
-@@s2:	mov	ah,al
+.@@s2:	mov	ah,al
 	;
-	push	bx
-	movzx	bx,[ebx-2]
+	push	ebx
+	movzx	ebx, byte [ebx-2]
 	mov	al,[rolcol+ebx]
 	cmp	al,0
-	jne	@@rc1
+	jne	.@@rc1
 	mov	cx,15
-	mov	bp,2
-@@rc3:	cmp	byte [rolused+ebp],0
-	je	@@rc4
-	add	bp,2
-	loop	@@rc3
-@@rc4:	mov	ax,bp
-@@rc2:	mov	[rolcol+ebx],al
+	mov	ebp,2
+.@@rc3:	cmp	byte [rolused+ebp],0
+	je	.@@rc4
+	add	ebp,2
+	loop	.@@rc3
+.@@rc4:	mov	eax,ebp
+.@@rc2:	mov	[rolcol+ebx],al
 	mov	byte [rolused+ebp],1
-@@rc1:	pop	bx
+.@@rc1:	pop	ebx
 	mov	bp,[ebx-2]
 	shl	al,3
 	mov	[ebx-2],al
 	
-	mov	dx,3c8h
-	out	dx,al
-	inc	dx
+;	mov	dx,3c8h
+;	out	dx,al
+;	inc	dx
 
 	test	bp,2
-	jz	@@b1	
+	jz	.@@b1	
 	mov	bh,ah ;B
 	shr	ah,1
 	mov	bl,ah ;G
-	jmp	@@b2
-@@b1:	mov	cl,ah ;R
+	jmp	.@@b2
+.@@b1:	mov	cl,ah ;R
 	mov	bl,ah ;G
 	mov	bh,ah ;B
-@@b2:	push	si
-	push	di
+.@@b2:	push	esi
+	push	edi
 	mov	si,cx
 	mov	di,bx
 	
@@ -500,47 +501,60 @@ demo_glz:
 	%assign zzz zzz+1
 	%endrep
 	
-	pop	di
-	pop	si
-@@xx:	ret
+	pop	edi
+	pop	esi
+.@@xx:	ret
 
 global _ceasypolylist
 _ceasypolylist: ;polylist,polys,points3
 	CBEG
+
+  ; esi = "polys" input
+  ;   1 word (vertex count)
+  ;   1 word (face data)
+  ;   N word (vertex indices)
+  ; edi = "polylist" output
+  ; edx = "points3" input
+  ;   1 word (X)
+  ;   1 word (Y)
+  ;   1 word ("visiblity flags")
+
 	mov	edi,[esp+8]
 	;mov	es,word [ebp+8]
 	mov	esi,[esp+12]
 	;mov	ds,word [ebp+12]
 	add	eax,4
 	mov	[pointsoff],eax
-	;mov	gs,word [ebp+16]
+	mov	edx,[esp+16]
 	mov	bp,-1
-@@2:	lodsw
+.@@2:	lodsw
 	cmp	ax,0
-	je	@@1
+	je	.@@1
 	add	di,2
-	mov	cx,ax
+	movzx	ecx,ax
 	movsw
 	mov	[cntoff],edi
-@@3:	push	cx
+.@@3:	push	cx
 	mov	ax,[esi]
 	add	si,2
 	call	adddot
 	pop	cx
-	loop	@@3
-@@6:	mov	bx,[cntoff]
+	loop	.@@3
+.@@6:	mov	ebx,[cntoff]
 	mov	eax,[ebx]
 	cmp	eax,[edi-4]
-	jne	@@4
+	jne	.@@4
 	sub	di,4
-@@4:	mov	ax,di
-	sub	ax,[cntoff]
-	shr	ax,2
+.@@4:	mov	eax,edi
+	sub	eax,[cntoff]
+	shr	eax,2
 	mov	[ebx-4],ax
+  push edx
 	call	checkhiddenbx
 	call	[_demomode] ;sets colors etc / hidden faces flipped
-	jmp	@@2
-@@1:	mov	word [edi],0
+  pop edx
+	jmp	.@@2
+.@@1:	mov	word [edi],0
 	CEND
 
 
@@ -642,7 +656,7 @@ _cclipedges: ;(destedges,edges,points)
 	add	bx,4
 	add	bp,4
 	;
-@@1:	push	cx
+.@@1:	push	cx
 	push	si
 	push	di
 	push	bx
@@ -666,35 +680,35 @@ _cclipedges: ;(destedges,edges,points)
 	xor	cx,cx
 	mov	eax,[esi+8] ;Z
 	cmp	eax,[clipz]
-	jge	@@2
+	jge	.@@2
 	or	cx,1
-@@2:	mov	edx,[edi+8] ;Z
+.@@2:	mov	edx,[edi+8] ;Z
 	cmp	edx,[clipz]
-	jge	@@3
+	jge	.@@3
 	or	cx,2
-@@3:	;
+.@@3:	;
 	cmp	cx,0
-	je	@@4
+	je	.@@4
 	cmp	cx,3
-	jne	@@5
+	jne	.@@5
 	or	word [ebx+4],8000h
-	jmp	@@4
-@@5:	cmp	cx,1
-	jne	@@6
+	jmp	.@@4
+.@@5:	cmp	cx,1
+	jne	.@@6
 	;si hidden
 	call	clipsidi
 	mov	[ebx],si
-	jmp	@@4
-@@6:	;di hidden
+	jmp	.@@4
+.@@6:	;di hidden
 	xchg	si,di
 	call	clipsidi
 	mov	[ebx+2],si
-@@4:	pop	bx
+.@@4:	pop	bx
 	add	bx,8
 	pop	di
 	add	di,8
 	pop	si
 	add	si,8
 	pop	cx
-	LOOP_LARGE	@@1
+	LOOP_LARGE	.@@1
 	CEND

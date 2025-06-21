@@ -22,21 +22,21 @@ clip_x2	dw	0
 clip_y2	dw	0
 
 polyroutines:
-	dw	polyret
-	dw	poly1
-	dw	poly2
-	dw	polyf ;poly3
-	dw	polyf ;poly4 ;poly4
-	dw	polyf ;polyn ;poly>4
+	dd	polyret
+	dd	poly1
+	dd	poly2
+	dd	polyf ;poly3
+	dd	polyf ;poly4 ;poly4
+	dd	polyf ;polyn ;poly>4
 
 %IF 0
 tpolyroutines:
-	dw	polyret
-	dw	poly1
-	dw	poly2
-	dw	polyft
-	dw	polyft
-	dw	polyft
+	dd	polyret
+	dd	poly1
+	dd	poly2
+	dd	polyft
+	dd	polyft
+	dd	polyft
 %ENDIF
 
 section .code
@@ -46,35 +46,35 @@ polygroup: ;draw polygon group
 	;	word: sides (0=end of list, &256=texture)
 	;	word: color (|8000=hidden |4000=forceshow)
 	;	word(s): x,y
-@@1:	mov	cx,[edi]
-	add	di,2
+.@@1:	mov	cx,[edi]
+	add	edi,2
 	or	cx,cx
-	jz	@@3
+	jz	.@@3
 	mov	[polysides],cx
 	mov	ax,[edi]
-	add	di,2
+	add	edi,2
 	test	ah,40h
-	jnz	@@6
+	jnz	.@@6
 	test	ah,80h
-	jnz	@@5
-@@6:	mov	[color1],al
-	mov	bx,polyxy
-	sub	bx,di
-	sub	bx,4
-@@2:	mov	eax,[edi]
+	jnz	.@@5
+.@@6:	mov	[color1],al
+	mov	ebx,polyxy
+	sub	ebx,edi
+	sub	ebx,4
+.@@2:	mov	eax,[edi]
 	add	di,4
 	mov	[edi+ebx],eax
-	loop	@@2
+	loop	.@@2
 	push	es
 	push	di
 	call	poly
 	pop	di
 	pop	es
-	jmp	@@1
-@@3:	ret
-@@5:	shl	cx,2
+	jmp	.@@1
+.@@3:	ret
+.@@5:	shl	cx,2
 	add	di,cx
-	jmp	@@1
+	jmp	.@@1
 
 
 poly: ;****
@@ -87,7 +87,7 @@ poly: ;****
 	cmp	ax,2
 	ja	noclip
 	call	clipanypoly ;only lines at the moment, others done by polyrout
-noclip:	mov	si,polyroutines
+noclip:	mov	esi,polyroutines
 ;	test	cs:groupflags,4
 ;	jz	notext
 ;	mov	si,OFFSET tpolyroutines
@@ -155,9 +155,9 @@ cap3:	;polygon, first clip y, then x
 	shl	si,2
 	sub	si,4
 	mov	di,0
-	mov	eax,dword [polyxy+si]
+	mov	eax,dword [polyxy+esi]
 	mov	dword [clip_x1],eax
-	mov	eax,dword [polyxy+di]
+	mov	eax,dword [polyxy+edi]
 	mov	dword [clip_x2],eax
 	call	clipliney
 	;
@@ -172,9 +172,9 @@ cap32:	push	di
 	push	edx
 	mov	si,di
 	sub	si,4
-	mov	eax,dword [polyxy+si]
+	mov	eax,dword [polyxy+esi]
 	mov	dword [clip_x1],eax
-	mov	eax,dword [polyxy+di]
+	mov	eax,dword [polyxy+edi]
 	mov	dword [clip_x2],eax
 	call	clipliney
 	pop	edx
@@ -186,13 +186,13 @@ cap35:	cmp	ax,0
 	mov	eax,dword [clip_x1]
 	cmp	eax,edx
 	je	cap33
-	mov	dword [cpolyxy2+bx],eax
+	mov	dword [cpolyxy2+ebx],eax
 	mov	edx,eax
 	add	bx,4
 cap33:	mov	eax,dword [clip_x2]
 	cmp	eax,edx
 	je	cap34
-	mov	dword [cpolyxy2+bx],eax
+	mov	dword [cpolyxy2+ebx],eax
 	mov	edx,eax
 	add	bx,4
 cap34:	add	di,4
@@ -220,9 +220,9 @@ cap39:
 	shl	si,2
 	sub	si,4
 	mov	di,0
-	mov	eax,dword [cpolyxy2+si]
+	mov	eax,dword [cpolyxy2+esi]
 	mov	dword [clip_x1],eax
-	mov	eax,dword [cpolyxy2+di]
+	mov	eax,dword [cpolyxy2+edi]
 	mov	dword [clip_x2],eax
 	call	cliplinex
 	;
@@ -237,9 +237,9 @@ cbp32:	push	di
 	push	edx
 	mov	si,di
 	sub	si,4
-	mov	eax,dword [cpolyxy2+si]
+	mov	eax,dword [cpolyxy2+esi]
 	mov	dword [clip_x1],eax
-	mov	eax,dword [cpolyxy2+di]
+	mov	eax,dword [cpolyxy2+edi]
 	mov	dword [clip_x2],eax
 	call	cliplinex
 	pop	edx
@@ -251,13 +251,13 @@ cbp35:	cmp	ax,0
 	mov	eax,dword [clip_x1]
 	cmp	eax,edx
 	je	cbp33
-	mov	dword [cpolyxy+bx],eax
+	mov	dword [cpolyxy+ebx],eax
 	mov	edx,eax
 	add	bx,4
 cbp33:	mov	eax,dword [clip_x2]
 	cmp	eax,edx
 	je	cbp34
-	mov	dword [cpolyxy+bx],eax
+	mov	dword [cpolyxy+ebx],eax
 	mov	edx,eax
 	add	bx,4
 cbp34:	add	di,4
@@ -436,15 +436,15 @@ polyf: ;ONLY CONVEX POLYGONS - FAST?
 	mov	ax,cx
 	shl	ax,4 ;*16
 	mov	[finfolen],ax
-	add	ax,finfo
+	add	eax,finfo
 	mov	[finfo1],ax
 	mov	ax,[wmaxy]
 	inc	ax
 	mov	[fwmaxy1],ax
 	mov	edx,077770000h
 	xor	bx,bx
-	mov	si,polyxy
-	mov	di,finfo
+	mov	esi,polyxy
+	mov	edi,finfo
 	mov	[finfo0],di
 pfn1:	mov	eax,dword [esi]
 	cmp	eax,edx
@@ -462,7 +462,7 @@ pfn2:	mov	dword [edi],eax
 	mov	si,bx
 	mov	di,bx
 	mov	bp,[esi+2]
-	mov	bx,borders
+	mov	ebx,borders
 	mov	ax,bp
 	cmp	ax,[wminy]
 	jge	pfn35
@@ -489,7 +489,7 @@ pfn63:	push	cx
 	cmp	di,[finfo0]
 	jae	pfn41
 	add	di,[finfolen]
-pfn41:	mov	bx,fleftaddl
+pfn41:	mov	ebx,fleftaddl
 	call	polyfcalc
 	add	cx,bp
 	mov	[fleftrown],cx
@@ -514,7 +514,7 @@ pfn42:
 	cmp	di,[finfo1]
 	jb	pfn51
 	sub	di,[finfolen]
-pfn51:	mov	bx,frightaddl
+pfn51:	mov	ebx,frightaddl
 	call	polyfcalc
 	add	cx,bp
 	mov	[frightrown],cx
@@ -547,7 +547,7 @@ pfn6:	pop	cx
 	jz	pfn64
 	jmp	pfn63
 pfn64:	mov	word [ebx],-32767
-	mov	si,borders
+	mov	esi,borders
 	LOADDS
 ;	call	newgroup
 	call	VIDHGROUP

@@ -8,72 +8,73 @@ extern _bgpic
 section .data
 	
 
-modes	dw	v320x200x256
-	dw	v320x350x256
-	dw	v320x350x256
-	dw	v320x240x256
-	dw	vtseng640x400x256
+modes:
+  dd	v320x200x256
+	dd	v320x350x256
+	dd	v320x350x256
+	dd	v320x240x256
+	dd	vtseng640x400x256
 
 v320x200x256:
-	dw	init320x200	;init routine
-	dw	switch320x200	;page switcher
-	dw	clear64k		;clear all screens
-	dw	twpset
-	dw	twlineto
-	dw	twhline
-	dw	twhlinegroup
-	dw	twthlinegroup
-	dw	polygroup
-	dw	clearpage
-	dw	fwaitborder
+	dd	init320x200	;init routine
+	dd	switch320x200	;page switcher
+	dd	clear64k		;clear all screens
+	dd	twpset
+	dd	twlineto
+	dd	twhline
+	dd	twhlinegroup
+	dd	twthlinegroup
+	dd	polygroup
+	dd	clearpage
+	dd	fwaitborder
 v320x350x256:
-	dw	init320x350	;init routine
-	dw	switch320x350	;page switcher
-	dw	clear64k		;clear all screens
-	dw	twpset
-	dw	twlineto
-	dw	twhline
-	dw	twhlinegroup
-	dw	twthlinegroup
-	dw	polygroup
-	dw	clearpage
-	dw	fwaitborder
+	dd	init320x350	;init routine
+	dd	switch320x350	;page switcher
+	dd	clear64k		;clear all screens
+	dd	twpset
+	dd	twlineto
+	dd	twhline
+	dd	twhlinegroup
+	dd	twthlinegroup
+	dd	polygroup
+	dd	clearpage
+	dd	fwaitborder
 v320x350x256unr:
-	dw	init320x350unr   ;init routine
-	dw	switch320x350	;page switcher
-	dw	clear64k		;clear all screens
-	dw	twpset
-	dw	twlineto
-	dw	twhline
-	dw	twhlinegroup
-	dw	twthlinegroup
-	dw	polygroup
-	dw	clearpage
-	dw	fwaitborder
+	dd	init320x350unr   ;init routine
+	dd	switch320x350	;page switcher
+	dd	clear64k		;clear all screens
+	dd	twpset
+	dd	twlineto
+	dd	twhline
+	dd	twhlinegroup
+	dd	twthlinegroup
+	dd	polygroup
+	dd	clearpage
+	dd	fwaitborder
 v320x240x256:
-	dw	init320x240	;init routine
-	dw	switch320x240	;page switcher
-	dw	clear64k		;clear all screens
-	dw	twpset
-	dw	twlineto
-	dw	twhline
-	dw	twhlinegroup
-	dw	twthlinegroup
-	dw	polygroup
-	dw	clearpage
-	dw	fwaitborder
+	dd	init320x240	;init routine
+	dd	switch320x240	;page switcher
+	dd	clear64k		;clear all screens
+	dd	twpset
+	dd	twlineto
+	dd	twhline
+	dd	twhlinegroup
+	dd	twthlinegroup
+	dd	polygroup
+	dd	clearpage
+	dd	fwaitborder
 vtseng640x400x256:
-	dw	init640x400	;init routine
-	dw	switch640x400	;page switcher
-	dw	clear640x400	;clear all screens
-	dw	twpset
-	dw	twlineto
-	dw	twhline
-	dw	twhlinegroup
-	dw	twthlinegroup
-	dw	polygroup
-	dw	clearpage
-	dw	fwaitborder
+	dd	init640x400	;init routine
+	dd	switch640x400	;page switcher
+	dd	clear640x400	;clear all screens
+	dd	twpset
+	dd	twlineto
+	dd	twhline
+	dd	twhlinegroup
+	dd	twthlinegroup
+	dd	polygroup
+	dd	clearpage
+	dd	fwaitborder
 
 pagep	dw	0
 wpage	dw	0,1,2
@@ -97,16 +98,16 @@ section .code
 global setvmode
 setvmode:
 	;ax=mode => ds:si
-	mov	bx,ax
+	movzx	ebx,ax
 	shl	bx,1
-	mov	bx,[modes+bx]
+	mov	bx,[modes+ebx]
 	mov	cx,16
-@@1:	mov	ax,[bx]
+.@@1:	mov	ax,[bx]
 	mov	[esi],ax
 	mov	word [esi+2],cs
 	add	si,4
 	add	bx,2
-	loop	@@1
+	loop	.@@1
 	ret
 
 ;video mode structure
@@ -125,7 +126,7 @@ setrows:
 	mov	[rowsadd],dx
 	mov	[truerowsadd],dx
 	xor	ax,ax
-	mov	bx,rows
+	mov	ebx,rows
 ain1:	mov	[ebx],ax
 	add	ax,dx
 	add	bx,2
@@ -162,15 +163,15 @@ swipa2:	mov	ax,0a000h
 	inc	bx
 	cmp	bx,3
 	jb	sws1
-	xor	bx,bx
+	xor	ebx,ebx
 sws1:	mov	[pagep],bx
 	shl	bx,1
 	mov	dx,3d4h
 	mov	al,33h
-	mov	ah,byte [spage+bx]
+	mov	ah,byte [spage+ebx]
 	out	dx,ax ;spage
 	;set wpage
-	mov	al,byte [wpage+bx]
+	mov	al,byte [wpage+ebx]
 	mov	ah,al
 	rol	ah,4
 	or	al,ah
@@ -234,7 +235,7 @@ init320x240:
 	;
 	call	tweak320x200
 	LOADDS
-	mov	si,hseq1
+	mov	esi,hseq1
 	call	sethseq ;to 240 mode
 	mov	cx,240
 	mov	dx,80
@@ -365,9 +366,9 @@ clearpage:
 	mov	ax,0f02h
 	out	dx,ax
 	mov	es,[vram]
-	mov	di,[wminy]
+	movzx	edi, word [wminy]
 	shl	di,1
-	mov	di,[rows+di]
+	mov	di,[rows+edi]
 	mov	ax,[wminx]
 	mov	dx,[wmaxx]
 	sub	dx,ax
@@ -382,12 +383,12 @@ clearpage:
 	push	ax
 	shl	eax,16
 	pop	ax
-@@1:	push	cx
+.@@1:	push	cx
 	push	di
 	mov	cx,dx
 	rep	stosd
 	pop	di
 	pop	cx
 	add	di,[rowsadd]
-	loop	@@1
+	loop	.@@1
 	ret

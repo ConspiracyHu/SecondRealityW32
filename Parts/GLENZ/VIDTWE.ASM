@@ -40,12 +40,12 @@ twpset:
 	;requires: OUT 3C4,2
 	;DS:SI preserved, CX preserved!
 	shl	bx,1
-	mov	di,[rows+bx]
+	mov	di,[rows+ebx]
 	mov	bx,3
 	and	bx,dx
 	sar	dx,2
 	add	di,dx
-	mov	al,[middledot+bx]
+	mov	al,[middledot+ebx]
 	mov	dx,3c5h
 	out	dx,al
 	mov	al,[color1]
@@ -177,9 +177,9 @@ lt4:	;dx,bx outside, swap
 	xchg	bx,[tmplny]
 	xchg	dx,[tmplnx]
 	;check with new bx,dx
-	cmp	dx,wmaxx
+	cmp	dx,[wmaxx]
 	ja	lt6
-	cmp	bx,wmaxy
+	cmp	bx,[wmaxy]
 	ja	lt6
 	jmp	lt5 ;dx,bx is inside
 

@@ -12,7 +12,6 @@ ptaulu	db	1,2,4,8
 
 section .code
 
-global _shim_vram
 extern _shim_vram
 
 global _init_uframe
@@ -44,25 +43,25 @@ _ulosta_frame:
   xor edx, edx
 	;mov	dx, 03c4h		; map mask... 03c4h, 02..
 
-@@looppi:
+.@@looppi:
 	mov al, [ebp+esi]
   inc esi
 	cmp	al, 0
-	jg	@@outtaa
-	je	@@over
-@@skip:
+	jg	.@@outtaa
+	je	.@@over
+.@@skip:
 	cbw
 	sub	di, ax
 
 	mov al, [ebp+esi]
   inc esi
 	cmp	al, 0
-	jl	@@skip
-	je	@@over
+	jl	.@@skip
+	je	.@@over
 
-@@outtaa:
+.@@outtaa:
 	dec	al
-	jz	@@single
+	jz	.@@single
 
 	cbw
 	mov	ebx, edi
@@ -70,9 +69,9 @@ _ulosta_frame:
 	add	bx, ax
 	shr	bx, 2
 	or	bx, bx
-	jz	@@samebyte
+	jz	.@@samebyte
 	cmp	bx, 1
-	je	@@twobytes
+	je	.@@twobytes
 
 	mov	cx, ax
 	mov	ebx, edi
@@ -101,17 +100,17 @@ _ulosta_frame:
 	mov	al, [ebp+esi]
 	mov	ah, al
 	shr	cx, 1
-	jnc	@@l1
+	jnc	.@@l1
 	mov [_shim_vram+edi], al
   inc edi
-@@l1:   jcxz	@@l2
+.@@l1:   jcxz	.@@l2
   add edi, _shim_vram
   add esi, ebp
 	rep	stosw
   sub esi, ebp
   sub edi, _shim_vram 
 
-@@l2:
+.@@l2:
   pop	cx
   pop di
 	add	di, cx
@@ -133,11 +132,11 @@ _ulosta_frame:
   inc esi
 
 	cmp	al, 0
-	jl	@@skip
-	jg	@@outtaa
-	je	@@over
+	jl	.@@skip
+	jg	.@@outtaa
+	je	.@@over
 
-@@twobytes:
+.@@twobytes:
 	mov	ebx, edi
 	and	bx, 3
 	mov	cl, [taulu+ebx]
@@ -162,12 +161,12 @@ _ulosta_frame:
   inc esi
 
 	cmp	al, 0
-	jl	@@skip
-	jg	@@outtaa
-	je	@@over
+	jl	.@@skip
+	jg	.@@outtaa
+	je	.@@over
 
 
-@@samebyte:
+.@@samebyte:
 	mov	ebx, edi
 	and    	bx, 3
 	mov	cl, [taulu+ebx]
@@ -189,12 +188,12 @@ _ulosta_frame:
 	mov al, [ebp+esi]
   inc esi
 	cmp	al, 0
-	jl	@@skip
-	jg	@@outtaa
-	je	@@over
+	jl	.@@skip
+	jg	.@@outtaa
+	je	.@@over
 
 
-@@single:
+.@@single:
 	mov	bx, di
 	and	bx, 3
 	mov	ah, [ptaulu+ebx]
@@ -211,19 +210,19 @@ _ulosta_frame:
 	mov al, [ebp+esi]
   inc esi
 	cmp	al, 0
-	jl	@@skip
-	jg	@@outtaa
-	je	@@over
+	jl	.@@skip
+	jg	.@@outtaa
+	je	.@@over
 
-@@over:
+.@@over:
 	mov	edi, esi
 	;shr	esi, 4
 	mov	eax, ebp
 	add	eax, esi
 	and	edi, 15
-	jz	@@exit
+	jz	.@@exit
 	inc	eax
-@@exit:
+.@@exit:
 	mov	[aseg], eax
 
 	pop ebp
@@ -233,7 +232,7 @@ _ulosta_frame:
 
 ruudulle:
 	dec	al
-	jz	@@single
+	jz	.@@single
 
 	cbw
 	mov	bx, di
@@ -241,9 +240,9 @@ ruudulle:
 	add	bx, ax
 	shr	bx, 2
 	or	bx, bx
-	jz	@@samebyte
+	jz	.@@samebyte
 	cmp	bx, 1
-	je	@@twobytes
+	je	.@@twobytes
 
 	mov	cx, ax
 	mov	bx, di
@@ -272,15 +271,15 @@ ruudulle:
 	mov	al, [esi]
 	mov	ah, al
 	shr	cx, 1
-	jnc	@@l1
+	jnc	.@@l1
 	mov [_shim_vram+edi], al
   inc edi
-@@l1:   jcxz	@@l2
+.@@l1:   jcxz	.@@l2
   add edi, _shim_vram
 	rep	stosw
   sub edi, _shim_vram
 
-@@l2:
+.@@l2:
   pop	cx
   pop	di
 
@@ -299,14 +298,14 @@ ruudulle:
 	inc	di
 	ret
 
-@@twobytes:
+.@@twobytes:
 	mov	ebx, edi
 	and	bx, 3
 	mov	cl, [taulu+ebx]
 	add	di, ax
 	mov	bx, di
 	and	bx, 3
-	mov	ch, [ntaulu+bx]
+	mov	ch, [ntaulu+ebx]
 	mov	ah, cl
 	mov	al, 2
 	;out	dx, ax
@@ -321,7 +320,7 @@ ruudulle:
 	inc	si
 	ret
 
-@@samebyte:
+.@@samebyte:
 	mov	ebx, edi
 	and    	bx, 3
 	mov	cl, [taulu+ebx]
@@ -340,7 +339,7 @@ ruudulle:
 	inc	di
 	ret
 
-@@single:
+.@@single:
 	mov	ebx, edi
 	and	bx, 3
 	mov	ah, [ptaulu+ebx]

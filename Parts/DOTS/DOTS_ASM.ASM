@@ -40,7 +40,6 @@ _rotcos dw 0
 global _bgpic
 _bgpic times 64000 db 0
 
-global _shim_vram
 extern _shim_vram
 
 global _depthtable1,_depthtable2,_depthtable3,_depthtable4
