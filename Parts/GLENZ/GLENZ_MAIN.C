@@ -14,8 +14,9 @@ extern void zoomer1(char *pic);
 extern void zoomer2(char *pic);
 
 void cglenzinit();
-void cglenzpolylist( int * polylist );
+void cglenzpolylist( short * polylist );
 void cglenzdone();
+void init320x200();
 
 char bgpic[65535];
 
@@ -40,7 +41,7 @@ extern int ccliplist(long *);
 extern int cdrawpolylist(int *);
 extern int cmatrix_yxz(short, short, short, short *);
 extern int cpolylist(int *polylist,int *polys,int *edges,long *points3);
-extern int ceasypolylist(int *polylist,unsigned short *polys,long *points3);
+extern int ceasypolylist(short *polylist,unsigned short *polys,long *points3);
 
 extern int demomode[];
 
@@ -247,7 +248,7 @@ unsigned short epolysb[]={
 3,0x4002,6,5,9,
 
 0};
-int polylist[256];
+short polylist[256];
 short matrix[9];
 
 extern  char    backpal[16*3];
@@ -314,6 +315,7 @@ void glenz_main()
     }
     */
     //testasm();
+    init320x200();
 
     for(a=0;a<100;a++)
     {

@@ -25,7 +25,7 @@ void shim_outp( int reg, unsigned int value )
     break;
   case 0x3c8:
     {
-      paletteIndex = value;
+      paletteIndex = value & 0xFF;
       paletteComponent = 0;
     }
     break;
@@ -45,6 +45,29 @@ void shim_outp( int reg, unsigned int value )
       }
     }
     break;
+  }
+}
+
+void __declspec( naked ) shim_outp_naked()
+{
+  __asm
+  {
+    push ebp
+    mov ebp, esp
+    sub esp, 4
+    pushad
+
+    movzx ebx,ax
+    push ebx
+    movzx ebx,dx
+    push ebx
+    call shim_outp
+    add esp, 8
+
+    popad
+    mov esp, ebp
+    pop ebp
+    retn
   }
 }
 

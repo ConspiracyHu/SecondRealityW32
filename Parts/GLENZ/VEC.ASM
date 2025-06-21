@@ -24,6 +24,8 @@ rolused	times	256 db 0
 
 clipz	dd	2200
 
+extern _shim_outp_naked
+
 ;ALIGN 2
 global _demomode
 _demomode dd	demo_glz
@@ -268,7 +270,7 @@ cliplist:
 	ret
 
 adddot:
-	cmp	ax,bp
+	cmp	ax,bp ; ax = index, bp = last index
 	je	.@@3
 	mov	bp,ax
 	;add dot
@@ -279,7 +281,7 @@ adddot:
 	add	ebx,eax
 	shl	ebx,2
 	add	ebx,[pointsoff]
-	mov	eax,[edx+ebx] ;edx=gs
+	mov	eax,[ebx] ;gs
 	stosd
 	pop	ebx
 .@@3:
@@ -384,17 +386,23 @@ _cpolylist: ;polylist,polys,edges,points3
 	cmp	al,64
 	jb	%%l1
 	mov	al,63
-%%l1:	out	dx,al
+%%l1:	;out	dx,al
+	call _shim_outp_naked
+
 	mov	al,bl
 	cmp	al,64
 	jb	%%l2
 	mov	al,63
-%%l2:	out	dx,al
+%%l2:	;out	dx,al
+	call _shim_outp_naked
+
 	mov	al,bh
 	cmp	al,64
 	jb	%%l3
 	mov	al,63
-%%l3:	out	dx,al
+%%l3:	;out	dx,al
+	call _shim_outp_naked
+
 %endmacro
 
 demo_norm:
@@ -403,7 +411,7 @@ demo_norm:
 
 demo_glz2:
 	jc	.@@1
-	mov	al,[ebx-2]
+	mov	al,[ebx-2] ;es
 	shr	al,1
 	and	al,1
 	mov	[ebx-2],al
@@ -413,16 +421,17 @@ demo_glz2:
 demo_glz:
 	jnc	.@@7 ;visible
 	mov	ax,[ebx-2]
-	push	bx
-	push	ax
+	push	ebx
+	push	eax
+  xor ebx,ebx
 	mov	bl,al
 	xor	bh,bh
 	mov	al,[rolcol+ebx]
 	mov	byte [rolcol+ebx],0
 	mov	bl,al
 	mov	byte [rolused+ebx],0
-	pop	ax
-	pop	bx
+	pop	eax
+	pop	ebx
 	shr	al,1
 	and	al,1
 	shl	al,2
@@ -466,9 +475,10 @@ demo_glz:
 	shl	al,3
 	mov	[ebx-2],al
 	
-;	mov	dx,3c8h
-;	out	dx,al
-;	inc	dx
+	mov	dx,3c8h
+	call _shim_outp_naked
+	inc	dx
+  
 
 	test	bp,2
 	jz	.@@b1	
@@ -495,7 +505,7 @@ demo_glz:
 	mov	al,[_backpal+zzz*3+2]
 	shr	al,2
 	add	bh,al
-	;setpalxxx
+	setpalxxx
 	mov	bx,di
 	mov	cx,si
 	%assign zzz zzz+1
@@ -513,19 +523,31 @@ _ceasypolylist: ;polylist,polys,points3
   ;   1 word (vertex count)
   ;   1 word (face data)
   ;   N word (vertex indices)
+  ;   ends when vertexcount is 0
   ; edi = "polylist" output
+  ;   1 word (vertex count)
+  ;   1 word (visibility)
+  ;   1 word (X1)
+  ;   1 word (Y1)
+  ;   1 word (X2)
+  ;   1 word (Y2)
+  ;   1 word (X3)
+  ;   1 word (Y3)
+  ;   ends when vertexcount is 0
   ; edx = "points3" input
-  ;   1 word (X)
-  ;   1 word (Y)
-  ;   1 word ("visiblity flags")
+  ;   1 dword (pointcount)
+  ;     1 word (X)
+  ;     1 word (Y)
+  ;     1 dword ("visiblity flags")
+  ;     1 dword (Z)
 
 	mov	edi,[esp+8]
 	;mov	es,word [ebp+8]
 	mov	esi,[esp+12]
 	;mov	ds,word [ebp+12]
-	add	eax,4
-	mov	[pointsoff],eax
 	mov	edx,[esp+16]
+	add	edx,4
+	mov	[pointsoff],edx
 	mov	bp,-1
 .@@2:	lodsw
 	cmp	ax,0
@@ -550,7 +572,7 @@ _ceasypolylist: ;polylist,polys,points3
 	shr	eax,2
 	mov	[ebx-4],ax
   push edx
-	call	checkhiddenbx
+  call	checkhiddenbx
 	call	[_demomode] ;sets colors etc / hidden faces flipped
   pop edx
 	jmp	.@@2
