@@ -1,3 +1,4 @@
+%include "asm.inc"
 
 ;!!!!!! TRANSPARENT NEW COPPER !!!!!!
 
@@ -5,13 +6,6 @@ section .data
 
 global __ndebug1
 __ndebug1 dd 0
-
-tmp_firstvx dw	0
-tmp_color dw	0
-
-yrow	dw	0
-yrowad	dw	0
-siend	dw	0
 
 %define NROWS 256
 %define MAXLINES 512
@@ -32,6 +26,13 @@ ne	times MAXLINES * 16 db 0
 ;ALIGN 4
 nl	times 256 db 0
 
+tmp_firstvx dw	0
+tmp_color dw	0
+
+yrow	dd	0
+yrowad	dd	0
+siend	dd	0
+
 section .code
 
 extern newdata1
@@ -39,11 +40,11 @@ extern _bgpic
 
 ng_init:
 	mov	dword [nec],ne
-	mov	ax,[ndp0]
+	mov	eax,[ndp0]
 	xor	ax,8000h
-	mov	[ndp0],ax
-	mov	[ndp],ax
-	mov	ecx,NROWS
+	mov	[ndp0],eax
+	mov	[ndp],eax
+	mov	ecx,NROWS/2
 	;mov	ax,cs
 	;mov	es,ax
 	xor	eax,eax
@@ -51,12 +52,12 @@ ng_init:
 	rep	stosd
 	mov	eax,newdata1
 	cmp	word [eax],0
-	jne	.@@j1
+	jne	.@@1
 	mov	word [eax],-1
-.@@j1:	cmp	word [eax+8000h],0
-	jne	.@@j2
+.@@1:	cmp	word [eax+8000h],0
+	jne	.@@2
 	mov	word [eax+8000h],-1
-.@@j2:	ret
+.@@2:	ret
 
 ;ALIGN 2
 
@@ -65,185 +66,205 @@ ng_init:
 	jcxz	%%l2
 	push	ax
 %%l1:	mov	ah,al
-	or	ah,[edi]
-	mov	[edi],ah
+	or	ah,[_bgpic+edi] ;fs
+	mov	[_shim_vram+edi],ah ;es
 	inc	di
 	loop	%%l1
 	pop	ax
 %%l2:
 %endmacro 
 
+extern _shim_vram
+
 ng_pass3:
-	mov	esi, newdata1
+  ; ds = newdata
+  ; es = VRAM
+  ; fs = bgpic
+
+  ;mov edi, _shim_vram
+
 	;mov	ax,0a000h
 	;mov	es,ax
   ;TODO
 	;mov	ax,_bgpic
 	;mov	fs,ax
-	xor	di,di
-	mov	si,[ndp0]
+	xor	edi,edi
+	movzx	esi,word [ndp0]
 	mov	bx,si
 	xor	bx,8000h
 	xor	ax,ax
 	;si=new     bx=last
 	;cx=newpos  dx=lastpos
 	;al=newcol  ah=lastcol
-	mov	edx,[ebx]
+	mov	edx,[newdata1+ebx] ;ds
 	add	bx,4
-	mov	ecx,[esi]
+	mov	ecx,[newdata1+esi] ;ds
 	add	si,4
 	;
-.@@j21:	cmp	dx,cx
-	jb	.@@j23
-	je	.@@j22
+.@@21:	cmp	dx,cx
+	jb	.@@23
+	je	.@@22
 	;cx<dx
 	cmp	al,ah
-	je	.@@j31
-	push	cx
+	je	.@@31
+	push	ecx
 	sub	cx,di
 	;cmp	cx,4
-	;jae	.@@jr1
+	;jae	.@@r1
 	;rep	stosb
 	fillmacro
 	pop	cx
-.@@j31:	mov	di,cx
+.@@31:	mov	di,cx
 	shr	ecx,16
 	xor	al,cl
-	mov	ecx,[esi]
+	mov	ecx,[newdata1+esi] ;ds
 	add	si,4
-	jmp	.@@j21
+	jmp	.@@21
 	
-.@@jr1:	push	ax
+.@@r1:	push	eax
 	mov	ah,al
 	test	di,1
-	jz	.@@jr11
+	jz	.@@r11
 	dec	cx
-	stosb
-.@@jr11:	shr	cx,1
+  mov [_shim_vram+edi], al
+  inc edi
+	;stosb
+.@@r11:	shr	cx,1
+  add edi,_shim_vram
+  add esi,newdata1
 	rep	stosw
 	adc	cx,cx
 	rep	stosb
-	pop	ax
-	pop	cx
-	jmp	.@@j31
+  sub esi,newdata1
+  sub edi,_shim_vram
+	pop	eax
+	pop	ecx
+	jmp	.@@31
 	
-.@@j22:	;cx=dx
+.@@22:	;cx=dx
 	cmp	cx,-1
-	je	.@@j20
-.@@j23:	;dx<cx
+	je	.@@20
+.@@23:	;dx<cx
 	cmp	al,ah
-	je	.@@j32
-	push	cx
+	je	.@@32
+	push	ecx
 	mov	cx,dx
 	sub	cx,di
 	;cmp	cx,4
-	;jae	.@@jr2
+	;jae	.@@r2
 	;rep	stosb
 	fillmacro
-	pop	cx
-.@@j32:	mov	di,dx
+	pop	ecx
+.@@32:	mov	di,dx
 	shr	edx,16
 	xor	ah,dl
-	mov	edx,[ebx]
+	mov	edx,[newdata1+ebx] ;ds
 	add	bx,4
-	jmp	.@@j21
+	jmp	.@@21
 	
-.@@jr2:	push	ax
+.@@r2:	push	ax
 	mov	ah,al
 	test	di,1
-	jz	.@@jr21
+	jz	.@@r21
 	dec	cx
 	stosb
-.@@jr21:	shr	cx,1
+.@@r21:	shr	cx,1
+  add edi,_shim_vram
+  add esi,newdata1
 	rep	stosw
 	adc	cx,cx
 	rep	stosb
-	pop	ax
-	pop	cx
-	jmp	.@@j32
-.@@j20:	ret
+  sub esi,newdata1
+  sub edi,_shim_vram
+	pop	eax
+	pop	ecx
+	jmp	.@@32
+.@@20:	ret
 
-  ; TODO: VRAM
 	;mov	ax,0a000h
 	;mov	es,ax
-	mov	esi,newdata1
+	;mov	esi,newdata1
 	xor	di,di
 	xor	ax,ax
-	mov	dx,[ndp]
-.@@j1:	mov	cx,[esi]
+	movzx	edx, word [ndp]
+.@@1:	mov	cx,[esi]
 	sub	cx,di
+  add edi,_shim_vram
+  add esi,newdata1
 	rep	stosb
+  sub esi,newdata1
+  sub edi,_shim_vram
 	xor	al,[esi+2]
 	add	si,4
 	cmp	si,dx
-	jb	.@@j1
+	jb	.@@1
 	ret
 
 ng_pass2:
 	mov	ebp,nep
 	mov	edi,nl
-	mov	cx,200 ;NROWS
+	mov	ecx,200 ;NROWS
 	mov	dword [yrow],0
 	mov	dword [yrowad],0
-.@@j1:	push	cx
+.@@1:	push	ecx
 	;di=pointer to this row list end
 	;bp=pointer to nep
 	
 	;add new items this row
 	mov	bx,[ebp]
-	jmp	.@@j3
-.@@j2:	mov	[edi],bx
+	jmp	.@@3
+.@@2:	mov	[edi],bx
 	add	di,2
 	mov	bx,[ebx+NE_NEXT]
-.@@j3:	cmp	bx,0
-	jne	.@@j2
+.@@3:	cmp	bx,0
+	jne	.@@2
 
 	;sort this row (insertion sort)
-	push	bp
-	push	di
-	mov	bp,di
+	push	ebp
+	push	edi
+	mov	ebp,edi
 	mov	esi,nl+2
-	jmp	.@@j4
-.@@j5:	;for(k=1;k<listc;k++) {  // k=SI
+	jmp	.@@4
+.@@5:	;for(k=1;k<listc;k++) {  // k=SI
 	mov	bx,[esi] ;bx=list[k]
 	mov	dx,bx ;dx=i
 	mov	eax,[ebx+NE_X] ;eax=x
 	mov	di,si
 	sub	di,2 ;di=j
-	jmp	.@@j6
+	jmp	.@@6
 	;;;for(j=k-1;j>=0 && x<e[list[j]].x;j--) {
-.@@j9:	mov	[edi+2],bx	;bx=cs:di
+.@@9:	mov	[edi+2],bx	;bx=cs:di
 	sub	di,2
-.@@j6:	cmp	edi,nl
-	jge	.@@j8
-	jmp	.@@j7
-.@@j8:	mov	bx,[edi]
+.@@6:	cmp	edi,nl
+	jge	.@@8
+	jmp	.@@7
+.@@8:	mov	bx,[edi]
 	cmp	eax,[ebx+NE_X]
-	jl	.@@j9
-.@@j7:	;;;}
+	jl	.@@9
+.@@7:	;;;}
 	mov	[edi+2],dx
 	add	si,2
-.@@j4:	cmp	si,bp
-	jb	.@@j5
+.@@4:	cmp	si,bp
+	jb	.@@5
 	;}
-	pop	di
+	pop	edi
 	;bp=nl end
 	
 	;process list & kill finished lines
 	
-	mov	[siend],bp
+	mov	[siend],ebp
   ;TODO!
 	;mov	ax,newdata1
 	;mov	fs,ax
-	mov	bp,[ndp]
-	mov	dx,[yrow]
-	mov	cx,8000h
+	mov	ebp,[ndp]
+	mov	edx,[yrow]
+	mov	ecx,8000h
 	mov	esi,nl
 	mov	edi,esi
-	jmp	.@@j10
-.@@j11:	mov	bx,[esi]
+	jmp	.@@10
+.@@11:	movzx	ebx, word [esi]
 	cmp	dx,[ebx+NE_Y2]
-	jge	.@@j12
+	jge	.@@12
 	mov	[edi],bx
 	add	di,2
 	mov	eax,[ebx+NE_X]
@@ -255,44 +276,44 @@ ng_pass2:
 	shr	eax,16
 	;clip X
 	cmp	ax,319
-	jle	.@@j15
+	jle	.@@15
 	mov	ax,319
-.@@j15:	cmp	ax,1
-	jge	.@@j16
+.@@15:	cmp	ax,1
+	jge	.@@16
 	mov	ax,1
-.@@j16:	;
+.@@16:	;
 	cmp	cx,ax
-	jne	.@@j14
+	jne	.@@14
 	;same x pos
 	mov	ax,[ebx+NE_COLOR]
-	xor	[ebp-2],ax
-	jmp	.@@j12
-.@@j14:	;new x pos
+	xor	[newdata1+ebp-2],ax ;fs
+	jmp	.@@12
+.@@14:	;new x pos
 	add	ax,[yrowad]
-	mov	[ebp+0],ax
+	mov	[newdata1+ebp+0],ax ;fs
 	mov	ax,[ebx+NE_COLOR]
-	mov	[ebp+2],ax
-	add	bp,4
+	mov	[newdata1+ebp+2],ax ;fs
+	add	ebp,4
 	mov	cx,ax
-.@@j12:	add	si,2
-.@@j10:	cmp	si,[siend]
-	jb	.@@j11
-	mov	[ndp],bp
+.@@12:	add	esi,2
+.@@10:	cmp	esi,[siend]
+	jb	.@@11
+	mov	[ndp],ebp
 	
-	pop	bp
-	pop	cx
+	pop	ebp
+	pop	ecx
 	inc	dword [yrow]
 	add	dword [yrowad],320
 	add	bp,2
-	LOOP_LARGE	.@@j1
+	LOOP_LARGE	.@@1
 	mov	ebx,[ndp]
-	mov	word [ebx+0],63999
-	mov	word [ebx+2],0
+	mov	word [newdata1+ebx+0],63999 ;fs
+	mov	word [newdata1+ebx+2],0
 	add	ebx,4
-	mov	word [ebx+0],-1
-	mov	word [ebx+2],0
+	mov	word [newdata1+ebx+0],-1
+	mov	word [newdata1+ebx+2],0
 	add	ebx,4
-	mov	[ndp],bx
+	mov	[ndp],ebx
 	ret
 
 global __newgroup
@@ -301,49 +322,49 @@ __newgroup:
 	;sides,color,x,y,x,y,x,y,...
 	;sides=0=end
 	cmp	ax,0
-	jne	.@@jng1
+	jne	.@@ng1
 	call	ng_init
 	ret
-.@@jng1:	cmp	ax,1
-	je	.@@jng2
+.@@ng1:	cmp	ax,1
+	je	.@@ng2
 	setborder 2
 	call	ng_pass2
 	setborder 3
 	call	ng_pass3
 	ret
-.@@jng2:	setborder 1
+.@@ng2:	setborder 1
 
 	;add polygons to list
 	mov	bp,[nec]
-.@@j2:	mov	cx,[edi] ;sides
+.@@2:	mov	cx,[edi] ;sides
 	cmp	cx,0
-	je	.@@j1
+	je	.@@1
 	mov	ax,[edi+2] ;color
 	mov	[tmp_color],ax
 	mov	si,di
 	add	di,4
 	mov	[tmp_firstvx],di
-.@@j3:	add	si,4
+.@@3:	add	si,4
 	add	di,4
 	cmp	cx,1
-	jne	.@@j4
+	jne	.@@4
 	mov	di,[tmp_firstvx]
-.@@j4:	push	cx
+.@@4:	push	cx
 	;dx=color, si->start, di->end
 	mov	ax,[tmp_color]
 	mov	[ebp+NE_COLOR],ax
 	mov	bx,[esi+2] ;y1
 	mov	cx,[edi+2] ;y2
 	cmp	bx,cx 
-	jg	.@@ji1	;y1>y2
+	jg	.@@i1	;y1>y2
 	mov	ax,[esi+0] ;x1
 	mov	dx,[edi+0] ;x2
-	jmp	.@@ji0
-.@@ji1:	xchg	bx,cx
+	jmp	.@@i0
+.@@i1:	xchg	bx,cx
 	mov	ax,[edi+0] ;x1
 	mov	dx,[esi+0] ;x2	
-.@@ji0:	;ax,bx=xy1  dx,cx=xy2
-.@@ji9:	mov	[ebp+NE_Y1],bx
+.@@i0:	;ax,bx=xy1  dx,cx=xy2
+.@@i9:	mov	[ebp+NE_Y1],bx
 	mov	[ebp+NE_Y2],cx
 	mov	word [ebp+NE_X],0
 	mov	[ebp+NE_X+2],ax
@@ -354,68 +375,68 @@ __newgroup:
 	sub	cx,bx
 	;cx=y2-y1,edx:eax=(x2-x1)<<16
 	cmp	cx,0
-	je	.@@jn1 ;skip horizontal lines
+	je	.@@n1 ;skip horizontal lines
 	movzx	ecx,cx
 	idiv	ecx
 	mov	[ebp+NE_DX],eax
 	;!!!if y1<0, clip
 	cmp	bx,0
-	jge	.@@jnc
+	jge	.@@nc
 	mov	dx,[ebp+NE_Y2]
 	cmp	dx,0
-	jle	.@@jn1
+	jle	.@@n1
 	neg	bx
 	movzx	ebx,bx
 	imul	ebx
 	add	[ebp+NE_X],eax
 	xor	bx,bx
 	mov	[ebp+NE_Y1],bx
-.@@jnc:	;!!!
+.@@nc:	;!!!
 	shl	bx,1
 	mov	ax,[nep+ebx]
 	or	ax,ax
-	jnz	.@@jj1
+	jnz	.@@j1
 	;first on this row
 	mov	[nep+ebx],bp
 	mov	word [ebp+NE_NEXT],0
-	jmp	.@@jj0	
-.@@jj1:	;add to this row
+	jmp	.@@j0	
+.@@j1:	;add to this row
 	;scan if already exists
 	push	ax
 	push	si
 	mov	si,ax
-	jmp	.@@jh11
-.@@jh1:	mov	si,[esi+NE_NEXT]
-.@@jh11:	mov	ax,[ebp+NE_Y2]
+	jmp	.@@h11
+.@@h1:	mov	si,[esi+NE_NEXT]
+.@@h11:	mov	ax,[ebp+NE_Y2]
 	cmp	ax,[esi+NE_Y2]
-	jne	.@@jh2
+	jne	.@@h2
 	mov	eax,[ebp+NE_X]
 	cmp	eax,[esi+NE_X]
-	jne	.@@jh2
+	jne	.@@h2
 	mov	eax,[ebp+NE_DX]
 	cmp	eax,[esi+NE_DX]
-	jne	.@@jh2
+	jne	.@@h2
 	;duplicate line SI
 	mov	al,[ebp+NE_COLOR]
 	xor	[esi+NE_COLOR],al
 	pop	si
 	pop	ax
-	jmp	.@@jn1
-.@@jh2:	cmp	si,0
-	jne	.@@jh1 ;end of list
-.@@jh3:	pop	si
+	jmp	.@@n1
+.@@h2:	cmp	si,0
+	jne	.@@h1 ;end of list
+.@@h3:	pop	si
 	pop	ax
 	mov	[nep+ebx],bp
 	mov	word [ebp+NE_NEXT],ax
-.@@jj0:	add	bp,16
-.@@jn1:	;next
+.@@j0:	add	bp,16
+.@@n1:	;next
 	pop	cx
-	LOOP_LARGE	.@@j3
+	LOOP_LARGE	.@@3
 	add	si,4
 	mov	di,si
-	jmp	.@@j2
+	jmp	.@@2
 
-.@@j1:	mov	[nec],ebp
+.@@1:	mov	[nec],ebp
 	sub	ebp,ne
 	shr	ebp,4
 	mov	[__ndebug1],ebp

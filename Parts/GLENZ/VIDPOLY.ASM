@@ -1014,4 +1014,4 @@ pftc2:	neg	ax
 
 %ENDIF
 
-%include "new.asm"
+;%include "new.asm"
