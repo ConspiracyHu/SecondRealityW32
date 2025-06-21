@@ -185,24 +185,24 @@ ng_pass3:
 ;	jmp	.@@32
 .@@20:	ret
 
-	;mov	ax,0a000h
-	;mov	es,ax
-	;mov	esi,newdata1
-	xor	di,di
-	xor	ax,ax
-	movzx	edx, word [ndp]
-.@@1:	mov	cx,[esi]
-	sub	cx,di
-  add edi,_shim_vram
-  add esi,newdata1
-	rep	stosb
-  sub esi,newdata1
-  sub edi,_shim_vram
-	xor	al,[esi+2]
-	add	si,4
-	cmp	si,dx
-	jb	.@@1
-	ret
+;	;mov	ax,0a000h
+;	;mov	es,ax
+;	;mov	esi,newdata1
+;	xor	di,di
+;	xor	ax,ax
+;	movzx	edx, word [ndp]
+;.@@1:	mov	cx,[esi]
+;	sub	cx,di
+;  add edi,_shim_vram
+;  add esi,newdata1
+;	rep	stosb
+;  sub esi,newdata1
+;  sub edi,_shim_vram
+;	xor	al,[esi+2]
+;	add	si,4
+;	cmp	si,dx
+;	jb	.@@1
+;	ret
 
 ng_pass2:
 	mov	ebp,nep

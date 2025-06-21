@@ -230,126 +230,126 @@ _ulosta_frame:
 	ret
 
 
-ruudulle:
-	dec	al
-	jz	.@@single
-
-	cbw
-	mov	bx, di
-	and	bx, 3
-	add	bx, ax
-	shr	bx, 2
-	or	bx, bx
-	jz	.@@samebyte
-	cmp	bx, 1
-	je	.@@twobytes
-
-	mov	cx, ax
-	mov	bx, di
-	and	bx, 3
-	mov	ah, [taulu+ebx]
-	mov	al, 2
-	;out	dx, ax
-	mov	al, [ebp+esi]
-	mov	bx, di
-	shr	bx, 2
-	mov	[_shim_vram+ebx], al
-
-	push di
-  push cx
-
-	mov	ax, di
-	add	cx, ax
-	shr	cx, 2
-	sub	cx, bx
-	dec	cx
-	shr	di, 2
-	inc	di
-
-	mov	ax, 0f02h
-	;out	dx, ax
-	mov	al, [esi]
-	mov	ah, al
-	shr	cx, 1
-	jnc	.@@l1
-	mov [_shim_vram+edi], al
-  inc edi
-.@@l1:   jcxz	.@@l2
-  add edi, _shim_vram
-	rep	stosw
-  sub edi, _shim_vram
-
-.@@l2:
-  pop	cx
-  pop	di
-
-	add	di, cx
-	mov	bx, di
-	and	bx, 3
-	mov	ah, [ntaulu+ebx]
-	mov	al, 2
-	;out	dx, ax
-	mov al, [ebp+esi]
-  inc esi
-	mov	bx, di
-	shr	bx, 2
-	mov	[es:bx], al
-
-	inc	di
-	ret
-
-.@@twobytes:
-	mov	ebx, edi
-	and	bx, 3
-	mov	cl, [taulu+ebx]
-	add	di, ax
-	mov	bx, di
-	and	bx, 3
-	mov	ch, [ntaulu+ebx]
-	mov	ah, cl
-	mov	al, 2
-	;out	dx, ax
-	mov	cl, [esi]
-	mov	bx, di
-	shr	bx, 2
-	mov	[_shim_vram+ebx-1], cl
-	mov	ah, ch
-	;out	dx, ax
-	mov	[_shim_vram+ebx], cl
-	inc	di
-	inc	si
-	ret
-
-.@@samebyte:
-	mov	ebx, edi
-	and    	bx, 3
-	mov	cl, [taulu+ebx]
-	add	di, ax
-	mov	bx, di
-	and	bx, 3
-	and	cl, [ntaulu+ebx]
-	mov	ah, cl
-	mov	al, 02h
-	;out	dx, ax
-	mov al, [ebp+esi]
-  inc esi
-	mov	bx, di
-	shr	bx, 2
-	mov	[_shim_vram+ebx], al
-	inc	di
-	ret
-
-.@@single:
-	mov	ebx, edi
-	and	bx, 3
-	mov	ah, [ptaulu+ebx]
-	mov	al, 2
-	;out	dx, ax
-	mov al, [ebp+esi]
-  inc esi
-	mov	bx, di
-	shr	bx, 2
-	mov	[_shim_vram+ebx], al
-	inc	di
-
-	ret
+;ruudulle:
+;	dec	al
+;	jz	.@@single
+;
+;	cbw
+;	mov	bx, di
+;	and	bx, 3
+;	add	bx, ax
+;	shr	bx, 2
+;	or	bx, bx
+;	jz	.@@samebyte
+;	cmp	bx, 1
+;	je	.@@twobytes
+;
+;	mov	cx, ax
+;	mov	bx, di
+;	and	bx, 3
+;	mov	ah, [taulu+ebx]
+;	mov	al, 2
+;	;out	dx, ax
+;	mov	al, [ebp+esi]
+;	mov	bx, di
+;	shr	bx, 2
+;	mov	[_shim_vram+ebx], al
+;
+;	push di
+;  push cx
+;
+;	mov	ax, di
+;	add	cx, ax
+;	shr	cx, 2
+;	sub	cx, bx
+;	dec	cx
+;	shr	di, 2
+;	inc	di
+;
+;	mov	ax, 0f02h
+;	;out	dx, ax
+;	mov	al, [esi]
+;	mov	ah, al
+;	shr	cx, 1
+;	jnc	.@@l1
+;	mov [_shim_vram+edi], al
+;  inc edi
+;.@@l1:   jcxz	.@@l2
+;  add edi, _shim_vram
+;	rep	stosw
+;  sub edi, _shim_vram
+;
+;.@@l2:
+;  pop	cx
+;  pop	di
+;
+;	add	di, cx
+;	mov	bx, di
+;	and	bx, 3
+;	mov	ah, [ntaulu+ebx]
+;	mov	al, 2
+;	;out	dx, ax
+;	mov al, [ebp+esi]
+;  inc esi
+;	mov	bx, di
+;	shr	bx, 2
+;	mov	[es:bx], al
+;
+;	inc	di
+;	ret
+;
+;.@@twobytes:
+;	mov	ebx, edi
+;	and	bx, 3
+;	mov	cl, [taulu+ebx]
+;	add	di, ax
+;	mov	bx, di
+;	and	bx, 3
+;	mov	ch, [ntaulu+ebx]
+;	mov	ah, cl
+;	mov	al, 2
+;	;out	dx, ax
+;	mov	cl, [esi]
+;	mov	bx, di
+;	shr	bx, 2
+;	mov	[_shim_vram+ebx-1], cl
+;	mov	ah, ch
+;	;out	dx, ax
+;	mov	[_shim_vram+ebx], cl
+;	inc	di
+;	inc	si
+;	ret
+;
+;.@@samebyte:
+;	mov	ebx, edi
+;	and    	bx, 3
+;	mov	cl, [taulu+ebx]
+;	add	di, ax
+;	mov	bx, di
+;	and	bx, 3
+;	and	cl, [ntaulu+ebx]
+;	mov	ah, cl
+;	mov	al, 02h
+;	;out	dx, ax
+;	mov al, [ebp+esi]
+;  inc esi
+;	mov	bx, di
+;	shr	bx, 2
+;	mov	[_shim_vram+ebx], al
+;	inc	di
+;	ret
+;
+;.@@single:
+;	mov	ebx, edi
+;	and	bx, 3
+;	mov	ah, [ptaulu+ebx]
+;	mov	al, 2
+;	;out	dx, ax
+;	mov al, [ebp+esi]
+;  inc esi
+;	mov	bx, di
+;	shr	bx, 2
+;	mov	[_shim_vram+ebx], al
+;	inc	di
+;
+;	ret
