@@ -527,12 +527,8 @@ _ceasypolylist: ;polylist,polys,points3
   ; edi = "polylist" output
   ;   1 word (vertex count)
   ;   1 word (visibility)
-  ;   1 word (X1)
-  ;   1 word (Y1)
-  ;   1 word (X2)
-  ;   1 word (Y2)
-  ;   1 word (X3)
-  ;   1 word (Y3)
+  ;     1 word (X)
+  ;     1 word (Y)
   ;   ends when vertexcount is 0
   ; edx = "points3" input
   ;   1 dword (pointcount)
@@ -602,7 +598,7 @@ global _cglenzpolylist
 _cglenzpolylist:
 	CBEG
 	LOADDS
-	movpar	esi,0
+	movpar	edi,0
 	mov	ax,1
 	call	__newgroup
 	CEND
