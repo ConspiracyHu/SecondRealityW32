@@ -152,7 +152,7 @@
     <ClCompile Include="Parts\ALKU\ALKU_MAIN.C" />
     <ClCompile Include="Parts\BEG\BEG.C" />
     <ClCompile Include="Parts\COMAN\COMAN_MAIN.C" />
-    <ClCompile Include="Parts\CREDITS\MAIN.C" />
+    <ClCompile Include="Parts\CREDITS\CREDITS_MAIN.C" />
     <ClCompile Include="Parts\DIS\dis.c" />
     <ClCompile Include="Parts\DOTS\DOTS_MAIN.C" />
     <ClCompile Include="Parts\ENDSCRL\ENDSCRL_MAIN.C" />
@@ -192,7 +192,7 @@
     <YASM Include="Parts\COMAN\COMAN_ASM.ASM" />
     <YASM Include="Parts\COMAN\COMAN_DATA.ASM" />
     <YASM Include="Parts\COMAN\THELOOP.ASM" />
-    <YASM Include="Parts\CREDITS\INCLUDE.ASM" />
+    <YASM Include="Parts\CREDITS\CREDITS_INCLUDE.ASM" />
     <YASM Include="Parts\DOTS\DOTS_ASM.ASM">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
       <FileType>Document</FileType>

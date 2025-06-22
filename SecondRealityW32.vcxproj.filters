@@ -55,7 +55,7 @@
     <ClCompile Include="Parts\PLZPART\VECT.C">
       <Filter>Parts\13-14-Plasmacube</Filter>
     </ClCompile>
-    <ClCompile Include="Parts\CREDITS\MAIN.C">
+    <ClCompile Include="Parts\CREDITS\CREDITS_MAIN.C">
       <Filter>Parts\22-Credits</Filter>
     </ClCompile>
   </ItemGroup>
@@ -356,7 +356,7 @@
     <YASM Include="Parts\PLZPART\COPPER.ASM">
       <Filter>Parts\13-14-Plasmacube</Filter>
     </YASM>
-    <YASM Include="Parts\CREDITS\INCLUDE.ASM">
+    <YASM Include="Parts\CREDITS\CREDITS_INCLUDE.ASM">
       <Filter>Parts\22-Credits</Filter>
     </YASM>
   </ItemGroup>

@@ -12,6 +12,7 @@ extern "C" void pam_main();
 extern "C" void alku_main();
 extern "C" void coman_main();
 extern "C" void plz_main();
+extern "C" void credits_main();
 
 extern "C" void rotate( int, int, int, int );
 extern "C" void rotlist();
@@ -104,11 +105,11 @@ int main()
   //pam_main();
 
   //                                            / 'BEG     ' /  'BEGLOGO.EXE',0
-  demo_changemode( 320, 400 );
-  beg_main();
+  //demo_changemode( 320, 400 );
+  //beg_main();
 
   // 4   db      'Glenz (PSI)                 ' / 'GLENZ   ' /  'GLENZ.EXE',0
-  glenz_main();
+  //glenz_main();
 
   // 5   db      'Dottitunneli (TRUG)         ' / 'TUNNELI ' /  'TUNNELI.EXE',0
 
@@ -152,6 +153,8 @@ int main()
   //end_main();
 
   // 22                                           'CREDITS ' /  'CRED.EXE',0
+  demo_changemode( 320, 400 );
+  credits_main();
 
   // 23                                           'ENDSCRL ' /  'ENDSCRL.EXE',0
   //demo_changemode( 640, 350 );
