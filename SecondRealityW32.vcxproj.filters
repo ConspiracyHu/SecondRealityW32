@@ -43,6 +43,18 @@
     <ClCompile Include="Parts\BEG\BEG.C">
       <Filter>Parts\03b-BeginTitleScreen</Filter>
     </ClCompile>
+    <ClCompile Include="Parts\PLZPART\MAIN.C">
+      <Filter>Parts\13-14-Plasmacube</Filter>
+    </ClCompile>
+    <ClCompile Include="Parts\PLZPART\PLZ.C">
+      <Filter>Parts\13-14-Plasmacube</Filter>
+    </ClCompile>
+    <ClCompile Include="Parts\PLZPART\PLZFILL.C">
+      <Filter>Parts\13-14-Plasmacube</Filter>
+    </ClCompile>
+    <ClCompile Include="Parts\PLZPART\VECT.C">
+      <Filter>Parts\13-14-Plasmacube</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Graphics.h" />
@@ -55,6 +67,9 @@
     </ClInclude>
     <ClInclude Include="Parts\DIS\dis.h">
       <Filter>Parts\DIS</Filter>
+    </ClInclude>
+    <ClInclude Include="Parts\PLZPART\TWEAK.H">
+      <Filter>Parts\13-14-Plasmacube</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -93,6 +108,9 @@
     </Filter>
     <Filter Include="Parts\03b-BeginTitleScreen">
       <UniqueIdentifier>{dd337c00-93cc-441f-91d4-73ef4ffd70b4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Parts\13-14-Plasmacube">
+      <UniqueIdentifier>{457ddf6e-ffc3-4ffa-b5a9-ae0918fab8ed}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

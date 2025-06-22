@@ -162,6 +162,10 @@
     <ClCompile Include="Parts\COMMON.C" />
     <ClCompile Include="Parts\LENS\LENS_MAIN.C" />
     <ClCompile Include="Parts\PAM\OUTTAA.C" />
+    <ClCompile Include="Parts\PLZPART\MAIN.C" />
+    <ClCompile Include="Parts\PLZPART\PLZ.C" />
+    <ClCompile Include="Parts\PLZPART\PLZFILL.C" />
+    <ClCompile Include="Parts\PLZPART\VECT.C" />
     <ClCompile Include="shims.c" />
   </ItemGroup>
   <ItemGroup>
@@ -169,6 +173,7 @@
     <ClInclude Include="Parts\COMAN\WAVE.H" />
     <ClInclude Include="Parts\COMMON.H" />
     <ClInclude Include="Parts\DIS\dis.h" />
+    <ClInclude Include="Parts\PLZPART\TWEAK.H" />
     <ClInclude Include="shims.h" />
   </ItemGroup>
   <ItemGroup>
