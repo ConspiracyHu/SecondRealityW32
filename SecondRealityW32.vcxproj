@@ -167,6 +167,8 @@
     <ClCompile Include="Parts\PLZPART\PLZ.C" />
     <ClCompile Include="Parts\PLZPART\PLZFILL.C" />
     <ClCompile Include="Parts\PLZPART\VECT.C" />
+    <ClCompile Include="Parts\VISU\C\U2A.C" />
+    <ClCompile Include="Parts\VISU\C\U2E.C" />
     <ClCompile Include="shims.c" />
   </ItemGroup>
   <ItemGroup>
@@ -175,6 +177,8 @@
     <ClInclude Include="Parts\COMMON.H" />
     <ClInclude Include="Parts\DIS\dis.h" />
     <ClInclude Include="Parts\PLZPART\TWEAK.H" />
+    <ClInclude Include="Parts\VISU\C.H" />
+    <ClInclude Include="Parts\VISU\CD.H" />
     <ClInclude Include="shims.h" />
   </ItemGroup>
   <ItemGroup>

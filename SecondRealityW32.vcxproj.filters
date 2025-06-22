@@ -20,7 +20,7 @@
       <Filter>Parts\23-Endscroll</Filter>
     </ClCompile>
     <ClCompile Include="Parts\PAM\OUTTAA.C">
-      <Filter>Parts\03-IntroPraxisBlast</Filter>
+      <Filter>Parts\03a-IntroPraxisBlast</Filter>
     </ClCompile>
     <ClCompile Include="Parts\ALKU\ALKU_MAIN.C">
       <Filter>Parts\01-IntroScroll</Filter>
@@ -58,6 +58,12 @@
     <ClCompile Include="Parts\CREDITS\CREDITS_MAIN.C">
       <Filter>Parts\22-Credits</Filter>
     </ClCompile>
+    <ClCompile Include="Parts\VISU\C\U2A.C">
+      <Filter>Parts\02-Intro3D</Filter>
+    </ClCompile>
+    <ClCompile Include="Parts\VISU\C\U2E.C">
+      <Filter>Parts\19-City3D</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Graphics.h" />
@@ -73,6 +79,12 @@
     </ClInclude>
     <ClInclude Include="Parts\PLZPART\TWEAK.H">
       <Filter>Parts\13-14-Plasmacube</Filter>
+    </ClInclude>
+    <ClInclude Include="Parts\VISU\CD.H">
+      <Filter>Parts\VISU</Filter>
+    </ClInclude>
+    <ClInclude Include="Parts\VISU\C.H">
+      <Filter>Parts\VISU</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -90,9 +102,6 @@
     </Filter>
     <Filter Include="Parts\21-EndPic">
       <UniqueIdentifier>{86c1373c-04ae-485b-a3df-e1dec86c21ac}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Parts\03-IntroPraxisBlast">
-      <UniqueIdentifier>{f701f20d-cae8-4bff-9c0d-e40e68fe31c7}</UniqueIdentifier>
     </Filter>
     <Filter Include="Parts\01-IntroScroll">
       <UniqueIdentifier>{53556962-13bc-4283-a965-87491e0a79b4}</UniqueIdentifier>
@@ -117,6 +126,21 @@
     </Filter>
     <Filter Include="Parts\22-Credits">
       <UniqueIdentifier>{80e1ed27-1626-4254-a955-46659d280a43}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Parts\02-Intro3D">
+      <UniqueIdentifier>{0cb671d0-ad32-42ef-9d2a-c057de8ae097}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Parts\03a-IntroPraxisBlast">
+      <UniqueIdentifier>{f701f20d-cae8-4bff-9c0d-e40e68fe31c7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Parts\VISU">
+      <UniqueIdentifier>{58313135-9fc4-4f06-95a4-90415d388a2b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Parts\VISU\C">
+      <UniqueIdentifier>{86d03e74-f329-4d6c-96ad-95d2118b2a76}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Parts\19-City3D">
+      <UniqueIdentifier>{17e0b5c1-f459-4361-9699-55de3ea7318f}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -163,22 +187,22 @@
       <Filter>Parts\21-EndPic</Filter>
     </None>
     <None Include="Parts\PAM\OUT.IN0">
-      <Filter>Parts\03-IntroPraxisBlast</Filter>
+      <Filter>Parts\03a-IntroPraxisBlast</Filter>
     </None>
     <None Include="Parts\PAM\OUT.IN1">
-      <Filter>Parts\03-IntroPraxisBlast</Filter>
+      <Filter>Parts\03a-IntroPraxisBlast</Filter>
     </None>
     <None Include="Parts\PAM\OUT.IN2">
-      <Filter>Parts\03-IntroPraxisBlast</Filter>
+      <Filter>Parts\03a-IntroPraxisBlast</Filter>
     </None>
     <None Include="Parts\PAM\OUT.IN3">
-      <Filter>Parts\03-IntroPraxisBlast</Filter>
+      <Filter>Parts\03a-IntroPraxisBlast</Filter>
     </None>
     <None Include="Parts\PAM\OUT.IN4">
-      <Filter>Parts\03-IntroPraxisBlast</Filter>
+      <Filter>Parts\03a-IntroPraxisBlast</Filter>
     </None>
     <None Include="Parts\PAM\PAL.INC">
-      <Filter>Parts\03-IntroPraxisBlast</Filter>
+      <Filter>Parts\03a-IntroPraxisBlast</Filter>
     </None>
     <None Include="Parts\ALKU\HOI.IN0">
       <Filter>Parts\01-IntroScroll</Filter>
@@ -264,10 +288,10 @@
       <Filter>Parts\01-IntroScroll</Filter>
     </YASM>
     <YASM Include="Parts\PAM\PAM_ASMYT.ASM">
-      <Filter>Parts\03-IntroPraxisBlast</Filter>
+      <Filter>Parts\03a-IntroPraxisBlast</Filter>
     </YASM>
     <YASM Include="Parts\PAM\PAM_INCLUDE.ASM">
-      <Filter>Parts\03-IntroPraxisBlast</Filter>
+      <Filter>Parts\03a-IntroPraxisBlast</Filter>
     </YASM>
     <YASM Include="Parts\LENS\LENS_ASM.ASM">
       <Filter>Parts\11-12-Lens</Filter>
