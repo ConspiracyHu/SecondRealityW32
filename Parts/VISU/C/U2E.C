@@ -1,3 +1,4 @@
+#define _CRT_SECURE_NO_WARNINGS
 #include <stdio.h>
 #include <conio.h>
 #include <string.h>
@@ -12,15 +13,15 @@ int	indemo=0;
 char	scene[64]={"U2E"};
 char	tmpname[64];
 
-char huge *scene0;
-char huge *scenem;
+char *scene0;
+char *scenem;
 
 int	city=0;
 int	xit=0;
 
-#define LONGAT(zz) *((long huge *)(zz))
-#define INTAT(zz) *((int huge *)(zz))
-#define CHARAT(zz) *((char huge *)(zz))
+#define LONGAT(zz) *((long *)(zz))
+#define INTAT(zz) *((int *)(zz))
+#define CHARAT(zz) *((char *)(zz))
 
 struct s_scl
 {
@@ -47,7 +48,7 @@ object camobject;
 rmatrix cam;
 
 int	order[MAXOBJ],ordernum;
-unsigned char huge *sp;
+unsigned char *sp;
 
 void border(int r,int g,int b)
 {
@@ -112,7 +113,7 @@ int	repeat,avgrepeat;
 
 #pragma check_stack(off)
 
-void _loadds copper2(void)
+void copper2(void)
 {
 	int	a,c1,c2,c3,c4;
 	
@@ -135,7 +136,7 @@ void _loadds copper2(void)
 	if(cl[clr].ready)
 	{
 		cl[(clr-1)&3].ready=2;
-		vid_setswitch(-1,clr);
+		//vid_setswitch(-1,clr);
 		copperdelay=cl[clr].frames;
 		clr++; clr&=3;
 	}
@@ -182,19 +183,20 @@ void	fadeset(char *vram)
 	}
 }
 
-main(int argc,char *argv[])
+void u2e_main(int argc,char *argv[])
 {
-	char huge *sptemp;
-	int	huge *ip;
+	char *sptemp;
+	int	*ip;
 	unsigned int u;
-	char	huge *cp;
+	char	*cp;
 	int	jellywas=0;
 	int	a,b,c,d,e,f,g,x,y,z;
 	#ifdef DEBUG
 	fr=fopen("tmp","wt");
 	#endif
 	indemo=1;
-	
+
+  /*
 	_asm
 	{
 		mov	ah,0fh
@@ -202,7 +204,8 @@ main(int argc,char *argv[])
 		xor	ah,ah
 		mov	a,ax
 	}
-	if(a>3) jellywas=1;
+  */
+	/*if(a>3) */jellywas=1;
 
 	dis_partstart();
 	sprintf(tmpname,"%s.00M",scene);
@@ -211,7 +214,7 @@ main(int argc,char *argv[])
 
 	if(scene0[15]=='C') city=1;
 	if(scene0[15]=='R') city=2;
-	ip=(int huge *)(scene0+LONGAT(scene0+4));
+	ip=(int *)(scene0+LONGAT(scene0+4));
 	conum=d=*ip++;
 	for(f=-1,c=1;c<d;c++)
 	{	
@@ -265,7 +268,7 @@ main(int argc,char *argv[])
 	if(!indemo) 
 	{
 		printf("Press any key to continue...");
-		getch();
+		//getch();
 	}	
 
 	resetscene();
@@ -356,12 +359,14 @@ main(int argc,char *argv[])
 
 	while(!dis_exit())
 	{
+    /*
 		_asm
 		{
 			mov	bx,6
 			int	0fch
 			mov	a,cx
 		}
+    */
 		if(a>18) break;
 	}
 	
@@ -592,7 +597,7 @@ char	*readfile(char *name)
 {
 	FILE	*f1;
 	long	size;
-	char huge *p,*p0;
+	char *p,*p0;
 	f1=fopen(name,"rb");
 	if(!f1)
 	{

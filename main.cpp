@@ -13,8 +13,8 @@ extern "C" void alku_main();
 extern "C" void coman_main();
 extern "C" void plz_main();
 extern "C" void credits_main();
-extern "C" void u2a_main();
-extern "C" void u2e_main();
+extern "C" void u2a_main(int argc,char *argv[]);
+extern "C" void u2e_main(int argc,char *argv[]);
 
 extern "C" void rotate( int, int, int, int );
 extern "C" void rotlist();
@@ -102,7 +102,7 @@ int main()
   //alku_main();
 
   // 2   db      'Alkutekstit II (PSI)        ' / 'VISU    ' /  'U2A.EXE',0
-  u2a_main();
+  u2a_main( 0, NULL );
   
   // 3   db      'Alkutekstit III (TRUG/WILDF)' / 'PAM     ' /  'PAM.EXE',0
   //demo_changemode( 320, 200 );
@@ -149,7 +149,7 @@ int main()
   //jplogo_main();
 
   // 19  db      'Vector Part II',0             / 'VISU    ' /  'U2E.EXE',0
-  u2e_main();
+  u2e_main( 0, NULL );
 
   // 20  db      'Endpictureflash (?)         ' / '        ' / 
 

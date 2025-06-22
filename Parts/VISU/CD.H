@@ -132,3 +132,5 @@ struct s_object
 
 #define INCLUDED_CD
 #endif
+
+#pragma pack()

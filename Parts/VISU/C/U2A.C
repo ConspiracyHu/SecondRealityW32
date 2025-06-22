@@ -1,3 +1,4 @@
+#define _CRT_SECURE_NO_WARNINGS
 #include <stdio.h>
 #include <conio.h>
 #include <string.h>
@@ -15,15 +16,15 @@ char *bg2;
 char	scene[64]={"U2A"};
 char	tmpname[64];
 
-char huge *scene0;
-char huge *scenem;
+char *scene0;
+char *scenem;
 
 int	city=0;
 int	xit=0;
 
-#define LONGAT(zz) *((long huge *)(zz))
-#define INTAT(zz) *((int huge *)(zz))
-#define CHARAT(zz) *((char huge *)(zz))
+#define LONGAT(zz) *((long *)(zz))
+#define INTAT(zz) *((int *)(zz))
+#define CHARAT(zz) *((char *)(zz))
 
 struct s_scl
 {
@@ -48,7 +49,7 @@ object camobject;
 rmatrix cam;
 
 int	order[MAXOBJ],ordernum;
-unsigned char huge *sp;
+unsigned char *sp;
 
 long lsget(unsigned char f)
 {
@@ -102,7 +103,7 @@ int	repeat,avgrepeat;
 
 #pragma check_stack(off)
 
-void _loadds copper2(void)
+void copper2(void)
 {
 	int	a,c1,c2,c3,c4;
 	
@@ -125,19 +126,19 @@ void _loadds copper2(void)
 	if(cl[clr].ready)
 	{
 		cl[(clr-1)&3].ready=2;
-		vid_setswitch(-1,clr);
+		//vid_setswitch(-1,clr);
 		copperdelay=cl[clr].frames;
 		clr++; clr&=3;
 	}
 	else avgrepeat++;
 }
 
-main(int argc,char *argv[])
+void u2a_main(int argc,char *argv[])
 {
-	char huge *sptemp;
-	int	huge *ip;
+	char *sptemp;
+	int	*ip;
 	unsigned int u;
-	char	huge *cp;
+	char	*cp;
 	int	a,b,c,d,e,f,g,x,y,z;
 	#ifdef DEBUG
 	fr=fopen("tmp","wt");
@@ -167,7 +168,7 @@ main(int argc,char *argv[])
 
 	if(scene0[15]=='C') city=1;
 	if(scene0[15]=='R') city=2;
-	ip=(int huge *)(scene0+LONGAT(scene0+4));
+	ip=(int *)(scene0+LONGAT(scene0+4));
 	conum=d=*ip++;
 	for(f=-1,c=1;c<d;c++)
 	{	
@@ -221,13 +222,14 @@ main(int argc,char *argv[])
 	if(!indemo) 
 	{
 		printf("Press any key to continue...");
-		getch();
+		//getch();
 	}	
 
 	resetscene();
 
 	for(;;)
 	{
+    /*
 		_asm
 		{
 			mov	bx,6
@@ -235,7 +237,8 @@ main(int argc,char *argv[])
 			mov	a,cx
 			mov	b,bx
 		}
-		if(a>10 && b>46) break;
+    */
+		//if(a>10 && b>46) break;
 		if(dis_exit()) return;
 	}
 
@@ -258,7 +261,7 @@ main(int argc,char *argv[])
 	cl[3].ready=1;
 	while(!dis_exit() && !xit)
 	{
-		int fov;
+		int fov = 0;
 		int onum;
 		long pflag;
 		long dis;
@@ -266,6 +269,7 @@ main(int argc,char *argv[])
 		object *o;
 		rmatrix *r;
 
+    /*
 		_asm
 		{
 			mov	bx,6
@@ -273,6 +277,7 @@ main(int argc,char *argv[])
 			mov	a,cx
 			mov	b,bx
 		}
+    */
 	        if(a>11 && b>54) break;
 		
 		deadlock=0;
@@ -479,7 +484,7 @@ char	*readfile(char *name)
 {
 	FILE	*f1;
 	long	size;
-	char huge *p,*p0;
+	char *p,*p0;
 	f1=fopen(name,"rb");
 	if(!f1)
 	{
