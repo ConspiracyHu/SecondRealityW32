@@ -399,6 +399,10 @@ __newgroup:
 	xor	ebx,ebx
 	mov	[ebp+NE_Y1],bx
 .@@nc:	;!!!
+
+  cmp bx,200 ; line is offscreen
+  jg .@@n1
+
 	shl	bx,2
 	mov	eax,[nep+ebx]
 	or	eax,eax
