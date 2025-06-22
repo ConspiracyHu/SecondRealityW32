@@ -16,7 +16,7 @@ extern vram
 extern rowsadd
 extern truerowsadd
 extern truevram
-extern rows
+extern glenz_rows
 extern framerate10
 extern color
 extern color1

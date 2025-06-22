@@ -125,11 +125,11 @@ section .code
 setrows:
 	mov	[rowsadd],dx
 	mov	[truerowsadd],dx
-	xor	ax,ax
-	mov	ebx,rows
+	xor	eax,eax
+	mov	ebx,glenz_rows
 ain1:	mov	[ebx],ax
-	add	ax,dx
-	add	bx,2
+	add	eax,edx
+	add	ebx,2
 	loop	ain1
 	ret
 
@@ -150,8 +150,8 @@ init640x400:
 	mov	ax,11h ;640x480/mono
 	int	10h
 	call	tweak640x400
-	mov	cx,400
-	mov	dx,160
+	mov	ecx,400
+	mov	edx,160
 	call	setrows
 	ret
 
@@ -215,8 +215,8 @@ init320x200:
 	mov	word [framerate10],700
 	;
 ;	call	tweak320x200
-	mov	cx,200
-	mov	dx,80
+	mov	ecx,200
+	mov	edx,80
 	call	setrows
 	ret
 
@@ -238,8 +238,8 @@ init320x240:
 	LOADDS
 	mov	esi,hseq1
 	call	sethseq ;to 240 mode
-	mov	cx,240
-	mov	dx,80
+	mov	ecx,240
+	mov	edx,80
 	call	setrows
 	ret
 
@@ -314,8 +314,8 @@ init320x350unr:
 	mov	word [framerate10],700 ;70 frames/sec
 	;
 	call	tweak320x350
-	mov	cx,350
-	mov	dx,92
+	mov	ecx,350
+	mov	edx,92
 	call	setrows
 	ret
 
@@ -334,8 +334,8 @@ init320x350:
 	mov	word [framerate10],700 ;70 frames/sec
 	;
 	call	tweak360x350
-	mov	cx,350
-	mov	dx,92
+	mov	ecx,350
+	mov	edx,92
 	call	setrows
 	ret
 
@@ -369,7 +369,7 @@ clearpage:
 	mov	es,[vram]
 	movzx	edi, word [wminy]
 	shl	di,1
-	mov	di,[rows+edi]
+	mov	di,[glenz_rows+edi]
 	mov	ax,[wminx]
 	mov	dx,[wmaxx]
 	sub	dx,ax

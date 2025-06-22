@@ -19,8 +19,8 @@ void beg_main()
 	dis_partstart();
 // 	outp(0x3c4,2);
 // 	outp(0x3c5,15);
-	memset(vram,15,32768);
-	memset(vram+32768,15,32768);
+	//memset(vram,15,32768);
+	//memset(vram+32768,15,32768);
 	//_asm mov ax,80h+13h
 	//_asm int 10h
 	for(a=0;a<32;a++) dis_waitb();
@@ -81,12 +81,14 @@ void beg_main()
 		//lineblit(vram+(unsigned)y*320U,rowbuf);
 	}
 
-	for(c=0;c<=128;c++)
+  //shim_vram[ 66 * 320 ] = 31;
+  for ( c = 0; c <= 128; c++ )
 	{
 		for(a=0;a<768-3;a++) pal2[a]=((128-c)*63+palette[a]*c)/128;
 		dis_waitb();
 		setpalarea(pal2,0,254);
     demo_blit();
 	}
+  //for(int i=0; i<5000; i++)dis_waitb();
 	setpalarea(palette,0,254);
 }

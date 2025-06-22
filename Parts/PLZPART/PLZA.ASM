@@ -93,6 +93,12 @@ _do_block:
 	mov	[_linecount], ax
 	cmp	ax, 0
 	je	..@end
+
+	; ds:bx = from
+	; es:di = to (vram)
+	; gs:si = ctau
+	; fs = dseg
+
 	mov ebx, [_from]
 	mov edi, [_to]
 	mov esi, [_ctau]

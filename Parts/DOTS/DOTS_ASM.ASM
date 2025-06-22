@@ -26,8 +26,8 @@ dw -1280
 dw -960
 dw -640
 dw -320
-global _rows
-_rows	times 200 dw 0
+global _dots_rows
+_dots_rows	times 200 dw 0
 
 global _dot
 _dot:
@@ -109,7 +109,7 @@ _drawdots:
 	ja	@@2
 	movzx	ebx,ax
 	shl	ebx,1
-	mov	bx,[_rows+ebx]
+	mov	bx,[_dots_rows+ebx]
 	pop	eax
 	add	bx,ax
 	push	eax
@@ -147,7 +147,7 @@ _drawdots:
 	ja	@@3
 	movzx	ebx,ax
 	shl	ebx,1
-	mov	bx,[_rows+ebx]
+	mov	bx,[_dots_rows+ebx]
 	pop	eax
 	add	bx,ax
 

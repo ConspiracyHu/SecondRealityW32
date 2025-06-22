@@ -28,14 +28,20 @@ void demo_clear()
   ZeroMemory( shim_vram, shim_vram_x * shim_vram_y );
 }
 
-int width = 320;
-int height = 200;
+int screen_width = 320;
+int screen_height = 200;
+
+void demo_changemode( int x, int y )
+{
+  screen_width = x;
+  screen_height = y;
+}
 
 void demo_blit()
 {
   graphics.HandleMessages();
 
-  int count = width * height;
+  int count = screen_width * screen_height;
   for ( int i = 0; i < count; i++ )
   {
     screen32[ i ] = shim_palette[ shim_vram[ i + shim_startpixel ] ];
@@ -46,7 +52,7 @@ void demo_blit()
     for ( int i = 0; i < 256; i++ ) screen32[ i ] = shim_palette[ i ];
   }
 
-  graphics.Update( screen32, width, height );
+  graphics.Update( screen32, screen_width, screen_height );
 }
 
 extern "C" bool demo_wantstoquit();
@@ -89,21 +95,20 @@ int main()
   ZeroMemory( screen32, shim_vram_x * shim_vram_y * sizeof( unsigned int ) );
 
   // 1   db      'Alkutekstit I (WILDF)       ' / 'ALKU    ' /  'ALKU.EXE',0
-  //width = 320;
-  //height = 400;
+  //demo_changemode( 320, 400 );
   //alku_main();
 
   // 2   db      'Alkutekstit II (PSI)        ' / 'VISU    ' /  'U2A.EXE',0
   // 3   db      'Alkutekstit III (TRUG/WILDF)' / 'PAM     ' /  'PAM.EXE',0
+  //demo_changemode( 320, 200 );
   //pam_main();
 
   //                                            / 'BEG     ' /  'BEGLOGO.EXE',0
-  //width = 320;
-  //height = 400;
-  //beg_main();
+  demo_changemode( 320, 400 );
+  beg_main();
 
   // 4   db      'Glenz (PSI)                 ' / 'GLENZ   ' /  'GLENZ.EXE',0
-  //glenz_main();
+  glenz_main();
 
   // 5   db      'Dottitunneli (TRUG)         ' / 'TUNNELI ' /  'TUNNELI.EXE',0
 
@@ -115,30 +120,27 @@ int main()
 
   // 11  db      'Lens (PSI)                  ' / '        ' / 
   // 12  db      'Rotazoomer (PSI)            ' / 'LENS    ' /  'LNS&ZOOM.EXE',0
-  //width = 320;
-  //height = 200;
+  //demo_changemode( 320, 200 );
   //lens_main();
 
   // 13  db      'Plasma (WILDF)              ' / '        ' / 
 
   // 14  db      'Plasmacube (WILDF)          ' / 'PLZPART ' /  'PLZPART.EXE',0
-  plz_main();
+  //demo_changemode( 320, 200 );
+  //plz_main();
 
   // 15  db      'MiniVectorBalls (PSI)       ' / 'DOTS    ' /  'MINVBALL.EXE',0
-  //width = 320;
-  //height = 200;
+  //demo_changemode( 320, 200 );
   //dots_main( 0, NULL );
 
   // 16  db      'Peilipalloscroll (TRUG)     ' / 'WATER   ' /  'RAYSCRL.EXE',0
 
   // 17  db      '3D-Sinusfield (PSI)         ' / 'COMAN   ' /  '3DSINFLD.EXE',0
-  //width = 320;
-  //height = 200;
+  //demo_changemode( 320, 200 );
   //coman_main();
 
   // 18  db      'Jellypic (PSI)              ' / 'JPLOGO  ' /  'JPLOGO.EXE',0
-  //width = 320;
-  //height = 400;
+  //demo_changemode( 320, 400 );
   //jplogo_main();
 
   // 19  db      'Vector Part II',0             / 'VISU    ' /  'U2E.EXE',0
@@ -146,15 +148,13 @@ int main()
   // 20  db      'Endpictureflash (?)         ' / '        ' / 
 
   // 21  db      'Credits/Greetings scrl. (?) ' / 'END     ' /  'ENDLOGO.EXE',0
-  //width = 320;
-  //height = 400;
+  //demo_changemode( 320, 400 );
   //end_main();
 
   // 22                                           'CREDITS ' /  'CRED.EXE',0
 
   // 23                                           'ENDSCRL ' /  'ENDSCRL.EXE',0
-  //width = 640;
-  //height = 350;
+  //demo_changemode( 640, 350 );
   //endscrl_main();
   
   delete[] screen32;

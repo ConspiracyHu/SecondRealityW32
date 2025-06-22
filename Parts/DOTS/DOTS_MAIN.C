@@ -13,7 +13,7 @@ extern short bpmin,bpmax;
 
 extern char bgpic[];
 extern short rotsin,rotcos;
-extern short rows[];
+extern short dots_rows[];
 extern long depthtable1[];
 extern long depthtable2[];
 extern long depthtable3[];
@@ -131,7 +131,7 @@ dots_main(int argc,char *argv[])
 		d=dot[b].y; dot[b].y=dot[c].y; dot[c].y=d;
 		d=dot[b].z; dot[b].z=dot[c].z; dot[c].z=d;
 	}
-	for(a=0;a<200;a++) rows[a]=a*320;
+	for(a=0;a<200;a++) dots_rows[a]=a*320;
 // 	_asm mov ax,13h
 // 	_asm int 10h
 	shim_outp(0x3c8,0);

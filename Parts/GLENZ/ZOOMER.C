@@ -45,19 +45,19 @@ void	zoomer2(char *pic)
 		zya++;
 		zy+=zya/4;
 		if(zy>260) zy=260;
-		v=vram+zly*80;
+		v=vram+zly*80*4;
 		for(y=zly;y<=zy;y++)
 		{
-			memset(v,255,80);
-			v+=80;
+			memset(v,255,80*4);
+			v+=80*4;
 		}
 		zly2=zy2;
 		zy2=125*zy/260;
-		v=vram+(399-zy2)*80;
+		v=vram+(399-zy2)*80*4;
 		for(y=zly2;y<=zy2;y++)
 		{
-			memset(v,255,80);
-			v+=80;
+			memset(v,255,80*4);
+			v+=80*4;
 		}
 		c=frame;
 		if(c>32) c=32;
@@ -69,17 +69,18 @@ void	zoomer2(char *pic)
 		frame++;
 		dis_waitb();
 		setpalarea(pal2,0,128);
+    demo_blit();
 	}
-	v=vram+(194)*80;
+	v=vram+(194)*80*4;
 	shim_outp(0x3c8,0);
 	shim_outp(0x3c9,0);
 	shim_outp(0x3c9,0);
 	shim_outp(0x3c9,0);
-	v=vram+(0)*80;
+	v=vram+(0)*80*4;
 	for(y=0;y<=399;y++)
 	{
-		if(y<=274 || y>=260) memset(v,0,80);
-		v+=80;
+		if(y<=274 || y>=260) memset(v,0,80*4);
+		v+=80*4;
 	}
 }
 

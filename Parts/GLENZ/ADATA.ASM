@@ -7,8 +7,8 @@ global background,_background
 _background:
 background times 0fff0h db 0
 
-global rows
-rows	times 512 dw	0
+global glenz_rows
+glenz_rows	times 512 dw	0
 
 global wminx,wminy,wmaxx,wmaxy
 wminx	dw	0

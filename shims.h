@@ -18,3 +18,4 @@ EXTERN unsigned char shim_inp( int reg );
 EXTERN void shim_setstartpixel( int reg );
 
 EXTERN void demo_blit();
+EXTERN void demo_changemode( int x, int y );

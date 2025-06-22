@@ -6,7 +6,7 @@
 	%endmacro
 
 %MACRO LOADDS 0
-;	mov	ax,SEG rows
+;	mov	ax,SEG glenz_rows
 ;	mov	ds,ax
 	%endmacro
 

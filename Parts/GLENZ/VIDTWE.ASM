@@ -40,7 +40,7 @@ twpset:
 	;requires: OUT 3C4,2
 	;DS:SI preserved, CX preserved!
 	shl	bx,1
-	mov	di,[rows+ebx]
+	mov	di,[glenz_rows+ebx]
 	mov	bx,3
 	and	bx,dx
 	sar	dx,2
@@ -78,7 +78,7 @@ hli21:	mov	di,ax
 	sar	cx,2
 	sub	cx,di
 	shl	bx,1
-	add	di,[rows+ebx]
+	add	di,[glenz_rows+ebx]
 
 	mov	bp,3
 	and	bp,ax
@@ -136,7 +136,7 @@ twpsetc:
 	mov	ch,al
 	mov	cl,dl
 	shl	bx,1
-	mov	bx,[rows+ebx]
+	mov	bx,[glenz_rows+ebx]
 	sar	dx,1
 	sar	dx,1
 	add	bx,dx
@@ -336,7 +336,7 @@ hlg21:	mov	di,ax
 	sar	cx,2
 	sub	cx,di
 	shl	bx,1
-	add	di,[rows+ebx]
+	add	di,[glenz_rows+ebx]
 
 	mov	bp,3
 	and	bp,ax
@@ -429,7 +429,7 @@ thlg21:	mov	cx,dx
 	mov	di,ax
 	shr	di,2
 	shl	bx,1
-	add	di,[rows+ebx]
+	add	di,[glenz_rows+ebx]
 
 	mov	bx,ax
 	and	bx,3

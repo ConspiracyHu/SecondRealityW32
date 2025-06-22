@@ -296,12 +296,12 @@ void glenz_main()
     char    *ps,*pd,*pp;
     unsigned int u;
 
-    dis_partstart();
+    //dis_partstart();
 
     //while(!dis_exit() && dis_musplus()<-19) ;
     //dis_setmframe(0);
 
-    //zoomer2();
+    zoomer2(NULL);
 
     //_asm mov dx,3c4h
     //_asm mov ax,0f02h
@@ -315,6 +315,7 @@ void glenz_main()
     }
     */
     //testasm();
+    demo_changemode( 320, 200 );
     init320x200();
 
     for(a=0;a<100;a++)
