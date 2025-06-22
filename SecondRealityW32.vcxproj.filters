@@ -55,6 +55,9 @@
     <ClCompile Include="Parts\PLZPART\VECT.C">
       <Filter>Parts\13-14-Plasmacube</Filter>
     </ClCompile>
+    <ClCompile Include="Parts\CREDITS\MAIN.C">
+      <Filter>Parts\22-Credits</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Graphics.h" />
@@ -111,6 +114,9 @@
     </Filter>
     <Filter Include="Parts\13-14-Plasmacube">
       <UniqueIdentifier>{457ddf6e-ffc3-4ffa-b5a9-ae0918fab8ed}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Parts\22-Credits">
+      <UniqueIdentifier>{80e1ed27-1626-4254-a955-46659d280a43}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -246,6 +252,9 @@
     <None Include="Parts\PLZPART\SPLINE.INC">
       <Filter>Parts\13-14-Plasmacube</Filter>
     </None>
+    <None Include="Parts\CREDITS\FONA.INC">
+      <Filter>Parts\22-Credits</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <YASM Include="Parts\ALKU\ALKU_ASMYT.ASM">
@@ -346,6 +355,9 @@
     </YASM>
     <YASM Include="Parts\PLZPART\COPPER.ASM">
       <Filter>Parts\13-14-Plasmacube</Filter>
+    </YASM>
+    <YASM Include="Parts\CREDITS\INCLUDE.ASM">
+      <Filter>Parts\22-Credits</Filter>
     </YASM>
   </ItemGroup>
 </Project>
