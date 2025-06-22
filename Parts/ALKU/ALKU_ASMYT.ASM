@@ -1,7 +1,7 @@
 section .data
 mmask	dw	0102h,0202h,0402h,0802h,0102h,0202h,0402h,0802h
 rmask	dw	0004h,0104h,0204h,0304h,0004h,0104h,0204h,0304h
-mrol	dw	0
+mrol	dd	0
 
 section .code
 
@@ -73,23 +73,26 @@ _outline:
 	mov	[edi-352], al
 	mov	[edi-352+176], al
 
+  ; x = esi
+  ; y = ccc
 	%assign ccc 0
 	%rep	75
 	mov	al, [esi+ccc*640]
 	mov	[edi+ccc*352], al
-	mov	[edi+ccc*352+176], al
+	;mov	[edi+ccc*352+176], al
 	%assign ccc ccc+1
 	%endrep
 
 	;mov	ax, ds
-	add	ax, 75*40
+	;add	ax, 75*40
 	;mov	ds, ax
+  add esi, 75*40*16
 
 	%assign ccc 0
 	%rep	75
 	mov	al, [esi+ccc*640]
 	mov	[edi+ccc*352+75*352], al
-	mov	[edi+ccc*352+75*352+176], al
+	;mov	[edi+ccc*352+75*352+176], al
 	%assign ccc ccc+1
 	%endrep
 

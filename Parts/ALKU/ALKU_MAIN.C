@@ -25,6 +25,15 @@ extern void outline(char *f, char *t);
 extern void ascrolltext(int scrl, int *dtau);
 
 #define vmem shim_vram
+unsigned char planar_vram[ 352 * 200 ];
+
+void alku_simulate_scroll()
+{
+  for ( int y = 0; y < 320; y++ )
+  {
+    memcpy( shim_vram + y * 320, planar_vram + cop_start + cop_scrl + y * 352, 320 );
+  }
+}
 
 int	mmask[4]={0x0102,0x0202,0x0402,0x0802};
 
@@ -194,9 +203,10 @@ void alku_init()	{
 
 	for(a=0;a<88;a++)
 		{
-		outline(hzpic+a*4+784, shim_vram+a+176*50);
-		outline(hzpic+a*4+784, shim_vram+a+176*50+88);
+		outline(hzpic+a*4+784, planar_vram+a+176*50);
+		outline(hzpic+a*4+784, planar_vram+a+176*50+88);
 		}
+  alku_simulate_scroll();
 
 	for(y=0;y<32;y++)
 	{
@@ -223,21 +233,21 @@ void alku_init()	{
 		}
 		else if(y<128*3)
 		{
-			palette2[y+0]=(fade2[y+0]=palette[0x1*3+0])*63+palette[y%(64*3)+0]*(63-palette[0x1*3+0])>>6;
-			palette2[y+1]=(fade2[y+1]=palette[0x1*3+1])*63+palette[y%(64*3)+1]*(63-palette[0x1*3+1])>>6;
-			palette2[y+2]=(fade2[y+2]=palette[0x1*3+2])*63+palette[y%(64*3)+2]*(63-palette[0x1*3+2])>>6;
+			palette2[y+0]=(fade2[y+0]=palette[0x1*3+0])*63+((palette[y%(64*3)+0]*(63-palette[0x1*3+0]))>>6);
+			palette2[y+1]=(fade2[y+1]=palette[0x1*3+1])*63+((palette[y%(64*3)+1]*(63-palette[0x1*3+1]))>>6);
+			palette2[y+2]=(fade2[y+2]=palette[0x1*3+2])*63+((palette[y%(64*3)+2]*(63-palette[0x1*3+2]))>>6);
 		}
 		else if(y<192*3)
 		{
-			palette2[y+0]=(fade2[y+0]=palette[0x2*3+0])*63+palette[y%(64*3)+0]*(63-palette[0x2*3+0])>>6;
-			palette2[y+1]=(fade2[y+1]=palette[0x2*3+1])*63+palette[y%(64*3)+1]*(63-palette[0x2*3+1])>>6;
-			palette2[y+2]=(fade2[y+2]=palette[0x2*3+2])*63+palette[y%(64*3)+2]*(63-palette[0x2*3+2])>>6;
+			palette2[y+0]=(fade2[y+0]=palette[0x2*3+0])*63+((palette[y%(64*3)+0]*(63-palette[0x2*3+0]))>>6);
+			palette2[y+1]=(fade2[y+1]=palette[0x2*3+1])*63+((palette[y%(64*3)+1]*(63-palette[0x2*3+1]))>>6);
+			palette2[y+2]=(fade2[y+2]=palette[0x2*3+2])*63+((palette[y%(64*3)+2]*(63-palette[0x2*3+2]))>>6);
 		}
 		else
 		{
-			palette2[y+0]=(fade2[y+0]=palette[0x3*3+0])*63+palette[y%(64*3)+0]*(63-palette[0x3*3+0])>>6;
-			palette2[y+1]=(fade2[y+1]=palette[0x3*3+1])*63+palette[y%(64*3)+1]*(63-palette[0x3*3+1])>>6;
-			palette2[y+2]=(fade2[y+2]=palette[0x3*3+2])*63+palette[y%(64*3)+2]*(63-palette[0x3*3+2])>>6;
+			palette2[y+0]=(fade2[y+0]=palette[0x3*3+0])*63+((palette[y%(64*3)+0]*(63-palette[0x3*3+0]))>>6);
+			palette2[y+1]=(fade2[y+1]=palette[0x3*3+1])*63+((palette[y%(64*3)+1]*(63-palette[0x3*3+1]))>>6);
+			palette2[y+2]=(fade2[y+2]=palette[0x3*3+2])*63+((palette[y%(64*3)+2]*(63-palette[0x3*3+2]))>>6);
 		}
 	}
 
@@ -289,7 +299,10 @@ void fonapois()
 	{
   char * vvmem = shim_vram;// ( 0x0a000, 0 );
 	unsigned a;
-  memset( shim_vram, 0, shim_vram_x * shim_vram_y );
+  //memset( shim_vram, 0, shim_vram_x * shim_vram_y );
+
+  for(a=320*64;a<320U*(64+256);a++) vvmem[a]=vvmem[a]&63;
+  /*
 	shim_outp(0x3c4,0x0102);
 	shim_outp(0x3ce,0x0004);
 	for(a=160*64;a<160U*(64+256);a++) vvmem[a]=vvmem[a]&63;
@@ -304,6 +317,7 @@ void fonapois()
 	shim_outp(0x3c4,0x0802);
 	shim_outp(0x3ce,0x0304);
 	for(a=160*64;a<160U*(64+256);a++) vvmem[a]=vvmem[a]&63;
+  */
 
 	}
 
@@ -445,13 +459,15 @@ int alku_do_scroll(int mode)
 	while(frame_count<SCRLF){frame_count++;}
 	frame_count-=SCRLF;
 	if(mode==1) ascrolltext(a+p*352,dtau);
-	cop_start=a/4+p*88; cop_scrl=(a&3)*2;
-
+	cop_start=a/4+p*88;
+  cop_scrl=(a&3)*2;
+  
 	if((a&3)==0)
 		{
-		outline(hzpic+(a/4+86)*4+784, shim_vram + (a/4+86)+176*50);
-		outline(hzpic+(a/4+86)*4+784, shim_vram + (a/4+86)+176*50+88);
+		outline(hzpic+(a/4+86)*4+784, planar_vram + (a/4+86)+176*50);
+		outline(hzpic+(a/4+86)*4+784, planar_vram + (a/4+86)+176*50+88);
 		}
+  alku_simulate_scroll();
 	a+=1; p^=1;
 	return(1);
 	}
@@ -518,6 +534,8 @@ void ffonapois()
   unsigned int * vvmem = ( unsigned int * )shim_vram;// MK_FP( 0x0a000, 0 );
 	unsigned a;
 
+  for(a=80*64;a<80U*(64+256+10);a++) vvmem[a]=vvmem[a]&0x3f3f3f3f;
+  /*
 	shim_outp(0x3c4,0x0102);
 	shim_outp(0x3ce,0x0004);
 	for(a=40*64;a<40U*(64+256+10);a++) vvmem[a]=vvmem[a]&0x3f3f3f3f;
@@ -537,6 +555,7 @@ void ffonapois()
 	shim_outp(0x3ce,0x0304);
 	for(a=40*64;a<40U*(64+256+10);a++) vvmem[a]=vvmem[a]&0x3f3f3f3f;
 	alku_do_scroll(0);
+  */
 	}
 
 char cfpal[768*2];
