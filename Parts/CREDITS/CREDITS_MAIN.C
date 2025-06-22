@@ -165,8 +165,9 @@ void credits_main()
 	//tw_closegraph();
 	}
 
-#define tw_getpixel(x,y) shim_vram[(x)+(y)*320]
-#define tw_putpixel(x,y,c) shim_vram[(x)+(y)*320]=(c)
+char * split_vram = shim_vram;
+#define tw_getpixel(x,y) split_vram[(x)+(y)*320]
+#define tw_putpixel(x,y,c) split_vram[(x)+(y)*320]=(c)
 
 void screenin(char * pic, char *text)
 	{
@@ -174,14 +175,17 @@ void screenin(char * pic, char *text)
 
 	//tw_setsplit(400);
 	//tw_clrscr();
+  memset(shim_vram,0,320*400);
 	//tw_setstart(160*200);
 	dis_waitb();
 	//tw_setpalette(&pic[0][16]);
   setpalarea(&pic[16],0,256);
 	pic=&pic[784];
 
+  split_vram = shim_vram + 320 * 200;
 	y=16;while(*(text=credits_prtc(160,y,text))) y+=FONAY+10;
 
+  split_vram = shim_vram;
 	for(x=0;x<160;x++) for(y=0;y<100;y++) tw_putpixel(400+x,400+y*2,pic[y*160+x]+16);
 
 	for(y=200*128;y>0;y=y*12L/13)
@@ -291,6 +295,7 @@ void credits_init()
 	credits_fonap[32]=1500-32;
 	credits_fonaw[32]=8;
 
+  /*
 	memmove(&credits_pic1[16*3+16],&credits_pic1[16],768-16*3);
 	memmove(&credits_pic2[16*3+16],&credits_pic2[16],768-16*3);
 	memmove(&credits_pic3[16*3+16],&credits_pic3[16],768-16*3);
@@ -312,6 +317,7 @@ void credits_init()
 	memmove(&credits_pic16[16*3+16],&credits_pic16[16],768-16*3);
 	memmove(&credits_pic17[16*3+16],&credits_pic17[16],768-16*3);
 	memmove(&credits_pic18[16*3+16],&credits_pic18[16],768-16*3);
+  */
 	for(a=0;a<10;a++)
 		{
 		credits_pic1[a*3+0+16]=credits_pic1[a*3+1+16]=credits_pic1[a*3+2+16]=7*a;
