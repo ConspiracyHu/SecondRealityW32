@@ -415,8 +415,8 @@ void glenz_main()
     //while(!dis_exit() && dis_getmframe()<333);
 
     memcpy(pal,backpal,16*3);
-    dis_partstart();
-    dis_waitb();
+//     dis_partstart();
+//     dis_waitb();
 
     shim_outp(0x3c7,0);
     for(a=0;a<16*3;a++) pal[a]= shim_inp(0x3c9);
