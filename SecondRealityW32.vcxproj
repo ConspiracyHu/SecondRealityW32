@@ -168,6 +168,7 @@
     <ClCompile Include="Parts\PLZPART\PLZFILL.C" />
     <ClCompile Include="Parts\PLZPART\VECT.C" />
     <ClCompile Include="Parts\VISU\C\U2A.C" />
+    <ClCompile Include="Parts\VISU\C\U2COMMON.C" />
     <ClCompile Include="Parts\VISU\C\U2E.C" />
     <ClCompile Include="shims.c" />
   </ItemGroup>
@@ -179,6 +180,7 @@
     <ClInclude Include="Parts\PLZPART\TWEAK.H" />
     <ClInclude Include="Parts\VISU\C.H" />
     <ClInclude Include="Parts\VISU\CD.H" />
+    <ClInclude Include="Parts\VISU\C\U2COMMON.H" />
     <ClInclude Include="shims.h" />
   </ItemGroup>
   <ItemGroup>

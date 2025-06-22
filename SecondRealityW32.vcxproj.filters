@@ -64,6 +64,9 @@
     <ClCompile Include="Parts\VISU\C\U2E.C">
       <Filter>Parts\19-City3D</Filter>
     </ClCompile>
+    <ClCompile Include="Parts\VISU\C\U2COMMON.C">
+      <Filter>Parts\VISU</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Graphics.h" />
@@ -84,6 +87,9 @@
       <Filter>Parts\VISU</Filter>
     </ClInclude>
     <ClInclude Include="Parts\VISU\C.H">
+      <Filter>Parts\VISU</Filter>
+    </ClInclude>
+    <ClInclude Include="Parts\VISU\C\U2COMMON.H">
       <Filter>Parts\VISU</Filter>
     </ClInclude>
   </ItemGroup>

@@ -3,52 +3,14 @@
 #include <conio.h>
 #include <string.h>
 #include <malloc.h>
+#include "..\..\dis\dis.h"
 #include "..\cd.h"
 #include "..\c.h"
+#include "u2common.h"
 
 #define	noDEBUG
 
-int	indemo=0;
-
-char	scene[64]={"U2E"};
-char	tmpname[64];
-
-char *scene0;
-char *scenem;
-
-int	city=0;
-int	xit=0;
-
-#define LONGAT(zz) *((long *)(zz))
-#define INTAT(zz) *((int *)(zz))
-#define CHARAT(zz) *((char *)(zz))
-
-struct s_scl
-{
-	char	*data;
-} scenelist[64];
-int scl=0,sclp=0;
-
-char	fpal[768];
-
-#define MAXOBJ 256
-
-struct s_co
-{
-	object	*o;
-	long	dist;
-	int	index;
-	int	on;
-} co[MAXOBJ];
-int conum;
-
-FILE	*fr;
-
-object camobject;
-rmatrix cam;
-
-int	order[MAXOBJ],ordernum;
-unsigned char *sp;
+char	u2escene[64]={"U2E"};
 
 void border(int r,int g,int b)
 {
@@ -58,62 +20,9 @@ void border(int r,int g,int b)
 	outp(0x3c9,b);
 }
 
-long lsget(unsigned char f)
-{
-	long	l;
-	switch(f&3)
-	{
-	case 0 : l=0; 
-		 break; 
-	case 1 : l=(long)(char)(*sp++); 
-		 break;
-	case 2 : l=*sp++; 
-		 l|=(long)(char)(*sp++)<<8; 
-		 break;
-	case 3 : l=*sp++;
-		 l|=(long)(*sp++)<<8; 
-		 l|=(long)(*sp++)<<16; 
-		 l|=(long)(char)(*sp++)<<24; 
-		 break;
-	}
-	return(l);
-}		
-
-void	resetscene(void)
-{
-	int	a;
-	sp=(unsigned char *)(scenelist[sclp].data);
-	for(a=0;a<conum;a++)
-	{
-		memset(co[a].o->r,0,sizeof(rmatrix));
-		memset(co[a].o->r0,0,sizeof(rmatrix));
-	}
-	sclp++;
-	if(sclp>=scl)
-	{
-		sclp=0;
-	}
-}
-
-struct
-{
-	int	frames;
-	int	ready;  // 1=ready for display
-		 	// 2=displayed, still on screen
-			// 0=free (not on screen)
-} cl[4];
-int	clr=0,clw=0;
-int	firstframe=1;
-int	deadlock=0;
-int	coppercnt=0;
-int	syncframe=0;
-int	currframe=0;
-int	copperdelay=16;
-int	repeat,avgrepeat;
-
 #pragma check_stack(off)
 
-void copper2(void)
+void u2e_copper2(void)
 {
 	int	a,c1,c2,c3,c4;
 	
@@ -208,7 +117,7 @@ void u2e_main(int argc,char *argv[])
 	/*if(a>3) */jellywas=1;
 
 	dis_partstart();
-	sprintf(tmpname,"%s.00M",scene);
+	sprintf(tmpname,"%s.00M",u2escene);
 	if(!indemo) printf("Loading materials %s...\n",tmpname);
 	scene0=scenem=readfile(tmpname);
 
@@ -222,7 +131,7 @@ void u2e_main(int argc,char *argv[])
 		if(e>f)
 		{
 			f=e;
-			sprintf(tmpname,"%s.%03i",scene,e);
+			sprintf(tmpname,"%s.%03i",u2escene,e);
 			if(!indemo) printf("Loading %s... ",tmpname);
 			co[c].o=vis_loadobject(tmpname);
 			memset(co[c].o->r,0,sizeof(rmatrix));
@@ -233,9 +142,9 @@ void u2e_main(int argc,char *argv[])
 		}
 		else
 		{
-			if(!indemo) printf("Copying %s.%03i... ",scene,e);
+			if(!indemo) printf("Copying %s.%03i... ",u2escene,e);
 			for(g=0;g<c;g++) if(co[g].index==e) break;
-			memcpy(co+c,co+g,sizeof(struct s_co));
+			memcpy(co+c,co+g,sizeof(s_co));
 			co[c].o=getmem(sizeof(object));
 			memcpy(co[c].o,co[g].o,sizeof(object));
 			co[c].o->r=getmem(sizeof(rmatrix));
@@ -250,14 +159,14 @@ void u2e_main(int argc,char *argv[])
 	camobject.r=&cam;
 	camobject.r0=&cam;
 
-	sprintf(tmpname,"%s.0AA",scene);
+	sprintf(tmpname,"%s.0AA",u2escene);
 	if(!indemo) printf("Loading animations...\n",tmpname);
 	ip=readfile(tmpname);
 	while(*ip)
 	{
 		a=*ip;
 		if(a==-1) break;
-		sprintf(tmpname,"%s.0%c%c",scene,a/10+'A',a%10+'A');
+		sprintf(tmpname,"%s.0%c%c",u2escene,a/10+'A',a%10+'A');
 		if(!indemo) printf("Scene: %s ",tmpname);
 		scenelist[scl].data=readfile(tmpname);
 		if(!indemo) printf("(%i:@%Fp)\n",scl,scenelist[scl].data);
@@ -353,7 +262,7 @@ void u2e_main(int argc,char *argv[])
 	vid_setpal(cp);
 	vid_window(0L,319L,25L,174L,512L,9999999L);
 	
-	dis_setcopper(2,copper2);
+	dis_setcopper(2,u2e_copper2);
 	dis_partstart();
 	xit=0;
 
@@ -567,67 +476,4 @@ void u2e_main(int argc,char *argv[])
 	fclose(fr);
 	#endif
 	return(0);
-}
-
-//////////////////////////////////////////////////////////////////////////////
-
-void	*getmem(long size)
-{
-	void	*p;
-	if(size>160000L)
-	{
-		printf("GETMEM: attempting to reserved >160K (%li byte block)\n",size);
-		exit(3);
-	}
-	p=halloc(size/16L+1,16);
-	if(!p)
-	{
-		printf("GETMEM: out of memory (%li byte block)\n",size);
-		exit(3);
-	}
-	return(p);
-}
-
-void	freemem(void *p)
-{
-	hfree(p);
-}
-
-char	*readfile(char *name)
-{
-	FILE	*f1;
-	long	size;
-	char *p,*p0;
-	f1=fopen(name,"rb");
-	if(!f1)
-	{
-		printf("File '%s' not found.",name);
-		exit(3);
-	}
-	fseek(f1,0L,SEEK_END);
-	p0=p=getmem(size=ftell(f1));
-	fseek(f1,0L,SEEK_SET);
-	if(size>128000)
-	{
-		fread(p,64000,1,f1);
-		size-=64000;
-		_asm add word ptr p[2],4000
-		fread(p,64000,1,f1);
-		size-=64000;
-		_asm add word ptr p[2],4000
-		fread(p,(size_t)size,1,f1);
-	}
-	else if(size>64000)
-	{
-		fread(p,64000,1,f1);
-		size-=64000;
-		_asm
-		{
-			add word ptr p[2],4000
-		}
-		fread(p,(size_t)size,1,f1);
-	}
-	else fread(p,(size_t)size,1,f1);
-	fclose(f1);
-	return(p0);
 }
