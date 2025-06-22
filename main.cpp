@@ -15,6 +15,7 @@ extern "C" void plz_main();
 
 extern "C" void rotate( int, int, int, int );
 extern "C" void rotlist();
+extern "C" void plzline(int,int);
 
 unsigned int * screen32;
 
@@ -70,10 +71,11 @@ void demo_vsync()
 
 int main()
 {
-  // self-modifying code in rotozoomer, wahey!
+  // self-modifying code everywhere, wahey!
   DWORD old = 0;
   VirtualProtect( &rotate, 8192, PAGE_EXECUTE_READWRITE, &old );
   VirtualProtect( &rotlist, 8192, PAGE_EXECUTE_READWRITE, &old );
+  VirtualProtect( &plzline, 8192, PAGE_EXECUTE_READWRITE, &old );
 
   int windowWidth = 1280;
   int windowHeight = 960;

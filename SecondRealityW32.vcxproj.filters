@@ -344,5 +344,8 @@
     <YASM Include="Parts\PLZPART\SPLINE.ASM">
       <Filter>Parts\13-14-Plasmacube</Filter>
     </YASM>
+    <YASM Include="Parts\PLZPART\COPPER.ASM">
+      <Filter>Parts\13-14-Plasmacube</Filter>
+    </YASM>
   </ItemGroup>
 </Project>

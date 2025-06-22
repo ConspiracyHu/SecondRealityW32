@@ -15,7 +15,7 @@ _jmp_tau:
 %assign ccc 0
 %rep 200
 ;IRP ccc, <0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96,97,98,99,100,101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,118,119,120,121,122,123,124,125,126,127,128,129,130,131,132,133,134,135,136,137,138,139,140,141,142,143,144,145,146,147,148,149,150,151,152,153,154,155,156,157,158,159,160,161,162,163,164,165,166,167,168,169,170,171,172,173,174,175,176,177,178,179,180,181,182,183,184,185,186,187,188,189,190,191,192,193,194,195,196,197,198,199>
-dw PLZ(x)
+dd PLZ(x)
 %endrep
 
 start_mask:
@@ -81,6 +81,8 @@ _linecount	resw	1
 
 section .code
 
+extern _dist1
+
 global _do_block
 _do_block:
 	;ARG	ycount:word
@@ -91,10 +93,10 @@ _do_block:
 	mov	[_linecount], ax
 	cmp	ax, 0
 	je	..@end
-	lds	bx, [_from]
-	les	di, [_to]
-	lgs	si, [_ctau]
-	mov	fs, [_dseg]
+	mov ebx, [_from]
+	mov edi, [_to]
+	mov esi, [_ctau]
+	;mov	fs, [_dseg]
 
 ..@doline:
 	cmp	word [_yy], 0
@@ -123,7 +125,7 @@ _do_block:
 
 	mov	dx, 3c4h
 	mov	ax, 0f02h
-	out	dx, ax
+	;out	dx, ax
 
 	mov	ebx, [_txy1-2]		; xlo
 	mov	ecx, [_txx1-2]		; ylo
@@ -153,15 +155,15 @@ _do_block:
 	test	si, 1
 	jz	..@ll1
 
-	movzx	si, [fs:bx]		; out odd byte
+	movzx	si, [_dist1+ebx]		; out odd byte
 	add	ecx, eax
-	mov	al, [ds:bx+si]
+	mov	al, [ebx+esi]
 	adc	ebx, edx
 	adc	bh, 0
-	mov	[es:bp+di-1],al
-	jmp	[cs:_jmp_tau+bp-2]
+	mov	[ebp+edi-1],al
+	jmp	[_jmp_tau+ebp-4]
 
-..@ll1:	jmp	[cs:_jmp_tau+si]		; and jump to rept
+..@ll1:	jmp	[_jmp_tau+esi]		; and jump to rept
 
 ;		e	h	l
 ;	ax	x_add	data	data
@@ -178,13 +180,13 @@ _do_block:
 
 PLZ(x) :
 
-	movzx	si, [ebx]
+	movzx	si, [_dist1+ebx]
 	add	ecx, eax
 	mov	ah, [ebx+esi]
 	adc	ebx, edx
 	adc	bh, 0
 
-	movzx	si, [ebx]
+	movzx	si, [_dist1+ebx]
 	add	ecx, eax
 	mov	al, [ebx+esi]
 	adc	ebx, edx
@@ -198,25 +200,25 @@ plz_y0:
 ..@twobyte:
 	mov	bh, byte [_txy2+2]       ; txt y
 	mov	bl, byte [_txx2+2]	; txt x
-	movzx	si, [fs:bx]
-	mov	cl, [ds:bx+si]
+	movzx	si, [_dist1+bx]
+	mov	cl, [ebx+esi]
 	mov	bh, byte [_txy1+2]       ; txt y
 	mov	bl, byte [_txx1+2]	; txt x
-	movzx	si, [fs:bx]
-	mov	ch, [ds:bx+si]
+	movzx	si, [_dist1+bx]
+	mov	ch, [ebx+esi]
 
 	mov	bx, word [_xx2+2]
 	and	bx, 3
 	mov	ah, [start_mask+bx]
 	mov	al, 02
 	mov	dx, 3c4h
-	out	dx, ax
+	;out	dx, ax
 	mov	[es:di], cl
 
 	mov	bx, word [_xx1+2]
 	and	bx, 3
 	mov	ah, [end_mask+bx]
-	out	dx, ax
+	;out	dx, ax
 	mov	[es:bp+di], ch
 
 ..@endline:
@@ -249,8 +251,8 @@ plz_y0:
 ..@singlebyte:
 	mov	bh, byte [_txy2+2]       ; txt y
 	mov	bl, byte [_txx2+2]	; txt x
-	movzx	si, [fs:bx]
-	mov	cl, [ds:bx+si]
+	movzx	si, [_dist1+bx]
+	mov	cl, [ebx+esi]
 
 	mov	al, 02
 	mov	dx, 3c4h
@@ -260,7 +262,7 @@ plz_y0:
 	mov	bx, word [_xx1+2]
 	and	bx, 3
 	and	ah, [end_mask+bx]
-	out	dx, ax
+	;out	dx, ax
 	mov	[es:di], cl
 
 	add	word [_to], 160		; next line
@@ -296,9 +298,9 @@ _shadepal:
 
 	push	ebp
 
-	lds	si, [ppal]
-	les	di, [fpal]
-	mov     dx, [shd]
+	mov esi, [ppal]
+	mov edi, [fpal]
+	mov edx, [shd]
 	mov	cx, 192/16
 ..@loop:
 	%rep	16
@@ -324,32 +326,32 @@ _do_clear:
 
 	mov	dx, 3c4h
 	mov	ax, 0f02h
-	out	dx, ax
+	;out	dx, ax
 
-	les	dx, [vmem]
-	lds	bx, [otau]		; dx:bx-> otau
-	lds	si, [ntau]
+	mov edx, [vmem]
+	mov ebx, [otau]		; dx:bx-> otau
+	mov esi, [ntau]
 	sub	si, bx                  ; dx:bx+si-> ntau
-	mov	dl, [es:0]		; fill latches
+	mov	dl, [ntau]		; fill latches
 	mov	word [ycnt], 134
 	xor	ax, ax
 
 ..@lineloop:
-	cmp	word [ds:bx], 640
+	cmp	word [ebx], 640
 	je	..@nextline
 
-	mov	di, word [ds:bx]
+	mov	di, word [ebx]
 	shr	di, 2
-	mov	cx, word [ds:bx+si]
+	mov	cx, word [ebx+esi]
 	shr	cx, 2
 	sub	cx, di
 	jb	..@l1
 	add	di, dx
 	rep	stosb
 ..@l1:
-	mov	di, word [ds:bx+si+2]
+	mov	di, word [ebx+esi+2]
 	shr	di, 2
-	mov	cx, word [ds:bx+2]
+	mov	cx, word [ebx+2]
 	shr	cx, 2
 	sub	cx, di
 	jb	..@nextline
@@ -358,8 +360,8 @@ _do_clear:
 	rep	stosb
 
 ..@nextline:
-	mov	word [ds:bx], 640
-	mov	word [ds:bx+2], 0
+	mov	word [ebx], 640
+	mov	word [ebx+2], 0
 
 	add	dx, 160
 	add	bx, 4

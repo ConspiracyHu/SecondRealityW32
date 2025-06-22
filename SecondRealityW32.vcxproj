@@ -507,6 +507,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </None>
     <YASM Include="Parts\PLZPART\ASMYT.ASM" />
+    <YASM Include="Parts\PLZPART\COPPER.ASM" />
     <YASM Include="Parts\PLZPART\INCLUDE.ASM" />
     <YASM Include="Parts\PLZPART\PLZA.ASM" />
     <YASM Include="Parts\PLZPART\SPLINE.ASM" />

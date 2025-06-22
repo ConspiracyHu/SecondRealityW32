@@ -5,6 +5,7 @@
 #include "tweak.h"
 #include "..\DIS\dis.h"
 #include "..\..\shims.h"
+#include "..\common.h"
 
 //#define DO_TABLES
 //#define DPII (3.1415926535*2.0)
@@ -29,6 +30,8 @@ extern  int do_pal;
 
 extern int plzline(int y, int vseg);
 extern int setplzparas(int c1, int c2, int c3, int c4);
+extern void initpparas();
+extern void moveplz();
 extern int set_plzstart(int y);
 extern char psini[16384];
 extern int lsini4[8192];
@@ -40,10 +43,11 @@ extern int lsini16[8192];
 //char	lsini[16384]=
 //#include "lsini.pre"
 
-char	ptau[256]=
+void init_plz();
+
 #include "ptau.pre"
 
-int	pals[6][768];
+unsigned char	pals[6][768];
 int	curpal=0;
 int	timetable[10]={64*6*2-45,64*6*4-45,64*6*5-45,64*6*6-45,64*6*7+90,0};
 int	ttptr=0;
@@ -61,7 +65,10 @@ int	inittable[10][8]={{1000,2000,3000,4000,3500,2300,3900,3670},
 			  {1000,2000,3000,4000,3500,2300,3900,3670},
 			  {1000,2000,3000,4000,3500,2300,3900,3670}};
 
-plz(){
+extern unsigned short dtau[ 65 ];
+
+void plz()
+{
 	register int x,y;
 	int	*ptr;
 	long	tim=0,count=0;
@@ -73,8 +80,10 @@ plz(){
 	init_plz();
 	cop_drop=128;
 	cop_fadepal=pals[curpal++];
+  setpalarea( cop_fadepal, 0, 256 );
 
 	frame_count=0;
+  initpparas();
 	while(!dis_exit())
 		{
 		tim+=frame_count; frame_count=0; count++;
@@ -83,6 +92,7 @@ plz(){
 			memset(fadepal,0,768);
 			cop_drop=1;
 			cop_fadepal=pals[curpal++];
+      setpalarea( cop_fadepal, 0, 256 );
 			ttptr++;
 			il1=inittable[ttptr][0];
 			il2=inittable[ttptr][1];
@@ -92,6 +102,7 @@ plz(){
 			ik2=inittable[ttptr][5];
 			ik3=inittable[ttptr][6];
 			ik4=inittable[ttptr][7];
+      initpparas();
 			}
 		if(curpal==5 && cop_drop>64) break;
 
@@ -101,10 +112,10 @@ plz(){
 
 		setplzparas(k1,k2,k3,k4);
 		for(y=0;y<MAXY;y+=2)
-			plzline(y,0x0a000+y*6+YADD*6);
+			plzline(y,shim_vram+y*6+YADD*6);
 		setplzparas(l1,l2,l3,l4);
 		for(y=1;y<MAXY;y+=2)
-			plzline(y,0x0a000+y*6+YADD*6);
+			plzline(y,shim_vram+y*6+YADD*6);
 
 
 		//asm	mov dx, 3c4h
@@ -113,20 +124,23 @@ plz(){
 
 		setplzparas(k1,k2,k3,k4);
 		for(y=1;y<MAXY;y+=2)
-			plzline(y,0x0a000+y*6+YADD*6);
+			plzline(y,shim_vram+y*6+YADD*6);
 		setplzparas(l1,l2,l3,l4);
 		for(y=0;y<MAXY;y+=2)
-			plzline(y,0x0a000+y*6+YADD*6);
+			plzline(y,shim_vram+y*6+YADD*6);
+    demo_blit();
+    moveplz();
+    frame_count += dis_waitb();
 		}
-	cop_drop=0; frame_count=0; while(frame_count==0);
+	//cop_drop=0; frame_count=0; while(frame_count==0);
 	set_plzstart(500);
 	cop_plz=0;
 	}
 
-init_plz()
+void init_plz()
 	{
 	int	a,b,c,z;
-	int	*pptr=pals;
+	unsigned char *pptr=pals;
 
 #ifdef	DO_TABLES
 	{

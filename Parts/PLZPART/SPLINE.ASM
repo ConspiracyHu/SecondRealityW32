@@ -26,20 +26,18 @@ _getspl:
 
 	push ebp
 
-	mov	si, buu
-	push	cs
-	pop	ds
-	mov	di, [position]
+	mov	esi, buu
+	mov	edi, [position]
 
 	;ds:si=pointer to spline
 	;di=position in spline, add 256 for next point
 
-	mov	ax,di
-	shr	ax,8
-	shl	ax, 4
-	add	si,ax
-	and	di,255
-	shl	di,1
+	mov	eax,edi
+	shr	eax, 8
+	shl	eax, 4
+	add	esi,eax
+	and	edi,255
+	shl	edi,1
 
 	%assign ccc 0
 	%rep 8
@@ -64,8 +62,8 @@ _getspl:
 	%assign ccc ccc+2
 	%endrep
 
-	mov	ax, _kx
-	mov	ds, ax
+	;mov	ax, _kx
+	;mov	ds, ax
 	pop	cx
 	mov	[_ls_ky], cx
 	pop	cx

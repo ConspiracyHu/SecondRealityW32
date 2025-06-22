@@ -76,7 +76,7 @@ extern char * to;
 extern char * from;
 extern int * ctau;
 extern int dseg;
-extern int	xx, yy;
+extern short	xx, yy;
 extern long	ay1,ay2,ax1,ax2,xx1,yy1,xx2,yy2;
 extern long	txx1,txy1,tay1,tax1;
 extern long	txx2,txy2,tay2,tax2;
@@ -186,6 +186,6 @@ clear()
 
 	clrptr=(clrptr+1)&7;
 
-	do_clear(vmem[0],otau,ntau);
+	do_clear(vmem,otau,ntau);
 	}
 

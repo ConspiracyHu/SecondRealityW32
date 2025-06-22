@@ -115,23 +115,24 @@ int	ls_kx=0,ls_ky=0,ls_kz=0,ls_x=0,ls_y=0,ls_z=128;
 int 	page=0;
 int	frames=0;
 
-vect()
+void vect()
 	{
 	int	c=0,a;
 
 	//tw_opengraph();
 
-	while(dis_musplus()<13 && !dis_exit()); frame_count=0;
+	//while(dis_musplus()<13 && !dis_exit()); frame_count=0;
 	while(!dis_exit())
 		{
 		a=dis_musplus();
 		if(a>=-4 && a<0) break;
 		swappage();
-		while(frame_count<1); frames+=frame_count; frame_count=0;
+		//while(frame_count<1); frames+=frame_count; frame_count=0;
 		cop_pal=fpal; do_pal=1;
 
 		calculate(1);
 		draw(15);
+    demo_blit();
 		clear();
 		}
 //	tw_closegraph();
