@@ -13,10 +13,13 @@ int dis_indemo()
   return 1;
 }
 
+int dis_frame = 0;
+
 void demo_vsync();
 int dis_waitb()
 {
   demo_vsync();
+  dis_frame++;
   return 1;
 }
 
@@ -53,6 +56,16 @@ int dis_musrow( int code )
 
 void dis_setcopper( int routine_number, void ( *routine )( void ) )
 {
+}
+
+void dis_setmframe( int frame )
+{
+
+}
+
+int dis_getmframe( void )
+{
+  return dis_frame;
 }
 
 int sync = 0;

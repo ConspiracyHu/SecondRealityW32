@@ -183,6 +183,9 @@
     <None Include="Parts\PLZPART\PSINI.INC" />
     <None Include="Parts\PLZPART\PSINI.PRE" />
     <None Include="Parts\PLZPART\PTAU.PRE" />
+    <None Include="Parts\PLZPART\RATA.INC" />
+    <None Include="Parts\PLZPART\SINIT.INC" />
+    <None Include="Parts\PLZPART\SPLINE.INC" />
     <YASM Include="Parts\BEG\BEG_DATA.ASM" />
     <YASM Include="Parts\COMAN\COMAN_ASM.ASM" />
     <YASM Include="Parts\COMAN\COMAN_DATA.ASM" />
@@ -504,6 +507,9 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </None>
     <YASM Include="Parts\PLZPART\ASMYT.ASM" />
+    <YASM Include="Parts\PLZPART\INCLUDE.ASM" />
+    <YASM Include="Parts\PLZPART\PLZA.ASM" />
+    <YASM Include="Parts\PLZPART\SPLINE.ASM" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <Import Project="$(SolutionDir)\YASM\vsyasm.targets" />

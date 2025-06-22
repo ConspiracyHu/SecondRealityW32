@@ -4,6 +4,7 @@
 #include <dos.h>
 #include "tweak.h"
 #include "..\DIS\dis.h"
+#include "..\..\shims.h"
 
 //#define DO_TABLES
 //#define DPII (3.1415926535*2.0)
@@ -18,8 +19,8 @@
 //extern int init_copper();
 //extern int close_copper();
 extern int frame_count;
-extern int cop_drop;
-extern int cop_plz;
+int cop_drop;
+int cop_plz;
 extern int cop_start;
 extern char * cop_fadepal;
 extern char fadepal[768];
@@ -67,7 +68,7 @@ plz(){
 	int	ch=0,sync=2;
 
 	while(dis_musplus()<0 && !dis_exit());
-	dis_setmframe(0);
+	//dis_setmframe(0);
 
 	init_plz();
 	cop_drop=128;
@@ -173,11 +174,11 @@ init_plz()
 	fclose(f1); fclose(f2); fclose(f3); fclose(f4);
 	}
 #endif
-	tw_opengraph2();
+	//tw_opengraph2();
 	cop_start=96*(682-400);
-	set_plzstart(60);
+	//set_plzstart(60);
 	//init_copper();
-	for(a=0;a<256;a++) tw_setrgbpalette(a,63,63,63);
+	for(a=0;a<256;a++) shim_setpal(a,63,63,63);
 
 //	RGB
 	pptr=&pals[0][3];

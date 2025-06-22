@@ -119,7 +119,7 @@ vect()
 	{
 	int	c=0,a;
 
-	tw_opengraph();
+	//tw_opengraph();
 
 	while(dis_musplus()<13 && !dis_exit()); frame_count=0;
 	while(!dis_exit())

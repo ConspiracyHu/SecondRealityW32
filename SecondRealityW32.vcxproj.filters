@@ -237,6 +237,15 @@
     <None Include="Parts\PLZPART\PSINI.INC">
       <Filter>Parts\13-14-Plasmacube</Filter>
     </None>
+    <None Include="Parts\PLZPART\SINIT.INC">
+      <Filter>Parts\13-14-Plasmacube</Filter>
+    </None>
+    <None Include="Parts\PLZPART\RATA.INC">
+      <Filter>Parts\13-14-Plasmacube</Filter>
+    </None>
+    <None Include="Parts\PLZPART\SPLINE.INC">
+      <Filter>Parts\13-14-Plasmacube</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <YASM Include="Parts\ALKU\ALKU_ASMYT.ASM">
@@ -324,6 +333,15 @@
       <Filter>Parts\03b-BeginTitleScreen</Filter>
     </YASM>
     <YASM Include="Parts\PLZPART\ASMYT.ASM">
+      <Filter>Parts\13-14-Plasmacube</Filter>
+    </YASM>
+    <YASM Include="Parts\PLZPART\INCLUDE.ASM">
+      <Filter>Parts\13-14-Plasmacube</Filter>
+    </YASM>
+    <YASM Include="Parts\PLZPART\PLZA.ASM">
+      <Filter>Parts\13-14-Plasmacube</Filter>
+    </YASM>
+    <YASM Include="Parts\PLZPART\SPLINE.ASM">
       <Filter>Parts\13-14-Plasmacube</Filter>
     </YASM>
   </ItemGroup>
