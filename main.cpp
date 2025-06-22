@@ -11,6 +11,7 @@ extern "C" void endscrl_main();
 extern "C" void pam_main();
 extern "C" void alku_main();
 extern "C" void coman_main();
+extern "C" void plz_main();
 
 extern "C" void rotate( int, int, int, int );
 extern "C" void rotlist();
@@ -88,7 +89,7 @@ int main()
   // 1   db      'Alkutekstit I (WILDF)       ' / 'ALKU    ' /  'ALKU.EXE',0
   //width = 320;
   //height = 400;
-  alku_main();
+  //alku_main();
 
   // 2   db      'Alkutekstit II (PSI)        ' / 'VISU    ' /  'U2A.EXE',0
   // 3   db      'Alkutekstit III (TRUG/WILDF)' / 'PAM     ' /  'PAM.EXE',0
@@ -119,6 +120,7 @@ int main()
   // 13  db      'Plasma (WILDF)              ' / '        ' / 
 
   // 14  db      'Plasmacube (WILDF)          ' / 'PLZPART ' /  'PLZPART.EXE',0
+  plz_main();
 
   // 15  db      'MiniVectorBalls (PSI)       ' / 'DOTS    ' /  'MINVBALL.EXE',0
   //width = 320;

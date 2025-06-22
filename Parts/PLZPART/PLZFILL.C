@@ -3,19 +3,24 @@
 #include <dos.h>
 #include <math.h>
 #include "tweak.h"
+#include "..\..\shims.h"
 
-extern far do_line(char far *to, int dx, int dy, int cnt, char far *from, long txx1, long txy1, long txx2, long txy2, int dseg);
-extern far do_block(int ycnt);
-extern far do_clear(char far *vmem, int far *otau, int far *ntau);
+#define M_PI 3.141592f
+
+extern do_line(char *to, int dx, int dy, int cnt, char *from, long txx1, long txy1, long txx2, long txy2, int dseg);
+extern do_block(int ycnt);
+extern do_clear(char *vmem, int *otau, int *ntau);
 
 extern int acstau[256];
 int	sini[2000];
-char	(* far vmem)[160]=MK_FP(0x0a000,0);
-extern char far kuva1[128][256];
-extern char far kuva2[128][256];
-extern char far kuva3[128][256];
-extern char far dist1[128][256];
-char	far buu[1000];
+//char	(* vmem)[160]=MK_FP(0x0a000,0);
+#define vmem shim_vram
+
+extern char kuva1[128][256];
+extern char kuva2[128][256];
+extern char kuva3[128][256];
+extern char dist1[128][256];
+char	buu[1000];
 char	sinx[128], siny[128];
 char	pal[768];
 
@@ -67,17 +72,17 @@ initvect() {
 	for(a=0;a<8*256;a++) { clrtau[0][a][0]=640; clrtau[0][a][1]=0; }
 	}
 
-extern far char * to;
-extern far char * from;
-extern far int * ctau;
-extern far int dseg;
-extern far int	xx, yy;
-extern far long	ay1,ay2,ax1,ax2,xx1,yy1,xx2,yy2;
-extern far long	txx1,txy1,tay1,tax1;
-extern far long	txx2,txy2,tay2,tax2;
+extern char * to;
+extern char * from;
+extern int * ctau;
+extern int dseg;
+extern int	xx, yy;
+extern long	ay1,ay2,ax1,ax2,xx1,yy1,xx2,yy2;
+extern long	txx1,txy1,tay1,tax1;
+extern long	txx2,txy2,tay2,tax2;
 
-int	kuvataus[]={FP_SEG(kuva1),FP_SEG(kuva2),FP_SEG(kuva3),FP_SEG(kuva1)};
-int	disttaus[]={FP_SEG(dist1),FP_SEG(dist1),FP_SEG(dist1),FP_SEG(dist1)};
+char *	kuvataus[]={kuva1,kuva2,kuva3,kuva1};
+char *	disttaus[]={dist1,dist1,dist1,dist1};
 
 do_poly(x1,y1,x2,y2,x3,y3,x4,y4,color, dd)
 int	x1,y1,x2,y2,x3,y3,x4,y4,color, dd;
@@ -117,7 +122,7 @@ int	x1,y1,x2,y2,x3,y3,x4,y4,color, dd;
 	tay2=65536L*(txt[d2].y-txt[s2].y)/dy2;
 
 	yy=(long)pnts[s1].y;
-	from=MK_FP(kuvataus[color],0);
+	from=kuvataus[color];
 	to=vmem[yy];		// initialize gfx pointers
 	dseg=disttaus[color]+dd*16;
 	ctau=&clrtau[clrptr][yy];

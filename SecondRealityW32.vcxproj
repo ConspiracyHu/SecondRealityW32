@@ -162,7 +162,7 @@
     <ClCompile Include="Parts\COMMON.C" />
     <ClCompile Include="Parts\LENS\LENS_MAIN.C" />
     <ClCompile Include="Parts\PAM\OUTTAA.C" />
-    <ClCompile Include="Parts\PLZPART\MAIN.C" />
+    <ClCompile Include="Parts\PLZPART\PLZ_MAIN.C" />
     <ClCompile Include="Parts\PLZPART\PLZ.C" />
     <ClCompile Include="Parts\PLZPART\PLZFILL.C" />
     <ClCompile Include="Parts\PLZPART\VECT.C" />
@@ -177,6 +177,12 @@
     <ClInclude Include="shims.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Parts\PLZPART\LSINI.PRE" />
+    <None Include="Parts\PLZPART\LSINI16.INC" />
+    <None Include="Parts\PLZPART\LSINI4.INC" />
+    <None Include="Parts\PLZPART\PSINI.INC" />
+    <None Include="Parts\PLZPART\PSINI.PRE" />
+    <None Include="Parts\PLZPART\PTAU.PRE" />
     <YASM Include="Parts\BEG\BEG_DATA.ASM" />
     <YASM Include="Parts\COMAN\COMAN_ASM.ASM" />
     <YASM Include="Parts\COMAN\COMAN_DATA.ASM" />
@@ -497,6 +503,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </None>
+    <YASM Include="Parts\PLZPART\ASMYT.ASM" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <Import Project="$(SolutionDir)\YASM\vsyasm.targets" />

@@ -43,7 +43,7 @@
     <ClCompile Include="Parts\BEG\BEG.C">
       <Filter>Parts\03b-BeginTitleScreen</Filter>
     </ClCompile>
-    <ClCompile Include="Parts\PLZPART\MAIN.C">
+    <ClCompile Include="Parts\PLZPART\PLZ_MAIN.C">
       <Filter>Parts\13-14-Plasmacube</Filter>
     </ClCompile>
     <ClCompile Include="Parts\PLZPART\PLZ.C">
@@ -219,6 +219,24 @@
     <None Include="Parts\BEG\SRTITLE.UP">
       <Filter>Parts\03b-BeginTitleScreen</Filter>
     </None>
+    <None Include="Parts\PLZPART\LSINI.PRE">
+      <Filter>Parts\13-14-Plasmacube</Filter>
+    </None>
+    <None Include="Parts\PLZPART\PSINI.PRE">
+      <Filter>Parts\13-14-Plasmacube</Filter>
+    </None>
+    <None Include="Parts\PLZPART\PTAU.PRE">
+      <Filter>Parts\13-14-Plasmacube</Filter>
+    </None>
+    <None Include="Parts\PLZPART\LSINI16.INC">
+      <Filter>Parts\13-14-Plasmacube</Filter>
+    </None>
+    <None Include="Parts\PLZPART\LSINI4.INC">
+      <Filter>Parts\13-14-Plasmacube</Filter>
+    </None>
+    <None Include="Parts\PLZPART\PSINI.INC">
+      <Filter>Parts\13-14-Plasmacube</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <YASM Include="Parts\ALKU\ALKU_ASMYT.ASM">
@@ -304,6 +322,9 @@
     </YASM>
     <YASM Include="Parts\BEG\BEG_DATA.ASM">
       <Filter>Parts\03b-BeginTitleScreen</Filter>
+    </YASM>
+    <YASM Include="Parts\PLZPART\ASMYT.ASM">
+      <Filter>Parts\13-14-Plasmacube</Filter>
     </YASM>
   </ItemGroup>
 </Project>

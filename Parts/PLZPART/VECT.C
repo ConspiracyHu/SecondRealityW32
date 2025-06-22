@@ -5,6 +5,7 @@
 #include <io.h>
 #include <fcntl.h>
 #include "tweak.h"
+#include "..\DIS\dis.h"
 
 #define SX sinit[kx]
 #define SY sinit[ky]
@@ -13,27 +14,34 @@
 #define CY kosinit[ky]
 #define CZ kosinit[kz]
 
-extern	far char (* far vmem)[160];
-extern char far pal[768];
+extern	char (* vmem)[160];
+extern char pal[768];
 
 extern clear();
 extern init();
-extern shadepal(char far *fpal, char far *ppal, int shade);
-extern	init_copper();
-extern	close_copper();
-extern 	int far cop_rotatev;
-extern	far int frame_count;
-extern  far char * far cop_pal;
-extern  far int do_pal;
-extern  far int cop_start;
-extern  far int cop_scrl;
+extern shadepal(char *fpal, char *ppal, int shade);
+//extern	init_copper();
+//extern	close_copper();
+extern 	int cop_rotatev;
+extern	int frame_count;
+extern  char * cop_pal;
+extern  int do_pal;
+extern  int cop_start;
+extern  int cop_scrl;
 
 extern int do_poly();
 extern int getspl(int where);
-extern int far sinit[1024];
-extern int far kosinit[1024];
+extern int sinit[1024];
+extern int kosinit[1024];
 
-char 	far fpal[768];
+void swappage();
+void calculate( int k );
+void draw( int );
+void count_const();
+void plz_rotate();
+void sort_faces();
+
+char 	fpal[768];
 
 struct	object {
 	char	name[100];
@@ -96,7 +104,7 @@ struct 	polygons_to_draw {
 		int	p;
 		int	dis;
 		} ptodraw[256];
-int	polys=0;
+int	plz_polys=0;
 
 int	light_src[6]={0};
 int	lls[6]={0};
@@ -129,7 +137,7 @@ vect()
 //	tw_closegraph();
 	}
 
-calculate(int k)
+void calculate(int k)
 	{
 	int	a;
 	static int px=0,py=256;
@@ -146,11 +154,11 @@ calculate(int k)
 	ls_z=(sinit[ls_kx]>>8)*(kosinit[ls_ky]>>8)>>7;
 
 	count_const();
-	rotate();
+	plz_rotate();
 	sort_faces();
 	}
 
-count_const()
+void count_const()
 	{
 	//matrix equations:
 	//X Y Z -> nX
@@ -177,7 +185,7 @@ count_const()
 
 	}
 
-rotate()
+void plz_rotate()
 	{
 	int	a,b,x,y,z,xx,yy,zz;
 
@@ -200,7 +208,7 @@ rotate()
 		}
 	}
 
-sort_faces()
+void sort_faces()
 	{
 	int 	a=0,b,c,x,y,z,p=0;
 	long	ax,ay,az,bx,by,bz,kx,ky,kz,nx,ny,nz,s,l;
@@ -242,16 +250,16 @@ sort_faces()
 
 		ptodraw[p++].p=a++;
 		}
-	polys=p;
+	plz_polys=p;
 	}
 
 
-draw()
+void draw(int unused)
 	{
 	int 	a=0,b,c,f,x,y,z;
 	long	ax,ay,az,bx,by,bz,kx,ky,kz,nx,ny,nz,s;
 
-	for(a=0;a<polys;a++)
+	for(a=0;a<plz_polys;a++)
 		{
 		c=object.pg[ptodraw[a].p].color;
 		do_poly(object.point[object.pg[ptodraw[a].p].p1].xxx+(page&1)*2, object.point[object.pg[ptodraw[a].p].p1].yyy,
@@ -262,36 +270,36 @@ draw()
 		}
 	}
 
-swappage()
+void swappage()
 	{
 	page=(page+1)%6;
 	if(page==0){
-		vmem=MK_FP(0x0a000,0x0000);
+		//vmem=MK_FP(0x0a000,0x0000);
 		cop_start=0xaa00+40;
 		cop_scrl=4;
 		}
 	else if(page==1){
-		vmem=MK_FP(0x0a000,0x5500);
+		//vmem=MK_FP(0x0a000,0x5500);
 		cop_start=0x0000+40;
 		cop_scrl=0;
 		}
 	else if(page==2){
-		vmem=MK_FP(0x0a000,0xaa00);
+		//vmem=MK_FP(0x0a000,0xaa00);
 		cop_start=0x5500+40;
 		cop_scrl=4;
 		}
 	else if(page==3){
-		vmem=MK_FP(0x0a000,0x0000);
+		//vmem=MK_FP(0x0a000,0x0000);
 		cop_start=0xaa00+40;
 		cop_scrl=0;
 		}
 	else if(page==4){
-		vmem=MK_FP(0x0a000,0x5500);
+		//vmem=MK_FP(0x0a000,0x5500);
 		cop_start=0x0000+40;
 		cop_scrl=4;
 		}
 	else if(page==5){
-		vmem=MK_FP(0x0a000,0xaa00);
+		//vmem=MK_FP(0x0a000,0xaa00);
 		cop_start=0x5500+40;
 		cop_scrl=0;
 		}
