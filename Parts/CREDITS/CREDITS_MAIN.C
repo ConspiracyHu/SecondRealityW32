@@ -30,10 +30,10 @@ extern char credits_pic18[];
 
 #define FONAY 32
 
-extern char font[FONAY][1500];
+extern char credits_font[FONAY][1500];
 char	*credits_fonaorder="ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789/?!:,.\"()+-";
-int	fonap[256];
-int	fonaw[256];
+int	credits_fonap[256];
+int	credits_fonaw[256];
 
 void credits_init();
 void credits_prt( int x, int y, char * txt );
@@ -238,13 +238,13 @@ void credits_prt(int x,int y,char *txt)
 	int	x2w,x2,y2,y2w=y+FONAY,sx,d;
 	while(*txt)
 	{
-		x2w=fonaw[*txt]+x;
-		sx=fonap[*txt];
+		x2w=credits_fonaw[*txt]+x;
+		sx=credits_fonap[*txt];
 		for(x2=x;x2<x2w;x2++)
 		{
 			for(y2=y;y2<y2w;y2++)
 			{
-				d=font[y2-y][sx];
+				d=credits_font[y2-y][sx];
 				tw_putpixel(x2,y2,d);
 			}
 			sx++;
@@ -258,7 +258,7 @@ char *credits_prtc(int x,int y,char *txt)
 {
 	int	w=0;
 	char	*t=txt;
-	while(*t) w+=fonaw[*t++]+2;
+	while(*t) w+=credits_fonaw[*t++]+2;
 	credits_prt(x-w/2,y,txt);
 	return(t+1);
 }
@@ -272,24 +272,24 @@ void credits_init()
 	{
 		while(x<1500)
 		{
-			for(y=0;y<FONAY;y++) if(font[y][x]) break;
+			for(y=0;y<FONAY;y++) if(credits_font[y][x]) break;
 			if(y!=FONAY) break;
 			x++;
 		}
 		b=x;
 		while(x<1500)
 		{
-			for(y=0;y<FONAY;y++) if(font[y][x]) break;
+			for(y=0;y<FONAY;y++) if(credits_font[y][x]) break;
 			if(y==FONAY) break;
 			x++;
 		}
 		//printf("%c: %i %i\n",*fonaorder,b,x-b);
-		fonap[*credits_fonaorder]=b;
-		fonaw[*credits_fonaorder]=x-b;
+		credits_fonap[*credits_fonaorder]=b;
+		credits_fonaw[*credits_fonaorder]=x-b;
 		credits_fonaorder++;
 	}
-	fonap[32]=1500-32;
-	fonaw[32]=8;
+	credits_fonap[32]=1500-32;
+	credits_fonaw[32]=8;
 
 	memmove(&credits_pic1[16*3+16],&credits_pic1[16],768-16*3);
 	memmove(&credits_pic2[16*3+16],&credits_pic2[16],768-16*3);
