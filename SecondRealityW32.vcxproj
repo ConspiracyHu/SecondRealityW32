@@ -520,6 +520,7 @@
     <YASM Include="Parts\PLZPART\INCLUDE.ASM" />
     <YASM Include="Parts\PLZPART\PLZA.ASM" />
     <YASM Include="Parts\PLZPART\SPLINE.ASM" />
+    <YASM Include="Parts\VISU\C\U2A_DATA.ASM" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <Import Project="$(SolutionDir)\YASM\vsyasm.targets" />

@@ -389,5 +389,8 @@
     <YASM Include="Parts\CREDITS\CREDITS_INCLUDE.ASM">
       <Filter>Parts\22-Credits</Filter>
     </YASM>
+    <YASM Include="Parts\VISU\C\U2A_DATA.ASM">
+      <Filter>Parts\02-Intro3D</Filter>
+    </YASM>
   </ItemGroup>
 </Project>

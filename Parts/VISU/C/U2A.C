@@ -12,7 +12,7 @@
 
 char	u2a_scene[64]={"U2A"};
 
-extern char bg[];
+extern char u2a_bg[];
 char * bg2;
 
 #pragma check_stack(off)
@@ -65,7 +65,7 @@ void u2a_main(int argc,char *argv[])
 	if(!indemo) printf("Loading materials %s...\n",tmpname);
 	scene0=scenem=readfile(tmpname);
 
-	memcpy(scene0+16+192*3,bg+16,64*3);
+	memcpy(scene0+16+192*3,u2a_bg+16,64*3);
 	bg2=halloc(16384,4);
 	for(u=z=0;z<4;z++)
 	{
@@ -73,12 +73,12 @@ void u2a_main(int argc,char *argv[])
 		{
 			for(x=z;x<320;x+=4)
 			{
-				a=bg[16+768+x+y*320];
+				a=u2a_bg[16+768+x+y*320];
 				bg2[u++]=a;
 			}
 		}
 	}
-	memcpy(bg,bg2,64000);
+	memcpy(u2a_bg,bg2,64000);
 	hfree(bg2);
 
 	if(scene0[15]=='C') city=1;
@@ -202,7 +202,7 @@ void u2a_main(int argc,char *argv[])
 		}
 		// Draw to free frame
 		vid_setswitch(clw,-1);
-		vid_clearbg(bg);
+		vid_clearbg(u2a_bg);
 		// Field of vision
 		vid_cameraangle(fov);
 		// Calc matrices and add to order list (only enabled objects)
@@ -352,13 +352,13 @@ void u2a_main(int argc,char *argv[])
 	dis_setcopper(2,NULL);
 
 	vid_setswitch(0,-1);
-	vid_clearbg(bg);
+	vid_clearbg(u2a_bg);
 	vid_setswitch(1,-1);
-	vid_clearbg(bg);
+	vid_clearbg(u2a_bg);
 	vid_setswitch(2,-1);
-	vid_clearbg(bg);
+	vid_clearbg(u2a_bg);
 	vid_setswitch(3,-1);
-	vid_clearbg(bg);
+	vid_clearbg(u2a_bg);
 	
 	if(!dis_indemo())
 	{
