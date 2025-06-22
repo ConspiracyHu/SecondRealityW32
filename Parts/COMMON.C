@@ -54,7 +54,7 @@ void	readp(char *dest,int row,char *src)
 		jb	l1
 		jmp	l3
 	l2:	mov	[edi],al
-		inc	di
+		inc	edi
 		cmp	esi,ecx
 		jb	l1
 	l3:
