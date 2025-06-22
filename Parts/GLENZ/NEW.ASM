@@ -64,13 +64,17 @@ ng_init:
 %macro fillmacro 0;MACRO
 	;local	l1,l2
 	jcxz	%%l2
-	push	ax
+	push	eax
+  push	ecx
+  movzx ecx, cx
 %%l1:	mov	ah,al
 	or	ah,[_bgpic+edi] ;fs
 	mov	[_shim_vram+edi],ah ;es
 	inc	edi
 	loop	%%l1
-	pop	ax
+  pop	ecx
+	pop	eax
+  and ecx, 0xFFFF0000
 %%l2:
 %endmacro 
 
@@ -110,13 +114,13 @@ ng_pass3:
 	cmp	al,ah
 	je	.@@31
 	push	ecx
-	sub	ecx,edi
+	sub	cx,di
 	;cmp	cx,4
 	;jae	.@@r1
 	;rep	stosb
-	fillmacro
+	fillmacro       ; al = color, ecx = count, edi = offset
 	pop	ecx
-.@@31:	mov	edi,ecx
+.@@31:	mov	di,cx
 	shr	ecx,16
 	xor	al,cl
 	mov	ecx,[newdata1+esi] ;ds
@@ -155,7 +159,7 @@ ng_pass3:
 	;cmp	cx,4
 	;jae	.@@r2
 	;rep	stosb
-	fillmacro
+	fillmacro       ; al = color, ecx = count, edi = offset
 	pop	ecx
 .@@32:	mov	di,dx
 	shr	edx,16
