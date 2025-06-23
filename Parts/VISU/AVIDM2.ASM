@@ -14,27 +14,29 @@
 
 ;======== public routines ========
 
+section .code
+
 m2_init:
-	mov	ds:_vramseg,0a000h
+	mov	word [_vramseg],0a000h
 	call	tweak640x400
 	mov	dx,640/4
 	mov	cx,400
 	call	setrows
-	mov	ds:vr[PSET],OFFSET m2_pset
-	mov	ds:vr[CLEAR],OFFSET m2_clear
-	mov	ds:vr[SWITCH],OFFSET m2_switch
-	mov	ds:vr[WAITB],OFFSET m2_waitb
-	mov	ds:_projclipx[CLIPMIN],0
-	mov	ds:_projclipx[CLIPMAX],639
-	mov	ds:_projclipy[CLIPMIN],0
-	mov	ds:_projclipy[CLIPMAX],399
-	mov	ds:_projclipz[CLIPMIN],512*1
-	mov	ds:_projclipz[CLIPMAX],1000000000
-	mov	ds:_projmulx,480*1
-	mov	ds:_projmuly,400*1
-	mov	ds:_projaddx,320
-	mov	ds:_projaddy,200
-	mov	ds:_projaspect,256
+	mov	word [vr+PSET],m2_pset
+	mov	word [vr+CLEAR],m2_clear
+	mov	word [vr+SWITCH],m2_switch
+	mov	word [vr+WAITB],m2_waitb
+	mov	dword [_projclipx+CLIPMIN],0
+	mov	dword [_projclipx+CLIPMAX],639
+	mov	dword [_projclipy+CLIPMIN],0
+	mov	dword [_projclipy+CLIPMAX],399
+	mov	dword [_projclipz+CLIPMIN],512*1
+	mov	dword [_projclipz+CLIPMAX],1000000000
+	mov	dword [_projmulx],480*1
+	mov	dword [_projmuly],400*1
+	mov	dword [_projaddx],320
+	mov	dword [_projaddy],200
+	mov	word [_projaspect],256
 	ret
 
 
@@ -44,7 +46,7 @@ m2_init:
 m2_pset:
 	;requires ES=vram, OUT 3C4,2  [set by vidstart]
 	shl	bx,1
-	mov	bx,ds:_rows[bx]
+	mov	bx,[_rows+ebx]
 	mov	cx,3
 	and	cx,dx
 	sar	dx,2
@@ -53,7 +55,7 @@ m2_pset:
 	shl	al,cl
 	mov	dx,3c5h
 	out	dx,al
-	mov	es:[bx],ah
+	mov	[ebx],ah
 	ret
 
 
@@ -67,12 +69,15 @@ m2_waitb:
 	jz	@@2
 	ret
 
+section .data
 
-ALIGN 2
+;ALIGN 2
 tmptest	dw	0
 
+section .code
+
 m2_clear: ;clear current page
-	inc	cs:tmptest
+	inc	word [tmptest]
 	push	di
 	cmp	ax,1
 	je	@@sky
@@ -90,7 +95,7 @@ m2_clear: ;clear current page
 	out	dx,ax
 	mov	cx,400
 	xor	di,di
-@@1:	mov	al,fs:[si]
+@@1:	mov	al,[esi]
 	cmp	al,1
 	je	@@colr
 	cmp	al,2
@@ -105,31 +110,31 @@ m2_clear: ;clear current page
 	mov	dx,3c4h
 	mov	ax,0f02h
 	out	dx,ax
-	mov	ax,fs:[si+2]
+	mov	ax,[esi+2]
 	xor	dx,dx
 	mov	bx,320
 	div	bx
-	lds	ax,fs:[si+4]
+	lds	ax,[esi+4]
 	mov	si,ax
 	add	si,dx
-	zzz=0;
+	%assign zzz 0
 	%rep	640/4/4
-	mov	eax,ds:[si+zzz]
-	mov	es:[di+zzz],eax
-	zzz=zzz+4
+	mov	eax,[esi+zzz]
+	mov	[edi+zzz],eax
+	%assign zzz zzz+4
 	%endrep
 	pop	ds
 	pop	si
 	jmp	@@noth
 
-@@colr:	mov	al,fs:[si+2]
+@@colr:	mov	al,[esi+2]
 	mov	ah,al
 	mov	bx,ax
 	shl	eax,16
 	mov	ax,bx
 	%assign zzz 0
 	%rep	640/4/4
-	mov	es:[di+zzz],eax
+	mov	[edi+zzz],eax
 	%assign zzz zzz+4
 	%endrep
 	jmp	@@noth
@@ -137,9 +142,9 @@ m2_clear: ;clear current page
 @@bitm:	push	cx
 	push	ds
 	push	si
-@@bc:	lds	ax,fs:[si+4]
+@@bc:	lds	ax,[esi+4]
 	mov	si,ax
-	mov	ax,cs:tmptest
+	mov	ax,[tmptest]
 	mov	dx,ax
 	shr	dx,2
 	add	si,dx
@@ -153,8 +158,8 @@ m2_clear: ;clear current page
 	out	dx,ax
 	%assign zzz 0
 	%rep	640/4/4
-	mov	eax,ds:[si+zzz]
-	mov	es:[di+zzz],eax
+	mov	eax,[esi+zzz]
+	mov	[edi+zzz],eax
 	%assign zzz zzz+4
 	%endrep
 	add	si,2048
@@ -163,7 +168,7 @@ m2_clear: ;clear current page
 	sub	si,8192-1
 @@b3:	pop	ax
 	shl	ah,1
-	loop	@@b1
+	LOOP_LARGE	@@b1
 	pop	si
 	pop	ds
 	pop	cx
@@ -174,32 +179,34 @@ m2_clear: ;clear current page
 
 @@noth:	add	di,640/4
 	add	si,8
-	loop	@@1
+	LOOP_LARGE	@@1
 	pop	di
 	ret
 
+section .data
 
-ALIGN 2
 pagep	dw	0
 wpage	dw	1,2,3
 spage	dw	3,1,2
 
+section .code
+
 m2_switch:
 	mov	ax,0a000h
-	mov	ds:_vramseg,ax
-	mov	bx,cs:pagep
+	mov	[_vramseg],ax
+	mov	bx,[pagep]
 	inc	bx
 	cmp	bx,3
 	jb	sws1
 	xor	bx,bx
-sws1:	mov	cs:pagep,bx
+sws1:	mov	[pagep],bx
 	shl	bx,1
 	mov	dx,3d4h
 	mov	al,33h
-	mov	ah,byte ptr cs:spage[bx]
+	mov	ah,byte [spage+ebx]
 	out	dx,ax ;spage
 	;set wpage
-	mov	al,byte ptr cs:wpage[bx]
+	mov	al,byte [wpage+ebx]
 	mov	ah,al
 	rol	ah,4
 	or	al,ah
@@ -232,7 +239,7 @@ tweak640x400:
 	out     dx,al
 	inc     dx
 	in      al,dx
-	and     al,not 08h      
+	and     al,~08h      
 	or      al,04h          
 	out     dx,al
 	mov     dx,3ceh
@@ -240,26 +247,26 @@ tweak640x400:
 	out     dx,al
 	inc     dx
 	in      al,dx
-	and     al,not 10h      
+	and     al,~10h      
 	out     dx,al
 	dec     dx
 	mov     al,6
 	out     dx,al
 	inc     dx
 	in      al,dx
-	and     al,not 02h      
+	and     al,~02h      
 	out     dx,al
 	mov     dx,3d4h
 	mov     al,9
 	inc     dx
-	and     al,not 5fh 
+	and     al,~5fh 
 	or      al,1
 	dec     dx
 	mov     al,14h
 	out     dx,al
 	inc     dx
 	in      al,dx
-	and     al,not 40h
+	and     al,~40h
 	out     dx,al
 	dec     dx
 	mov     al,17h

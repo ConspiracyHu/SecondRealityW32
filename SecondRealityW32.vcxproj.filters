@@ -434,5 +434,8 @@
     <YASM Include="Parts\VISU\ADATA.ASM">
       <Filter>Parts\VISU</Filter>
     </YASM>
+    <YASM Include="Parts\VISU\ATEXT.ASM">
+      <Filter>Parts\VISU</Filter>
+    </YASM>
   </ItemGroup>
 </Project>

@@ -108,6 +108,7 @@ poly2:	;LABEL WORD
 section .data
 ;ALIGN 16
 
+extern _vid_drawfill
 drawfill_routine dd	_vid_drawfill
 drawfill_routine0 dd	_vid_drawfill ;nrm ;original (=NULL)
 

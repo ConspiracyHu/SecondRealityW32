@@ -11,6 +11,7 @@
 ;**
 ;****************************************************************************/
 
+%define INCLUDE_CODE
 %include "a.inc"
 
 section .data
@@ -35,7 +36,7 @@ emptyroutine:
 ;	loads es => vram, and sets some VGA registers the
 ;	way the gfx routines expect them to be.
 vidstart:
-	mov	es,ds:_vramseg
+	mov	es,[_vramseg]
 	mov	dx,3c4h
 	mov	ax,0f02h
 	out	dx,ax ;set the plane register ready (&enable all planes)
@@ -44,10 +45,10 @@ vidstart:
 
 ;entry: cx=rows to calc, dx=row length
 setrows:
-	mov	ds:_rowlen,dx
-	mov	bx,OFFSET _rows
+	mov	[_rowlen],dx
+	mov	bx,_rows
 	xor	ax,ax
-@@1:	mov	ds:[bx],ax
+@@1:	mov	[ebx],ax
 	add	ax,dx
 	add	bx,2
 	loop	@@1
@@ -60,8 +61,8 @@ setrows:
 ;descr: sets the vision angle (a=0..65535)
 _vid_cameraangle:
 	CBEG
-	mov	eax,ds:_projclipx[CLIPMAX] ;right edge
-	sub	eax,ds:_projaddx ;center X
+	mov	eax,[_projclipx+CLIPMAX] ;right edge
+	sub	eax,[_projaddx] ;center X
 	;ax=width of half of screen
 	movpar	bx,0
 	shr	bx,1 ;divide by 2 for half of angle
@@ -72,16 +73,16 @@ _vid_cameraangle:
 	jb	@@1
 	mov	bx,16383 ;90 degrees maximum
 @@1:	shr	bx,6-1
-	and	bx,not 1
+	and	bx,~1
 	;bx=word index (0..255)*2
-	movzx	ecx,word ptr ds:_avistan[bx]
+	movzx	ecx,word [_avistan+ebx]
 	mul	ecx	
 	shrd	eax,edx,8
-	mov	ds:_projmulx,eax
-	movzx	ecx,word ptr ds:_projaspect
+	mov	[_projmulx],eax
+	movzx	ecx,word [_projaspect]
 	mul	ecx	
 	shrd	eax,edx,8
-	mov	ds:_projmuly,eax
+	mov	[_projmuly],eax
 	CEND
 
 
@@ -94,24 +95,24 @@ _vid_window:
 	CBEG
 	movpar	eax,0
 	mov	edx,eax
-	mov	ds:_projclipx[CLIPMIN],eax
+	mov	[_projclipx+CLIPMIN],eax
 	movpar	eax,2
 	add	edx,eax
-	mov	ds:_projclipx[CLIPMAX],eax
+	mov	[_projclipx+CLIPMAX],eax
 	sar	edx,1
-	mov	ds:_projaddx,edx
+	mov	[_projaddx],edx
 	movpar	eax,4
 	mov	edx,eax
-	mov	ds:_projclipy[CLIPMIN],eax
+	mov	[_projclipy+CLIPMIN],eax
 	movpar	eax,6
 	add	edx,eax
-	mov	ds:_projclipy[CLIPMAX],eax
+	mov	[_projclipy+CLIPMAX],eax
 	sar	edx,1
-	mov	ds:_projaddy,edx
+	mov	[_projaddy],edx
 	movpar	eax,8
-	mov	ds:_projclipz[CLIPMIN],eax
+	mov	[_projclipz+CLIPMIN],eax
 	movpar	eax,10
-	mov	ds:_projclipz[CLIPMAX],eax
+	mov	[_projclipz+CLIPMAX],eax
 	CEND
 
 
@@ -130,7 +131,7 @@ _vid_init:
 	push	ds
 	mov	ax,ds
 	LOADDS
-	mov	ds:_cdataseg,ax
+	mov	[_cdataseg],ax
 	movpar	ax,0
 	cmp	ax,1
 	jne	@@1
@@ -177,11 +178,11 @@ _vid_setpal:
 	out	dx,al
 	inc	dx
 	mov	cx,256
-@@3:	mov	al,ds:[si+0]
+@@3:	mov	al,[esi+0]
 	out	dx,al
-	mov	al,ds:[si+1]
+	mov	al,[esi+1]
 	out	dx,al
-	mov	al,ds:[si+2]
+	mov	al,[esi+2]
 	out	dx,al
 	add	si,3
 	loop	@@3
@@ -198,14 +199,14 @@ _vid_drawdots:
 	call	vidstart
 	movpar	cx,0
 	lfspar	si,1
-@@1:	mov	ax,fs:pvlist_vf[si]
+@@1:	mov	ax,[pvlist_vf+esi]
 	or	ax,ax
 	jnz	@@2
-	mov	dx,fs:pvlist_x[si]
-	mov	bx,fs:pvlist_y[si]
+	mov	dx,[pvlist_x+esi]
+	mov	bx,[pvlist_y+esi]
 	mov	ah,31
 	push	cx
-	call	ds:vr[PSET]
+	call	[vr+PSET]
 	pop	cx
 @@2:	add	si,pvlist_size
 	loop	@@1
@@ -224,13 +225,13 @@ _vid_dotdisplay_pvlist:
 	lfspar	si,1
 	movpar	cx,0
 @@1:	push	cx
-	mov	ax,fs:[si+pvlist_vf]
+	mov	ax,[esi+pvlist_vf]
 	or	ax,ax
 	jnz	@@2
-	mov	dx,fs:[si+pvlist_x]
-	mov	bx,fs:[si+pvlist_y]
+	mov	dx,[esi+pvlist_x]
+	mov	bx,[esi+pvlist_y]
 	mov	ah,15 ;color
-	call	ds:vr[PSET]
+	call	[vr+PSET]
 @@2:	add	si,pvlist_size
 	pop	cx
 	loop	@@1
@@ -244,7 +245,7 @@ _vid_pset:
 	movpar	dx,0
 	movpar	bx,1
 	movpar	ah,2
-	call	ds:vr[PSET]
+	call	[vr+PSET]
 	CEND
 
 
@@ -263,12 +264,12 @@ _vid_dotdisplay_zcolor:
 	lgspar	di,3
 	movpar	cx,0
 @@1:	push	cx
-	mov	ax,fs:[si+pvlist_vf]
+	mov	ax,[esi+pvlist_vf]
 	or	ax,ax
 	jnz	@@2
-	mov	dx,fs:[si+pvlist_x]
-	mov	bx,fs:[si+pvlist_y]
-	mov	eax,gs:[di+vlist_z]
+	mov	dx,[esi+pvlist_x]
+	mov	bx,[esi+pvlist_y]
+	mov	eax,[edi+vlist_z]
 	sar	eax,11
 	cmp	ax,1
 	jge	@@3
@@ -277,7 +278,7 @@ _vid_dotdisplay_zcolor:
 	jle	@@4
 	mov	ax,31
 @@4:	mov	ah,al
-	call	ds:vr[PSET]
+	call	[vr+PSET]
 @@2:	add	si,pvlist_size
 	add	di,vlist_size
 	pop	cx
@@ -293,7 +294,7 @@ _vid_clear:
 	CBEG
 	call	vidstart
 	mov	ax,0 ;blackclear
-	call	ds:vr[CLEAR]
+	call	[vr+CLEAR]
 	CEND
 
 
@@ -305,7 +306,7 @@ _vid_clear255:
 	CBEG
 	call	vidstart
 	mov	ax,9 ;255clear
-	call	ds:vr[CLEAR]
+	call	[vr+CLEAR]
 	CEND
 
 
@@ -319,7 +320,7 @@ _vid_clearbg:
 	mov	ax,2 ;bgcopy
 	mov	si,[bp+6]
 	mov	fs,[bp+8]
-	call	ds:vr[CLEAR]
+	call	[vr+CLEAR]
 	CEND
 
 
@@ -331,7 +332,7 @@ _vid_clearbg:
 _vid_switch:
 	CBEG
 	call	vidstart
-	call	ds:vr[SWITCH]
+	call	[vr+SWITCH]
 	CEND
 
 
@@ -347,7 +348,7 @@ _vid_setswitch:
 	je	@@1
 	shl	ax,14-4
 	add	ax,0a000h
-	mov	ds:_vramseg,ax
+	mov	[_vramseg],ax
 @@1:	movpar	ax,1
 	cmp	ax,-1
 	je	@@2
@@ -365,7 +366,7 @@ _vid_setswitch:
 _vid_waitb:
 	CBEG
 	call	vidstart
-	call	ds:vr[WAITB]
+	call	[vr+WAITB]
 	CEND
 
 
@@ -378,7 +379,7 @@ _vid_skyclear:
 	call	vidstart
 	lfspar	si,0
 	mov	ax,1 ;skyclear
-	call	ds:vr[CLEAR]
+	call	[vr+CLEAR]
 	CEND
 
 
@@ -386,7 +387,7 @@ _vid_skyclear:
 ;         'Temporary' text routines
 ;##########################################################################
 
-include atext.asm
+%include "atext.asm"
 
 ;##########################################################################
 ;         Common routines that work in all current screen modes
@@ -395,7 +396,8 @@ include atext.asm
 ;entry: dx=x, bx=y, ax=width, cx=heigth
 ; exit:
 ;descr: calculates the 'good' copying sequence for the bitmap
-ALIGN 2
+section .data
+;ALIGN 2
 bb_hidden dw	0
 bb_yskip dw	0
 bb_ycount dw	0
@@ -407,58 +409,61 @@ bb_doskip2 dw	0,0,0,0 ;pages 0..3
 bb_doplane dw	0,0,0,0
 bb_dodest dw	0,0,0,0
 bb_docount dw	0,0,0,0
+
+section .code
+
 bitbltanalyze:
 	push	si
 	push	di
 	;clip up/down
-	mov	cs:bb_xskip,0
-	mov	cs:bb_yskip,0
-	mov	si,word ptr ds:_projclipy[CLIPMAX]
+	mov	word [bb_xskip],0
+	mov	word [bb_yskip],0
+	mov	si,word [_projclipy+CLIPMAX]
 	cmp	bx,si
-	jg	@@out
-	mov	si,word ptr ds:_projclipy[CLIPMIN]
+	jg	bitbltanalyze_out
+	mov	si,word [_projclipy+CLIPMIN]
 	cmp	bx,si
-	jge	@@1
+	jge	.@@1
 	sub	si,bx
-	mov	cs:bb_yskip,si
+	mov	[bb_yskip],si
 	add	bx,si
 	sub	cx,si
-@@1:	mov	si,word ptr ds:_projclipy[CLIPMAX]
+.@@1:	mov	si,word [_projclipy+CLIPMAX]
 	sub	si,bx
 	cmp	cx,si
-	jle	@@2
+	jle	.@@2
 	mov	cx,si
 	inc	cx
-@@2:	mov	cs:bb_ycount,cx
+.@@2:	mov	[bb_ycount],cx
 	mov	si,bx
 	add	si,cx
-	cmp	si,word ptr ds:_projclipy[CLIPMIN]
-	jl	@@out
+	cmp	si,word [_projclipy+CLIPMIN]
+	jl	bitbltanalyze_out
 	;clip left/right
-	mov	si,word ptr ds:_projclipx[CLIPMAX]
+	mov	si,word [_projclipx+CLIPMAX]
 	cmp	dx,si
-	jg	@@out
-	mov	si,word ptr ds:_projclipx[CLIPMIN]
+	jg	bitbltanalyze_out
+	mov	si,word [_projclipx+CLIPMIN]
 	cmp	dx,si
-	jge	@@3
+	jge	.@@3
 	sub	si,dx
-	mov	cs:bb_xskip,si
+	mov	[bb_xskip],si
 	add	dx,si
 	sub	ax,si
-@@3:	mov	si,word ptr ds:_projclipx[CLIPMAX]
+.@@3:	mov	si,word [_projclipx+CLIPMAX]
 	sub	si,dx
 	cmp	ax,si
-	jle	@@4
+	jle	.@@4
 	mov	ax,si
 	inc	ax
-@@4:	mov	cs:bb_xcopy,ax
+.@@4:	mov	[bb_xcopy],ax
 	mov	si,dx
 	add	si,ax
-	cmp	si,word ptr ds:_projclipx[CLIPMIN]
-	jl	@@out
+	cmp	si,word [_projclipx+CLIPMIN]
+	jl	bitbltanalyze_out
 	;calc start address
 	shl	bx,1
-	mov	bx,ds:_rows[bx]
+	mov	bx,[_rows+ebx]
 	mov	cx,dx
 	shr	dx,2
 	add	bx,dx
@@ -466,37 +471,40 @@ bitbltanalyze:
 	mov	ax,1102h
 	rol	ah,cl
 	mov	dx,bx
-	mov	si,cs:bb_xskip
-	mov	di,cs:bb_xcopy
+	mov	si,[bb_xskip]
+	mov	di,[bb_xcopy]
 	add	di,3
 	xor	bx,bx
+  %assign lbl 0
 	%rep 4
-	local	l1
+	;local	l1
 	push	ax
-	mov	cs:bb_doplane[bx],ax
-	mov	cs:bb_dodest[bx],dx
+	mov	[bb_doplane+ebx],ax
+	mov	[bb_dodest+ebx],dx
 	mov	ax,si
 	shr	ax,2
-	mov	cs:bb_doskip[bx],ax
+	mov	[bb_doskip+ebx],ax
 	mov	ax,si
 	and	ax,3
-	mov	cs:bb_doskip2[bx],ax
+	mov	[bb_doskip2+ebx],ax
 	mov	ax,di
 	shr	ax,2
-	mov	cs:bb_docount[bx],ax
+	mov	[bb_docount+ebx],ax
 	pop	ax
 	rol	ah,1
-	jnc	l1
+  %define LBL(x) bbl1_ %+ lbl
+	jnc	LBL(x)
 	inc	dx
-l1:	inc	si
+LBL(x) :	inc	si
 	dec	di
 	add	bx,2
+  %assign lbl lbl+1
 	%endrep
-	mov	cs:bb_hidden,0
+	mov	word [bb_hidden],0
 	pop	di	
 	pop	si
 	ret
-@@out:	mov	cs:bb_hidden,1
+bitbltanalyze_out:	mov	word [bb_hidden],1
 	pop	di	
 	pop	si
 	ret
@@ -506,11 +514,15 @@ l1:	inc	si
 ;entry:	p=pointer to pic, x/y=screen position to write to
 ; exit: -
 ;descr: copies pic to screen. The pic format is {PIC64TW}
-ALIGN 2
+;ALIGN 2
+section .data
 yrow	dw	0
 yrowlen dw	0
 xm0	dw	0
 xmstart dw	0
+
+section .code
+
 _vid_pic320200:
 	CBEG
 	call	vidstart
@@ -519,10 +531,10 @@ _vid_pic320200:
 	mov	cx,200
 	mov	ax,320
 	call	bitbltanalyze
-	cmp	cs:bb_hidden,0
+	cmp	word [bb_hidden],0
 	jne	@@0
-	mov	ax,ds:_rowlen
-	mov	cs:yrowlen,ax
+	mov	ax,[_rowlen]
+	mov	[yrowlen],ax
 	ldspar	si,0
 	xor	bx,bx
 	mov	cx,4
@@ -531,20 +543,20 @@ _vid_pic320200:
 	push	si
 	push	di
 	mov	ax,320 ;line length in source buf
-	mul	cs:bb_yskip
+	mul	word [bb_yskip]
 	add	si,ax
 	mov	ax,80 ;lenght of single 'bit'plane
-	mul	cs:bb_doskip2[bx]
+	mul	word [bb_doskip2+ebx]
 	add	si,ax
-	add	si,cs:bb_doskip[bx]
-	mov	ax,cs:bb_doplane[bx]
+	add	si,[bb_doskip+ebx]
+	mov	ax,[bb_doplane+ebx]
 	mov	dx,3c4h
 	out	dx,ax
-	mov	di,cs:bb_dodest[bx]
-	mov	dx,cs:bb_docount[bx]
+	mov	di,[bb_dodest+ebx]
+	mov	dx,[bb_docount+ebx]
 	or	dx,dx
 	jz	@@20
-	mov	cx,cs:bb_ycount
+	mov	cx,[bb_ycount]
 	jcxz	@@20
 	cmp	cx,7
 	ja	@@2
@@ -562,7 +574,7 @@ _vid_pic320200:
 	pop	di
 	pop	si
 	pop	cx
-	add	di,cs:yrowlen
+	add	di,[yrowlen]
 	add	si,320 ;line length in source buf
 	loop	@@5
 	jmp	@@20
@@ -587,7 +599,7 @@ _vid_pic320200:
 	pop	si
 	pop	dx
 	pop	cx
-	add	di,cs:yrowlen
+	add	di,[yrowlen]
 	add	si,320 ;line length in source buf
 	loop	@@2
 	
@@ -596,7 +608,7 @@ _vid_pic320200:
 	pop	bx
 	pop	cx
 	add	bx,2
-	loop	@@1
+	LOOP_LARGE	@@1
 @@0:	CEND
 
 
@@ -611,23 +623,21 @@ _vid_drawsight:
 	ldspar	si,0
 	%assign zzz 1
 	%rep	4
-	local	l1
+	;local	l1
 	mov	dx,3c5h
 	mov	al,zzz
 	out	dx,al
-	mov	cx,ds:[si]
+	mov	cx,[esi]
 	add	si,2
 	mov	al,127
-l1:	mov	di,ds:[si]
+  %define LBL(x) dsl1_ %+ zzz
+LBL(x) :	mov	di,[esi]
 	add	si,2
-	mov	es:[di],al
-	loop	l1	
+	mov	[edi],al
+	loop	LBL(x)
 	%assign zzz zzz*2
 	%endrep
 	CEND
 
 
 %include "avidfill.asm"
-
-asm_code ENDS
-	END

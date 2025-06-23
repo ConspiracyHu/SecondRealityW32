@@ -112,6 +112,11 @@
 %else
 %define DECL extern
 %endif
+%ifdef INCLUDE_CODE
+%define CODEDECL extern
+%else
+%define CODEDECL global
+%endif
 
 ;######## public routines ########
 
@@ -137,9 +142,9 @@ global	_vid_deinittimer
 global	_vid_drawsight
 global	_vid_pic320200
 ;polygon fillers
-extern	_vid_drawfill
-extern	_vid_drawfill_nrm
-extern	_vid_drawfill_grd
+;CODEDECL	_vid_drawfill
+;CODEDECL	_vid_drawfill_nrm
+;CODEDECL	_vid_drawfill_grd
 global	_vid_drawdots
 
 global	_calc_project
