@@ -117,9 +117,9 @@ mulmatrices:
 ;entry:	fs:si=matrix1, es:di=matrix2
 ; exit: es:di=matrix1*matrix2 (matrix 2 overwritten)
 mulmatrices2:
-	push	ds
-	mov	ax,fs
-	mov	ds,ax
+	;push	ds
+	;mov	ax,fs
+	;mov	ds,ax
 	
 	mulmacro 0,0
 	push	ebx
@@ -150,7 +150,7 @@ mulmatrices2:
 	pop	dword [edi+8]
 	pop	dword [edi+4]
 	pop	dword [edi+0]
-	pop	ds
+	;pop	ds
 	ret
 
 
@@ -400,21 +400,21 @@ _calc_mulrmatrix:
 _calc_applyrmatrix:
 	CBEG
 	;fs:si=source, es:di=dest
-	lfspar	si,2
-	lespar	di,0
+	lfspar	esi,1
+	lespar	edi,0
 	call	mulmatrices2
 	;es:di now has the new rotation matrix, next rotate position
-	push	bp
-	lespar	di,0
-	add	di,rmatrix_x
-	ldspar	si,2 ;rotate according to apply matrix
-	lfspar	bp,0
-	add	bp,rmatrix_x
+	push	ebp
+	lespar	edi,1
+	add	edi,rmatrix_x
+	ldspar	esi,2 ;rotate according to apply matrix
+	lfspar	ebp,1
+	add	ebp,rmatrix_x
 	call	rotatesingle
-	pop	bp
+	pop	ebp
 	;translate
-	lespar	di,2
-	lfspar	si,0
+	lespar	edi,1
+	lfspar	esi,0
 	mov	eax,[edi+rmatrix_x]
 	add	[esi+rmatrix_x],eax
 	mov	eax,[edi+rmatrix_y]
@@ -523,12 +523,12 @@ _calc_sftranslate:
 ;descr: Rotates (and moves) the given list
 _calc_rotate:
 	CBEG
-	movpar	cx,0
+	movpar	ecx,0
 	JCXZ_LARGE	@@0
-	lespar	di,1 ;destination
-	ldspar	si,5 ;matrix - dataseg not used in procedure, so DS can be used
-	lfspar	bp,3 ;source - NOTE: bp/parameter pointer destroyed!
-@@1:	push	cx
+	lespar	edi,1 ;destination
+	ldspar	esi,3 ;matrix - dataseg not used in procedure, so DS can be used
+	lfspar	ebp,2 ;source - NOTE: bp/parameter pointer destroyed!
+@@1:	push	ecx
 
 	movsx	eax,word [esi+rmatrix_m+2*0]
 	imul	dword [ebp+vlist_x]
@@ -582,9 +582,9 @@ _calc_rotate:
 	mov	word [edi+vlist_normal],ax
 	
 	;next point
-	add	bp,vlist_size
-	add	di,vlist_size
-	pop	cx
+	add	ebp,vlist_size
+	add	edi,vlist_size
+	pop	ecx
 	LOOP_LARGE	@@1
 @@0:	CEND
 
@@ -596,9 +596,9 @@ _calc_rotate:
 ;descr: Rotates the single vertex and returns the resulting Z coordinate.
 _calc_singlez:
 	CBEG
-	ldspar	si,3 ;matrix - dataseg not used in procedure, so DS can be used
-	movpar	ax,0
-	lfspar	bp,1 ;source - NOTE: bp/parameter pointer destroyed!
+	ldspar	esi,2 ;matrix - dataseg not used in procedure, so DS can be used
+	movpar	eax,0
+	lfspar	ebp,1 ;source - NOTE: bp/parameter pointer destroyed!
 	shl	ax,vlist_sizeshl
 	add	bp,ax
 
@@ -617,9 +617,9 @@ _calc_singlez:
 	shrd	ebx,ecx,unitshr
 	add	ebx,[esi+rmatrix_z]
 
-	mov	ax,bx
-	shr	ebx,16
-	mov	dx,bx
+	mov	eax,ebx
+	;shr	ebx,16
+	;mov	dx,bx
 	CEND
 
 
@@ -770,37 +770,37 @@ _calc_rotate16:
 ;descr: Projects the given list = does perspective transformation
 _calc_project:
 	CBEG
-	lfspar	si,3
-	lespar	di,1
-	mov	ax,0ffffh
-	movpar	cx,0
+	lfspar	esi,2
+	lespar	edi,1
+	mov	eax,0ffffh
+	movpar	ecx,0
 	JCXZ_LARGE	@@0
-@@1:	push	cx
-	push	ax
+@@1:	push	ecx
+	push	eax
 	
 	mov	ecx,[esi+vlist_x]
 	mov	eax,[esi+vlist_y]
 	mov	ebx,[esi+vlist_z]
 	
-	xor	bp,bp
+	xor	ebp,ebp
 	cmp	ebx,[_projclipz+CLIPMIN]
 	jge	@@21
-	or	bp,VF_NEAR
+	or	ebp,VF_NEAR
 	mov	ebx,[_projclipz+CLIPMIN]
 	jmp	@@22
 @@21:	cmp	ebx,[_projclipz+CLIPMAX]
 	jle	@@22
-	or	bp,VF_FAR
+	or	ebp,VF_FAR
 @@22:	;
 	imul	dword [_projmuly]
 	idiv	ebx
 	add	eax,[_projaddy]
 	cmp	eax,[_projclipy+CLIPMAX]
 	jng	@@41
-	or	bp,VF_DOWN
+	or	ebp,VF_DOWN
 @@41:	cmp	eax,[_projclipy+CLIPMIN]
 	jnl	@@42
-	or	bp,VF_UP
+	or	ebp,VF_UP
 @@42:	mov	[edi+pvlist_y],ax ;store Y
 	;
 	mov	eax,[_projmulx]
@@ -809,21 +809,21 @@ _calc_project:
 	add	eax,[_projaddx]
 	cmp	eax,[_projclipx+CLIPMAX]
 	jng	@@43
-	or	bp,VF_RIGHT
+	or	ebp,VF_RIGHT
 @@43:	cmp	eax,[_projclipx+CLIPMIN]
 	jnl	@@44
-	or	bp,VF_LEFT
+	or	ebp,VF_LEFT
 @@44:	mov	[edi+pvlist_x],ax ;store X
 
 @@5:	mov	[edi+pvlist_vf],bp ;store visiblity flags
 	
 	;next point
-	add	si,vlist_size
-	add	di,pvlist_size
+	add	esi,vlist_size
+	add	edi,pvlist_size
 
-	pop	ax	
-	pop	cx
-	and	ax,bp
+	pop	eax	
+	pop	ecx
+	and	eax,ebp
 	LOOP_LARGE	@@1
 @@0:	CEND
 
@@ -837,37 +837,37 @@ _calc_project:
 ;descr: Projects the given list = does perspective transformation
 _calc_project16:
 	CBEG
-	lfspar	si,3
-	lespar	di,1
-	mov	ax,0ffffh
-	movpar	cx,0
+	lfspar	esi,2
+	lespar	edi,1
+	mov	eax,0ffffh
+	movpar	ecx,0
 	JCXZ_LARGE	@@0
-@@1:	push	cx
-	push	ax
+@@1:	push	ecx
+	push	eax
 	
 	movsx	ecx,word [esi+vlist_x]
 	movsx	eax,word [esi+vlist_y]
 	movsx	ebx,word [esi+vlist_z]
 	
-	xor	bp,bp
+	xor	ebp,ebp
 	cmp	ebx,[_projclipz+CLIPMIN]
 	jge	@@21
-	or	bp,VF_NEAR
+	or	ebp,VF_NEAR
 	mov	ebx,[_projclipz+CLIPMIN]
 	jmp	@@22
 @@21:	cmp	ebx,[_projclipz+CLIPMAX]
 	jle	@@22
-	or	bp,VF_FAR
+	or	ebp,VF_FAR
 @@22:	;
 	imul	dword [_projmuly]
 	idiv	ebx
 	add	eax,[_projaddy]
 	cmp	eax,[_projclipy+CLIPMAX]
 	jng	@@41
-	or	bp,VF_DOWN
+	or	ebp,VF_DOWN
 @@41:	cmp	eax,[_projclipy+CLIPMIN]
 	jnl	@@42
-	or	bp,VF_UP
+	or	ebp,VF_UP
 @@42:	mov	[edi+pvlist_y],ax ;store Y
 	;
 	mov	eax,[_projmulx]
@@ -876,20 +876,20 @@ _calc_project16:
 	add	eax,[_projaddx]
 	cmp	eax,[_projclipx+CLIPMAX]
 	jng	@@43
-	or	bp,VF_RIGHT
+	or	ebp,VF_RIGHT
 @@43:	cmp	eax,[_projclipx+CLIPMIN]
 	jnl	@@44
-	or	bp,VF_LEFT
+	or	ebp,VF_LEFT
 @@44:	mov	[edi+pvlist_x],ax ;store X
 
 @@5:	mov	[edi+pvlist_vf],bp ;store visiblity flags
 	
 	;next point
-	add	si,vlist_size
-	add	di,pvlist_size
+	add	esi,vlist_size
+	add	edi,pvlist_size
 
-	pop	ax	
-	pop	cx
-	and	ax,bp
+	pop	eax	
+	pop	ecx
+	and	eax,ebp
 	LOOP_LARGE	@@1
 @@0:	CEND

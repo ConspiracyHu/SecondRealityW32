@@ -103,22 +103,22 @@ _vid_window:
 	movpar	eax,0
 	mov	edx,eax
 	mov	[_projclipx+CLIPMIN],eax
-	movpar	eax,2
+	movpar	eax,1
 	add	edx,eax
 	mov	[_projclipx+CLIPMAX],eax
 	sar	edx,1
 	mov	[_projaddx],edx
-	movpar	eax,4
+	movpar	eax,2
 	mov	edx,eax
 	mov	[_projclipy+CLIPMIN],eax
-	movpar	eax,6
+	movpar	eax,3
 	add	edx,eax
 	mov	[_projclipy+CLIPMAX],eax
 	sar	edx,1
 	mov	[_projaddy],edx
-	movpar	eax,8
+	movpar	eax,4
 	mov	[_projclipz+CLIPMIN],eax
-	movpar	eax,10
+	movpar	eax,5
 	mov	[_projclipz+CLIPMAX],eax
 	CEND
 
@@ -364,7 +364,7 @@ _vid_setswitch:
 	shl	ax,14
 	mov	dx,3d4h
 	mov	al,0ch
-	out	dx,ax
+	;out	dx,ax
 @@2:	CEND
 
 

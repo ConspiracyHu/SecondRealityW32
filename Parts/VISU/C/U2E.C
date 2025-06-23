@@ -302,10 +302,10 @@ void u2e_main(int argc,char *argv[])
 	    if(!firstframe)
 	    {
  		deadlock=0;
-		while(cl[clw].ready)
-		{
-			if(deadlock>16) break;
-		}
+		//while(cl[clw].ready)
+		//{
+		//	if(deadlock>16) break;
+		//}
 		// Draw to free frame
 		vid_setswitch(clw,-1);
 		vid_clear255();

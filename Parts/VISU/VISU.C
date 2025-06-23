@@ -3,7 +3,7 @@
 #include "c.h"
 
 #define GCHAR *(((char *)d)++)
-#define GINT *(((int *)d)++)
+#define GINT *(((short *)d)++)
 #define GLONG *(((long *)d)++)
 
 object * vis_loadobject(char *fname)
