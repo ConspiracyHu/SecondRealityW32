@@ -37,7 +37,7 @@
     <ClCompile Include="Parts\DIS\dis.c">
       <Filter>Parts\DIS</Filter>
     </ClCompile>
-    <ClCompile Include="Parts\GLENZ\ZOOMER.C">
+    <ClCompile Include="Parts\GLENZ\GLENZ_ZOOMER.C">
       <Filter>Parts\04-Glenz</Filter>
     </ClCompile>
     <ClCompile Include="Parts\BEG\BEG.C">
@@ -353,10 +353,10 @@
     <YASM Include="Parts\GLENZ\GLENZ_DATA.ASM">
       <Filter>Parts\04-Glenz</Filter>
     </YASM>
-    <YASM Include="Parts\GLENZ\VEC.ASM">
+    <YASM Include="Parts\GLENZ\GLENZ_VEC.ASM">
       <Filter>Parts\04-Glenz</Filter>
     </YASM>
-    <YASM Include="Parts\GLENZ\VID.ASM">
+    <YASM Include="Parts\GLENZ\GLENZ_VID.ASM">
       <Filter>Parts\04-Glenz</Filter>
     </YASM>
     <YASM Include="Parts\GLENZ\VIDINIT.ASM">
@@ -374,16 +374,16 @@
     <YASM Include="Parts\GLENZ\VIDTWE.ASM">
       <Filter>Parts\04-Glenz</Filter>
     </YASM>
-    <YASM Include="Parts\GLENZ\ZOOM.ASM">
+    <YASM Include="Parts\GLENZ\GLENZ_ZOOM.ASM">
       <Filter>Parts\04-Glenz</Filter>
     </YASM>
-    <YASM Include="Parts\GLENZ\NEW.ASM">
+    <YASM Include="Parts\GLENZ\GLENZ_NEW.ASM">
       <Filter>Parts\04-Glenz</Filter>
     </YASM>
-    <YASM Include="Parts\GLENZ\MATH.ASM">
+    <YASM Include="Parts\GLENZ\GLENZ_MATH.ASM">
       <Filter>Parts\04-Glenz</Filter>
     </YASM>
-    <YASM Include="Parts\GLENZ\ADATA.ASM">
+    <YASM Include="Parts\GLENZ\GLENZ_ADATA.ASM">
       <Filter>Parts\04-Glenz</Filter>
     </YASM>
     <YASM Include="Parts\BEG\BEG_DATA.ASM">
