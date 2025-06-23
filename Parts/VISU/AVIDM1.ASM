@@ -14,7 +14,7 @@
 
 ;======== public routines ========
 
-m1_init	PROC NEAR
+m1_init:
 	mov	ds:_vramseg,0a000h
 	call	tweak320x200
 	mov	dx,320/4
@@ -39,9 +39,9 @@ m1_init	PROC NEAR
 	;
 	mov	ds:_projaspect,225
 	ret
-m1_init	ENDP
 
-m11_init PROC NEAR
+
+m11_init:
 	mov	ds:_vramseg,0a000h
 ;	call	tweak320x200
 	mov	dx,320/4
@@ -66,9 +66,9 @@ m11_init PROC NEAR
 	;
 	mov	ds:_projaspect,225
 	ret
-m11_init ENDP
 
-m1o_init PROC NEAR ;oversampling version
+
+m1o_init: ;oversampling version
 	mov	ds:_vramseg,0a000h
 	;call	tweak320x200
 	mov	dx,320/4
@@ -93,12 +93,12 @@ m1o_init PROC NEAR ;oversampling version
 	;
 	mov	ds:_projaspect,225
 	ret
-m1o_init	ENDP
+
 
 ;======== public routines called through the vr[] pointers ========
 
 ;dx=X, bx=Y, ah=color
-m1_pset	PROC NEAR
+m1_pset:
 	;requires ES=vram, OUT 3C4,2  [set by vidstart]
 	shl	bx,1
 	mov	bx,ds:_rows[bx]
@@ -112,9 +112,9 @@ m1_pset	PROC NEAR
 	out	dx,al
 	mov	es:[bx],ah
 	ret
-m1_pset ENDP
 
-m1_waitb PROC NEAR
+
+m1_waitb:
 	mov	dx,3dah
 @@1:	in	al,dx
 	test	al,8
@@ -123,9 +123,9 @@ m1_waitb PROC NEAR
 	test	al,8
 	jz	@@2
 	ret
-m1_waitb ENDP
 
-m1_clear PROC NEAR ;clear current page
+
+m1_clear: ;clear current page
 	push	di
 	cmp	ax,9
 	je	@@bgd
@@ -137,10 +137,11 @@ m1_clear PROC NEAR ;clear current page
 	xor	di,di
 	xor	eax,eax
 	mov	cx,200
-@@1:	REPT	320/4/4
+@@1:
+  %rep 320/4/4
 	mov	es:[di],eax
 	add	di,4
-	ENDM
+	%endrep
 	dec	cx
 	jnz	@@1
 	pop	di
@@ -151,19 +152,21 @@ m1_clear PROC NEAR ;clear current page
 	xor	di,di
 	mov	eax,0ffffffffh
 	mov	cx,200
-@@9:	REPT	320/4/4
+@@9:
+  %rep	320/4/4
 	mov	es:[di],eax
 	add	di,4
-	ENDM
+	%endrep
 	dec	cx
 	jnz	@@9
 	pop	di
 	ret
-@@bgc:	zzpl=1
+@@bgc:
+  %assign zzpl 1
 	push	ds
 	mov	ax,fs
 	mov	ds,ax
-	REPT	4
+	%rep	4
 	local	l1
 	push	di
 	mov	dx,3c4h
@@ -172,22 +175,23 @@ m1_clear PROC NEAR ;clear current page
 	xor	di,di
 	xor	eax,eax
 	mov	cx,200
-l1:	REPT	320/4/4
+l1:
+  %rep 320/4/4
 	mov	eax,ds:[si]
 	add	si,4
 	mov	es:[di],eax
 	add	di,4
-	ENDM
+	%endrep
 	loop	l1
 	pop	di
-	zzpl=zzpl*2
-	ENDM
+	%assign zzpl zzpl*2
+	%endrep
 	pop	ds
 	pop	di
 	ret
-m1_clear ENDP
 
-m1_switch PROC NEAR
+
+m1_switch:
 	mov	ax,ds:_vramseg
 	cmp	ax,0a140h
 	jne	@@1
@@ -211,12 +215,12 @@ m1_switch PROC NEAR
 	mov	al,0ch
 	out	dx,ax
 	ret
-m1_switch ENDP
+
 
 ;======== internal routines ========
 
 ;sets up 320x200x256 tweak
-tweak320x200 PROC NEAR
+tweak320x200:
 	mov     ax,0013h
 	int     10h   
 	mov	dx,3c8h
@@ -278,5 +282,5 @@ tweak320x200 PROC NEAR
 	xor	ax,ax
 	rep	stosw
 	ret
-tweak320x200 ENDP
+
 

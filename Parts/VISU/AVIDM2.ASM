@@ -14,7 +14,7 @@
 
 ;======== public routines ========
 
-m2_init	PROC NEAR
+m2_init:
 	mov	ds:_vramseg,0a000h
 	call	tweak640x400
 	mov	dx,640/4
@@ -36,12 +36,12 @@ m2_init	PROC NEAR
 	mov	ds:_projaddy,200
 	mov	ds:_projaspect,256
 	ret
-m2_init	ENDP
+
 
 ;======== public routines called through the vr[] pointers ========
 
 ;dx=X, bx=Y, ah=color
-m2_pset	PROC NEAR
+m2_pset:
 	;requires ES=vram, OUT 3C4,2  [set by vidstart]
 	shl	bx,1
 	mov	bx,ds:_rows[bx]
@@ -55,9 +55,9 @@ m2_pset	PROC NEAR
 	out	dx,al
 	mov	es:[bx],ah
 	ret
-m2_pset ENDP
 
-m2_waitb PROC NEAR
+
+m2_waitb:
 	mov	dx,3dah
 @@1:	in	al,dx
 	test	al,8
@@ -66,12 +66,12 @@ m2_waitb PROC NEAR
 	test	al,8
 	jz	@@2
 	ret
-m2_waitb ENDP
+
 
 ALIGN 2
 tmptest	dw	0
 
-m2_clear PROC NEAR ;clear current page
+m2_clear: ;clear current page
 	inc	cs:tmptest
 	push	di
 	cmp	ax,1
@@ -113,11 +113,11 @@ m2_clear PROC NEAR ;clear current page
 	mov	si,ax
 	add	si,dx
 	zzz=0;
-	REPT	640/4/4
+	%rep	640/4/4
 	mov	eax,ds:[si+zzz]
 	mov	es:[di+zzz],eax
 	zzz=zzz+4
-	ENDM
+	%endrep
 	pop	ds
 	pop	si
 	jmp	@@noth
@@ -127,11 +127,11 @@ m2_clear PROC NEAR ;clear current page
 	mov	bx,ax
 	shl	eax,16
 	mov	ax,bx
-	zzz=0;
-	REPT	640/4/4
+	%assign zzz 0
+	%rep	640/4/4
 	mov	es:[di+zzz],eax
-	zzz=zzz+4
-	ENDM
+	%assign zzz zzz+4
+	%endrep
 	jmp	@@noth
 
 @@bitm:	push	cx
@@ -151,12 +151,12 @@ m2_clear PROC NEAR ;clear current page
 @@b1:	push	ax
 	mov	dx,3c4h
 	out	dx,ax
-	zzz=0
-	REPT	640/4/4
+	%assign zzz 0
+	%rep	640/4/4
 	mov	eax,ds:[si+zzz]
 	mov	es:[di+zzz],eax
-	zzz=zzz+4
-	ENDM
+	%assign zzz zzz+4
+	%endrep
 	add	si,2048
 	cmp	si,8192
 	jb	@@b3
@@ -177,14 +177,14 @@ m2_clear PROC NEAR ;clear current page
 	loop	@@1
 	pop	di
 	ret
-m2_clear ENDP
+
 
 ALIGN 2
 pagep	dw	0
 wpage	dw	1,2,3
 spage	dw	3,1,2
 
-m2_switch PROC NEAR
+m2_switch:
 	mov	ax,0a000h
 	mov	ds:_vramseg,ax
 	mov	bx,cs:pagep
@@ -212,12 +212,12 @@ sws1:	mov	cs:pagep,bx
 	mov	ax,000ch
 	out	dx,ax
 	ret
-m2_switch ENDP
+
 
 ;======== internal routines ========
 
 ;sets up 640x400x256 tweak
-tweak640x400 PROC NEAR
+tweak640x400:
 	mov     ax,002fh
 	int     10h
 	mov	dx,3c8h
@@ -269,4 +269,4 @@ tweak640x400 PROC NEAR
 	or      al,40h 
 	out     dx,al
 	ret
-tweak640x400 ENDP
+

@@ -11,38 +11,39 @@
 ;**
 ;****************************************************************************/
 
-include a.inc
+%include "a.inc"
 
-asm_code SEGMENT para public use16 'CODE'
-	ASSUME cs:asm_code
+section .data
 	
 framecounter dw	0
 
-include avidm1.asm ;320x200x256 (tweak)
-include avidm2.asm ;640x400x256 (tweak)
+%include "avidm1.asm" ;320x200x256 (tweak)
+%include "avidm2.asm" ;640x400x256 (tweak)
+
+section .code
 
 ;entry: -
 ; exit: -
 ;descr: does nothing
-emptyroutine PROC NEAR
+emptyroutine:
 	ret
-emptyroutine ENDP
+
 
 ;entry: -
 ; exit: -
 ;descr: executed before using graphics routines at entries.
 ;	loads es => vram, and sets some VGA registers the
 ;	way the gfx routines expect them to be.
-vidstart PROC NEAR
+vidstart:
 	mov	es,ds:_vramseg
 	mov	dx,3c4h
 	mov	ax,0f02h
 	out	dx,ax ;set the plane register ready (&enable all planes)
 	ret
-vidstart ENDP
+
 
 ;entry: cx=rows to calc, dx=row length
-setrows PROC NEAR
+setrows:
 	mov	ds:_rowlen,dx
 	mov	bx,OFFSET _rows
 	xor	ax,ax
@@ -51,13 +52,13 @@ setrows PROC NEAR
 	add	bx,2
 	loop	@@1
 	ret
-setrows ENDP
+
 
 ;北北北北 _vid_cameraangle(angle a) 北北北北
 ;entry:	(see above)
 ; exit: -
 ;descr: sets the vision angle (a=0..65535)
-_vid_cameraangle PROC FAR
+_vid_cameraangle:
 	CBEG
 	mov	eax,ds:_projclipx[CLIPMAX] ;right edge
 	sub	eax,ds:_projaddx ;center X
@@ -82,14 +83,14 @@ _vid_cameraangle PROC FAR
 	shrd	eax,edx,8
 	mov	ds:_projmuly,eax
 	CEND
-_vid_cameraangle ENDP
+
 
 ;北北北北 _vid_window(long x1,y1,x2,y2,z1,z2) 北北北北
 ;entry:	(see above)
 ; exit: -
 ;descr: sets the video window (for clipping) and sets xadd/yadd to the
 ;	center of the window
-_vid_window PROC FAR
+_vid_window:
 	CBEG
 	movpar	eax,0
 	mov	edx,eax
@@ -112,7 +113,7 @@ _vid_window PROC FAR
 	movpar	eax,10
 	mov	ds:_projclipz[CLIPMAX],eax
 	CEND
-_vid_window ENDP
+
 
 ;北北北北 _vid_init(int mode) 北北北北
 ;entry:	mode (see below)
@@ -120,7 +121,7 @@ _vid_window ENDP
 ;descr: initializes screen to graphics and sets up required variables
 ;	NOTE: the screen / palette is left black.
 ;modes:	1=320x200x256 (tweak)
-_vid_init PROC FAR
+_vid_init:
 	;CBEG (follows)
 	push	bp
 	mov	bp,sp
@@ -144,24 +145,24 @@ _vid_init PROC FAR
 	jne	@@3
 	call	m1o_init
 @@3:	CEND
-_vid_init ENDP
+
 	
 ;北北北北 _vid_deinit() 北北北北
 ;entry:	-
 ; exit: -
 ;descr: resets screen to text mode
-_vid_deinit PROC FAR
+_vid_deinit:
 	CBEG
 	mov	ax,3
 	int	10h
 	CEND
-_vid_deinit ENDP
+
 
 ;北北北北 _vid_setpal(char far *pal) 北北北北
 ;entry:	pal=palette (768 bytes VGA RGB)
 ; exit: -
 ;descr: sets screen palette 
-_vid_setpal PROC FAR
+_vid_setpal:
 	CBEG
 	ldspar	si,0
 	mov	dx,3dah
@@ -185,14 +186,14 @@ _vid_setpal PROC FAR
 	add	si,3
 	loop	@@3
 	CEND
-_vid_setpal ENDP
+
 
 ;北北北北 _vid_drawdots(int count,pvlist *pv) 北北北北
 ;entry:	count=number of points to draw
 ;	pv=pointer to projected vertex list
 ; exit: -
 ;descr: plots vertices in list
-_vid_drawdots PROC FAR
+_vid_drawdots:
 	CBEG
 	call	vidstart
 	movpar	cx,0
@@ -209,7 +210,7 @@ _vid_drawdots PROC FAR
 @@2:	add	si,pvlist_size
 	loop	@@1
 	CEND
-_vid_drawdots ENDP
+
 
 ;北北北北 _vid_dotdisplay_pvlist(int count,pvlist *list) 北北北北
 ;entry:	count=number of elements in pvlist
@@ -217,7 +218,7 @@ _vid_drawdots ENDP
 ; exit: -
 ;descr: TEST ROUTINE
 ;	displays the projected vertices in the list as dots
-_vid_dotdisplay_pvlist PROC FAR
+_vid_dotdisplay_pvlist:
 	CBEG
 	call	vidstart
 	lfspar	si,1
@@ -234,10 +235,10 @@ _vid_dotdisplay_pvlist PROC FAR
 	pop	cx
 	loop	@@1
 	CEND
-_vid_dotdisplay_pvlist ENDP
+
 
 ;北北北北 _vid_pset(int x,int y,int color) 北北北北
-_vid_pset PROC FAR
+_vid_pset:
 	CBEG
 	call	vidstart
 	movpar	dx,0
@@ -245,7 +246,7 @@ _vid_pset PROC FAR
 	movpar	ah,2
 	call	ds:vr[PSET]
 	CEND
-_vid_pset ENDP
+
 
 ;北北北北 _vid_dotdisplay_zcolor(int count,pvlist *list1,vlist *list2) 北北北北
 ;entry:	count=number of elements in pvlist
@@ -255,7 +256,7 @@ _vid_pset ENDP
 ;descr: TEST ROUTINE
 ;	displays the projected vertices in the list as dots colored
 ;	according to depth
-_vid_dotdisplay_zcolor PROC FAR
+_vid_dotdisplay_zcolor:
 	CBEG
 	call	vidstart
 	lfspar	si,1
@@ -282,37 +283,37 @@ _vid_dotdisplay_zcolor PROC FAR
 	pop	cx
 	loop	@@1
 	CEND
-_vid_dotdisplay_zcolor ENDP
+
 
 ;北北北北 _vid_clear(void) 北北北北
 ;entry: -
 ; exit: -
 ;descr: Clears the current screen to black (color 0)
-_vid_clear PROC FAR
+_vid_clear:
 	CBEG
 	call	vidstart
 	mov	ax,0 ;blackclear
 	call	ds:vr[CLEAR]
 	CEND
-_vid_clear ENDP
+
 
 ;北北北北 _vid_clear255(void) 北北北北
 ;entry: -
 ; exit: -
 ;descr: Clears the current screen to black (color 0)
-_vid_clear255 PROC FAR
+_vid_clear255:
 	CBEG
 	call	vidstart
 	mov	ax,9 ;255clear
 	call	ds:vr[CLEAR]
 	CEND
-_vid_clear255 ENDP
+
 
 ;北北北北 _vid_clearbg(char *bg) 北北北北
 ;entry: -
 ; exit: -
 ;descr: Copies the bg to screen
-_vid_clearbg PROC FAR
+_vid_clearbg:
 	CBEG
 	call	vidstart
 	mov	ax,2 ;bgcopy
@@ -320,25 +321,25 @@ _vid_clearbg PROC FAR
 	mov	fs,[bp+8]
 	call	ds:vr[CLEAR]
 	CEND
-_vid_clearbg ENDP
+
 
 ;北北北北 _vid_switch(void) 北北北北
 ;entry: -
 ; exit: -
 ;descr: Switch to the next screen page (_vid_waitb should be called after
 ;       this)
-_vid_switch PROC FAR
+_vid_switch:
 	CBEG
 	call	vidstart
 	call	ds:vr[SWITCH]
 	CEND
-_vid_switch ENDP
+
 
 ;北北北北 _vid_setswitch(int,int) 北北北北
 ;entry: -
 ; exit: -
 ;descr: Forces a separate write/display switch
-_vid_setswitch PROC FAR
+_vid_setswitch:
 	CBEG
 	;call	vidstart
 	movpar	ax,0
@@ -355,31 +356,31 @@ _vid_setswitch PROC FAR
 	mov	al,0ch
 	out	dx,ax
 @@2:	CEND
-_vid_setswitch ENDP
+
 
 ;北北北北 _vid_waitb(void) 北北北北
 ;entry: -
 ; exit: -
 ;descr: Waits for border (=retrace)
-_vid_waitb PROC FAR
+_vid_waitb:
 	CBEG
 	call	vidstart
 	call	ds:vr[WAITB]
 	CEND
-_vid_waitb ENDP
+
 
 ;北北北北 _vid_clear(char *sky) 北北北北
 ;entry: [sky]=pointer to sky data structure
 ; exit: -
 ;descr: Clears the current screen with a sky pattern according to [sky]
-_vid_skyclear PROC FAR
+_vid_skyclear:
 	CBEG
 	call	vidstart
 	lfspar	si,0
 	mov	ax,1 ;skyclear
 	call	ds:vr[CLEAR]
 	CEND
-_vid_skyclear ENDP
+
 
 ;##########################################################################
 ;         'Temporary' text routines
@@ -406,7 +407,7 @@ bb_doskip2 dw	0,0,0,0 ;pages 0..3
 bb_doplane dw	0,0,0,0
 bb_dodest dw	0,0,0,0
 bb_docount dw	0,0,0,0
-bitbltanalyze PROC NEAR
+bitbltanalyze:
 	push	si
 	push	di
 	;clip up/down
@@ -469,7 +470,7 @@ bitbltanalyze PROC NEAR
 	mov	di,cs:bb_xcopy
 	add	di,3
 	xor	bx,bx
-	REPT 4
+	%rep 4
 	local	l1
 	push	ax
 	mov	cs:bb_doplane[bx],ax
@@ -490,7 +491,7 @@ bitbltanalyze PROC NEAR
 l1:	inc	si
 	dec	di
 	add	bx,2
-	ENDM
+	%endrep
 	mov	cs:bb_hidden,0
 	pop	di	
 	pop	si
@@ -499,7 +500,7 @@ l1:	inc	si
 	pop	di	
 	pop	si
 	ret
-bitbltanalyze ENDP
+
 
 ;北北北北 _vid_pic320200(char *p,int x,int y) 北北北北
 ;entry:	p=pointer to pic, x/y=screen position to write to
@@ -510,7 +511,7 @@ yrow	dw	0
 yrowlen dw	0
 xm0	dw	0
 xmstart dw	0
-_vid_pic320200 PROC FAR
+_vid_pic320200:
 	CBEG
 	call	vidstart
 	movpar	dx,2
@@ -597,19 +598,19 @@ _vid_pic320200 PROC FAR
 	add	bx,2
 	loop	@@1
 @@0:	CEND
-_vid_pic320200 ENDP
+
 
 ;北北北北 _vid_drawsight(char *sight) 北北北北
 ;entry:	[sight]=pointer to sight data
 ; exit: -
 ;descr: overlays a sight picture to the screen. The picture must be in
 ;       sight format {SIGHT-DATA}
-_vid_drawsight PROC FAR
+_vid_drawsight:
 	CBEG
 	call	vidstart
 	ldspar	si,0
-	zzz=1
-	REPT	4
+	%assign zzz 1
+	%rep	4
 	local	l1
 	mov	dx,3c5h
 	mov	al,zzz
@@ -621,12 +622,12 @@ l1:	mov	di,ds:[si]
 	add	si,2
 	mov	es:[di],al
 	loop	l1	
-	zzz=zzz*2
-	ENDM
+	%assign zzz zzz*2
+	%endrep
 	CEND
-_vid_drawsight ENDP
 
-include avidfill.asm
+
+%include "avidfill.asm"
 
 asm_code ENDS
 	END

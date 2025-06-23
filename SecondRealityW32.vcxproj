@@ -196,6 +196,10 @@
     <None Include="Parts\PLZPART\SINIT.INC" />
     <None Include="Parts\PLZPART\SPLINE.INC" />
     <None Include="Parts\VISU\A.INC" />
+    <None Include="Parts\VISU\AD.INC" />
+    <None Include="Parts\VISU\ADATASIN.INC" />
+    <None Include="Parts\VISU\AFILLDIV.INC" />
+    <None Include="Parts\VISU\AVISTAN.INC" />
     <YASM Include="Parts\BEG\BEG_DATA.ASM" />
     <YASM Include="Parts\COMAN\COMAN_ASM.ASM" />
     <YASM Include="Parts\COMAN\COMAN_DATA.ASM" />
@@ -523,9 +527,16 @@
     <YASM Include="Parts\PLZPART\PLZA.ASM" />
     <YASM Include="Parts\PLZPART\SPLINE.ASM" />
     <YASM Include="Parts\VISU\ACALC.ASM" />
+    <YASM Include="Parts\VISU\ADATA.ASM" />
     <YASM Include="Parts\VISU\ADRAW.ASM" />
-    <YASM Include="Parts\VISU\ADRAWCLP.ASM" />
+    <YASM Include="Parts\VISU\ADRAWCLP.ASM">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </YASM>
     <YASM Include="Parts\VISU\AVID.ASM" />
+    <YASM Include="Parts\VISU\AVIDFILL.ASM" />
     <YASM Include="Parts\VISU\AVIDM1.ASM" />
     <YASM Include="Parts\VISU\AVIDM2.ASM" />
     <YASM Include="Parts\VISU\C\U2A_DATA.ASM" />

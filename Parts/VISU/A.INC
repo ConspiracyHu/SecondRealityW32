@@ -13,29 +13,26 @@
 ;**
 ;****************************************************************************/
 
-.386
-LOCALS
-
 ;######## macros ########
 
 ;note: C macros expect a LARGE memory model
 
-LOADDS	MACRO	;loads the ds segment to point to asm_data
+%macro LOADDS 0	;loads the ds segment to point to asm_data
 	mov	ax,SEG _datanull
 	mov	ds,ax
-	ENDM
+%endmacro
 
-LOADES	MACRO	;loads the es segment to point to asm_data
+%macro LOADES 0	;loads the es segment to point to asm_data
 	mov	ax,SEG _datanull
 	mov	es,ax
-	ENDM
+%endmacro
 
-LOADGS	MACRO	;loads the gs segment to point to asm_data
+%macro LOADGS 0	;loads the gs segment to point to asm_data
 	mov	ax,SEG _datanull
 	mov	gs,ax
-	ENDM
+%endmacro
 
-CBEG	MACRO ;C/Assembler procedure begin
+%macro CBEG 0 ;C/Assembler procedure begin
 	push	bp
 	mov	bp,sp
 	push	si
@@ -44,20 +41,20 @@ CBEG	MACRO ;C/Assembler procedure begin
 	LOADDS	;since all routines expect to have DS pointed to the
 		;data segment, it's loaded at every public entrypoint
 		;(which should all be C procedures).
-	ENDM
+%endmacro
 
-CEND	MACRO ;C/Assembler procedure end
+%macro CEND 0 ;C/Assembler procedure end
 	pop	ds
 	pop	di
 	pop	si
 	pop	bp
 	ret
-	ENDM
+%endmacro
 
-CBEGR	MACRO bytes ;C/Assembler procedure begin - with local variable reserve
+%macro CBEGR 1 ; bytes ;C/Assembler procedure begin - with local variable reserve
 	push	bp
 	mov	bp,sp
-	sub	sp,bytes
+	sub	sp,%1
 	push	si
 	push	di
 	push	ds
@@ -65,9 +62,9 @@ CBEGR	MACRO bytes ;C/Assembler procedure begin - with local variable reserve
 	LOADDS	;since all routines expect to have DS pointed to the
 		;data segment, it's loaded at every public entrypoint
 		;(which should all be C procedures).
-	ENDM
+%endmacro
 
-CENDR	MACRO ;C/Assembler procedure end
+%macro CENDR 0 ;C/Assembler procedure end
 	pop	bp
 	pop	ds
 	pop	di
@@ -75,114 +72,133 @@ CENDR	MACRO ;C/Assembler procedure end
 	mov	sp,bp
 	pop	bp
 	ret
-	ENDM
+%endmacro
 
-movpar	MACRO	reg,par ;loads parameter [par(0..)] to register [reg]
-	mov	reg,[bp+(par)*2+6]
-	ENDM
+%macro movpar 2	;reg,par ;loads parameter [par(0..)] to register [reg]
+	mov	%1,[bp+(%2)*2+6]
+%endmacro
 	
-ldspar	MACRO	reg,par ;loads pointer parameter [par(0..)] to register ds:[reg]
-	lds	reg,[bp+(par)*2+6]
-	ENDM
+%macro ldspar 2	;reg,par ;loads pointer parameter [par(0..)] to register ds:[reg]
+	lds	%1,[bp+(%2)*2+6]
+%endmacro
 	
-lespar	MACRO	reg,par ;loads pointer parameter [par(0..)] to register es:[reg]
-	les	reg,[bp+(par)*2+6]
-	ENDM
+%macro lespar 2	;reg,par ;loads pointer parameter [par(0..)] to register es:[reg]
+	les	%1,[bp+(%2)*2+6]
+%endmacro
 	
-lfspar	MACRO	reg,par ;loads pointer parameter [par(0..)] to register fs:[reg]
-	lfs	reg,[bp+(par)*2+6]
-	ENDM
+%macro lfspar 2	;reg,par ;loads pointer parameter [par(0..)] to register fs:[reg]
+	lfs	%1,[bp+(%2)*2+6]
+%endmacro
 	
-lgspar	MACRO	reg,par ;loads pointer parameter [par(0..)] to register gs:[reg]
-	lgs	reg,[bp+(par)*2+6]
-	ENDM
-	
+%macro lgspar 2	;reg,par ;loads pointer parameter [par(0..)] to register gs:[reg]
+	lgs	%1,[bp+(%2)*2+6]
+%endmacro
+
+%macro LOOP_LARGE 1
+  loop %%notDone
+  jmp %%done
+  %%notDone:
+  jmp %1
+  %%done:
+%endmacro
+
+%macro JCXZ_LARGE 1
+  cmp ecx, 0
+  jz %1
+%endmacro
+
+%ifdef INCLUDE_DATA
+%define DECL global
+%else
+%define DECL extern
+%endif
+
 ;######## public routines ########
 
-global	_vid_init:far
-global	_vid_window:far
-global	_vid_cameraangle:far
-global	_vid_deinit:far
-global	_vid_setpal:far
-global	_vid_dotdisplay_pvlist:far
-global	_vid_dotdisplay_zcolor:far
-global	_vid_clear:far
-global	_vid_clear255:far
-global	_vid_clearbg:far
-global	_vid_switch:far
-global	_vid_setswitch:far
-global	_vid_waitb:far
-global	_vid_poly:far
-global	_vid_pset:far
-global	_vid_skyclear:far
-global	_vid_drawpolylist:far
-global	_vid_inittimer:far
-global	_vid_deinittimer:far
-global	_vid_drawsight:far
-global	_vid_pic320200:far
+global	_vid_init
+global	_vid_window
+global	_vid_cameraangle
+global	_vid_deinit
+global	_vid_setpal
+global	_vid_dotdisplay_pvlist
+global	_vid_dotdisplay_zcolor
+global	_vid_clear
+global	_vid_clear255
+global	_vid_clearbg
+global	_vid_switch
+global	_vid_setswitch
+global	_vid_waitb
+global	_vid_poly
+global	_vid_pset
+global	_vid_skyclear
+global	_vid_drawpolylist
+global	_vid_inittimer
+global	_vid_deinittimer
+global	_vid_drawsight
+global	_vid_pic320200
 ;polygon fillers
-global	_vid_drawfill:far
-global	_vid_drawfill_nrm:far
-global	_vid_drawfill_grd:far
-global	_vid_drawdots:far
+extern	_vid_drawfill
+extern	_vid_drawfill_nrm
+extern	_vid_drawfill_grd
+global	_vid_drawdots
 
-global	_calc_project:far
-global	_calc_project16:far
-global	_calc_setrmatrix_rotyxz:far
-global	_calc_setrmatrix_rotxyz:far
-global	_calc_setrmatrix_rotzyx:far
-global	_calc_setrmatrix_ident:far
-global	_calc_applyrmatrix:far
-global	_calc_rotate:far
-global	_calc_rotate16:far
-global	_calc_sftranslate:far
-global	_calc_singlez:far
-global	_calc_nrotate:far
-global	_calc_mulrmatrix:far
-global	_calc_invrmatrix:far
+global	_calc_project
+global	_calc_project16
+global	_calc_setrmatrix_rotyxz
+global	_calc_setrmatrix_rotxyz
+global	_calc_setrmatrix_rotzyx
+global	_calc_setrmatrix_ident
+global	_calc_applyrmatrix
+global	_calc_rotate
+global	_calc_rotate16
+global	_calc_sftranslate
+global	_calc_singlez
+global	_calc_nrotate
+global	_calc_mulrmatrix
+global	_calc_invrmatrix
 
-global	_draw_polylist:far
-global	_draw_setfillroutine:far
+global	_draw_polylist
+global	_draw_setfillroutine
 
 ;######## constants ######## (these should be same as in CDATA.H)
 
-MAXROWS		=	480	;maximum number of rows used in any mode
-MAXCOLS		=	640	;maximum number of rows used in any mode (should be divisible with 4)
-MAXPOLYSIDES	=	16	;maximum sides in a polygon
+%define MAXROWS			480	;maximum number of rows used in any mode
+%define MAXCOLS			640	;maximum number of rows used in any mode (should be divisible with 4)
+%define MAXPOLYSIDES		16	;maximum sides in a polygon
 
 ;######## variables ########
 ;for documentation on global variables, see adata.asm
 
-global	_datanull:dword
-global	_rows:word
-global	_rowlen:word
-global	_vramseg:word
-global	_cdataseg:word
-CLIPMIN	equ 0
-CLIPMAX equ 4
-global	_projclipx:dword
-global	_projclipy:dword
-global	_projclipz:dword
-global	_projmulx:dword
-global	_projmuly:dword
-global	_projaddx:dword
-global	_projaddy:dword
-global	_projaspect:word
-global	_projoversampleshr:word
+DECL	_datanull
+DECL	_rows
+DECL	_rowlen
+DECL	_vramseg
+DECL	_cdataseg
+%define CLIPMIN	0
+%define CLIPMAX 4
+DECL	_projclipx
+DECL	_projclipy
+DECL	_projclipz
+DECL	_projmulx
+DECL	_projmuly
+DECL	_projaddx
+DECL	_projaddy
+DECL	_projaspect
+DECL	_projoversampleshr
 ;equs are offsets of routine pointers inside vr for current video driver
-PSET	equ	0	
-CLEAR	equ	2
-SWITCH	equ	4
-WAITB	equ	6
-VRSIZE	equ	8
-global	vr:word
+%define PSET	0	
+%define CLEAR	2
+%define SWITCH	4
+%define WAITB	6
+%define VRSIZE	8
+DECL	vr
 
-global	_sintable:word
-global	_avistan:word
-global	_afilldiv:word
+DECL	_sintable
+DECL	_avistan
+DECL	_afilldiv
 
-global	_polydrw:word
+DECL	_polydrw
 
 ;####### data types ########
 
-include ad.inc
+%include "ad.inc"

@@ -11,60 +11,72 @@
 ;**
 ;****************************************************************************/
 
-include a.inc
+%include "a.inc"
 
-asm_code SEGMENT para public use16 'CODE'
-	ASSUME cs:asm_code
-	
+segment .code
+
+extern	_datanull
+extern	_sintable
+extern	_avistan
+extern	_afilldiv
+
+extern	_projclipx
+extern	_projclipy
+extern	_projclipz
+extern	_projmulx
+extern	_projmuly
+extern	_projaddx
+extern	_projaddy
+
 ;entry: bx=angle (0..65535)
 ; exit: ax=sin(angle) [range -unit..unit]
-sin	PROC NEAR
+sin:
 	shr	bx,4-1
-	and	bx,not 1
-	mov	ax,ds:_sintable[bx]
+	and	bx,~ 1
+	mov	ax,[_sintable+ebx]
 	ret
-sin	ENDP
+
 	
 ;entry: bx=angle (0..65535)
 ; exit: ax=cos(angle) [range -unit..unit]
-cos	PROC NEAR
+cos:
 	shr	bx,4-1
 	add	bx,1024*2
-	and	bx,not (8192 or 1)
-	mov	ax,ds:_sintable[bx]
+	and	bx,~ (8192 | 1)
+	mov	ax,[_sintable+ebx]
 	ret
-cos	ENDP
+
 	
 ;entry: bx=angle (0..65535)
 ; exit: ax=sin(angle) [range -unit..unit]
 ;       bx=cos(angle) [range -unit..unit]
-sincos	PROC NEAR
+sincos:
 	shr	bx,4-1
-	and	bx,not 1
-	mov	ax,ds:_sintable[bx]
+	and	bx,~ 1
+	mov	ax,[_sintable+ebx]
 	add	bx,1024*2
-	and	bx,not (8192 or 1)
-	mov	bx,ds:_sintable[bx]
+	and	bx,~ (8192 | 1)
+	mov	bx,[_sintable+ebx]
 	ret
-sincos	ENDP
+
 
 ;used for matrix multiply EXPECTS the matrices to be of integer size
-mulmacro MACRO	row,col
-	mov	eax,ds:[si+0+row*12]
-	imul	dword ptr es:[di+0+col*4]
+%macro mulmacro 2 ; row,col
+	mov	eax,[esi+0+%1*12]
+	imul	dword [edi+0+%2*4]
 	mov	ebx,eax
-	mov	eax,ds:[si+4+row*12]
-	imul	dword ptr es:[di+12+col*4]
+	mov	eax,[esi+4+%1*12]
+	imul	dword [edi+12+%2*4]
 	add	ebx,eax
-	mov	eax,ds:[si+8+row*12]
-	imul	dword ptr es:[di+24+col*4]
+	mov	eax,[esi+8+%1*12]
+	imul	dword [edi+24+%2*4]
 	add	ebx,eax
 	sar	ebx,unitshr
-	ENDM
+%endmacro
 
 ;entry:	fs:si=matrix1, es:di=matrix2
 ; exit: fs:si=matrix1*matrix2 (matrix 1 overwritten)
-mulmatrices PROC NEAR
+mulmatrices:
 	push	ds
 	mov	ax,fs
 	mov	ds,ax
@@ -89,22 +101,22 @@ mulmatrices PROC NEAR
 	push	ebx
 	mulmacro 2,2
 
-	mov	          ds:[si+8+24],ebx
-	pop	dword ptr ds:[si+4+24]
-	pop	dword ptr ds:[si+0+24]
-	pop	dword ptr ds:[si+8+12]
-	pop	dword ptr ds:[si+4+12]
-	pop	dword ptr ds:[si+0+12]
-	pop	dword ptr ds:[si+8]
-	pop	dword ptr ds:[si+4]
-	pop	dword ptr ds:[si+0]
+	mov	      [esi+8+24],ebx
+	pop	dword [esi+4+24]
+	pop	dword [esi+0+24]
+	pop	dword [esi+8+12]
+	pop	dword [esi+4+12]
+	pop	dword [esi+0+12]
+	pop	dword [esi+8]
+	pop	dword [esi+4]
+	pop	dword [esi+0]
 	pop	ds
 	ret
-mulmatrices ENDP
+
 
 ;entry:	fs:si=matrix1, es:di=matrix2
 ; exit: es:di=matrix1*matrix2 (matrix 2 overwritten)
-mulmatrices2 PROC NEAR
+mulmatrices2:
 	push	ds
 	mov	ax,fs
 	mov	ds,ax
@@ -129,22 +141,22 @@ mulmatrices2 PROC NEAR
 	push	ebx
 	mulmacro 2,2
 
-	mov	          es:[di+8+24],ebx
-	pop	dword ptr es:[di+4+24]
-	pop	dword ptr es:[di+0+24]
-	pop	dword ptr es:[di+8+12]
-	pop	dword ptr es:[di+4+12]
-	pop	dword ptr es:[di+0+12]
-	pop	dword ptr es:[di+8]
-	pop	dword ptr es:[di+4]
-	pop	dword ptr es:[di+0]
+	mov	      [edi+8+24],ebx
+	pop	dword [edi+4+24]
+	pop	dword [edi+0+24]
+	pop	dword [edi+8+12]
+	pop	dword [edi+4+12]
+	pop	dword [edi+0+12]
+	pop	dword [edi+8]
+	pop	dword [edi+4]
+	pop	dword [edi+0]
 	pop	ds
 	ret
-mulmatrices2 ENDP
+
 
 ;entry:	ax=rotx, bx=roty, cx=rotz, es:di=rmatrix.m
 ; exit: (writes rmatrix.m)
-calcmatrixsep PROC NEAR ;calc 3 separate matrices
+calcmatrixsep: ;calc 3 separate matrices
 	push	bp
 	mov	bp,sp
 	sub	sp,12 ;for local variables
@@ -156,18 +168,18 @@ calcmatrixsep PROC NEAR ;calc 3 separate matrices
 	mov	bx,ax
 	neg	bx
 	call	sincos
-	mov	ss:[bp-12+0],ax ;rxsin
-	mov	ss:[bp-12+2],bx ;rxcos
+	mov	[ebp-12+0],ax ;rxsin
+	mov	[ebp-12+2],bx ;rxcos
 	pop	bx
 	neg	bx
 	call	sincos
-	mov	ss:[bp-12+4],ax ;rysin
-	mov	ss:[bp-12+6],bx ;rycos
+	mov	[ebp-12+4],ax ;rysin
+	mov	[ebp-12+6],bx ;rycos
 	pop	bx
 	neg	bx
 	call	sincos
-	mov	ss:[bp-12+8],ax ;rzsin
-	mov	ss:[bp-12+10],bx ;rzcos
+	mov	[ebp-12+8],ax ;rzsin
+	mov	[ebp-12+10],bx ;rzcos
 
 	mov	ebx,0
 	mov	ecx,unit
@@ -175,89 +187,89 @@ calcmatrixsep PROC NEAR ;calc 3 separate matrices
 	mov	ds,ax
 	
 	;rX
-	mov	ds:[di+2*0],ecx
-	mov	ds:[di+2*2],ebx
-	mov	ds:[di+2*4],ebx
-	mov	ds:[di+2*6],ebx
-	movsx	eax,word ptr ss:[bp-12+2]
-	mov	ds:[di+2*8],eax
-	movsx	eax,word ptr ss:[bp-12+0]
-	mov	ds:[di+2*10],eax
-	mov	ds:[di+2*12],ebx
-	movsx	eax,word ptr ss:[bp-12+0]
+	mov	[edi+2*0],ecx
+	mov	[edi+2*2],ebx
+	mov	[edi+2*4],ebx
+	mov	[edi+2*6],ebx
+	movsx	eax,word [ebp-12+2]
+	mov	[edi+2*8],eax
+	movsx	eax,word [ebp-12+0]
+	mov	[edi+2*10],eax
+	mov	[edi+2*12],ebx
+	movsx	eax,word [ebp-12+0]
 	neg	eax
-	mov	ds:[di+2*14],eax
-	movsx	eax,word ptr ss:[bp-12+2]
-	mov	ds:[di+2*16],eax
+	mov	[edi+2*14],eax
+	movsx	eax,word [ebp-12+2]
+	mov	[edi+2*16],eax
 	add	di,36
 	
 	;rY
-	movsx	eax,word ptr ss:[bp-12+6]
-	mov	ds:[di+2*0],eax
-	mov	ds:[di+2*2],ebx
-	movsx	eax,word ptr ss:[bp-12+4]
+	movsx	eax,word [ebp-12+6]
+	mov	[edi+2*0],eax
+	mov	[edi+2*2],ebx
+	movsx	eax,word [ebp-12+4]
 	neg	eax
-	mov	ds:[di+2*4],eax
-	mov	ds:[di+2*6],ebx
-	mov	ds:[di+2*8],ecx
-	mov	ds:[di+2*10],ebx
-	movsx	eax,word ptr ss:[bp-12+4]
-	mov	ds:[di+2*12],eax
-	mov	ds:[di+2*14],ebx
-	movsx	eax,word ptr ss:[bp-12+6]
-	mov	ds:[di+2*16],eax
+	mov	[edi+2*4],eax
+	mov	[edi+2*6],ebx
+	mov	[edi+2*8],ecx
+	mov	[edi+2*10],ebx
+	movsx	eax,word [ebp-12+4]
+	mov	[edi+2*12],eax
+	mov	[edi+2*14],ebx
+	movsx	eax,word [ebp-12+6]
+	mov	[edi+2*16],eax
 	add	di,36
 	
 	;rZ
-	movsx	eax,word ptr ss:[bp-12+10]
-	mov	ds:[di+2*0],eax
-	movsx	eax,word ptr ss:[bp-12+8]
-	mov	ds:[di+2*2],eax
-	mov	ds:[di+2*4],ebx
-	movsx	eax,word ptr ss:[bp-12+8]
+	movsx	eax,word [ebp-12+10]
+	mov	[edi+2*0],eax
+	movsx	eax,word [ebp-12+8]
+	mov	[edi+2*2],eax
+	mov	[edi+2*4],ebx
+	movsx	eax,word [ebp-12+8]
 	neg	eax
-	mov	ds:[di+2*6],eax
-	movsx	eax,word ptr ss:[bp-12+10]
-	mov	ds:[di+2*8],eax
-	mov	ds:[di+2*10],ebx
-	mov	ds:[di+2*12],ebx
-	mov	ds:[di+2*14],ebx
-	mov	ds:[di+2*16],ecx
+	mov	[edi+2*6],eax
+	movsx	eax,word [ebp-12+10]
+	mov	[edi+2*8],eax
+	mov	[edi+2*10],ebx
+	mov	[edi+2*12],ebx
+	mov	[edi+2*14],ebx
+	mov	[edi+2*16],ecx
 
 	pop	di
 	pop	ds
 	mov	sp,bp
 	pop	bp
 	ret
-calcmatrixsep ENDP
+
 
 ;北北北北 _calc_setrmatrix_ident(rmatrix *matrix) 北北北北
 ;entry: matrix=destination matrix (only rotation fields modified)
 ; exit:	(data written to matrix)
 ;descr: Writes an identity rotation matrix to rmatrix
-_calc_setrmatrix_ident PROC FAR
+_calc_setrmatrix_ident:
 	CBEG
 	lespar	di,0
 	mov	edx,unit
 	xor	eax,eax
-	mov	es:[di+rmatrix_m+0*4],edx
-	mov	es:[di+rmatrix_m+1*4],eax
-	mov	es:[di+rmatrix_m+2*4],eax
-	mov	es:[di+rmatrix_m+3*4],eax
-	mov	es:[di+rmatrix_m+4*4],edx
-	mov	es:[di+rmatrix_m+5*4],eax
-	mov	es:[di+rmatrix_m+6*4],eax
-	mov	es:[di+rmatrix_m+7*4],eax
-	mov	es:[di+rmatrix_m+8*4],edx
+	mov	[edi+rmatrix_m+0*4],edx
+	mov	[edi+rmatrix_m+1*4],eax
+	mov	[edi+rmatrix_m+2*4],eax
+	mov	[edi+rmatrix_m+3*4],eax
+	mov	[edi+rmatrix_m+4*4],edx
+	mov	[edi+rmatrix_m+5*4],eax
+	mov	[edi+rmatrix_m+6*4],eax
+	mov	[edi+rmatrix_m+7*4],eax
+	mov	[edi+rmatrix_m+8*4],edx
 	CEND
-_calc_setrmatrix_ident ENDP
+
 
 ;北北北北 _calc_setrmatrix_rotyxz(rmatrix *matrix,angle rotx,angle roty,angle rotz) 北北北北
 ;entry: matrix=destination matrix (only rotation fields modified)
 ;	rotx/y/z=rotation angles
 ; exit:	(data written to matrix)
 ;descr: Calculates a rotation matrix
-_calc_setrmatrix_rotyxz PROC FAR
+_calc_setrmatrix_rotyxz:
 	CBEGR	36*3
 	mov	ax,ss
 	mov	es,ax
@@ -274,21 +286,21 @@ _calc_setrmatrix_rotyxz PROC FAR
 	lea	di,[bp-36*3+36*2]
 	call	mulmatrices ;Y*=Z
 	lespar	di,0
-	zzz=0
-	REPT	9
-	mov	eax,fs:[si+zzz]
-	mov	es:[di+rmatrix_m+zzz],eax
-	zzz=zzz+4
-	ENDM
+	%assign zzz 0
+	%rep 9
+	mov	eax,[esi+zzz]
+	mov	[edi+rmatrix_m+zzz],eax
+	%assign zzz zzz+4
+	%endrep
 	CENDR
-_calc_setrmatrix_rotyxz ENDP
+
 
 ;北北北北 _calc_setrmatrix_rotxyz(rmatrix *matrix,angle rotx,angle roty,angle rotz) 北北北北
 ;entry: matrix=destination matrix (only rotation fields modified)
 ;	rotx/y/z=rotation angles
 ; exit:	(data written to matrix)
 ;descr: Calculates a rotation matrix
-_calc_setrmatrix_rotxyz PROC FAR
+_calc_setrmatrix_rotxyz:
 	CBEGR	36*3
 	mov	ax,ss
 	mov	es,ax
@@ -305,14 +317,14 @@ _calc_setrmatrix_rotxyz PROC FAR
 	lea	di,[bp-36*3+36*2]
 	call	mulmatrices ;X*=Z
 	lespar	di,0
-	zzz=0
-	REPT	9
-	mov	eax,fs:[si+zzz]
-	mov	es:[di+rmatrix_m+zzz],eax
-	zzz=zzz+4
-	ENDM
+	%assign zzz 0
+	%rep	9
+	mov	eax,[esi+zzz]
+	mov	[edi+rmatrix_m+zzz],eax
+	%assign zzz zzz+4
+	%endrep
 	CENDR
-_calc_setrmatrix_rotxyz ENDP
+
 
 ;北北北北 _calc_setrmatrix_rotzyx(rmatrix *matrix,
 ;                angle rotx,angle roty,angle rotz) 北北北北
@@ -320,7 +332,7 @@ _calc_setrmatrix_rotxyz ENDP
 ;	rotx/y/z=rotation angles
 ; exit:	(data written to matrix)
 ;descr: Calculates a rotation matrix
-_calc_setrmatrix_rotzyx PROC FAR
+_calc_setrmatrix_rotzyx:
 	CBEGR	36*3
 	mov	ax,ss
 	mov	es,ax
@@ -337,21 +349,21 @@ _calc_setrmatrix_rotzyx PROC FAR
 	lea	di,[bp-36*3+36*0]
 	call	mulmatrices ;Z*=X
 	lespar	di,0
-	zzz=0
-	REPT	9
-	mov	eax,fs:[si+zzz]
-	mov	es:[di+rmatrix_m+zzz],eax
-	zzz=zzz+4
-	ENDM
+	%assign zzz 0
+	%rep	9
+	mov	eax,[esi+zzz]
+	mov	[edi+rmatrix_m+zzz],eax
+	%assign zzz zzz+4
+	%endrep
 	CENDR
-_calc_setrmatrix_rotzyx ENDP
+
 
 ;北北北北 _calc_mulrmatrix(rmatrix *dest, rmatrix *source) 北北北北
 ;entry: dest=destination matrix (matrix modified)
 ;	source=source matrix (modifying matrix)
 ; exit:	(data written to dest matrix)
 ;descr: dest=source*dest. Transposition first, rotation second.
-_calc_mulrmatrix PROC FAR
+_calc_mulrmatrix:
 	CBEG
 	;fs:si=dest, es:di=source
 	lfspar	si,0
@@ -369,14 +381,14 @@ _calc_mulrmatrix PROC FAR
 	;translate (inverse)
 	lespar	di,2
 	lfspar	si,0
-	mov	eax,es:[di+rmatrix_x]
-	add	fs:[si+rmatrix_x],eax
-	mov	eax,es:[di+rmatrix_y]
-	add	fs:[si+rmatrix_y],eax
-	mov	eax,es:[di+rmatrix_z]
-	add	fs:[si+rmatrix_z],eax
+	mov	eax,[edi+rmatrix_x]
+	add	[esi+rmatrix_x],eax
+	mov	eax,[edi+rmatrix_y]
+	add	[esi+rmatrix_y],eax
+	mov	eax,[edi+rmatrix_z]
+	add	[esi+rmatrix_z],eax
 @@x:	CEND
-_calc_mulrmatrix ENDP
+
 
 ;北北北北 _calc_applyrmatrix(rmatrix *dest, rmatrix *apply) 北北北北
 ;entry: dest=destination matrix (matrix modified)
@@ -385,7 +397,7 @@ _calc_mulrmatrix ENDP
 ;descr: The apply matrix is the camera matrix, the dest contains
 ;	the objects own rotation/position, which is modified
 ;	according to the camera.
-_calc_applyrmatrix PROC FAR
+_calc_applyrmatrix:
 	CBEG
 	;fs:si=source, es:di=dest
 	lfspar	si,2
@@ -403,69 +415,69 @@ _calc_applyrmatrix PROC FAR
 	;translate
 	lespar	di,2
 	lfspar	si,0
-	mov	eax,es:[di+rmatrix_x]
-	add	fs:[si+rmatrix_x],eax
-	mov	eax,es:[di+rmatrix_y]
-	add	fs:[si+rmatrix_y],eax
-	mov	eax,es:[di+rmatrix_z]
-	add	fs:[si+rmatrix_z],eax
+	mov	eax,[edi+rmatrix_x]
+	add	[esi+rmatrix_x],eax
+	mov	eax,[edi+rmatrix_y]
+	add	[esi+rmatrix_y],eax
+	mov	eax,[edi+rmatrix_z]
+	add	[esi+rmatrix_z],eax
 @@x:	CEND
-_calc_applyrmatrix ENDP
 
-rotatesingle PROC NEAR
+
+rotatesingle:
 	;ds:si=rmatrix
 	;fs:bp=source[]: x,y,z (long)
 	;es:di=destination[]: x,y,z (long)
 	;destination and source can be same
-	mov	eax,fs:[bp+0]
-	imul	dword ptr ds:[si+rmatrix_m+2*0]
+	mov	eax,[ebp+0]
+	imul	dword [esi+rmatrix_m+2*0]
 	mov	ebx,eax
 	mov	ecx,edx
-	mov	eax,fs:[bp+4]
-	imul	dword ptr ds:[si+rmatrix_m+2*2]
+	mov	eax,[ebp+4]
+	imul	dword [esi+rmatrix_m+2*2]
 	add	ebx,eax
 	adc	ecx,edx
-	mov	eax,fs:[bp+8]
-	imul	dword ptr ds:[si+rmatrix_m+2*4]
+	mov	eax,[ebp+8]
+	imul	dword [esi+rmatrix_m+2*4]
 	add	ebx,eax
 	adc	ecx,edx
 	shrd	ebx,ecx,unitshr
 	push	ebx
 	
-	mov	eax,fs:[bp+0]
-	imul	dword ptr ds:[si+rmatrix_m+2*6]
+	mov	eax,[ebp+0]
+	imul	dword [esi+rmatrix_m+2*6]
 	mov	ebx,eax
 	mov	ecx,edx
-	mov	eax,fs:[bp+4]
-	imul	dword ptr ds:[si+rmatrix_m+2*8]
+	mov	eax,[ebp+4]
+	imul	dword [esi+rmatrix_m+2*8]
 	add	ebx,eax
 	adc	ecx,edx
-	mov	eax,fs:[bp+8]
-	imul	dword ptr ds:[si+rmatrix_m+2*10]
+	mov	eax,[ebp+8]
+	imul	dword [esi+rmatrix_m+2*10]
 	add	ebx,eax
 	adc	ecx,edx
 	shrd	ebx,ecx,unitshr
 	push	ebx
 	
-	mov	eax,fs:[bp+0]
-	imul	dword ptr ds:[si+rmatrix_m+2*12]
+	mov	eax,[ebp+0]
+	imul	dword [esi+rmatrix_m+2*12]
 	mov	ebx,eax
 	mov	ecx,edx
-	mov	eax,fs:[bp+4]
-	imul	dword ptr ds:[si+rmatrix_m+2*14]
+	mov	eax,[ebp+4]
+	imul	dword [esi+rmatrix_m+2*14]
 	add	ebx,eax
 	adc	ecx,edx
-	mov	eax,fs:[bp+8]
-	imul	dword ptr ds:[si+rmatrix_m+2*16]
+	mov	eax,[ebp+8]
+	imul	dword [esi+rmatrix_m+2*16]
 	add	ebx,eax
 	adc	ecx,edx
 	shrd	ebx,ecx,unitshr
 
-	mov	          es:[di+8],ebx
-	pop	dword ptr es:[di+4]
-	pop	dword ptr es:[di+0]
+	mov	          [edi+8],ebx
+	pop	dword [edi+4]
+	pop	dword [edi+0]
 	ret
-rotatesingle ENDP
+
 
 ;北北北北 _calc_sftranslate(int count,vlist *dest,long tx,long ty,long tz) 北北北北
 ;entry:	count=number of vertices to sftranslate
@@ -473,7 +485,7 @@ rotatesingle ENDP
 ;	matrix=rmatrix containing rotation / moving
 ; exit: -
 ;descr: Translates dest with matrix and and (starfield)
-_calc_sftranslate PROC FAR
+_calc_sftranslate:
 	CBEG
 	movpar	ax,0
 	or	ax,ax
@@ -484,23 +496,23 @@ _calc_sftranslate PROC FAR
 	movpar	dx,7
 	mov	bp,ax
 @@1:
-	mov	ax,ds:[si+vlist_x]
+	mov	ax,[esi+vlist_x]
 	add	ax,bx
-	mov	ds:[si+vlist_x],ax
+	mov	[esi+vlist_x],ax
 
-	mov	ax,ds:[si+vlist_y]
+	mov	ax,[esi+vlist_y]
 	add	ax,cx
-	mov	ds:[si+vlist_y],ax
+	mov	[esi+vlist_y],ax
 
-	mov	ax,ds:[si+vlist_z]
+	mov	ax,[esi+vlist_z]
 	add	ax,dx
-	mov	ds:[si+vlist_z],ax
+	mov	[esi+vlist_z],ax
 
 	add	si,vlist_size
 	dec	bp
 	jnz	@@1
 @@0:	CEND
-_calc_sftranslate ENDP
+
 
 ;北北北北 _calc_rotate(int count,vlist *dest,vlist *source,rmatrix *matrix) 北北北北
 ;entry:	count=number of vertices to rotate/move
@@ -509,80 +521,80 @@ _calc_sftranslate ENDP
 ;	matrix=rmatrix containing rotation / moving
 ; exit: -
 ;descr: Rotates (and moves) the given list
-_calc_rotate PROC FAR
+_calc_rotate:
 	CBEG
 	movpar	cx,0
-	jcxz	@@0
+	JCXZ_LARGE	@@0
 	lespar	di,1 ;destination
 	ldspar	si,5 ;matrix - dataseg not used in procedure, so DS can be used
 	lfspar	bp,3 ;source - NOTE: bp/parameter pointer destroyed!
 @@1:	push	cx
 
-	movsx	eax,word ptr ds:[si+rmatrix_m+2*0]
-	imul	dword ptr fs:[bp+vlist_x]
+	movsx	eax,word [esi+rmatrix_m+2*0]
+	imul	dword [ebp+vlist_x]
 	mov	ebx,eax
 	mov	ecx,edx
-	movsx	eax,word ptr ds:[si+rmatrix_m+2*2]
-	imul	dword ptr fs:[bp+vlist_y]
+	movsx	eax,word [esi+rmatrix_m+2*2]
+	imul	dword [ebp+vlist_y]
 	add	ebx,eax
 	adc	ecx,edx
-	movsx	eax,word ptr ds:[si+rmatrix_m+2*4]
-	imul	dword ptr fs:[bp+vlist_z]
+	movsx	eax,word [esi+rmatrix_m+2*4]
+	imul	dword [ebp+vlist_z]
 	add	ebx,eax
 	adc	ecx,edx
 	shrd	ebx,ecx,unitshr
-	add	ebx,ds:[si+rmatrix_x]
-	mov	dword ptr es:[di+vlist_x],ebx
+	add	ebx,[esi+rmatrix_x]
+	mov	dword [edi+vlist_x],ebx
 	
-	movsx	eax,word ptr ds:[si+rmatrix_m+2*6]
-	imul	dword ptr fs:[bp+vlist_x]
+	movsx	eax,word [esi+rmatrix_m+2*6]
+	imul	dword [ebp+vlist_x]
 	mov	ebx,eax
 	mov	ecx,edx
-	movsx	eax,word ptr ds:[si+rmatrix_m+2*8]
-	imul	dword ptr fs:[bp+vlist_y]
+	movsx	eax,word [esi+rmatrix_m+2*8]
+	imul	dword [ebp+vlist_y]
 	add	ebx,eax
 	adc	ecx,edx
-	movsx	eax,word ptr ds:[si+rmatrix_m+2*10]
-	imul	dword ptr fs:[bp+vlist_z]
+	movsx	eax,word [esi+rmatrix_m+2*10]
+	imul	dword [ebp+vlist_z]
 	add	ebx,eax
 	adc	ecx,edx
 	shrd	ebx,ecx,unitshr
-	add	ebx,ds:[si+rmatrix_y]
-	mov	dword ptr es:[di+vlist_y],ebx
+	add	ebx,[esi+rmatrix_y]
+	mov	dword [edi+vlist_y],ebx
 	
-	movsx	eax,word ptr ds:[si+rmatrix_m+2*12]
-	imul	dword ptr fs:[bp+vlist_x]
+	movsx	eax,word [esi+rmatrix_m+2*12]
+	imul	dword [ebp+vlist_x]
 	mov	ebx,eax
 	mov	ecx,edx
-	movsx	eax,word ptr ds:[si+rmatrix_m+2*14]
-	imul	dword ptr fs:[bp+vlist_y]
+	movsx	eax,word [esi+rmatrix_m+2*14]
+	imul	dword [ebp+vlist_y]
 	add	ebx,eax
 	adc	ecx,edx
-	movsx	eax,word ptr ds:[si+rmatrix_m+2*16]
-	imul	dword ptr fs:[bp+vlist_z]
+	movsx	eax,word [esi+rmatrix_m+2*16]
+	imul	dword [ebp+vlist_z]
 	add	ebx,eax
 	adc	ecx,edx
 	shrd	ebx,ecx,unitshr
-	add	ebx,ds:[si+rmatrix_z]
-	mov	dword ptr es:[di+vlist_z],ebx
+	add	ebx,[esi+rmatrix_z]
+	mov	dword [edi+vlist_z],ebx
 
-	mov	ax,word ptr fs:[bp+vlist_normal]
-	mov	word ptr es:[di+vlist_normal],ax
+	mov	ax,word [ebp+vlist_normal]
+	mov	word [edi+vlist_normal],ax
 	
 	;next point
 	add	bp,vlist_size
 	add	di,vlist_size
 	pop	cx
-	loop	@@1
+	LOOP_LARGE	@@1
 @@0:	CEND
-_calc_rotate ENDP
+
 
 ;北北北北 _calc_singlez(int vertex,vlist *vertexlist,rmatrix *matrix) 北北北北
 ;entry:	vertex=number of vertex to process
 ;	vertexlist=list from which to pick the vertex
 ; exit: -
 ;descr: Rotates the single vertex and returns the resulting Z coordinate.
-_calc_singlez PROC FAR
+_calc_singlez:
 	CBEG
 	ldspar	si,3 ;matrix - dataseg not used in procedure, so DS can be used
 	movpar	ax,0
@@ -590,26 +602,26 @@ _calc_singlez PROC FAR
 	shl	ax,vlist_sizeshl
 	add	bp,ax
 
-	mov	eax,ds:[si+rmatrix_m+24]
-	imul	dword ptr fs:[bp+vlist_x]
+	mov	eax,[esi+rmatrix_m+24]
+	imul	dword [ebp+vlist_x]
 	mov	ebx,eax
 	mov	ecx,edx
-	mov	eax,ds:[si+rmatrix_m+28]
-	imul	dword ptr fs:[bp+vlist_y]
+	mov	eax,[esi+rmatrix_m+28]
+	imul	dword [ebp+vlist_y]
 	add	ebx,eax
 	adc	ecx,edx
-	mov	eax,ds:[si+rmatrix_m+32]
-	imul	dword ptr fs:[bp+vlist_z]
+	mov	eax,[esi+rmatrix_m+32]
+	imul	dword [ebp+vlist_z]
 	add	ebx,eax
 	adc	ecx,edx
 	shrd	ebx,ecx,unitshr
-	add	ebx,ds:[si+rmatrix_z]
+	add	ebx,[esi+rmatrix_z]
 
 	mov	ax,bx
 	shr	ebx,16
 	mov	dx,bx
 	CEND
-_calc_singlez ENDP
+
 
 ;北北北北 _calc_nrotate(int count,nlist *dest,nlist *source,rmatrix *matrix) 北北北北
 ;entry:	count=number of normals to rotate
@@ -618,67 +630,67 @@ _calc_singlez ENDP
 ;	matrix=rmatrix containing rotation (moving part of rmatrix not used)
 ; exit: -
 ;descr: Rotates the given normal list
-_calc_nrotate PROC FAR
+_calc_nrotate:
 	CBEG
 	movpar	cx,0
-	jcxz	@@0
+	JCXZ_LARGE	@@0
 	lespar	di,1 ;destination
 	ldspar	si,5 ;matrix - dataseg not used in procedure, so DS can be used
 	lfspar	bp,3 ;source - NOTE: bp/parameter pointer destroyed!
 @@1:	push	cx
 
-	mov	ax,word ptr fs:[bp+nlist_x]
-	imul	word ptr ds:[si+rmatrix_m+2*0]
+	mov	ax,word [ebp+nlist_x]
+	imul	word [esi+rmatrix_m+2*0]
 	mov	bx,ax
 	mov	cx,dx
-	mov	ax,word ptr fs:[bp+nlist_y]
-	imul	word ptr ds:[si+rmatrix_m+2*2]
+	mov	ax,word [ebp+nlist_y]
+	imul	word [esi+rmatrix_m+2*2]
 	add	bx,ax
 	adc	cx,dx
-	mov	ax,word ptr fs:[bp+nlist_z]
-	imul	word ptr ds:[si+rmatrix_m+2*4]
+	mov	ax,word [ebp+nlist_z]
+	imul	word [esi+rmatrix_m+2*4]
 	add	bx,ax
 	adc	cx,dx
 	shrd	bx,cx,unitshr
-	mov	word ptr es:[di+nlist_x],bx
+	mov	word [edi+nlist_x],bx
 	
-	mov	ax,word ptr fs:[bp+nlist_x]
-	imul	word ptr ds:[si+rmatrix_m+2*6]
+	mov	ax,word [ebp+nlist_x]
+	imul	word [esi+rmatrix_m+2*6]
 	mov	bx,ax
 	mov	cx,dx
-	mov	ax,word ptr fs:[bp+nlist_y]
-	imul	word ptr ds:[si+rmatrix_m+2*8]
+	mov	ax,word [ebp+nlist_y]
+	imul	word [esi+rmatrix_m+2*8]
 	add	bx,ax
 	adc	cx,dx
-	mov	ax,word ptr fs:[bp+nlist_z]
-	imul	word ptr ds:[si+rmatrix_m+2*10]
+	mov	ax,word [ebp+nlist_z]
+	imul	word [esi+rmatrix_m+2*10]
 	add	bx,ax
 	adc	cx,dx
 	shrd	bx,cx,unitshr
-	mov	word ptr es:[di+nlist_y],bx
+	mov	word [edi+nlist_y],bx
 	
-	mov	ax,word ptr fs:[bp+nlist_x]
-	imul	word ptr ds:[si+rmatrix_m+2*12]
+	mov	ax,word [ebp+nlist_x]
+	imul	word [esi+rmatrix_m+2*12]
 	mov	bx,ax
 	mov	cx,dx
-	mov	ax,word ptr fs:[bp+nlist_y]
-	imul	word ptr ds:[si+rmatrix_m+2*14]
+	mov	ax,word [ebp+nlist_y]
+	imul	word [esi+rmatrix_m+2*14]
 	add	bx,ax
 	adc	cx,dx
-	mov	ax,word ptr fs:[bp+nlist_z]
-	imul	word ptr ds:[si+rmatrix_m+2*16]
+	mov	ax,word [ebp+nlist_z]
+	imul	word [esi+rmatrix_m+2*16]
 	add	bx,ax
 	adc	cx,dx
 	shrd	bx,cx,unitshr
-	mov	word ptr es:[di+nlist_z],bx
+	mov	word [edi+nlist_z],bx
 
 	;next point
 	add	bp,nlist_size
 	add	di,nlist_size
 	pop	cx
-	loop	@@1
+	LOOP_LARGE	@@1
 @@0:	CEND
-_calc_nrotate ENDP
+
 
 ;北北北北 _calc_rotate16(int count,nlist *dest,nlist *source,rmatrix *matrix) 北北北北
 ;entry:	count=number of normals to rotate
@@ -687,67 +699,67 @@ _calc_nrotate ENDP
 ;	matrix=rmatrix containing rotation (moving part of rmatrix not used)
 ; exit: -
 ;descr: Rotates the given normal list
-_calc_rotate16 PROC FAR
+_calc_rotate16:
 	CBEG
 	movpar	cx,0
-	jcxz	@@0
+	JCXZ_LARGE	@@0
 	lespar	di,1 ;destination
 	ldspar	si,5 ;matrix - dataseg not used in procedure, so DS can be used
 	lfspar	bp,3 ;source - NOTE: bp/parameter pointer destroyed!
 @@1:	push	cx
 
-	mov	ax,word ptr fs:[bp+vlist_x]
-	imul	word ptr ds:[si+rmatrix_m+2*0]
+	mov	ax,word [ebp+vlist_x]
+	imul	word [esi+rmatrix_m+2*0]
 	mov	bx,ax
 	mov	cx,dx
-	mov	ax,word ptr fs:[bp+vlist_y]
-	imul	word ptr ds:[si+rmatrix_m+2*2]
+	mov	ax,word [ebp+vlist_y]
+	imul	word [esi+rmatrix_m+2*2]
 	add	bx,ax
 	adc	cx,dx
-	mov	ax,word ptr fs:[bp+vlist_z]
-	imul	word ptr ds:[si+rmatrix_m+2*4]
+	mov	ax,word [ebp+vlist_z]
+	imul	word [esi+rmatrix_m+2*4]
 	add	bx,ax
 	adc	cx,dx
 	shrd	bx,cx,unitshr
-	mov	word ptr es:[di+vlist_x],bx
+	mov	word [edi+vlist_x],bx
 	
-	mov	ax,word ptr fs:[bp+vlist_x]
-	imul	word ptr ds:[si+rmatrix_m+2*6]
+	mov	ax,word [ebp+vlist_x]
+	imul	word [esi+rmatrix_m+2*6]
 	mov	bx,ax
 	mov	cx,dx
-	mov	ax,word ptr fs:[bp+vlist_y]
-	imul	word ptr ds:[si+rmatrix_m+2*8]
+	mov	ax,word [ebp+vlist_y]
+	imul	word [esi+rmatrix_m+2*8]
 	add	bx,ax
 	adc	cx,dx
-	mov	ax,word ptr fs:[bp+vlist_z]
-	imul	word ptr ds:[si+rmatrix_m+2*10]
+	mov	ax,word [ebp+vlist_z]
+	imul	word [esi+rmatrix_m+2*10]
 	add	bx,ax
 	adc	cx,dx
 	shrd	bx,cx,unitshr
-	mov	word ptr es:[di+vlist_y],bx
+	mov	word [edi+vlist_y],bx
 	
-	mov	ax,word ptr fs:[bp+vlist_x]
-	imul	word ptr ds:[si+rmatrix_m+2*12]
+	mov	ax,word [ebp+vlist_x]
+	imul	word [esi+rmatrix_m+2*12]
 	mov	bx,ax
 	mov	cx,dx
-	mov	ax,word ptr fs:[bp+vlist_y]
-	imul	word ptr ds:[si+rmatrix_m+2*14]
+	mov	ax,word [ebp+vlist_y]
+	imul	word [esi+rmatrix_m+2*14]
 	add	bx,ax
 	adc	cx,dx
-	mov	ax,word ptr fs:[bp+vlist_z]
-	imul	word ptr ds:[si+rmatrix_m+2*16]
+	mov	ax,word [ebp+vlist_z]
+	imul	word [esi+rmatrix_m+2*16]
 	add	bx,ax
 	adc	cx,dx
 	shrd	bx,cx,unitshr
-	mov	word ptr es:[di+vlist_z],bx
+	mov	word [edi+vlist_z],bx
 
 	;next point
 	add	bp,vlist_size
 	add	di,vlist_size
 	pop	cx
-	loop	@@1
+	LOOP_LARGE	@@1
 @@0:	CEND
-_calc_rotate16 ENDP
+
 
 ;北北北北 _calc_project(int count,pvlist *dest,vlist *source) 北北北北
 ;entry:	count=number of vertices to project
@@ -756,54 +768,54 @@ _calc_rotate16 ENDP
 ;	(_proj* variables in data segment define the projection)
 ; exit: logical and of visibility flags for all vertices (!=0 == object invis.)
 ;descr: Projects the given list = does perspective transformation
-_calc_project PROC FAR
+_calc_project:
 	CBEG
 	lfspar	si,3
 	lespar	di,1
 	mov	ax,0ffffh
 	movpar	cx,0
-	jcxz	@@0
+	JCXZ_LARGE	@@0
 @@1:	push	cx
 	push	ax
 	
-	mov	ecx,fs:[si+vlist_x]
-	mov	eax,fs:[si+vlist_y]
-	mov	ebx,fs:[si+vlist_z]
+	mov	ecx,[esi+vlist_x]
+	mov	eax,[esi+vlist_y]
+	mov	ebx,[esi+vlist_z]
 	
 	xor	bp,bp
-	cmp	ebx,ds:_projclipz[CLIPMIN]
+	cmp	ebx,[_projclipz+CLIPMIN]
 	jge	@@21
 	or	bp,VF_NEAR
-	mov	ebx,ds:_projclipz[CLIPMIN]
+	mov	ebx,[_projclipz+CLIPMIN]
 	jmp	@@22
-@@21:	cmp	ebx,ds:_projclipz[CLIPMAX]
+@@21:	cmp	ebx,[_projclipz+CLIPMAX]
 	jle	@@22
 	or	bp,VF_FAR
 @@22:	;
-	imul	ds:_projmuly
+	imul	dword [_projmuly]
 	idiv	ebx
-	add	eax,ds:_projaddy
-	cmp	eax,ds:_projclipy[CLIPMAX]
+	add	eax,[_projaddy]
+	cmp	eax,[_projclipy+CLIPMAX]
 	jng	@@41
 	or	bp,VF_DOWN
-@@41:	cmp	eax,ds:_projclipy[CLIPMIN]
+@@41:	cmp	eax,[_projclipy+CLIPMIN]
 	jnl	@@42
 	or	bp,VF_UP
-@@42:	mov	es:[di+pvlist_y],ax ;store Y
+@@42:	mov	[edi+pvlist_y],ax ;store Y
 	;
-	mov	eax,ds:_projmulx
+	mov	eax,[_projmulx]
 	imul	ecx
 	idiv	ebx
-	add	eax,ds:_projaddx
-	cmp	eax,ds:_projclipx[CLIPMAX]
+	add	eax,[_projaddx]
+	cmp	eax,[_projclipx+CLIPMAX]
 	jng	@@43
 	or	bp,VF_RIGHT
-@@43:	cmp	eax,ds:_projclipx[CLIPMIN]
+@@43:	cmp	eax,[_projclipx+CLIPMIN]
 	jnl	@@44
 	or	bp,VF_LEFT
-@@44:	mov	es:[di+pvlist_x],ax ;store X
+@@44:	mov	[edi+pvlist_x],ax ;store X
 
-@@5:	mov	es:[di+pvlist_vf],bp ;store visiblity flags
+@@5:	mov	[edi+pvlist_vf],bp ;store visiblity flags
 	
 	;next point
 	add	si,vlist_size
@@ -812,9 +824,9 @@ _calc_project PROC FAR
 	pop	ax	
 	pop	cx
 	and	ax,bp
-	loop	@@1
+	LOOP_LARGE	@@1
 @@0:	CEND
-_calc_project ENDP
+
 	
 ;北北北北 _calc_project16(int count,pvlist *dest,vlist *source) 北北北北
 ;entry:	count=number of vertices to project
@@ -823,54 +835,54 @@ _calc_project ENDP
 ;	(_proj* variables in data segment define the projection)
 ; exit: logical and of visibility flags for all vertices (!=0 == object invis.)
 ;descr: Projects the given list = does perspective transformation
-_calc_project16 PROC FAR
+_calc_project16:
 	CBEG
 	lfspar	si,3
 	lespar	di,1
 	mov	ax,0ffffh
 	movpar	cx,0
-	jcxz	@@0
+	JCXZ_LARGE	@@0
 @@1:	push	cx
 	push	ax
 	
-	movsx	ecx,word ptr fs:[si+vlist_x]
-	movsx	eax,word ptr fs:[si+vlist_y]
-	movsx	ebx,word ptr fs:[si+vlist_z]
+	movsx	ecx,word [esi+vlist_x]
+	movsx	eax,word [esi+vlist_y]
+	movsx	ebx,word [esi+vlist_z]
 	
 	xor	bp,bp
-	cmp	ebx,ds:_projclipz[CLIPMIN]
+	cmp	ebx,[_projclipz+CLIPMIN]
 	jge	@@21
 	or	bp,VF_NEAR
-	mov	ebx,ds:_projclipz[CLIPMIN]
+	mov	ebx,[_projclipz+CLIPMIN]
 	jmp	@@22
-@@21:	cmp	ebx,ds:_projclipz[CLIPMAX]
+@@21:	cmp	ebx,[_projclipz+CLIPMAX]
 	jle	@@22
 	or	bp,VF_FAR
 @@22:	;
-	imul	ds:_projmuly
+	imul	dword [_projmuly]
 	idiv	ebx
-	add	eax,ds:_projaddy
-	cmp	eax,ds:_projclipy[CLIPMAX]
+	add	eax,[_projaddy]
+	cmp	eax,[_projclipy+CLIPMAX]
 	jng	@@41
 	or	bp,VF_DOWN
-@@41:	cmp	eax,ds:_projclipy[CLIPMIN]
+@@41:	cmp	eax,[_projclipy+CLIPMIN]
 	jnl	@@42
 	or	bp,VF_UP
-@@42:	mov	es:[di+pvlist_y],ax ;store Y
+@@42:	mov	[edi+pvlist_y],ax ;store Y
 	;
-	mov	eax,ds:_projmulx
+	mov	eax,[_projmulx]
 	imul	ecx
 	idiv	ebx
-	add	eax,ds:_projaddx
-	cmp	eax,ds:_projclipx[CLIPMAX]
+	add	eax,[_projaddx]
+	cmp	eax,[_projclipx+CLIPMAX]
 	jng	@@43
 	or	bp,VF_RIGHT
-@@43:	cmp	eax,ds:_projclipx[CLIPMIN]
+@@43:	cmp	eax,[_projclipx+CLIPMIN]
 	jnl	@@44
 	or	bp,VF_LEFT
-@@44:	mov	es:[di+pvlist_x],ax ;store X
+@@44:	mov	[edi+pvlist_x],ax ;store X
 
-@@5:	mov	es:[di+pvlist_vf],bp ;store visiblity flags
+@@5:	mov	[edi+pvlist_vf],bp ;store visiblity flags
 	
 	;next point
 	add	si,vlist_size
@@ -879,9 +891,5 @@ _calc_project16 PROC FAR
 	pop	ax	
 	pop	cx
 	and	ax,bp
-	loop	@@1
+	LOOP_LARGE	@@1
 @@0:	CEND
-_calc_project16 ENDP
-	
-asm_code ENDS
-	END
