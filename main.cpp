@@ -102,7 +102,7 @@ int main()
   //alku_main();
 
   // 2   db      'Alkutekstit II (PSI)        ' / 'VISU    ' /  'U2A.EXE',0
-  u2a_main( 0, NULL );
+  //u2a_main( 0, NULL );
   
   // 3   db      'Alkutekstit III (TRUG/WILDF)' / 'PAM     ' /  'PAM.EXE',0
   //demo_changemode( 320, 200 );

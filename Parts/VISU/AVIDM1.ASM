@@ -157,7 +157,7 @@ m1_clear: ;clear current page
 
 @@bgd:	mov	dx,3c4h
 	mov	ax,0f02h
-	out	dx,ax
+	;out	dx,ax
 	xor	di,di
 	mov	eax,0ffffffffh
 	mov	ecx,200

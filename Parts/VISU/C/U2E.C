@@ -5,6 +5,7 @@
 #include <malloc.h>
 #include "..\..\dis\dis.h"
 #include "..\..\..\shims.h"
+#include "..\..\common.h"
 #include "..\cd.h"
 #include "..\c.h"
 #include "u2common.h"
@@ -76,8 +77,8 @@ void	fadeset(char *vram)
 		shim_outp(0x3c4,2);
 		shim_outp(0x3c5,2+4+8);
 		*(vram+y*80+63)=254;
-		outp(0x3c4,2);
-		outp(0x3c5,15);
+		shim_outp(0x3c4,2);
+    shim_outp(0x3c5,15);
 		memset(vram+y*80+64,254,16);
 	}
 	for(y<175;y<200;y++)
@@ -96,7 +97,7 @@ void	fadeset(char *vram)
 void u2e_main(int argc,char *argv[])
 {
 	char *sptemp;
-	int	*ip;
+  short *ip;
 	unsigned int u;
 	char	*cp;
 	int	jellywas=0;
@@ -124,7 +125,7 @@ void u2e_main(int argc,char *argv[])
 
 	if(scene0[15]=='C') city=1;
 	if(scene0[15]=='R') city=2;
-	ip=(int *)(scene0+LONGAT(scene0+4));
+	ip=(short *)(scene0+LONGAT(scene0+4));
 	conum=d=*ip++;
 	for(f=-1,c=1;c<d;c++)
 	{	
@@ -213,16 +214,16 @@ void u2e_main(int argc,char *argv[])
 	}
 	
 	{
-		fadeset((char *)0xa0000000L);
+		fadeset((char *)shim_vram);
 		dis_waitb();
     shim_outp(0x3d4,9);
-		a=inp(0x3d5);
+		a= shim_inp(0x3d5);
 		a=(a&0xf0)|0x80;
     shim_outp(0x3d5,a);
 		dis_waitb();
-		fadeset((char *)0xa4000000L);
-		fadeset((char *)0xa8000000L);
-		fadeset((char *)0xac000000L);
+		fadeset((char *)shim_vram);
+		fadeset((char *)shim_vram);
+		fadeset((char *)shim_vram);
 	}
 
 	for(b=0;b<16;b++)
@@ -290,7 +291,7 @@ void u2e_main(int argc,char *argv[])
 	
 	while(!dis_exit() && !xit)
 	{
-		int fov;
+		int fov = 0;
 		int onum;
 		long pflag;
 		long dis;

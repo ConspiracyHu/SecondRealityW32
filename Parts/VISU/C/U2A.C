@@ -5,6 +5,7 @@
 #include <malloc.h>
 #include "..\..\dis\dis.h"
 #include "..\..\..\shims.h"
+#include "..\..\common.h"
 #include "..\cd.h"
 #include "..\c.h"
 #include "u2common.h"

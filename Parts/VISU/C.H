@@ -40,7 +40,8 @@ void	vid_cameraangle(angle a);
 //void	vid_inittimer(void);
 //void	vid_deinittimer(void);
 void	vid_deinit(void);
-void	vid_setpal(char *pal);
+//void	vid_setpal(char *pal);
+#define vid_setpal(pal) setpal(pal)
 void	vid_clear(void);
 void	vid_clearbg(char *);
 void	vid_skyclear(char *sky);
