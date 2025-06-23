@@ -12,10 +12,16 @@
 ;**
 ;****************************************************************************/
 
+%include "a.inc"
+
+extern setrows
+extern _shim_vram
+
 ;======== public routines ========
 
 section .code
 
+global m1_init
 m1_init:
 	mov	word [_vramseg],0a000h
 	call	tweak320x200
@@ -42,7 +48,7 @@ m1_init:
 	mov	word [_projaspect],225
 	ret
 
-
+global m11_init
 m11_init:
 	mov	word [_vramseg],0a000h
 ;	call	tweak320x200
@@ -69,7 +75,7 @@ m11_init:
 	mov	word [_projaspect],225
 	ret
 
-
+global m1o_init
 m1o_init: ;oversampling version
 	mov	word [_vramseg],0a000h
 	;call	tweak320x200
@@ -128,69 +134,73 @@ m1_waitb:
 
 
 m1_clear: ;clear current page
-	push	di
+	push	edi
 	cmp	ax,9
 	je	@@bgd
 	cmp	ax,2
 	je	@@bgc
 	mov	dx,3c4h
 	mov	ax,0f02h
-	out	dx,ax
-	xor	di,di
+	;out	dx,ax
+	xor	edi,edi
 	xor	eax,eax
-	mov	cx,200
+	mov	ecx,200
 @@1:
   %rep 320/4/4
-	mov	[edi],eax
-	add	di,4
+	mov	[_shim_vram+edi],eax
+	add	edi,4
 	%endrep
-	dec	cx
+	dec	ecx
 	jnz	@@1
-	pop	di
+	pop	edi
 	ret
+
 @@bgd:	mov	dx,3c4h
 	mov	ax,0f02h
 	out	dx,ax
 	xor	di,di
 	mov	eax,0ffffffffh
-	mov	cx,200
+	mov	ecx,200
 @@9:
   %rep	320/4/4
-	mov	[edi],eax
-	add	di,4
+	mov	[_shim_vram+edi],eax
+	add	edi,4
 	%endrep
-	dec	cx
+	dec	ecx
 	jnz	@@9
-	pop	di
+	pop	edi
 	ret
+
 @@bgc:
   %assign zzpl 1
-	push	ds
-	mov	ax,fs
-	mov	ds,ax
+	;push	ds
+	;mov	ax,fs
+	;mov	ds,ax
 	%rep	4
 ;	local	l1
-	push	di
+	push	edi
 	mov	dx,3c4h
 	mov	ax,02h+100h*zzpl
-	out	dx,ax
-	xor	di,di
+	;out	dx,ax
+	xor	edi,edi
 	xor	eax,eax
-	mov	cx,200
+	mov	ecx,200
+
 %define ZZPL(x) l1_ %+ zzpl
 ZZPL(x):
   %rep 320/4/4
 	mov	eax,[esi]
-	add	si,4
-	mov	[edi],eax
-	add	di,4
+	add	esi,4
+	mov	[_shim_vram+edi],eax
+	add	edi,4
 	%endrep
 	LOOP_LARGE	ZZPL(x)
-	pop	di
+
+	pop	edi
 	%assign zzpl zzpl*2
 	%endrep
-	pop	ds
-	pop	di
+	;pop	ds
+	pop	edi
 	ret
 
 

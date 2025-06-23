@@ -13,6 +13,8 @@
 
 %include "a.inc"
 
+extern newclip
+
 section .data
 
 ;ALIGN 2
@@ -103,7 +105,7 @@ poly1:	;LABEL WORD
 poly2:	;LABEL WORD
 	times POLYSIZE db	0
 
-%include "adrawclp.asm"
+;%include "adrawclp.asm"
 
 section .data
 ;ALIGN 16

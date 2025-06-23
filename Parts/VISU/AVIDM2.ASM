@@ -12,10 +12,15 @@
 ;**
 ;****************************************************************************/
 
+%include "a.inc"
+
+extern setrows
+
 ;======== public routines ========
 
 section .code
 
+global m2_init
 m2_init:
 	mov	word [_vramseg],0a000h
 	call	tweak640x400

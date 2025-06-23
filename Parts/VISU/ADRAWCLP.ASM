@@ -14,6 +14,8 @@
 ;**
 ;****************************************************************************/
 
+%include "a.inc"
+
 section .data
 newclipflip db 0,0
 newclipprog dw 0
@@ -483,7 +485,7 @@ newclipright:
 	pop	bp
 	ret
 
-
+global newclip
 newclip:
 	;ENTRY:
 	;ds:si=pointer to list to be clipped

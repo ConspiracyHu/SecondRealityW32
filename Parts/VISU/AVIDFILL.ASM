@@ -11,6 +11,10 @@
 ;**
 ;****************************************************************************/
 
+%include "a.inc"
+
+extern vidstart
+
 section .data
 
 drawfill_progs:

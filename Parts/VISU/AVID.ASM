@@ -14,12 +14,17 @@
 %define INCLUDE_CODE
 %include "a.inc"
 
+extern m1_init
+extern m11_init
+extern m2_init
+extern m1o_init
+
 section .data
 	
 framecounter dw	0
 
-%include "avidm1.asm" ;320x200x256 (tweak)
-%include "avidm2.asm" ;640x400x256 (tweak)
+;%include "avidm1.asm" ;320x200x256 (tweak)
+;%include "avidm2.asm" ;640x400x256 (tweak)
 
 section .code
 
@@ -35,6 +40,7 @@ emptyroutine:
 ;descr: executed before using graphics routines at entries.
 ;	loads es => vram, and sets some VGA registers the
 ;	way the gfx routines expect them to be.
+global vidstart
 vidstart:
 	;mov	es,[_vramseg]
 	;mov	dx,3c4h
@@ -44,6 +50,7 @@ vidstart:
 
 
 ;entry: cx=rows to calc, dx=row length
+global setrows
 setrows:
 	mov	[_rowlen],dx
 	mov	ebx,_rows
@@ -64,16 +71,16 @@ _vid_cameraangle:
 	mov	eax,[_projclipx+CLIPMAX] ;right edge
 	sub	eax,[_projaddx] ;center X
 	;ax=width of half of screen
-	movpar	bx,0
-	shr	bx,1 ;divide by 2 for half of angle
-	cmp	bx,8*64
+	movpar	ebx,0
+	shr	ebx,1 ;divide by 2 for half of angle
+	cmp	ebx,8*64
 	jae	@@2 ;about 3 degrees minimum
-	mov	bx,8*64
-@@2:	cmp	bx,16384
+	mov	ebx,8*64
+@@2:	cmp	ebx,16384
 	jb	@@1
 	mov	bx,16383 ;90 degrees maximum
-@@1:	shr	bx,6-1
-	and	bx,~1
+@@1:	shr	ebx,6-1
+	and	ebx,~1
 	;bx=word index (0..255)*2
 	movzx	ecx,word [_avistan+ebx]
 	mul	ecx	
@@ -389,7 +396,7 @@ _vid_skyclear:
 ;         'Temporary' text routines
 ;##########################################################################
 
-%include "atext.asm"
+;%include "atext.asm"
 
 ;##########################################################################
 ;         Common routines that work in all current screen modes
@@ -642,4 +649,4 @@ LBL(x) :	mov	di,[esi]
 	CEND
 
 
-%include "avidfill.asm"
+;%include "avidfill.asm"
