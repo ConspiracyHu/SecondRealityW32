@@ -86,11 +86,13 @@ void	resetscene(void)
 void	*getmem(long size)
 {
 	void	*p;
+  /*
 	if(size>160000L)
 	{
 		printf("GETMEM: attempting to reserved >160K (%li byte block)\n",size);
 		exit(3);
 	}
+  */
 	p=halloc(size/16L+1,16);
 	if(!p)
 	{
@@ -110,7 +112,7 @@ char	*readfile(char *name)
 	FILE	*f1;
 	long	size;
 	char *p,*p0;
-	f1=fopen(name,"rb");
+  f1=fopen(name,"rb");
 	if(!f1)
 	{
 		printf("File '%s' not found.",name);
@@ -119,6 +121,7 @@ char	*readfile(char *name)
 	fseek(f1,0L,SEEK_END);
 	p0=p=getmem(size=ftell(f1));
 	fseek(f1,0L,SEEK_SET);
+  /*
 	if(size>128000)
 	{
 		fread(p,64000,1,f1);
@@ -139,7 +142,9 @@ char	*readfile(char *name)
 		}
 		fread(p,(size_t)size,1,f1);
 	}
-	else fread(p,(size_t)size,1,f1);
+	else
+  */
+  fread(p,(size_t)size,1,f1);
 	fclose(f1);
 	return(p0);
 }

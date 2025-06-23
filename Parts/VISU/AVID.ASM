@@ -36,17 +36,17 @@ emptyroutine:
 ;	loads es => vram, and sets some VGA registers the
 ;	way the gfx routines expect them to be.
 vidstart:
-	mov	es,[_vramseg]
-	mov	dx,3c4h
-	mov	ax,0f02h
-	out	dx,ax ;set the plane register ready (&enable all planes)
+	;mov	es,[_vramseg]
+	;mov	dx,3c4h
+	;mov	ax,0f02h
+	;out	dx,ax ;set the plane register ready (&enable all planes)
 	ret
 
 
 ;entry: cx=rows to calc, dx=row length
 setrows:
 	mov	[_rowlen],dx
-	mov	bx,_rows
+	mov	ebx,_rows
 	xor	ax,ax
 @@1:	mov	[ebx],ax
 	add	ax,dx
@@ -124,13 +124,14 @@ _vid_window:
 ;modes:	1=320x200x256 (tweak)
 _vid_init:
 	;CBEG (follows)
-	push	bp
-	mov	bp,sp
-	push	si
-	push	di
-	push	ds
-	mov	ax,ds
-	LOADDS
+	;push	bp
+	;mov	bp,sp
+	;push	si
+	;push	di
+	;push	ds
+	;mov	ax,ds
+	;LOADDS
+  CBEG
 	mov	[_cdataseg],ax
 	movpar	ax,0
 	cmp	ax,1
@@ -145,7 +146,8 @@ _vid_init:
 @@2:	cmp	ax,3
 	jne	@@3
 	call	m1o_init
-@@3:	CEND
+@@3:
+  CEND
 
 	
 ;北北北北 _vid_deinit() 北北北北
@@ -318,8 +320,8 @@ _vid_clearbg:
 	CBEG
 	call	vidstart
 	mov	ax,2 ;bgcopy
-	mov	si,[bp+6]
-	mov	fs,[bp+8]
+	mov	esi,[esp+8]
+	;mov	fs,[bp+8]
 	call	[vr+CLEAR]
 	CEND
 

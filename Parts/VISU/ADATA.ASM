@@ -43,7 +43,7 @@ _projoversampleshr dw	0
 
 ;video driver routine pointers 
 vr:
-	times	VRSIZE dw 0
+	times	VRSIZE dd 0
 	
 _polydrw:
 	times	1024 dw 0

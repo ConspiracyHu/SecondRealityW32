@@ -17,9 +17,9 @@
 
 #pragma pack(1)
 
-#define angle	unsigned	/* 0..65535, 65536=360 degrees */
+#define angle	unsigned short	/* 0..65535, 65536=360 degrees */
 
-#define	visfl	int	
+#define	visfl	short	
 #define VF_UP		1	/* direction in which a vertex is out */
 #define VF_DOWN		2	/* of screen. */
 #define VF_LEFT		4
@@ -40,30 +40,30 @@ struct s_vlist
 	long	x;
 	long	y;
 	long	z;
-	int	normal;
-	int	RESERVED;
+	short	normal;
+	short	RESERVED;
 };
 #define vlist	struct s_vlist
 
 struct s_nlist
 {
-	int	x;
-	int	y;
-	int	z;
-	int	RESERVED;
+	short	x;
+	short	y;
+	short	z;
+	short	RESERVED;
 };
 #define nlist	struct s_nlist
 
 struct s_pvlist
 {
-	int	x;
-	int	y;
+	short	x;
+	short	y;
 	visfl	vf; // if vf&VF_NEAR, the x/y are undefined
-	int	RESERVED[5];
+  short RESERVED[5];
 };
 #define pvlist	struct s_pvlist
 
-#define polylist int
+#define polylist short
 /* polylist contents:
 	word: number of words in list (including last 0)
 	word: sort polygon for this list
@@ -90,14 +90,14 @@ Total length for one record is: 4+2*n
 
 struct s_object
 {
-	int	flags;	/* flags (see below) */
+	short	flags;	/* flags (see below) */
 	struct s_object	*parent; /* parent object */
 	rmatrix *r0;	/* rotation/position relative to parent */
 	rmatrix	*r;	/* rotation/position (modified by camera etc from r0)*/
 	polydata *pd;	/* polygon data block */
-	int	pdlen;	/* length of polygon data block in bytes */
-	int	plnum;	/* number of pl-lists */
-	int	*pl[16]; /* unsorted order (0) + precalculated polygon 
+	short	pdlen;	/* length of polygon data block in bytes */
+	short	plnum;	/* number of pl-lists */
+	short	*pl[16]; /* unsorted order (0) + precalculated polygon 
 			   lists from max 16 directions (1..8). List contents:
 			   word: length in words
 			   word: closest vertex (for list 0, center vertex)
@@ -105,9 +105,9 @@ struct s_object
 			   word: 2nd polygon
 			   ...
 			   word: 0 */
-	int	vnum;	/* number of vertices */
-	int	nnum;	/* number of normals */
-	int	nnum1;	/* number of basic normals. Normals betwen nnum1..nnum
+	short	vnum;	/* number of vertices */
+	short	nnum;	/* number of normals */
+	short	nnum1;	/* number of basic normals. Normals betwen nnum1..nnum
 			   are for gouraud shading */
 	vlist	*v0;	/* original vertices. */
 	nlist	*n0;	/* original normals */

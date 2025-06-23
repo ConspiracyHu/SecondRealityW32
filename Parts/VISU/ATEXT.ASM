@@ -11,6 +11,8 @@ global _font3x5
 _font3x5 dw	0,0
 truerowsadd dw	0
 
+section .code
+
 %macro prtmacro 0
 	;local	prt41,prt42,prt43,prt44,prt45
 	push	di

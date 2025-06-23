@@ -19,13 +19,13 @@ section .code
 m2_init:
 	mov	word [_vramseg],0a000h
 	call	tweak640x400
-	mov	dx,640/4
-	mov	cx,400
+	mov	edx,640/4
+	mov	ecx,400
 	call	setrows
-	mov	word [vr+PSET],m2_pset
-	mov	word [vr+CLEAR],m2_clear
-	mov	word [vr+SWITCH],m2_switch
-	mov	word [vr+WAITB],m2_waitb
+	mov	dword [vr+PSET],m2_pset
+	mov	dword [vr+CLEAR],m2_clear
+	mov	dword [vr+SWITCH],m2_switch
+	mov	dword [vr+WAITB],m2_waitb
 	mov	dword [_projclipx+CLIPMIN],0
 	mov	dword [_projclipx+CLIPMAX],639
 	mov	dword [_projclipy+CLIPMIN],0

@@ -18,48 +18,35 @@
 ;note: C macros expect a LARGE memory model
 
 %macro LOADDS 0	;loads the ds segment to point to asm_data
-	mov	ax,SEG _datanull
-	mov	ds,ax
+	;mov	ax,SEG _datanull
+	;mov	ds,ax
 %endmacro
 
 %macro LOADES 0	;loads the es segment to point to asm_data
-	mov	ax,SEG _datanull
-	mov	es,ax
+	;mov	ax,SEG _datanull
+	;mov	es,ax
 %endmacro
 
 %macro LOADGS 0	;loads the gs segment to point to asm_data
-	mov	ax,SEG _datanull
-	mov	gs,ax
+	;mov	ax,SEG _datanull
+	;mov	gs,ax
 %endmacro
 
 %macro CBEG 0 ;C/Assembler procedure begin
-	push	bp
-	mov	bp,sp
-	push	si
-	push	di
-	push	ds
-	LOADDS	;since all routines expect to have DS pointed to the
+	push ebp
+	;LOADDS	;since all routines expect to have DS pointed to the
 		;data segment, it's loaded at every public entrypoint
 		;(which should all be C procedures).
 %endmacro
 
 %macro CEND 0 ;C/Assembler procedure end
-	pop	ds
-	pop	di
-	pop	si
-	pop	bp
+	pop ebp
 	ret
 %endmacro
 
 %macro CBEGR 1 ; bytes ;C/Assembler procedure begin - with local variable reserve
-	push	bp
-	mov	bp,sp
-	sub	sp,%1
-	push	si
-	push	di
-	push	ds
-	push	bp ;just in case the asm routine changes bp
-	LOADDS	;since all routines expect to have DS pointed to the
+	push ebp ;just in case the asm routine changes bp
+	;LOADDS	;since all routines expect to have DS pointed to the
 		;data segment, it's loaded at every public entrypoint
 		;(which should all be C procedures).
 %endmacro
@@ -75,23 +62,23 @@
 %endmacro
 
 %macro movpar 2	;reg,par ;loads parameter [par(0..)] to register [reg]
-	mov	%1,[bp+(%2)*2+6]
+	mov	%1,[esp+(%2)*4+8]
 %endmacro
 	
 %macro ldspar 2	;reg,par ;loads pointer parameter [par(0..)] to register ds:[reg]
-	lds	%1,[bp+(%2)*2+6]
+	mov	%1,[esp+(%2)*4+8]
 %endmacro
 	
 %macro lespar 2	;reg,par ;loads pointer parameter [par(0..)] to register es:[reg]
-	les	%1,[bp+(%2)*2+6]
+	mov	%1,[esp+(%2)*4+8]
 %endmacro
 	
 %macro lfspar 2	;reg,par ;loads pointer parameter [par(0..)] to register fs:[reg]
-	lfs	%1,[bp+(%2)*2+6]
+	mov	%1,[esp+(%2)*4+8]
 %endmacro
 	
 %macro lgspar 2	;reg,par ;loads pointer parameter [par(0..)] to register gs:[reg]
-	lgs	%1,[bp+(%2)*2+6]
+	mov	%1,[esp+(%2)*4+8]
 %endmacro
 
 %macro LOOP_LARGE 1
@@ -192,10 +179,10 @@ DECL	_projaspect
 DECL	_projoversampleshr
 ;equs are offsets of routine pointers inside vr for current video driver
 %define PSET	0	
-%define CLEAR	2
-%define SWITCH	4
-%define WAITB	6
-%define VRSIZE	8
+%define CLEAR	4
+%define SWITCH	8
+%define WAITB	12
+%define VRSIZE	16
 DECL	vr
 
 DECL	_sintable

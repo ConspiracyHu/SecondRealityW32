@@ -14,7 +14,7 @@ typedef struct
 #define MAXOBJ 256
 
 #define LONGAT(zz) *((long *)(zz))
-#define INTAT(zz) *((int *)(zz))
+#define INTAT(zz) *((short *)(zz))
 #define CHARAT(zz) *((char *)(zz))
 
 extern char	tmpname[ 64 ];

@@ -58,6 +58,6 @@ void dis_setmframe(int frame);
 int dis_getmframe(void);
 int dis_sync(void);
 
-#define halloc(x,y) malloc(x*y)
+#define halloc(x,y) malloc((x)*(y))
 #define hfree(p) free(p)
 

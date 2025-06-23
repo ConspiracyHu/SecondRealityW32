@@ -4,6 +4,7 @@
 #include <string.h>
 #include <malloc.h>
 #include "..\..\dis\dis.h"
+#include "..\..\..\shims.h"
 #include "..\cd.h"
 #include "..\c.h"
 #include "u2common.h"
@@ -51,7 +52,7 @@ void u2a_copper2(void)
 void u2a_main(int argc,char *argv[])
 {
 	char *sptemp;
-	int	*ip;
+	short	*ip;
 	unsigned int u;
 	char	*cp;
 	int	a,b,c,d,e,f,g,x,y,z;
@@ -61,7 +62,7 @@ void u2a_main(int argc,char *argv[])
 	indemo=1;
 
 	dis_partstart();
-	sprintf(tmpname,"%s.00M",u2a_scene);
+	sprintf(tmpname,"Data\\%s.00M",u2a_scene);
 	if(!indemo) printf("Loading materials %s...\n",tmpname);
 	scene0=scenem=readfile(tmpname);
 
@@ -83,7 +84,7 @@ void u2a_main(int argc,char *argv[])
 
 	if(scene0[15]=='C') city=1;
 	if(scene0[15]=='R') city=2;
-	ip=(int *)(scene0+LONGAT(scene0+4));
+	ip=(short *)(scene0+LONGAT(scene0+4));
 	conum=d=*ip++;
 	for(f=-1,c=1;c<d;c++)
 	{	
@@ -91,7 +92,7 @@ void u2a_main(int argc,char *argv[])
 		if(e>f)
 		{
 			f=e;
-			sprintf(tmpname,"%s.%03i",u2a_scene,e);
+			sprintf(tmpname,"Data\\%s.%03i",u2a_scene,e);
 			if(!indemo) printf("Loading %s... ",tmpname);
 			co[c].o=vis_loadobject(tmpname);
 			memset(co[c].o->r,0,sizeof(rmatrix));
@@ -119,14 +120,14 @@ void u2a_main(int argc,char *argv[])
 	camobject.r=&cam;
 	camobject.r0=&cam;
 
-	sprintf(tmpname,"%s.0AA",u2a_scene);
+	sprintf(tmpname,"Data\\%s.0AA",u2a_scene);
 	if(!indemo) printf("Loading animations...\n",tmpname);
 	ip=readfile(tmpname);
 	while(*ip)
 	{
 		a=*ip;
 		if(a==-1) break;
-		sprintf(tmpname,"%s.0%c%c",u2a_scene,a/10+'A',a%10+'A');
+		sprintf(tmpname,"Data\\%s.0%c%c",u2a_scene,a/10+'A',a%10+'A');
 		if(!indemo) printf("Scene: %s ",tmpname);
 		scenelist[scl].data=readfile(tmpname);
 		printf("(%i:@%Fp)\n",scl,scenelist[scl].data);
@@ -142,7 +143,7 @@ void u2a_main(int argc,char *argv[])
 
 	resetscene();
 
-	for(;;)
+	//for(;;)
 	{
     /*
 		_asm
@@ -160,8 +161,8 @@ void u2a_main(int argc,char *argv[])
  	vid_init(3); ////// oversample x 4
 	cp=(char *)(scenem+16);
 	//vid_setpal(cp);
-	outp(0x3c8,0);
-	for(a=0;a<768;a++) outp(0x3c9,cp[a]);
+	shim_outp(0x3c8,0);
+	for(a=0;a<768;a++) shim_outp(0x3c9,cp[a]);
 	vid_window(0L,319L,25L,174L,512L,9999999L);
 	
 	dis_setcopper(2,u2a_copper2);
@@ -193,7 +194,7 @@ void u2a_main(int argc,char *argv[])
 			mov	b,bx
 		}
     */
-	        if(a>11 && b>54) break;
+	        //if(a>11 && b>54) break;
 		
 		deadlock=0;
 		while(cl[clw].ready)
@@ -348,6 +349,7 @@ void u2a_main(int argc,char *argv[])
 			#endif
 		}
 	    }
+      demo_blit();
 	}
 	dis_setcopper(2,NULL);
 

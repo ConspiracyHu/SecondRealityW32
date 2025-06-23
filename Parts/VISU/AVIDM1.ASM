@@ -19,13 +19,13 @@ section .code
 m1_init:
 	mov	word [_vramseg],0a000h
 	call	tweak320x200
-	mov	dx,320/4
-	mov	cx,200
+	mov	edx,320/4
+	mov	ecx,200
 	call	setrows
-	mov	word [vr+PSET],m1_pset
-	mov	word [vr+CLEAR], m1_clear
-	mov	word [vr+SWITCH], m1_switch
-	mov	word [vr+WAITB], m1_waitb
+	mov	dword [vr+PSET],m1_pset
+	mov	dword [vr+CLEAR], m1_clear
+	mov	dword [vr+SWITCH], m1_switch
+	mov	dword [vr+WAITB], m1_waitb
 	mov	dword [_projclipz+CLIPMIN],256
 	mov	dword [_projclipz+CLIPMAX],1000000000
 	;these affected by oversampling
@@ -46,13 +46,13 @@ m1_init:
 m11_init:
 	mov	word [_vramseg],0a000h
 ;	call	tweak320x200
-	mov	dx,320/4
-	mov	cx,200
+	mov	edx,320/4
+	mov	ecx,200
 	call	setrows
-	mov	word [vr+PSET], m1_pset
-	mov	word [vr+CLEAR], m1_clear
-	mov	word [vr+SWITCH], m1_switch
-	mov	word [vr+WAITB], m1_waitb
+	mov	dword [vr+PSET], m1_pset
+	mov	dword [vr+CLEAR], m1_clear
+	mov	dword [vr+SWITCH], m1_switch
+	mov	dword [vr+WAITB], m1_waitb
 	mov	dword [_projclipz+CLIPMIN],256
 	mov	dword [_projclipz+CLIPMAX],1000000000
 	;these affected by oversampling
@@ -73,13 +73,13 @@ m11_init:
 m1o_init: ;oversampling version
 	mov	word [_vramseg],0a000h
 	;call	tweak320x200
-	mov	dx,320/4
-	mov	cx,200
+	mov	edx,320/4
+	mov	ecx,200
 	call	setrows
-	mov	word [vr+PSET],m1_pset
-	mov	word [vr+CLEAR],m1_clear
-	mov	word [vr+SWITCH],m1_switch
-	mov	word [vr+WAITB],m1_waitb
+	mov	dword [vr+PSET],m1_pset
+	mov	dword [vr+CLEAR],m1_clear
+	mov	dword [vr+SWITCH],m1_switch
+	mov	dword [vr+WAITB],m1_waitb
 	mov	dword [_projclipz+CLIPMIN],256
 	mov	dword [_projclipz+CLIPMAX],1000000000
 	;these affected by oversampling

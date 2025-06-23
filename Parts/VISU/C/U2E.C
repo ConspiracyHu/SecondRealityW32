@@ -4,20 +4,21 @@
 #include <string.h>
 #include <malloc.h>
 #include "..\..\dis\dis.h"
+#include "..\..\..\shims.h"
 #include "..\cd.h"
 #include "..\c.h"
 #include "u2common.h"
 
 #define	noDEBUG
 
-char	u2escene[64]={"U2E"};
+char	u2e_scene[64]={"U2E"};
 
 void border(int r,int g,int b)
 {
-	outp(0x3c8,255);
-	outp(0x3c9,r);
-	outp(0x3c9,g);
-	outp(0x3c9,b);
+	shim_outp(0x3c8,255);
+	shim_outp(0x3c9,r);
+	shim_outp(0x3c9,g);
+	shim_outp(0x3c9,b);
 }
 
 #pragma check_stack(off)
@@ -55,25 +56,25 @@ void u2e_copper2(void)
 void	fadeset(char *vram)
 {
 	int	y;
-	outp(0x3c4,2);
-	outp(0x3c5,15);
+	shim_outp(0x3c4,2);
+	shim_outp(0x3c5,15);
 	for(y=0;y<25;y++)
 	{
 		memset(vram+y*80+0,0,17);
 		memset(vram+y*80+17,252,47);
-		outp(0x3c4,2);
-		outp(0x3c5,2+4+8);
+		shim_outp(0x3c4,2);
+		shim_outp(0x3c5,2+4+8);
 		*(vram+y*80+63)=0;
-		outp(0x3c4,2);
-		outp(0x3c5,15);
+		shim_outp(0x3c4,2);
+		shim_outp(0x3c5,15);
 		memset(vram+y*80+252,0,16);
 	}
 	for(y=25;y<175;y++)
 	{
 		memset(vram+y*80+0,254,17);
 		memset(vram+y*80+17,253,47);
-		outp(0x3c4,2);
-		outp(0x3c5,2+4+8);
+		shim_outp(0x3c4,2);
+		shim_outp(0x3c5,2+4+8);
 		*(vram+y*80+63)=254;
 		outp(0x3c4,2);
 		outp(0x3c5,15);
@@ -83,11 +84,11 @@ void	fadeset(char *vram)
 	{
 		memset(vram+y*80+0,0,17);
 		memset(vram+y*80+17,252,47);
-		outp(0x3c4,2);
-		outp(0x3c5,2+4+8);
+		shim_outp(0x3c4,2);
+		shim_outp(0x3c5,2+4+8);
 		*(vram+y*80+63)=0;
-		outp(0x3c4,2);
-		outp(0x3c5,15);
+		shim_outp(0x3c4,2);
+		shim_outp(0x3c5,15);
 		memset(vram+y*80+64,0,16);
 	}
 }
@@ -117,7 +118,7 @@ void u2e_main(int argc,char *argv[])
 	/*if(a>3) */jellywas=1;
 
 	dis_partstart();
-	sprintf(tmpname,"%s.00M",u2escene);
+	sprintf(tmpname,"Data\\%s.00M",u2e_scene);
 	if(!indemo) printf("Loading materials %s...\n",tmpname);
 	scene0=scenem=readfile(tmpname);
 
@@ -131,7 +132,7 @@ void u2e_main(int argc,char *argv[])
 		if(e>f)
 		{
 			f=e;
-			sprintf(tmpname,"%s.%03i",u2escene,e);
+			sprintf(tmpname,"Data\\%s.%03i",u2e_scene,e);
 			if(!indemo) printf("Loading %s... ",tmpname);
 			co[c].o=vis_loadobject(tmpname);
 			memset(co[c].o->r,0,sizeof(rmatrix));
@@ -142,7 +143,7 @@ void u2e_main(int argc,char *argv[])
 		}
 		else
 		{
-			if(!indemo) printf("Copying %s.%03i... ",u2escene,e);
+			if(!indemo) printf("Copying %s.%03i... ",u2e_scene,e);
 			for(g=0;g<c;g++) if(co[g].index==e) break;
 			memcpy(co+c,co+g,sizeof(s_co));
 			co[c].o=getmem(sizeof(object));
@@ -159,14 +160,14 @@ void u2e_main(int argc,char *argv[])
 	camobject.r=&cam;
 	camobject.r0=&cam;
 
-	sprintf(tmpname,"%s.0AA",u2escene);
+	sprintf(tmpname,"Data\\%s.0AA",u2e_scene);
 	if(!indemo) printf("Loading animations...\n",tmpname);
 	ip=readfile(tmpname);
 	while(*ip)
 	{
 		a=*ip;
 		if(a==-1) break;
-		sprintf(tmpname,"%s.0%c%c",u2escene,a/10+'A',a%10+'A');
+		sprintf(tmpname,"Data\\%s.0%c%c",u2e_scene,a/10+'A',a%10+'A');
 		if(!indemo) printf("Scene: %s ",tmpname);
 		scenelist[scl].data=readfile(tmpname);
 		if(!indemo) printf("(%i:@%Fp)\n",scl,scenelist[scl].data);
@@ -190,8 +191,8 @@ void u2e_main(int argc,char *argv[])
 	}
 	else
 	{
-		outp(0x3c7,0);
-		for(a=0;a<768;a++) fpal[a]=inp(0x3c9);
+		shim_outp(0x3c7,0);
+		for(a=0;a<768;a++) fpal[a]=shim_inp(0x3c9);
 	}
 	
 	for(b=0;b<33;b++)
@@ -202,8 +203,8 @@ void u2e_main(int argc,char *argv[])
 			if(fpal[a]>63) fpal[a]=63;
 		}
 		dis_waitb();
-		outp(0x3c8,0);
-		for(a=0;a<768;a++) outp(0x3c9,fpal[a]);
+    shim_outp(0x3c8,0);
+		for(a=0;a<768;a++) shim_outp(0x3c9,fpal[a]);
 	}
 
 	for(b=0;b<16;b++)
@@ -214,10 +215,10 @@ void u2e_main(int argc,char *argv[])
 	{
 		fadeset((char *)0xa0000000L);
 		dis_waitb();
-		outp(0x3d4,9);
+    shim_outp(0x3d4,9);
 		a=inp(0x3d5);
 		a=(a&0xf0)|0x80;
-		outp(0x3d5,a);
+    shim_outp(0x3d5,a);
 		dis_waitb();
 		fadeset((char *)0xa4000000L);
 		fadeset((char *)0xa8000000L);
@@ -242,8 +243,8 @@ void u2e_main(int argc,char *argv[])
 			if(fpal[a]>63) fpal[a]=63;
 		}
 		dis_waitb();
-		outp(0x3c8,0);
-		for(a=0;a<768;a++) outp(0x3c9,fpal[a]);
+    shim_outp(0x3c8,0);
+		for(a=0;a<768;a++) shim_outp(0x3c9,fpal[a]);
 	}
 	vid_init(11);
 	cp=(char *)(scenem+16);
@@ -451,11 +452,12 @@ void u2e_main(int argc,char *argv[])
 			#endif
 		}
 	    }
+      demo_blit();
 	}
 	dis_setcopper(2,NULL);
 
-	outp(0x3c7,0);
-	for(a=0;a<768;a++) fpal[a]=inp(0x3c9);
+  shim_outp(0x3c7,0);
+	for(a=0;a<768;a++) fpal[a]= shim_inp(0x3c9);
 	for(b=0;b<16;b++)
 	{
 		for(a=0;a<768;a++) 
@@ -464,8 +466,8 @@ void u2e_main(int argc,char *argv[])
 			if(fpal[a]>63) fpal[a]=63;
 		}
 		dis_waitb();
-		outp(0x3c8,255);
-		for(a=0;a<768;a++) outp(0x3c9,fpal[a]);
+    shim_outp(0x3c8,255);
+		for(a=0;a<768;a++) shim_outp(0x3c9,fpal[a]);
 	}
 	if(!dis_indemo())
 	{
