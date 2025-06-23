@@ -37,8 +37,8 @@ void	vis_drawobject(object *o); // visu.c
 void	vid_init(int mode);
 void	vid_window(long x1,long x2,long y1,long y2,long z1,long z2);
 void	vid_cameraangle(angle a);
-void	vid_inittimer(void);
-void	vid_deinittimer(void);
+//void	vid_inittimer(void);
+//void	vid_deinittimer(void);
 void	vid_deinit(void);
 void	vid_setpal(char *pal);
 void	vid_clear(void);
@@ -53,7 +53,7 @@ void	vid_pset(int x,int y,int color);
 
 void	vid_dotdisplay_pvlist(int count,pvlist *list);
 void	vid_dotdisplay_zcolor(int count,pvlist *list1,vlist *list2);
-void	vid_poly(int color,int sides,...);
+//void	vid_poly( int color, int sides, ... );
 
 int	calc_project(int count,pvlist *dest,vlist *source);
 int	calc_project16(int count,pvlist *dest,vlist *source); // for 16 bits

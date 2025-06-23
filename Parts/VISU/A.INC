@@ -133,12 +133,12 @@ global	_vid_clearbg
 global	_vid_switch
 global	_vid_setswitch
 global	_vid_waitb
-global	_vid_poly
+;global	_vid_poly
 global	_vid_pset
 global	_vid_skyclear
 global	_vid_drawpolylist
-global	_vid_inittimer
-global	_vid_deinittimer
+;global	_vid_inittimer
+;global	_vid_deinittimer
 global	_vid_drawsight
 global	_vid_pic320200
 ;polygon fillers
