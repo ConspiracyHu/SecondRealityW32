@@ -15,6 +15,7 @@ jobs:
         echo "Waiting for install to finish..."
         Wait-Process -Name "fpc-3.2.2.i386-win32"
         echo "Done!"
+        echo "C:\FPC\3.2.2\bin\i386-Win32" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
     - name: Setup MSBuild
       uses: microsoft/setup-msbuild@v2
     - name: Build Debug|X86
