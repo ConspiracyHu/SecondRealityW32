@@ -10,7 +10,7 @@
       Condition="'$(ConfigurationType)' != 'Makefile'">_SelectedFiles;$(YASMDependsOn)</YASMDependsOn>
   </PropertyGroup>
   <PropertyGroup>
-    <YasmPath>$(SolutionDir)\YASM\</YasmPath>
+    <YasmPath>$(SolutionDir)\Tools\YASM\</YasmPath>
   </PropertyGroup>
   <ItemDefinitionGroup>
     <YASM>
