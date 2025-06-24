@@ -151,6 +151,9 @@
     <Filter Include="Parts\19-City3D">
       <UniqueIdentifier>{17e0b5c1-f459-4361-9699-55de3ea7318f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Parts\05-DotTunnel">
+      <UniqueIdentifier>{932b21a6-e521-4d99-8508-9ca1ad78a6e0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="Parts\DOTS\CLINK.INC">
@@ -437,5 +440,10 @@
     <YASM Include="Parts\VISU\ATEXT.ASM">
       <Filter>Parts\VISU</Filter>
     </YASM>
+  </ItemGroup>
+  <ItemGroup>
+    <FreePascal Include="Parts\TUNNELI\TUN10.PAS">
+      <Filter>Parts\05-DotTunnel</Filter>
+    </FreePascal>
   </ItemGroup>
 </Project>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup
+    Condition="'$(FreePascalBeforeTargets)' == '' and '$(FreePascalAfterTargets)' == '' and '$(ConfigurationType)' != 'Makefile'">
+    <FreePascalBeforeTargets>Midl</FreePascalBeforeTargets>
+    <FreePascalAfterTargets>CustomBuild</FreePascalAfterTargets>
+  </PropertyGroup>
+  <PropertyGroup>
+    <FreePascalPath>$(SolutionDir)\FreePascal\</FreePascalPath>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+    <FreePascal>
+      <GenerateDebugInformation Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</GenerateDebugInformation>
+      <IntermediatePath>$(IntDir)</IntermediatePath>
+      <ObjectFileName>$(IntDir)%(FileName).o</ObjectFileName>
+      <CommandLineTemplate>fpc.exe -XS -Xt -Twin32 [AllOptions] [AdditionalOptions] "%(FullPath)"</CommandLineTemplate>
+      <ExecutionDescription>%(Identity)</ExecutionDescription>
+    </FreePascal>
+  </ItemDefinitionGroup>
+</Project>

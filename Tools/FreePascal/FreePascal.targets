@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <PropertyPageSchema
+      Include="$(MSBuildThisFileDirectory)$(MSBuildThisFileName).xml" />
+    <AvailableItemName Include="FreePascal">
+      <Targets>_FreePascal</Targets>
+    </AvailableItemName>
+  </ItemGroup>
+  <PropertyGroup>
+    <ComputeLinkInputsTargets>
+      $(ComputeLinkInputsTargets);
+      ComputeFreePascalOutput;
+    </ComputeLinkInputsTargets>
+    <ComputeLibInputsTargets>
+      $(ComputeLibInputsTargets);
+      ComputeFreePascalOutput;
+    </ComputeLibInputsTargets>
+  </PropertyGroup>
+  <UsingTask
+    TaskName="FreePascal"
+    TaskFactory="XamlTaskFactory"
+    AssemblyName="Microsoft.Build.Tasks.v4.0">
+    <Task>$(MSBuildThisFileDirectory)$(MSBuildThisFileName).xml</Task>
+  </UsingTask>
+  <Target
+    Name="_WriteFreePascalTlogs"
+    Condition="'@(FreePascal)' != '' and '@(SelectedFiles)' == ''">
+    <ItemGroup>
+      <FreePascal Remove="@(FreePascal)" Condition="'%(FreePascal.ExcludedFromBuild)' == 'true' or '%(FreePascal.ObjectFileName)' == ''" />
+    </ItemGroup>
+    <ItemGroup Condition="'@(FreePascal)' != ''">
+      <_FreePascalReadTlog Include="^%(FreePascal.FullPath);%(FreePascal.AdditionalDependencies)" />
+      <_FreePascalWriteTlog Include="^%(FreePascal.FullPath);$([MSBuild]::NormalizePath('$(MSBuildProjectDirectory)', '%(FreePascal.ObjectFileName)'))" />
+    </ItemGroup>
+    <WriteLinesToFile
+      Condition="'@(_FreePascalReadTlog)' != ''"
+      File="$(TLogLocation)FreePascal.read.1u.tlog"
+      Lines="@(_FreePascalReadTlog->MetaData('Identity')->ToUpperInvariant());"
+      Overwrite="true"
+      Encoding="Unicode"/>
+    <WriteLinesToFile
+      Condition="'@(_FreePascalWriteTlog)' != ''"
+      File="$(TLogLocation)FreePascal.write.1u.tlog"
+      Lines="@(_FreePascalWriteTlog->MetaData('Identity')->ToUpperInvariant());"
+      Overwrite="true"
+      Encoding="Unicode"/>
+    <ItemGroup>
+      <_FreePascalReadTlog Remove="@(_FreePascalReadTlog)" />
+      <_FreePascalWriteTlog Remove="@(_FreePascalWriteTlog)" />
+    </ItemGroup>
+  </Target>
+  <Target
+    Name="_FreePascal"
+    BeforeTargets="$(FreePascalBeforeTargets)"
+    AfterTargets="$(FreePascalAfterTargets)"
+    Condition="'@(FreePascal)' != ''"
+    Outputs="%(FreePascal.ObjectFileName)"
+    Inputs="%(FreePascal.Identity);%(FreePascal.AdditionalDependencies);$(MSBuildProjectFile)"
+    DependsOnTargets="_WriteFreePascalTlogs;_SelectedFiles">
+    <ItemGroup Condition="'@(SelectedFiles)' != ''">
+      <FreePascal Remove="@(FreePascal)" Condition="'%(Identity)' != '@(SelectedFiles)'" />
+    </ItemGroup>
+    <Message
+      Condition="'@(FreePascal)' != '' and '%(FreePascal.ExcludedFromBuild)' != 'true'"
+      Importance="High"
+      Text="%(FreePascal.ExecutionDescription)" />
+    <FreePascal
+      Condition="'@(FreePascal)' != '' and '%(FreePascal.ExcludedFromBuild)' != 'true'"
+      Inputs="%(FreePascal.Inputs)"
+      ObjectFileName="%(FreePascal.ObjectFileName)"
+      GenerateDebugInformation="%(FreePascal.GenerateDebugInformation)"
+      IntermediatePath="%(FreePascal.IntermediatePath)"
+      AdditionalOptions="%(FreePascal.AdditionalOptions)"
+      CommandLineTemplate="%(FreePascal.CommandLineTemplate)"
+    />
+  </Target>
+  <Target
+    Name="ComputeFreePascalOutput"
+    Condition="'@(FreePascal)' != ''">
+    <ItemGroup>
+      <Link Include="@(FreePascal->Metadata('ObjectFileName')->Distinct()->ClearMetadata())" Condition="'%(FreePascal.ExcludedFromBuild)' != 'true'"/>
+      <Lib Include="@(FreePascal->Metadata('ObjectFileName')->Distinct()->ClearMetadata())" Condition="'%(FreePascal.ExcludedFromBuild)' != 'true'"/>
+    </ItemGroup>
+  </Target>
+</Project>

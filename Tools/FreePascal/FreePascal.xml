@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ProjectSchemaDefinitions xmlns="http://schemas.microsoft.com/build/2009/properties" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:sys="clr-namespace:System;assembly=mscorlib">
+  <Rule
+    Name="FreePascal"
+    PageTemplate="tool"
+    DisplayName="Free Pascal"
+    Order="200">
+    <Rule.DataSource>
+      <DataSource
+        Persistence="ProjectFile"
+        ItemType="FreePascal" />
+    </Rule.DataSource>
+    <Rule.Categories>
+      <Category
+        Name="General">
+        <Category.DisplayName>
+          <sys:String>General</sys:String>
+        </Category.DisplayName>
+      </Category>
+      <Category
+        Name="Command Line"
+        Subtype="CommandLine">
+        <Category.DisplayName>
+          <sys:String>Command Line</sys:String>
+        </Category.DisplayName>
+      </Category>
+    </Rule.Categories>
+    <StringProperty
+      Name="Inputs"
+      Category="Command Line"
+      IsRequired="true">
+      <StringProperty.DataSource>
+        <DataSource
+          Persistence="ProjectFile"
+          ItemType="FreePascal"
+          SourceType="Item" />
+      </StringProperty.DataSource>
+    </StringProperty>
+    <StringProperty
+      Name="ObjectFileName"
+      Category="General"
+      DisplayName="Output File Name"
+      Description="Specify Output Filename."
+      HelpUrl="http://www.FreePascal.us/doc/FreePascaldoc2.html#section-2.1.1"  
+      Switch="&quot;-o[value]&quot;" />
+    <BoolProperty
+      Name="GenerateDebugInformation"
+      Category="General"
+      DisplayName="Generate Debug Information"
+      Description="Generates Debug Information."
+      HelpUrl="http://www.FreePascal.us/doc/FreePascaldoc2.html#section-2.1.12"
+      Switch="-g" />
+    <StringProperty
+      Name="IntermediatePath"
+      Category="General"
+      DisplayName="Intermediate Path"
+      Description="Intermediate Path."
+      HelpUrl="http://www.FreePascal.us/doc/FreePascaldoc2.html#section-2.1.12"
+      Switch="&quot;-FE[value]&quot;" />
+    <StringProperty
+      Subtype="AdditionalOptions"
+      Name="AdditionalOptions"
+      Category="Command Line">
+      <StringProperty.DisplayName>
+        <sys:String>Additional Options</sys:String>
+      </StringProperty.DisplayName>
+      <StringProperty.Description>
+        <sys:String>Additional Options</sys:String>
+      </StringProperty.Description>
+    </StringProperty>
+    <StringProperty
+      Name="CommandLineTemplate"
+      DisplayName="Command Line"
+      Visible="False"
+      IncludeInCommandLine="False" />
+  </Rule>
+  <ItemType
+    Name="FreePascal"
+    DisplayName="Free Pascal" />
+  <FileExtension
+    Name="*.pas"
+    ContentType="FreePascal" />
+  <ContentType
+    Name="FreePascal"
+    DisplayName="Free Pascal"
+    ItemType="FreePascal" />
+</ProjectSchemaDefinitions>

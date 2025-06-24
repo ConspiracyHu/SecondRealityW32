@@ -26,7 +26,8 @@
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
-  <Import Project="$(SolutionDir)\YASM\vsyasm.props" />
+  <Import Project="$(SolutionDir)\Tools\YASM\vsyasm.props" />
+  <Import Project="$(SolutionDir)\Tools\FreePascal\FreePascal.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
@@ -537,8 +538,12 @@
     <YASM Include="Parts\VISU\AVIDM2.ASM" />
     <YASM Include="Parts\VISU\C\U2A_DATA.ASM" />
   </ItemGroup>
+  <ItemGroup>
+    <FreePascal Include="Parts\TUNNELI\TUN10.PAS" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
-  <Import Project="$(SolutionDir)\YASM\vsyasm.targets" />
+  <Import Project="$(SolutionDir)\Tools\YASM\vsyasm.targets" />
+  <Import Project="$(SolutionDir)\Tools\FreePascal\FreePascal.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
 </Project>
