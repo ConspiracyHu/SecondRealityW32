@@ -1,3 +1,13 @@
+{$asmMode intel}
+
+unit tun10;
+
+interface
+
+procedure tun_main; stdcall;
+
+implementation
+
 uses crt;
 
 const veke = 1060;    { frame count to exit }
@@ -28,41 +38,48 @@ var
       bor    : byte;
       frames : word;
 
-{$L tunneli.obj}
 procedure tun;external;
-{$L sinit.obj}
-procedure sini;far;external;
+procedure sini;external;
 
 procedure setrgb(c,r,g,b:byte);
 begin
+{
      port[$3c8] := c;
      port[$3c9] := r;
      port[$3c9] := g;
      port[$3c9] := b;
+     }
 end;
 
 procedure waitr;
 begin
+{
         setrgb(0,0,0,0);
+        
         asm
 	mov	bx,1
 	int	0fch
         mov     frames,ax
         end;
         if mem[$40:$17] and 16 = 16 then setrgb(0,0,0,15);
+        }
 end;
 
 function dis_exit:boolean;
 var   a : byte;
 begin
+{
         asm
 	mov	bx,2
 	int	0fch
         mov     a,al
         end;
         if a = 0 then dis_exit := false else dis_exit := true;
+        }
+        dis_exit := false;
 end;
 
+procedure tun_main; stdcall;
 
 var  oldpos : array[0..7500] of word;
      op     : word;
@@ -99,14 +116,17 @@ begin
     for x := 0 to 100 do aa1[x] := 64000;
     move(aa1,aa2,sizeof(aa1));
     for x := 0 to 200 do rows[x] := x*320;
+    {
     move(mem[seg(sini):ofs(sini)],sinit,4097*2);
     move(mem[seg(sini):ofs(sini)+4097*2],cosit,2048*2);
     move(mem[seg(tun):ofs(tun)],pcalc,sizeof(pcalc));
+    }
 
 {
     for x := 0 to 4096 do Sinit[x] := round(sin((x)/128*pi)*((x*3) div 16));
     for x := 0 to 2048 do Cosit[x] := round(cos((x)/256*pi)*((x*4) div 32));
 }
+{
     asm
         mov  ax,$13
         int  $10
@@ -114,6 +134,7 @@ begin
 	xor	bx,bx
 	int	0fch
     end;
+    }
 {
     for x := 0 to 64 do setrgb(64+x,(64-x) *4 div 7,(64-x) * 2 div 3,64-x);
     for x := 0 to 64 do setrgb(128+x,(64-x) div 3,(64-x) div 2,(64-x) * 2 div 3);
@@ -160,34 +181,36 @@ begin
 
       if bbc >= 64 then
        asm
+       {
         mov    ax,$a000
         mov    es,ax
-        mov    si,PCP
-        mov    dx,_BX
-        mov    al,bbc
-        mov    byte ptr cs:[@c+3],al
+        }
+        mov    si,[pcp]
+        mov    dx,[_bx]
+        mov    al,[bbc]
+        mov    byte [@c+3],al
 
         mov    cx,64
-        mov    ax,RY
+        mov    ax,[RY]
 
         push   bp
-        mov    bp,BY
+        mov    bp,[BY]
 @a:     mov    bx,ax
-        mov    di,word ptr ds:oldpos[bx]
-        mov    byte ptr es:[di],0
+        mov    di,word [oldpos+ebx]
+        mov    byte ptr [edi],0
 
-        mov    di,word ptr ds:[si]
+        mov    di,word ptr [esi]
         add    di,dx
         cmp    di,319
         ja     @yli
         mov    bx,bp
-        add    bx,word ptr ds:[si+2]
+        add    bx,word ptr [esi+2]
         add    bx,bx
-        add    di,word ptr ds:rows[bx]
-@c:     mov    byte ptr es:[di],15
+        add    di,word ptr [ebx]
+@c:     mov    byte ptr [edi],15
 @yli:
         mov    bx,ax
-        mov    word ptr ds:oldpos[bx],di
+        mov    word ptr [oldpos+ebx],di
         add    si,4
         add    ax,2
         dec    cx
@@ -225,4 +248,8 @@ begin
      end;
 poies:
   until quit;
+end;
+
+exports tun_main;
+
 end.
