@@ -327,6 +327,9 @@
     <None Include="Parts\FOREST\POS3.DAT">
       <Filter>Parts\08-ForestScroller</Filter>
     </None>
+    <None Include="Parts\FOREST\O2.SCI">
+      <Filter>Parts\08-ForestScroller</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <YASM Include="Parts\ALKU\ALKU_ASMYT.ASM">
@@ -467,24 +470,15 @@
     <YASM Include="Parts\FOREST\ROUTINES.ASM">
       <Filter>Parts\08-ForestScroller</Filter>
     </YASM>
+    <YASM Include="Parts\FOREST\FOREST_DATA.ASM">
+      <Filter>Parts\08-ForestScroller</Filter>
+    </YASM>
   </ItemGroup>
   <ItemGroup>
     <FreePascal Include="Parts\TUNNELI\TUN10.PAS">
       <Filter>Parts\05-DotTunnel</Filter>
     </FreePascal>
     <FreePascal Include="Parts\FOREST\READ2.PAS">
-      <Filter>Parts\08-ForestScroller</Filter>
-    </FreePascal>
-    <FreePascal Include="Parts\FOREST\AOS1.PAS">
-      <Filter>Parts\08-ForestScroller</Filter>
-    </FreePascal>
-    <FreePascal Include="Parts\FOREST\AOS2.PAS">
-      <Filter>Parts\08-ForestScroller</Filter>
-    </FreePascal>
-    <FreePascal Include="Parts\FOREST\AOS3.PAS">
-      <Filter>Parts\08-ForestScroller</Filter>
-    </FreePascal>
-    <FreePascal Include="Parts\FOREST\BGR.PAS">
       <Filter>Parts\08-ForestScroller</Filter>
     </FreePascal>
   </ItemGroup>

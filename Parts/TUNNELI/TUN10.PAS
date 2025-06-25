@@ -52,11 +52,16 @@ procedure tun;external;
 procedure sini;external;
 }
 
-procedure shim_setpal(idx:integer; r:byte; g:byte; b:byte);stdcall;external name '_shim_setpal';
-procedure demo_blit;stdcall;external name '_demo_blit';
-function dis_waitb:integer;stdcall;external name '_dis_waitb';
-function dis_exit:integer;stdcall;external name '_dis_exit';
-procedure memcpy(var dest; const source; count: sizeint);stdcall;external name '_memcpy';
+procedure shim_setpal(idx:integer; r:byte; g:byte; b:byte);cdecl;external;
+procedure demo_blit;cdecl;external;
+function dis_waitb:integer;cdecl;external;
+function dis_exit_c:integer;cdecl;external name 'dis_exit';
+procedure memcpy(dest:pointer; source:pointer; count: sizeint);cdecl;external;
+
+procedure move(src:pointer; dst:pointer; count:sizeint);
+begin
+  memcpy(dst, src, count);
+end;
 
 procedure setrgb(c,r,g,b:byte);
 begin
@@ -84,7 +89,7 @@ begin
         frames := dis_waitb;
 end;
 
-function pas_exit:boolean;
+function dis_exit:boolean;
 var   a : byte;
 begin
 {
@@ -95,7 +100,7 @@ begin
         end;
         if a = 0 then dis_exit := false else dis_exit := true;
         }
-        if dis_exit = 0 then pas_exit := false else pas_exit := true;
+        if dis_exit_c = 0 then dis_exit := false else dis_exit := true;
 end;
 
 procedure tun_main; cdecl; [Alias:'_tun_main'];
@@ -129,12 +134,12 @@ begin
 {    fillchar(oldpos,sizeof(oldpos),#0);}
 
     for x := 0 to 100 do aa1[x] := 64000;
-    memcpy(aa2,aa1,sizeof(aa1));
+    move(@aa1[0],@aa2[0],sizeof(aa1));
     for x := 0 to 200 do rows[x] := x*320;
-    memcpy(sinit,sini,4097*2);
+    move(@sini[0],@sinit[0],4097*2);
     cosptr := @sini[4097];
-    memcpy(cosit,cosptr,2048*2);
-    memcpy(pcalc,tun,sizeof(pcalc));
+    move(@cosptr[0],@cosit[0],2048*2);
+    move(@tun[0],@pcalc[0],sizeof(pcalc));
 
 {
     for x := 0 to 4096 do Sinit[x] := round(sin((x)/128*pi)*((x*3) div 16));
@@ -242,7 +247,7 @@ begin
      begin
      putki[100].x := cosit[sy and 2047]-sinit[sy*3 and 4095]-cosit[sx and 2047];
      putki[100].y := sinit[sx*2 and 4095]-cosit[sx and 2047]+sinit[y and 4095];
-     memcpy(putki[0],putki[1],ofs(putki[100])-ofs(putki[0]));
+     memcpy(@putki[0],@putki[1],ofs(putki[100])-ofs(putki[0]));
      inc(sy);
      inc(sx);
 {
@@ -261,7 +266,7 @@ begin
      if frame >= veke-102 then putki[99].c := 0;
      if frame = veke then quit := true else inc(frame);
 {     inc(frame);}
-     if pas_exit then quit := true;
+     if dis_exit then quit := true;
      if quit then goto poies;
      end;
      demo_blit;

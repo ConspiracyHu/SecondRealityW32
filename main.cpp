@@ -16,6 +16,7 @@ extern "C" void credits_main();
 extern "C" void u2a_main(int argc,char *argv[]);
 extern "C" void u2e_main(int argc,char *argv[]);
 extern "C" void tun_main();
+extern "C" void forest_main();
 
 extern "C" void rotate( int, int, int, int );
 extern "C" void rotlist();
@@ -86,6 +87,7 @@ int main()
   VirtualProtect( &rotate, 8192, PAGE_EXECUTE_READWRITE, &old );
   VirtualProtect( &rotlist, 8192, PAGE_EXECUTE_READWRITE, &old );
   VirtualProtect( &plzline, 8192, PAGE_EXECUTE_READWRITE, &old );
+  VirtualProtect( &tun_main, 8192, PAGE_EXECUTE_READWRITE, &old );
 
   int windowWidth = 1280;
   int windowHeight = 960;
@@ -117,13 +119,14 @@ int main()
   //glenz_main();
 
   // 5   db      'Dottitunneli (TRUG)         ' / 'TUNNELI ' /  'TUNNELI.EXE',0
-  tun_main();
+  // tun_main();
 
   // 6   db      'Techno (PSI)                ' / 'TECHNO  ' /  'TECHNO.EXE',0
 
   // 7   db      'Panicfake (WILDF)           ' / 'PANIC   ' /  'PANICEND.EXE',0
 
   // 8   db      'Vuori-Scrolli (TRUG)        ' / 'FOREST  ' /  'MNTSCRL.EXE',0
+  forest_main();
 
   // 11  db      'Lens (PSI)                  ' / '        ' / 
   // 12  db      'Rotazoomer (PSI)            ' / 'LENS    ' /  'LNS&ZOOM.EXE',0
@@ -151,7 +154,7 @@ int main()
   //jplogo_main();
 
   // 19  db      'Vector Part II',0             / 'VISU    ' /  'U2E.EXE',0
-  u2e_main( 0, NULL );
+  //u2e_main( 0, NULL );
 
   // 20  db      'Endpictureflash (?)         ' / '        ' / 
 
@@ -160,8 +163,8 @@ int main()
   //end_main();
 
   // 22                                           'CREDITS ' /  'CRED.EXE',0
-  demo_changemode( 320, 400 );
-  credits_main();
+  //demo_changemode( 320, 400 );
+  //credits_main();
 
   // 23                                           'ENDSCRL ' /  'ENDSCRL.EXE',0
   //demo_changemode( 640, 350 );
