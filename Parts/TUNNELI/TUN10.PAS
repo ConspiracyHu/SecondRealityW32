@@ -34,16 +34,23 @@ var
       sinit  : array[0..4096] of word;
       cosit  : array[0..2048] of word;
       sade   : array[0..102] of word;
+      shim_vram: array[0..64000] of byte; external name '_shim_vram';
       frame  : word;
       bor    : byte;
       frames : word;
 
 procedure tun;external;
 procedure sini;external;
+
+procedure shim_setpal(idx:integer; r:byte; g:byte; b:byte);stdcall;external name '_shim_setpal';
+procedure demo_blit;stdcall;external name '_demo_blit';
+function dis_waitb:integer;stdcall;external name '_dis_waitb';
+function dis_exit:integer;stdcall;external name '_dis_exit';
 procedure memcpy(var dest; const source; count: sizeint);stdcall;external name '_memcpy';
 
 procedure setrgb(c,r,g,b:byte);
 begin
+    shim_setpal(c,r,g,b);
 {
      port[$3c8] := c;
      port[$3c9] := r;
@@ -64,9 +71,10 @@ begin
         end;
         if mem[$40:$17] and 16 = 16 then setrgb(0,0,0,15);
         }
+        dis_waitb;
 end;
 
-function dis_exit:boolean;
+function pas_exit:boolean;
 var   a : byte;
 begin
 {
@@ -77,7 +85,7 @@ begin
         end;
         if a = 0 then dis_exit := false else dis_exit := true;
         }
-        dis_exit := false;
+        if dis_exit = 0 then pas_exit := false else pas_exit := true;
 end;
 
 procedure tun_main; cdecl; [Alias:'_tun_main'];
@@ -197,10 +205,10 @@ begin
         push   bp
         mov    bp,[BY]
 @a:     mov    bx,ax
-        mov    di,word [oldpos+ebx]
+        movzx  edi,word [oldpos+ebx]
         mov    byte ptr [edi],0
 
-        mov    di,word ptr [esi]
+        movzx  edi,word ptr [esi]
         add    di,dx
         cmp    di,319
         ja     @yli
@@ -208,7 +216,7 @@ begin
         add    bx,word ptr [esi+2]
         add    bx,bx
         add    di,word ptr [ebx]
-@c:     mov    byte ptr [edi],15
+@c:     mov    byte ptr [shim_vram+edi],15
 @yli:
         mov    bx,ax
         mov    word ptr [oldpos+ebx],di
@@ -244,9 +252,10 @@ begin
      if frame >= veke-102 then putki[99].c := 0;
      if frame = veke then quit := true else inc(frame);
 {     inc(frame);}
-     if dis_exit then quit := true;
+     if pas_exit then quit := true;
      if quit then goto poies;
      end;
+     demo_blit;
 poies:
   until quit;
 end;
