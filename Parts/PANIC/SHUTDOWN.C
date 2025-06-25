@@ -23,7 +23,7 @@ extern void tw_crlscr();
 
 #define	_LOADER_
 
-//extern copyline(char far *from, char far *to, int count);
+void copyline(char *from, char *to, int count);
 void shutdown();
 
 #ifndef _LOADER_CALLS

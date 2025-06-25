@@ -68,7 +68,7 @@ bool demo_wantstoquit()
   return graphics.WantsToQuit();
 }
 
-#define WAIT_FOR_KEY
+//#define WAIT_FOR_KEY
 extern "C" void demo_vsync();
 unsigned int lastVblank = 0;
 void demo_vsync()
