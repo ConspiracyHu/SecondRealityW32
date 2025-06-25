@@ -165,6 +165,7 @@
     <ClCompile Include="Parts\COMMON.C" />
     <ClCompile Include="Parts\LENS\LENS_MAIN.C" />
     <ClCompile Include="Parts\PAM\OUTTAA.C" />
+    <ClCompile Include="Parts\PANIC\SHUTDOWN.C" />
     <ClCompile Include="Parts\PLZPART\PLZ_MAIN.C" />
     <ClCompile Include="Parts\PLZPART\PLZ.C" />
     <ClCompile Include="Parts\PLZPART\PLZFILL.C" />

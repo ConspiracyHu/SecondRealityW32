@@ -70,6 +70,9 @@
     <ClCompile Include="Parts\VISU\C\U2COMMON.C">
       <Filter>Parts\VISU\C</Filter>
     </ClCompile>
+    <ClCompile Include="Parts\PANIC\SHUTDOWN.C">
+      <Filter>Parts\07-PanicShutdown</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Graphics.h" />
@@ -159,6 +162,9 @@
     </Filter>
     <Filter Include="Parts\16-MirrorBallScroller">
       <UniqueIdentifier>{0ca68ce2-bb62-4380-a7f8-4a13ccff51bb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Parts\07-PanicShutdown">
+      <UniqueIdentifier>{3c4c2862-5a82-4e01-97d9-2ee8f80219c9}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
