@@ -17,6 +17,7 @@ extern "C" void u2a_main(int argc,char *argv[]);
 extern "C" void u2e_main(int argc,char *argv[]);
 extern "C" void tun_main();
 extern "C" void forest_main();
+extern "C" void water_main();
 
 extern "C" void rotate( int, int, int, int );
 extern "C" void rotlist();
@@ -126,7 +127,7 @@ int main()
   // 7   db      'Panicfake (WILDF)           ' / 'PANIC   ' /  'PANICEND.EXE',0
 
   // 8   db      'Vuori-Scrolli (TRUG)        ' / 'FOREST  ' /  'MNTSCRL.EXE',0
-  forest_main();
+  //forest_main();
 
   // 11  db      'Lens (PSI)                  ' / '        ' / 
   // 12  db      'Rotazoomer (PSI)            ' / 'LENS    ' /  'LNS&ZOOM.EXE',0
@@ -144,6 +145,7 @@ int main()
   //dots_main( 0, NULL );
 
   // 16  db      'Peilipalloscroll (TRUG)     ' / 'WATER   ' /  'RAYSCRL.EXE',0
+  water_main();
 
   // 17  db      '3D-Sinusfield (PSI)         ' / 'COMAN   ' /  '3DSINFLD.EXE',0
   //demo_changemode( 320, 200 );
