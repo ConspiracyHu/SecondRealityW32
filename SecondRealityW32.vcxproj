@@ -226,6 +226,12 @@
     <None Include="Parts\VISU\ADATASIN.INC" />
     <None Include="Parts\VISU\AFILLDIV.INC" />
     <None Include="Parts\VISU\AVISTAN.INC" />
+    <None Include="Parts\WATER\BKG.CLX" />
+    <None Include="Parts\WATER\MIEKKA.SCI" />
+    <None Include="Parts\WATER\WAT1.DAT" />
+    <None Include="Parts\WATER\WAT2.DAT" />
+    <None Include="Parts\WATER\WAT3.DAT" />
+    <None Include="Parts\WATER\WAT4.DAT" />
     <YASM Include="Parts\BEG\BEG_DATA.ASM" />
     <YASM Include="Parts\COMAN\COMAN_ASM.ASM" />
     <YASM Include="Parts\COMAN\COMAN_DATA.ASM" />
@@ -569,6 +575,7 @@
   <ItemGroup>
     <FreePascal Include="Parts\FOREST\READ2.PAS" />
     <FreePascal Include="Parts\TUNNELI\TUN10.PAS" />
+    <FreePascal Include="Parts\WATER\DEMO.PAS" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <Import Project="$(SolutionDir)\Tools\YASM\vsyasm.targets" />
