@@ -11,7 +11,7 @@ int paletteComponent = 0;
 
 void shim_setpal( int idx, unsigned char r, unsigned char g, unsigned char b )
 {
-  shim_palette[ idx ] = (r << 2) | ( g << 10 ) | ( b << 18 );
+  shim_palette[ idx ] = ( b << 2 ) | ( g << 10 ) | ( r << 18 );
 }
 
 void shim_outp( int reg, unsigned int value )
