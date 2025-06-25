@@ -4,7 +4,7 @@ unit tun10;
 
 interface
 
-procedure tun_main; stdcall;
+procedure tun_main; cdecl;
 
 implementation
 
@@ -40,6 +40,7 @@ var
 
 procedure tun;external;
 procedure sini;external;
+procedure memcpy(var dest; const source; count: sizeint);stdcall;external name '_memcpy';
 
 procedure setrgb(c,r,g,b:byte);
 begin
@@ -79,7 +80,7 @@ begin
         dis_exit := false;
 end;
 
-procedure tun_main; stdcall;
+procedure tun_main; cdecl; [Alias:'_tun_main'];
 
 var  oldpos : array[0..7500] of word;
      op     : word;
@@ -114,7 +115,7 @@ begin
 {    fillchar(oldpos,sizeof(oldpos),#0);}
 
     for x := 0 to 100 do aa1[x] := 64000;
-    move(aa1,aa2,sizeof(aa1));
+    memcpy(aa2,aa1,sizeof(aa1));
     for x := 0 to 200 do rows[x] := x*320;
     {
     move(mem[seg(sini):ofs(sini)],sinit,4097*2);
@@ -224,7 +225,7 @@ begin
      begin
      putki[100].x := cosit[sy and 2047]-sinit[sy*3 and 4095]-cosit[sx and 2047];
      putki[100].y := sinit[sx*2 and 4095]-cosit[sx and 2047]+sinit[y and 4095];
-     move(putki[1],putki[0],ofs(putki[100])-ofs(putki[0]));
+     memcpy(putki[0],putki[1],ofs(putki[100])-ofs(putki[0]));
      inc(sy);
      inc(sx);
 {

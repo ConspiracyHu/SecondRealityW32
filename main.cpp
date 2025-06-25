@@ -15,6 +15,7 @@ extern "C" void plz_main();
 extern "C" void credits_main();
 extern "C" void u2a_main(int argc,char *argv[]);
 extern "C" void u2e_main(int argc,char *argv[]);
+extern "C" void tun_main();
 
 extern "C" void rotate( int, int, int, int );
 extern "C" void rotlist();
@@ -116,6 +117,7 @@ int main()
   //glenz_main();
 
   // 5   db      'Dottitunneli (TRUG)         ' / 'TUNNELI ' /  'TUNNELI.EXE',0
+  tun_main();
 
   // 6   db      'Techno (PSI)                ' / 'TECHNO  ' /  'TECHNO.EXE',0
 
