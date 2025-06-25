@@ -518,7 +518,7 @@ _draw_polylist:
 	movpar	eax,2
 	;movpar	bp,4+0
 	xchg	ebp,edi
-	mov	[poly1+POLYVXSEG],ax
+	mov	[poly1+POLYVXSEG],eax
 	;ds:bp=projected vertices
 	;??:di=rotated vertices
 	%assign zzs 0
@@ -550,13 +550,14 @@ _draw_polylist:
 	;
 	mov	cx,[poly1+POLYSIDES]
 	lespar	edi,4 ;rotated normals
-	;mov	fs,[poly1+POLYVXSEG]
+  push eax
+	mov	eax,[poly1+POLYVXSEG]
 	mov	ebp,poly1
 @@gr1:
   push	ecx
 	push	edi
 	movzx	ebx, word [POLYVX+ebp]
-	movzx	ebx, word [ebx+vlist_normal]
+	movzx	ebx, word [eax+ebx+vlist_normal]
 	shl	ebx,nlist_sizeshl
 	add	edi,ebx
 	;es:di=now normal for which to calculate
@@ -569,6 +570,7 @@ _draw_polylist:
 	pop	ecx
 	add	bp,4
 	loop	@@gr1
+	pop	eax
 @@nogr:	;
 	pop	edx
 	pop	ebp

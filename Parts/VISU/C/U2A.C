@@ -69,15 +69,13 @@ void u2a_main(int argc,char *argv[])
 
 	memcpy(scene0+16+192*3,u2a_bg+16,64*3);
 	bg2=halloc(16384,4);
-	for(u=z=0;z<4;z++)
+  u=0;
+	for(y=0;y<200;y++)
 	{
-		for(y=0;y<200;y++)
+		for(x=0;x<320;x++)
 		{
-			for(x=z;x<320;x+=4)
-			{
-				a=u2a_bg[16+768+x+y*320];
-				bg2[u++]=a;
-			}
+			a=u2a_bg[16+768+x+y*320];
+			bg2[u++]=a;
 		}
 	}
 	memcpy(u2a_bg,bg2,64000);

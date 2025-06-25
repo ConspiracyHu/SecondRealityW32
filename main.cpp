@@ -106,7 +106,7 @@ int main()
   //alku_main();
 
   // 2   db      'Alkutekstit II (PSI)        ' / 'VISU    ' /  'U2A.EXE',0
-  //u2a_main( 0, NULL );
+  u2a_main( 0, NULL );
   
   // 3   db      'Alkutekstit III (TRUG/WILDF)' / 'PAM     ' /  'PAM.EXE',0
   //demo_changemode( 320, 200 );
@@ -127,7 +127,7 @@ int main()
   // 7   db      'Panicfake (WILDF)           ' / 'PANIC   ' /  'PANICEND.EXE',0
 
   // 8   db      'Vuori-Scrolli (TRUG)        ' / 'FOREST  ' /  'MNTSCRL.EXE',0
-  //forest_main();
+  forest_main();
 
   // 11  db      'Lens (PSI)                  ' / '        ' / 
   // 12  db      'Rotazoomer (PSI)            ' / 'LENS    ' /  'LNS&ZOOM.EXE',0
@@ -145,7 +145,7 @@ int main()
   //dots_main( 0, NULL );
 
   // 16  db      'Peilipalloscroll (TRUG)     ' / 'WATER   ' /  'RAYSCRL.EXE',0
-  water_main();
+  //water_main();
 
   // 17  db      '3D-Sinusfield (PSI)         ' / 'COMAN   ' /  '3DSINFLD.EXE',0
   //demo_changemode( 320, 200 );

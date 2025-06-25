@@ -176,29 +176,32 @@ m1_clear: ;clear current page
 	;push	ds
 	;mov	ax,fs
 	;mov	ds,ax
-	%rep	4
-;	local	l1
-	push	edi
-	mov	dx,3c4h
-	mov	ax,02h+100h*zzpl
-	;out	dx,ax
-	xor	edi,edi
-	xor	eax,eax
-	mov	ecx,200
-
-%define ZZPL(x) l1_ %+ zzpl
-ZZPL(x):
-  %rep 320/4/4
-	mov	eax,[esi]
-	add	esi,4
-	mov	[_shim_vram+edi],eax
-	add	edi,4
-	%endrep
-	LOOP_LARGE	ZZPL(x)
-
-	pop	edi
-	%assign zzpl zzpl*2
-	%endrep
+	;xor	edi,edi
+  mov edi, _shim_vram
+  mov ecx, 320 * 200 / 4
+  rep movsd
+;	%rep	4
+;;	local	l1
+;	push	edi
+;	;mov	dx,3c4h
+;	;mov	ax,02h+100h*zzpl
+;	;out	dx,ax
+;	xor	eax,eax
+;	mov	ecx,200
+;
+;%define ZZPL(x) l1_ %+ zzpl
+;ZZPL(x):
+;  %rep 320/4
+;	mov	eax,[esi]
+;	add	esi,4
+;	mov	[_shim_vram+edi],eax
+;	add	edi,4
+;	%endrep
+;	LOOP_LARGE	ZZPL(x)
+;
+;	pop	edi
+;	%assign zzpl zzpl*2
+;	%endrep
 	;pop	ds
 	pop	edi
 	ret
