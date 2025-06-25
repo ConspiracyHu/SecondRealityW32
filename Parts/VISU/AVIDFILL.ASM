@@ -18,8 +18,8 @@ extern vidstart
 section .data
 
 drawfill_progs:
-dw drawfill_nrm
-dw drawfill_grd
+dd drawfill_nrm
+dd drawfill_grd
 
 ;ALIGN	4
 leftside   db	1111b,1110b,1100b,1000b
@@ -73,13 +73,13 @@ global _vid_drawfill
 _vid_drawfill:
 	CBEG
 	call	vidstart
-	lfspar	si,0
-	mov	bx,[esi]
-	cmp	bx,1
+	lfspar	esi,0
+	movzx	ebx, word [esi]
+	cmp	ebx,1
 	ja	@@1
-	add	bx,bx
-	add	si,2
-	call	[drawfill_progs+bx]
+	shl	ebx,2
+	add	esi,2
+	call	[drawfill_progs+ebx]
 @@1:	CEND
 
 

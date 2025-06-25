@@ -206,6 +206,7 @@ void u2e_main(int argc,char *argv[])
 		dis_waitb();
     shim_outp(0x3c8,0);
 		for(a=0;a<768;a++) shim_outp(0x3c9,fpal[a]);
+    demo_blit();
 	}
 
 	for(b=0;b<16;b++)
@@ -246,6 +247,7 @@ void u2e_main(int argc,char *argv[])
 		dis_waitb();
     shim_outp(0x3c8,0);
 		for(a=0;a<768;a++) shim_outp(0x3c9,fpal[a]);
+    demo_blit();
 	}
 	vid_init(11);
 	cp=(char *)(scenem+16);
@@ -291,14 +293,14 @@ void u2e_main(int argc,char *argv[])
 	
 	while(!dis_exit() && !xit)
 	{
-		int fov = 0;
+	  int fov = 0;
 		int onum;
 		long pflag;
 		long dis;
 		long l;
 		object *o;
 		rmatrix *r;
-
+    memset( shim_vram, 0, 320 * 200 );
 	    if(!firstframe)
 	    {
  		deadlock=0;
@@ -454,6 +456,8 @@ void u2e_main(int argc,char *argv[])
 		}
 	    }
       demo_blit();
+      dis_waitb();
+      u2e_copper2();
 	}
 	dis_setcopper(2,NULL);
 

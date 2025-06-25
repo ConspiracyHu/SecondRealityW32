@@ -351,6 +351,8 @@ void u2a_main(int argc,char *argv[])
 		}
 	    }
       demo_blit();
+      dis_waitb();
+      u2a_copper2();
 	}
 	dis_setcopper(2,NULL);
 

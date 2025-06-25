@@ -632,12 +632,12 @@ _calc_singlez:
 ;descr: Rotates the given normal list
 _calc_nrotate:
 	CBEG
-	movpar	cx,0
+	movpar	ecx,0
 	JCXZ_LARGE	@@0
-	lespar	di,1 ;destination
-	ldspar	si,5 ;matrix - dataseg not used in procedure, so DS can be used
-	lfspar	bp,3 ;source - NOTE: bp/parameter pointer destroyed!
-@@1:	push	cx
+	lespar	edi,1 ;destination
+	ldspar	esi,3 ;matrix - dataseg not used in procedure, so DS can be used
+	lfspar	ebp,2 ;source - NOTE: bp/parameter pointer destroyed!
+@@1:	push	ecx
 
 	mov	ax,word [ebp+nlist_x]
 	imul	word [esi+rmatrix_m+2*0]
@@ -685,9 +685,9 @@ _calc_nrotate:
 	mov	word [edi+nlist_z],bx
 
 	;next point
-	add	bp,nlist_size
-	add	di,nlist_size
-	pop	cx
+	add	ebp,nlist_size
+	add	edi,nlist_size
+	pop	ecx
 	LOOP_LARGE	@@1
 @@0:	CEND
 

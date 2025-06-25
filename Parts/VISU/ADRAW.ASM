@@ -78,7 +78,7 @@ checkculling:
 	;es:di=normal
 	;fs:si=vertex
 	;ret: carry=1=hidden
-	push	bp
+	push	ebp
 	movsx	eax,word [edi+nlist_x]
 	imul	dword [esi+vlist_x]
 	mov	ebp,eax
@@ -93,7 +93,7 @@ checkculling:
 	adc	ecx,edx
 	rcl	ecx,1 ;if cx<0, carry=1=visible
 	cmc	;now carry=1 when invisible
-	pop	bp
+	pop	ebp
 	ret
 
 section .data
@@ -444,14 +444,14 @@ _draw_setfillroutine:
 ;descr: draw the contents of the polylist.
 _draw_polylist:
 	CBEG
-	movpar	ax,10
-	test	ax,1
+	movpar	eax,5
+	test	eax,1
 	jz	@@invi ;F_VISIBLE not set
 	;set poly oversampling
-	mov	ax,16
-	mov	cx,[_projoversampleshr]
+	mov	eax,16
+	mov	ecx,[_projoversampleshr]
 	mov	[polyoversample],cl
-	sub	ax,cx
+	sub	eax,ecx
 	mov	[polyoversample16],al
 	mov	al,1
 	shl	al,cl
@@ -459,49 +459,50 @@ _draw_polylist:
 	dec	al
 	mov	[polyoversamplea],al
 	;start with the actual work
-	movpar	si,0+0
-	add	si,4 ;skip count - sort vertex
-@@1:	movpar	ds,0+1
-	push	si
-	mov	si,[esi]
+	movpar	esi,0
+	add	esi,4 ;skip count - sort vertex
+@@1:
+  ;movpar	ds,0+1
+	push	esi
+	movzx	esi, word [esi]
 	cmp	si,0
 	je	@@0 ;end of list
-	movpar	ax,2+0
-	add	si,ax
-	movpar	ds,2+1
+	movpar	eax,2
+	add	esi,eax
+	;movpar	ds,2+1
 	;ds:si points to polydata/polygon we are now drawing
 	mov	cx,[esi+0]
-	movpar	ax,10
-	or	ax,0f00h
-	and	ax,cx
+	movpar	eax,5
+	or	eax,0f00h
+	and	eax,ecx
 	mov	[poly1+POLYFLAGS],ax
-	and	cx,0ffh
+	and	ecx,0ffh
 	mov	[poly1+POLYSIDES],cx
-	push	si
-	mov	ax,[esi+4] ;normal
-	mov	bx,[esi+6] ;first point
+	push	esi
+	movzx	eax, word [esi+4] ;normal
+	movzx	ebx, word [esi+6] ;first point
 	cmp	word [esi+2],-1 ;color
 	je 	@@cull2
-	shl	bx,vlist_sizeshl
-	lfspar	si,4 ;rotated vertices
-	add	si,bx
-	mov	bx,ax ;normal
-	shl	bx,nlist_sizeshl
-	lespar	di,8 ;rotated normals
-	add	di,bx
+	shl	ebx,vlist_sizeshl
+	lfspar	esi,2 ;rotated vertices
+	add	esi,ebx
+	mov	ebx,eax ;normal
+	shl	ebx,nlist_sizeshl
+	lespar	edi,4 ;rotated normals
+	add	edi,ebx
 	test	word [poly1+POLYFLAGS],F_2SIDE
 	jnz	@@2side
 	call	checkculling
-	pop	si
+	pop	esi
 	jc	@@cull
 	jmp	@@nocl
-@@cull2: pop	si
+@@cull2: pop	esi
 	jmp	@@cull
 	;es:di=still normal
-@@2side: pop	si	
+@@2side: pop	esi	
 @@nocl:	;lightsource
 	mov	ax,[poly1+POLYFLAGS]
-	test	ax,F_GOURAUD
+	test	eax,F_GOURAUD
 	jnz	@@nosh
 	call	calclight
 	add	al,[esi+2]
@@ -511,23 +512,23 @@ _draw_polylist:
 	mov	byte [poly1+POLYCOLOR],al
 @@yosh:	;
 	mov	cx,[poly1+POLYSIDES]
-	lespar	di,6 ;projected vertices
+	lespar	edi,3 ;projected vertices
 	mov	dx,0ff00h ;for vf calc
-	push	bp
-	movpar	ax,4+1
-	movpar	bp,4+0
-	xchg	bp,di
+	push	ebp
+	movpar	eax,2
+	;movpar	bp,4+0
+	xchg	ebp,edi
 	mov	[poly1+POLYVXSEG],ax
 	;ds:bp=projected vertices
 	;??:di=rotated vertices
 	%assign zzs 0
 	%assign zzd 0
 	%rep	MAXPOLYSIDES ;max sides in polygon
-	mov	bx,[esi+6+zzs]
+	movzx	ebx, word [esi+6+zzs]
 	shl	bx,pvlist_sizeshl ;==vlist_sizeshl (required) [!!]
-	lea	ax,[bx+di]
+	lea	ax,[ebx+edi]
 	mov	word [poly1+POLYVX+zzd],ax
-	add	bx,bp
+	add	ebx,ebp
 	mov	al,[ebx+pvlist_vf]
 	and	dh,al ;if anded!=0, out of screen
 	or	dl,al ;if orred!=0, must clip
@@ -538,75 +539,80 @@ _draw_polylist:
 	%assign zzs zzs+2
 	%assign zzd zzd+4
 	%endrep
-@@2:	pop	bp
-	push	bp
-	push	dx
+@@2:
+  pop	ebp
+	push	ebp
+	push	edx
 	;gouraud color calcs
 	mov	ax,[poly1+POLYFLAGS]
 	test	ax,F_GOURAUD
 	jz	@@nogr
 	;
 	mov	cx,[poly1+POLYSIDES]
-	lespar	di,8 ;rotated normals
-	mov	fs,[poly1+POLYVXSEG]
-	mov	bp,poly1
-@@gr1:	push	cx
-	push	di
-	mov	bx,[POLYVX+ebp]
-	mov	bx,[ebx+vlist_normal]
-	shl	bx,nlist_sizeshl
-	add	di,bx
+	lespar	edi,4 ;rotated normals
+	;mov	fs,[poly1+POLYVXSEG]
+	mov	ebp,poly1
+@@gr1:
+  push	ecx
+	push	edi
+	movzx	ebx, word [POLYVX+ebp]
+	movzx	ebx, word [ebx+vlist_normal]
+	shl	ebx,nlist_sizeshl
+	add	edi,ebx
 	;es:di=now normal for which to calculate
 	mov	ax,[poly1+POLYFLAGS]
 	call	calclight
 	add	al,byte [poly1+POLYCOLOR]
 	shl	ax,8
 	mov	[POLYGR+ebp],ax
-	pop	di
-	pop	cx
+	pop	edi
+	pop	ecx
 	add	bp,4
 	loop	@@gr1
 @@nogr:	;
-	pop	dx
-	pop	bp
+	pop	edx
+	pop	ebp
 	LOADDS
-	push	bp
-	push	ds
-	mov	ax,cs
-	mov	ds,ax
-	mov	si,poly1
+	push	ebp
+	;push	eds
+	;mov	ax,cs
+	;mov	ds,ax
+	mov	esi,poly1
 	or	dh,dh ;dh=visfl anded
 	jnz	@@cl0 ;entire polygon invisible
 	or	dl,dl ;dl=visfl orred
 	jz	@@cl4 ;no clipping
-	mov	di,poly2
+	mov	edi,poly2
 	mov	ax,[esi+POLYFLAGS]
 	call	newclip
 	cmp	word [esi+POLYSIDES],0
 	je	@@cl0 ;entire polygon clipped away, nothing to draw
 	;
 @@cl4:	LOADES
-	mov	di,_polydrw
+	mov	edi,_polydrw
 	test	word [esi+POLYFLAGS],F_GOURAUD
 	jz	@@ngrd
 	mov	word [edi],1 ;gouraud fill
-	add	di,2
+	add	edi,2
 	call	poly_grd
 	jmp	@@pgdn
 @@ngrd:	mov	word [edi],0 ;normal fill
-	add	di,2
+	add	edi,2
 	call	poly_nrm
 @@pgdn:	
-	push	es
+	;push	es
 	push	_polydrw
 	call	[drawfill_routine]
-	add	sp,4
+	add	esp,4
 	
-@@cl0:	pop	ds
-	pop	bp
-@@cull:	pop	si
-	add	si,2
+@@cl0:
+  ;pop	ds
+	pop	ebp
+@@cull:
+  pop	esi
+	add	esi,2
 	jmp	@@1
-@@0:	pop	si
+@@0:
+  pop	esi
 @@invi:	CEND
 

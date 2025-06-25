@@ -34,6 +34,7 @@
 
 %macro CBEG 0 ;C/Assembler procedure begin
 	push ebp
+  mov ebp, esp
 	;LOADDS	;since all routines expect to have DS pointed to the
 		;data segment, it's loaded at every public entrypoint
 		;(which should all be C procedures).
@@ -61,23 +62,23 @@
 %endmacro
 
 %macro movpar 2	;reg,par ;loads parameter [par(0..)] to register [reg]
-	mov	%1,[esp+(%2)*4+8]
+	mov	%1,[ebp+(%2)*4+8]
 %endmacro
 	
 %macro ldspar 2	;reg,par ;loads pointer parameter [par(0..)] to register ds:[reg]
-	mov	%1,[esp+(%2)*4+8]
+	mov	%1,[ebp+(%2)*4+8]
 %endmacro
 	
 %macro lespar 2	;reg,par ;loads pointer parameter [par(0..)] to register es:[reg]
-	mov	%1,[esp+(%2)*4+8]
+	mov	%1,[ebp+(%2)*4+8]
 %endmacro
 	
 %macro lfspar 2	;reg,par ;loads pointer parameter [par(0..)] to register fs:[reg]
-	mov	%1,[esp+(%2)*4+8]
+	mov	%1,[ebp+(%2)*4+8]
 %endmacro
 	
 %macro lgspar 2	;reg,par ;loads pointer parameter [par(0..)] to register gs:[reg]
-	mov	%1,[esp+(%2)*4+8]
+	mov	%1,[ebp+(%2)*4+8]
 %endmacro
 
 %macro LOOP_LARGE 1
