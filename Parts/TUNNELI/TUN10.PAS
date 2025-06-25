@@ -17,6 +17,7 @@ type
                  x : integer;
                  y : integer;
                end;
+      ptr_bc = ^bc;
 
       rengas = record
                  x,y   : integer;
@@ -35,12 +36,20 @@ var
       cosit  : array[0..2048] of word;
       sade   : array[0..102] of word;
       shim_vram: array[0..64000] of byte; external name '_shim_vram';
+      tun: array[0..17664] of word; external name '_tunnel_tun';
+      sini: array[0..6146] of word; external name '_tunnel_sini';
       frame  : word;
       bor    : byte;
       frames : word;
+      oldpos : array[0..7500] of word;
+      _bx,by : word;
+      bbc   : byte;
+      ry     : word;
 
+      {
 procedure tun;external;
 procedure sini;external;
+}
 
 procedure shim_setpal(idx:integer; r:byte; g:byte; b:byte);stdcall;external name '_shim_setpal';
 procedure demo_blit;stdcall;external name '_demo_blit';
@@ -71,7 +80,7 @@ begin
         end;
         if mem[$40:$17] and 16 = 16 then setrgb(0,0,0,15);
         }
-        dis_waitb;
+        frames := dis_waitb;
 end;
 
 function pas_exit:boolean;
@@ -90,9 +99,7 @@ end;
 
 procedure tun_main; cdecl; [Alias:'_tun_main'];
 
-var  oldpos : array[0..7500] of word;
-     op     : word;
-     ry     : word;
+var  op     : word;
 
 var  x,y,z : integer;
      x1,y1 : word;
@@ -100,10 +107,8 @@ var  x,y,z : integer;
      f   : file;
 
      sx,sy : word;
-     _bx,by : word;
      br    : byte;
-     bbc   : byte;
-     pcp   : word;
+     pcp   : ptr_bc;
      pc    : byte;
      mx,my : integer;
      addi,yvalue : word;
@@ -125,6 +130,9 @@ begin
     for x := 0 to 100 do aa1[x] := 64000;
     memcpy(aa2,aa1,sizeof(aa1));
     for x := 0 to 200 do rows[x] := x*320;
+    memcpy(sinit,sini,4097*2);
+    memcpy(cosit,sini[4097*2],2048*2);
+    memcpy(pcalc,tun,sizeof(pcalc));
     {
     move(mem[seg(sini):ofs(sini)],sinit,4097*2);
     move(mem[seg(sini):ofs(sini)+4097*2],cosit,2048*2);
@@ -186,7 +194,7 @@ begin
       by := putki[x].y-putki[5].y;
       br := sade[x];
       bbc := putki[x].c+round(x / 1.3);
-      pcp := ofs(pcalc[br][0]);
+      pcp := @pcalc[br][0];
 
       if bbc >= 64 then
        asm
@@ -194,38 +202,42 @@ begin
         mov    ax,$a000
         mov    es,ax
         }
-        mov    si,[pcp]
-        mov    dx,[_bx]
-        mov    al,[bbc]
-        mov    byte [@c+3],al
+        fnop
+        fnop
+        mov      esi,pcp
+        movzx    edx,word [_bx]
+        movzx    eax,byte [bbc]
+        mov    byte [@c+6],al
 
-        mov    cx,64
-        mov    ax,[RY]
+        mov    ecx,64
+        movzx  eax, word [RY]
 
-        push   bp
-        mov    bp,[BY]
-@a:     mov    bx,ax
+        push   ebp
+        movzx  ebp, word [BY]
+@a:     mov    ebx,eax
         movzx  edi,word [oldpos+ebx]
-        mov    byte ptr [edi],0
+        mov    byte ptr [shim_vram+edi],0
 
         movzx  edi,word ptr [esi]
-        add    di,dx
-        cmp    di,319
+        add    edi,edx
+        cmp    edi,319
         ja     @yli
-        mov    bx,bp
+        mov    ebx,ebp
         add    bx,word ptr [esi+2]
-        add    bx,bx
-        add    di,word ptr [ebx]
+        add    ebx,ebx
+        add    di,word ptr [rows+ebx]
 @c:     mov    byte ptr [shim_vram+edi],15
 @yli:
-        mov    bx,ax
+        mov    ebx,eax
         mov    word ptr [oldpos+ebx],di
-        add    si,4
-        add    ax,2
-        dec    cx
+        add    esi,4
+        add    eax,2
+        dec    ecx
         jnz    @a
-        pop    bp
+        pop    ebp
         mov    RY,ax
+        fnop
+        fnop
        end;
      end;
 

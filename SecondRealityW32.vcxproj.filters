@@ -306,6 +306,12 @@
     <None Include="Parts\VISU\AVISTAN.INC">
       <Filter>Parts\VISU</Filter>
     </None>
+    <None Include="Parts\TUNNELI\SINIT.DAT">
+      <Filter>Parts\05-DotTunnel</Filter>
+    </None>
+    <None Include="Parts\TUNNELI\TUNNEL.DAT">
+      <Filter>Parts\05-DotTunnel</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <YASM Include="Parts\ALKU\ALKU_ASMYT.ASM">
@@ -439,6 +445,9 @@
     </YASM>
     <YASM Include="Parts\VISU\ATEXT.ASM">
       <Filter>Parts\VISU</Filter>
+    </YASM>
+    <YASM Include="Parts\TUNNELI\TUNNEL_DATA.ASM">
+      <Filter>Parts\05-DotTunnel</Filter>
     </YASM>
   </ItemGroup>
   <ItemGroup>

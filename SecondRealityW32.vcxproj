@@ -196,6 +196,18 @@
     <None Include="Parts\PLZPART\RATA.INC" />
     <None Include="Parts\PLZPART\SINIT.INC" />
     <None Include="Parts\PLZPART\SPLINE.INC" />
+    <None Include="Parts\TUNNELI\SINIT.DAT">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </None>
+    <None Include="Parts\TUNNELI\TUNNEL.DAT">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </None>
     <None Include="Parts\VISU\A.INC" />
     <None Include="Parts\VISU\AD.INC" />
     <None Include="Parts\VISU\ADATASIN.INC" />
@@ -527,6 +539,7 @@
     <YASM Include="Parts\PLZPART\INCLUDE.ASM" />
     <YASM Include="Parts\PLZPART\PLZA.ASM" />
     <YASM Include="Parts\PLZPART\SPLINE.ASM" />
+    <YASM Include="Parts\TUNNELI\TUNNEL_DATA.ASM" />
     <YASM Include="Parts\VISU\ACALC.ASM" />
     <YASM Include="Parts\VISU\ADATA.ASM" />
     <YASM Include="Parts\VISU\ADRAW.ASM" />
