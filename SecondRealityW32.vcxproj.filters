@@ -154,6 +154,9 @@
     <Filter Include="Parts\05-DotTunnel">
       <UniqueIdentifier>{932b21a6-e521-4d99-8508-9ca1ad78a6e0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Parts\08-ForestScroller">
+      <UniqueIdentifier>{e6bd5c86-4489-4ee0-ba5b-f4c6e3742953}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="Parts\DOTS\CLINK.INC">
@@ -312,6 +315,18 @@
     <None Include="Parts\TUNNELI\TUNNEL.DAT">
       <Filter>Parts\05-DotTunnel</Filter>
     </None>
+    <None Include="Parts\FOREST\HILLBACK.CLX">
+      <Filter>Parts\08-ForestScroller</Filter>
+    </None>
+    <None Include="Parts\FOREST\POS1.DAT">
+      <Filter>Parts\08-ForestScroller</Filter>
+    </None>
+    <None Include="Parts\FOREST\POS2.DAT">
+      <Filter>Parts\08-ForestScroller</Filter>
+    </None>
+    <None Include="Parts\FOREST\POS3.DAT">
+      <Filter>Parts\08-ForestScroller</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <YASM Include="Parts\ALKU\ALKU_ASMYT.ASM">
@@ -449,10 +464,28 @@
     <YASM Include="Parts\TUNNELI\TUNNEL_DATA.ASM">
       <Filter>Parts\05-DotTunnel</Filter>
     </YASM>
+    <YASM Include="Parts\FOREST\ROUTINES.ASM">
+      <Filter>Parts\08-ForestScroller</Filter>
+    </YASM>
   </ItemGroup>
   <ItemGroup>
     <FreePascal Include="Parts\TUNNELI\TUN10.PAS">
       <Filter>Parts\05-DotTunnel</Filter>
+    </FreePascal>
+    <FreePascal Include="Parts\FOREST\READ2.PAS">
+      <Filter>Parts\08-ForestScroller</Filter>
+    </FreePascal>
+    <FreePascal Include="Parts\FOREST\AOS1.PAS">
+      <Filter>Parts\08-ForestScroller</Filter>
+    </FreePascal>
+    <FreePascal Include="Parts\FOREST\AOS2.PAS">
+      <Filter>Parts\08-ForestScroller</Filter>
+    </FreePascal>
+    <FreePascal Include="Parts\FOREST\AOS3.PAS">
+      <Filter>Parts\08-ForestScroller</Filter>
+    </FreePascal>
+    <FreePascal Include="Parts\FOREST\BGR.PAS">
+      <Filter>Parts\08-ForestScroller</Filter>
     </FreePascal>
   </ItemGroup>
 </Project>

@@ -187,6 +187,18 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Parts\CREDITS\FONA.INC" />
+    <None Include="Parts\FOREST\HILLBACK.CLX">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </None>
+    <None Include="Parts\FOREST\POS1.DAT">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </None>
+    <None Include="Parts\FOREST\POS2.DAT">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </None>
+    <None Include="Parts\FOREST\POS3.DAT">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </None>
     <None Include="Parts\PLZPART\LSINI.PRE" />
     <None Include="Parts\PLZPART\LSINI16.INC" />
     <None Include="Parts\PLZPART\LSINI4.INC" />
@@ -290,6 +302,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </None>
+    <YASM Include="Parts\FOREST\ROUTINES.ASM" />
     <YASM Include="Parts\GLENZ\GLENZ_ADATA.ASM" />
     <YASM Include="Parts\GLENZ\GLENZ_DATA.ASM" />
     <YASM Include="Parts\GLENZ\GLENZ_MATH.ASM" />
@@ -552,6 +565,11 @@
     <YASM Include="Parts\VISU\C\U2A_DATA.ASM" />
   </ItemGroup>
   <ItemGroup>
+    <FreePascal Include="Parts\FOREST\AOS1.PAS" />
+    <FreePascal Include="Parts\FOREST\AOS2.PAS" />
+    <FreePascal Include="Parts\FOREST\AOS3.PAS" />
+    <FreePascal Include="Parts\FOREST\BGR.PAS" />
+    <FreePascal Include="Parts\FOREST\READ2.PAS" />
     <FreePascal Include="Parts\TUNNELI\TUN10.PAS" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
