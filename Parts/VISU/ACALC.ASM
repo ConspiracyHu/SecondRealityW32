@@ -405,10 +405,10 @@ _calc_applyrmatrix:
 	call	mulmatrices2
 	;es:di now has the new rotation matrix, next rotate position
 	push	ebp
-	lespar	edi,1
+	lespar	edi,0
 	add	edi,rmatrix_x
-	ldspar	esi,2 ;rotate according to apply matrix
-	lfspar	ebp,1
+	ldspar	esi,1 ;rotate according to apply matrix
+	lfspar	ebp,0
 	add	ebp,rmatrix_x
 	call	rotatesingle
 	pop	ebp
