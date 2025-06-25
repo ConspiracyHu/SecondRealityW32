@@ -571,6 +571,8 @@
     <YASM Include="Parts\VISU\AVIDM1.ASM" />
     <YASM Include="Parts\VISU\AVIDM2.ASM" />
     <YASM Include="Parts\VISU\C\U2A_DATA.ASM" />
+    <YASM Include="Parts\WATER\WATER_ROUTINES.ASM" />
+    <YASM Include="Parts\WATER\WATER_DATA.ASM" />
   </ItemGroup>
   <ItemGroup>
     <FreePascal Include="Parts\FOREST\READ2.PAS" />

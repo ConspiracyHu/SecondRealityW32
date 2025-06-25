@@ -494,6 +494,12 @@
     <YASM Include="Parts\FOREST\FOREST_DATA.ASM">
       <Filter>Parts\08-ForestScroller</Filter>
     </YASM>
+    <YASM Include="Parts\WATER\WATER_DATA.ASM">
+      <Filter>Parts\16-MirrorBallScroller</Filter>
+    </YASM>
+    <YASM Include="Parts\WATER\WATER_ROUTINES.ASM">
+      <Filter>Parts\16-MirrorBallScroller</Filter>
+    </YASM>
   </ItemGroup>
   <ItemGroup>
     <FreePascal Include="Parts\TUNNELI\TUN10.PAS">
