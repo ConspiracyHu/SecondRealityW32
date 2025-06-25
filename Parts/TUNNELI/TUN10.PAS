@@ -38,6 +38,7 @@ var
       shim_vram: array[0..64000] of byte; external name '_shim_vram';
       tun: array[0..17664] of word; external name '_tunnel_tun';
       sini: array[0..6146] of word; external name '_tunnel_sini';
+      cosptr: ^word;
       frame  : word;
       bor    : byte;
       frames : word;
@@ -131,13 +132,9 @@ begin
     memcpy(aa2,aa1,sizeof(aa1));
     for x := 0 to 200 do rows[x] := x*320;
     memcpy(sinit,sini,4097*2);
-    memcpy(cosit,sini[4097*2],2048*2);
+    cosptr := @sini[4097];
+    memcpy(cosit,cosptr,2048*2);
     memcpy(pcalc,tun,sizeof(pcalc));
-    {
-    move(mem[seg(sini):ofs(sini)],sinit,4097*2);
-    move(mem[seg(sini):ofs(sini)+4097*2],cosit,2048*2);
-    move(mem[seg(tun):ofs(tun)],pcalc,sizeof(pcalc));
-    }
 
 {
     for x := 0 to 4096 do Sinit[x] := round(sin((x)/128*pi)*((x*3) div 16));
@@ -235,7 +232,7 @@ begin
         dec    ecx
         jnz    @a
         pop    ebp
-        mov    RY,ax
+        mov    [RY],ax
         fnop
         fnop
        end;

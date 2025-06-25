@@ -49,7 +49,7 @@
       DisplayName="Generate Debug Information"
       Description="Generates Debug Information."
       HelpUrl="http://www.FreePascal.us/doc/FreePascaldoc2.html#section-2.1.12"
-      Switch="-g" />
+      Switch="-g -gm" />
     <StringProperty
       Name="IntermediatePath"
       Category="General"
