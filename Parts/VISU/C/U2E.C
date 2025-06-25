@@ -94,7 +94,7 @@ void	fadeset(char *vram)
 	}
 }
 
-void u2e_main(int argc,char *argv[])
+void u2e_main()
 {
 	char *sptemp;
   short *ip;

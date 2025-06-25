@@ -86,7 +86,7 @@ int	cols[]={
 16,55,60};
 int	dottaul[1024];
 
-dots_main(int argc,char *argv[])
+dots_main()
 {
 	int	timer=30000;
 	int	dropper,repeat;

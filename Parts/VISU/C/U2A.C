@@ -50,7 +50,7 @@ void u2a_copper2(void)
 }
 
 
-void u2a_main(int argc,char *argv[])
+void u2a_main()
 {
 	char *sptemp;
 	short	*ip;

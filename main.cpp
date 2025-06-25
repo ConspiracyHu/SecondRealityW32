@@ -1,9 +1,11 @@
 #include "Graphics.h"
 #include "shims.h"
 
+extern "C" int dis_exit();
+
 extern "C" void beg_main();
 extern "C" void glenz_main();
-extern "C" void dots_main( int argc, char * argv[] );
+extern "C" void dots_main();
 extern "C" void jplogo_main();
 extern "C" void lens_main();
 extern "C" void end_main();
@@ -13,8 +15,8 @@ extern "C" void alku_main();
 extern "C" void coman_main();
 extern "C" void plz_main();
 extern "C" void credits_main();
-extern "C" void u2a_main(int argc,char *argv[]);
-extern "C" void u2e_main(int argc,char *argv[]);
+extern "C" void u2a_main();
+extern "C" void u2e_main();
 extern "C" void tun_main();
 extern "C" void forest_main();
 extern "C" void water_main();
@@ -88,7 +90,7 @@ void demo_vsync()
 #endif
 }
 
-int main()
+int main( int argc, char * argv[] )
 {
   // self-modifying code everywhere, wahey!
   DWORD old = 0;
@@ -108,78 +110,58 @@ int main()
   screen32 = new unsigned int[ shim_vram_x * shim_vram_y ];
   ZeroMemory( screen32, shim_vram_x * shim_vram_y * sizeof( unsigned int ) );
 
-  // 1   db      'Alkutekstit I (WILDF)       ' / 'ALKU    ' /  'ALKU.EXE',0
-  //demo_changemode( 320, 400 );
-  //alku_main();
+  struct  
+  {
+    unsigned short x;
+    unsigned short y;
+    void (*part)();
+  } parts[] = {
+    /* 00 */ { 320, 400, alku_main },      // 1   db      'Alkutekstit I (WILDF)       ' / 'ALKU    ' /  'ALKU.EXE',0
+    /* 01 */ { 320, 400, u2a_main },       // 2   db      'Alkutekstit II (PSI)        ' / 'VISU    ' /  'U2A.EXE',0
+    /* 02 */ { 320, 200, pam_main },       // 3   db      'Alkutekstit III (TRUG/WILDF)' / 'PAM     ' /  'PAM.EXE',0
+    /* 03 */ { 320, 400, beg_main },       
+    /* 04 */ { 320, 200, glenz_main },     // 4   db      'Glenz (PSI)                 ' / 'GLENZ   ' /  'GLENZ.EXE',0
+    /* 05 */ { 320, 200, tun_main },       // 5   db      'Dottitunneli (TRUG)         ' / 'TUNNELI ' /  'TUNNELI.EXE',0
+    /* 06 */ { 320, 200, NULL },           // 6   db      'Techno (PSI)                ' / 'TECHNO  ' /  'TECHNO.EXE',0
+    /* 07 */ { 320, 200, shutdown_main },  // 7   db      'Panicfake (WILDF)           ' / 'PANIC   ' /  'PANICEND.EXE',0
+    /* 08 */ { 320, 200, forest_main },    // 8   db      'Vuori-Scrolli (TRUG)        ' / 'FOREST  ' /  'MNTSCRL.EXE',0
+                                           // 11  db      'Lens (PSI)                  ' / '        ' / 
+    /* 09 */ { 320, 200, lens_main },      // 12  db      'Rotazoomer (PSI)            ' / 'LENS    ' /  'LNS&ZOOM.EXE',0
+                                           // 13  db      'Plasma (WILDF)              ' / '        ' / 
+    /* 10 */ { 320, 200, plz_main },       // 14  db      'Plasmacube (WILDF)          ' / 'PLZPART ' /  'PLZPART.EXE',0
+    /* 11 */ { 320, 200, dots_main },      // 15  db      'MiniVectorBalls (PSI)       ' / 'DOTS    ' /  'MINVBALL.EXE',0
+    /* 12 */ { 320, 200, water_main },     // 16  db      'Peilipalloscroll (TRUG)     ' / 'WATER   ' /  'RAYSCRL.EXE',0
+    /* 13 */ { 320, 400, coman_main },     // 17  db      '3D-Sinusfield (PSI)         ' / 'COMAN   ' /  '3DSINFLD.EXE',0
+    /* 14 */ { 320, 400, jplogo_main },    // 18  db      'Jellypic (PSI)              ' / 'JPLOGO  ' /  'JPLOGO.EXE',0
+    /* 15 */ { 320, 200, u2e_main },       // 19  db      'Vector Part II',0             / 'VISU    ' /  'U2E.EXE',0
+                                           
+    /* 16 */ { 320, 400, end_main },       // 20  db      'Endpictureflash (?)         ' / 'END     ' /  'ENDLOGO.EXE',0
+    /* 17 */ { 320, 400, credits_main },   // 21  db      'Credits/Greetings scrl. (?) ' / 'CREDITS ' /  'CRED.EXE',0
+    /* 18 */ { 640, 350, endscrl_main },   // 23                                           'ENDSCRL ' /  'ENDSCRL.EXE',0
+             {   0,   0, NULL },
+  };
 
-  // 2   db      'Alkutekstit II (PSI)        ' / 'VISU    ' /  'U2A.EXE',0
-  //u2a_main( 0, NULL );
+  int start = 18;
+  if ( argc > 1 )
+  {
+    switch( argv[ 1 ][ 0 ] )
+    {
+    case '2': start = 3; break;
+    case '3': start = 8; break;
+    case '4': start = 15; break;
+    case '5': start = 18; break;
+    }
+  }
   
-  // 3   db      'Alkutekstit III (TRUG/WILDF)' / 'PAM     ' /  'PAM.EXE',0
-  //demo_changemode( 320, 200 );
-  //pam_main();
-
-  //                                            / 'BEG     ' /  'BEGLOGO.EXE',0
-  //demo_changemode( 320, 400 );
-  //beg_main();
-
-  // 4   db      'Glenz (PSI)                 ' / 'GLENZ   ' /  'GLENZ.EXE',0
-  //glenz_main();
-
-  // 5   db      'Dottitunneli (TRUG)         ' / 'TUNNELI ' /  'TUNNELI.EXE',0
-  // tun_main();
-
-  // 6   db      'Techno (PSI)                ' / 'TECHNO  ' /  'TECHNO.EXE',0
-
-  // 7   db      'Panicfake (WILDF)           ' / 'PANIC   ' /  'PANICEND.EXE',0
-  demo_changemode( 320, 200 );
-  shutdown_main();
-
-  // 8   db      'Vuori-Scrolli (TRUG)        ' / 'FOREST  ' /  'MNTSCRL.EXE',0
-  //forest_main();
-
-  // 11  db      'Lens (PSI)                  ' / '        ' / 
-  // 12  db      'Rotazoomer (PSI)            ' / 'LENS    ' /  'LNS&ZOOM.EXE',0
-  //demo_changemode( 320, 200 );
-  //lens_main();
-
-  // 13  db      'Plasma (WILDF)              ' / '        ' / 
-
-  // 14  db      'Plasmacube (WILDF)          ' / 'PLZPART ' /  'PLZPART.EXE',0
-  //demo_changemode( 320, 200 );
-  //plz_main();
-
-  // 15  db      'MiniVectorBalls (PSI)       ' / 'DOTS    ' /  'MINVBALL.EXE',0
-  //demo_changemode( 320, 200 );
-  //dots_main( 0, NULL );
-
-  // 16  db      'Peilipalloscroll (TRUG)     ' / 'WATER   ' /  'RAYSCRL.EXE',0
-  //water_main();
-
-  // 17  db      '3D-Sinusfield (PSI)         ' / 'COMAN   ' /  '3DSINFLD.EXE',0
-  //demo_changemode( 320, 200 );
-  //coman_main();
-
-  // 18  db      'Jellypic (PSI)              ' / 'JPLOGO  ' /  'JPLOGO.EXE',0
-  //demo_changemode( 320, 400 );
-  //jplogo_main();
-
-  // 19  db      'Vector Part II',0             / 'VISU    ' /  'U2E.EXE',0
-  //u2e_main( 0, NULL );
-
-  // 20  db      'Endpictureflash (?)         ' / '        ' / 
-
-  // 21  db      'Credits/Greetings scrl. (?) ' / 'END     ' /  'ENDLOGO.EXE',0
-  //demo_changemode( 320, 400 );
-  //end_main();
-
-  // 22                                           'CREDITS ' /  'CRED.EXE',0
-  //demo_changemode( 320, 400 );
-  //credits_main();
-
-  // 23                                           'ENDSCRL ' /  'ENDSCRL.EXE',0
-  //demo_changemode( 640, 350 );
-  //endscrl_main();
+  for ( int i = start; parts[ i ].x; i++ )
+  {
+    demo_changemode( parts[ i ].x, parts[ i ].y );
+    parts[ i ].part();
+    if ( dis_exit() )
+    {
+      break;
+    }
+  }
   
   delete[] screen32;
 
