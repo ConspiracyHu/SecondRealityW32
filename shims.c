@@ -39,7 +39,7 @@ void shim_outp( int reg, unsigned int value )
         paletteIndex++;
         paletteComponent = 0;
       }
-      if ( paletteIndex > 256 )
+      if ( paletteIndex >= 256 )
       {
         paletteIndex = 0;
       }
