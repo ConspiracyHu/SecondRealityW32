@@ -68,3 +68,9 @@ void setpalarea( char * p, int offset, int count )
   shim_outp( 0x3c8, offset );
   for ( int c = 0; c < count * 3; c++ ) shim_outp( 0x3c9, p[ c ] );
 }
+
+void getpalarea( char * p, int offset, int count )
+{
+  shim_outp( 0x3c8, offset );
+  for ( int c = 0; c < count * 3; c++ ) p[ c ] = shim_inp( 0x3c9 );
+}

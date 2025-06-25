@@ -18,6 +18,7 @@ extern "C" void u2e_main(int argc,char *argv[]);
 extern "C" void tun_main();
 extern "C" void forest_main();
 extern "C" void water_main();
+extern "C" void shutdown_main();
 
 extern "C" void rotate( int, int, int, int );
 extern "C" void rotlist();
@@ -67,10 +68,15 @@ bool demo_wantstoquit()
   return graphics.WantsToQuit();
 }
 
+#define WAIT_FOR_KEY
 extern "C" void demo_vsync();
 unsigned int lastVblank = 0;
 void demo_vsync()
 {
+#ifdef WAIT_FOR_KEY
+  while ( !( GetAsyncKeyState( ' ' ) & 0x8000 ) ) { Sleep( 1 ); }
+  while ( GetAsyncKeyState( ' ' ) & 0x8000 ) { Sleep( 1 ); }
+#else
   const unsigned int now = GetTickCount();
   const unsigned int cycle = 1000 / 60;
   const unsigned int elapsed = now - lastVblank;
@@ -79,6 +85,7 @@ void demo_vsync()
     Sleep( cycle - elapsed );
   }
   lastVblank = now;
+#endif
 }
 
 int main()
@@ -106,7 +113,7 @@ int main()
   //alku_main();
 
   // 2   db      'Alkutekstit II (PSI)        ' / 'VISU    ' /  'U2A.EXE',0
-  u2a_main( 0, NULL );
+  //u2a_main( 0, NULL );
   
   // 3   db      'Alkutekstit III (TRUG/WILDF)' / 'PAM     ' /  'PAM.EXE',0
   //demo_changemode( 320, 200 );
@@ -125,9 +132,11 @@ int main()
   // 6   db      'Techno (PSI)                ' / 'TECHNO  ' /  'TECHNO.EXE',0
 
   // 7   db      'Panicfake (WILDF)           ' / 'PANIC   ' /  'PANICEND.EXE',0
+  demo_changemode( 320, 200 );
+  shutdown_main();
 
   // 8   db      'Vuori-Scrolli (TRUG)        ' / 'FOREST  ' /  'MNTSCRL.EXE',0
-  forest_main();
+  //forest_main();
 
   // 11  db      'Lens (PSI)                  ' / '        ' / 
   // 12  db      'Rotazoomer (PSI)            ' / 'LENS    ' /  'LNS&ZOOM.EXE',0
