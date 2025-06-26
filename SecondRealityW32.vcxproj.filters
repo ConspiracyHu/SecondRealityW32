@@ -73,6 +73,9 @@
     <ClCompile Include="Parts\PANIC\SHUTDOWN.C">
       <Filter>Parts\07-PanicShutdown</Filter>
     </ClCompile>
+    <ClCompile Include="Parts\TECHNO\KOE.C">
+      <Filter>Parts\06-Techno</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Graphics.h" />
@@ -165,6 +168,9 @@
     </Filter>
     <Filter Include="Parts\07-PanicShutdown">
       <UniqueIdentifier>{3c4c2862-5a82-4e01-97d9-2ee8f80219c9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Parts\06-Techno">
+      <UniqueIdentifier>{1519af0d-6b4c-41ca-9c5d-35749e2ea049}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -357,6 +363,15 @@
     <None Include="Parts\WATER\MIEKKA.SCI">
       <Filter>Parts\16-MirrorBallScroller</Filter>
     </None>
+    <None Include="Parts\TECHNO\CIRCLE.DAT">
+      <Filter>Parts\06-Techno</Filter>
+    </None>
+    <None Include="Parts\TECHNO\CIRCLE2.DAT">
+      <Filter>Parts\06-Techno</Filter>
+    </None>
+    <None Include="Parts\TECHNO\SIN1024.INC">
+      <Filter>Parts\06-Techno</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <YASM Include="Parts\ALKU\ALKU_ASMYT.ASM">
@@ -508,6 +523,18 @@
     </YASM>
     <YASM Include="Parts\PANIC\SHUTDOWN_ASMYT.ASM">
       <Filter>Parts\07-PanicShutdown</Filter>
+    </YASM>
+    <YASM Include="Parts\TECHNO\KOEA.ASM">
+      <Filter>Parts\06-Techno</Filter>
+    </YASM>
+    <YASM Include="Parts\TECHNO\KOEB.ASM">
+      <Filter>Parts\06-Techno</Filter>
+    </YASM>
+    <YASM Include="Parts\TECHNO\POLYCLIP.ASM">
+      <Filter>Parts\06-Techno</Filter>
+    </YASM>
+    <YASM Include="Parts\TECHNO\ROT.ASM">
+      <Filter>Parts\06-Techno</Filter>
     </YASM>
   </ItemGroup>
   <ItemGroup>

@@ -170,6 +170,7 @@
     <ClCompile Include="Parts\PLZPART\PLZ.C" />
     <ClCompile Include="Parts\PLZPART\PLZFILL.C" />
     <ClCompile Include="Parts\PLZPART\VECT.C" />
+    <ClCompile Include="Parts\TECHNO\KOE.C" />
     <ClCompile Include="Parts\VISU\C\U2A.C" />
     <ClCompile Include="Parts\VISU\C\U2COMMON.C" />
     <ClCompile Include="Parts\VISU\C\U2E.C" />
@@ -211,6 +212,13 @@
     <None Include="Parts\PLZPART\RATA.INC" />
     <None Include="Parts\PLZPART\SINIT.INC" />
     <None Include="Parts\PLZPART\SPLINE.INC" />
+    <None Include="Parts\TECHNO\CIRCLE.DAT">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </None>
+    <None Include="Parts\TECHNO\CIRCLE2.DAT">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </None>
+    <None Include="Parts\TECHNO\SIN1024.INC" />
     <None Include="Parts\TUNNELI\SINIT.DAT">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
@@ -563,6 +571,10 @@
     <YASM Include="Parts\PLZPART\INCLUDE.ASM" />
     <YASM Include="Parts\PLZPART\PLZA.ASM" />
     <YASM Include="Parts\PLZPART\SPLINE.ASM" />
+    <YASM Include="Parts\TECHNO\KOEA.ASM" />
+    <YASM Include="Parts\TECHNO\KOEB.ASM" />
+    <YASM Include="Parts\TECHNO\POLYCLIP.ASM" />
+    <YASM Include="Parts\TECHNO\ROT.ASM" />
     <YASM Include="Parts\TUNNELI\TUNNEL_DATA.ASM" />
     <YASM Include="Parts\VISU\ACALC.ASM" />
     <YASM Include="Parts\VISU\ADATA.ASM" />

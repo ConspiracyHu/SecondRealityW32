@@ -21,6 +21,7 @@ extern "C" void tun_main();
 extern "C" void forest_main();
 extern "C" void water_main();
 extern "C" void shutdown_main();
+extern "C" void koe_main();
 
 extern "C" void rotate( int, int, int, int );
 extern "C" void rotlist();
@@ -122,7 +123,7 @@ int main( int argc, char * argv[] )
     /* 03 */ { 320, 400, beg_main },       
     /* 04 */ { 320, 200, glenz_main },     // 4   db      'Glenz (PSI)                 ' / 'GLENZ   ' /  'GLENZ.EXE',0
     /* 05 */ { 320, 200, tun_main },       // 5   db      'Dottitunneli (TRUG)         ' / 'TUNNELI ' /  'TUNNELI.EXE',0
-    /* 06 */ { 320, 200, NULL },           // 6   db      'Techno (PSI)                ' / 'TECHNO  ' /  'TECHNO.EXE',0
+    /* 06 */ { 320, 200, koe_main },       // 6   db      'Techno (PSI)                ' / 'TECHNO  ' /  'TECHNO.EXE',0
     /* 07 */ { 320, 200, shutdown_main },  // 7   db      'Panicfake (WILDF)           ' / 'PANIC   ' /  'PANICEND.EXE',0
     /* 08 */ { 320, 200, forest_main },    // 8   db      'Vuori-Scrolli (TRUG)        ' / 'FOREST  ' /  'MNTSCRL.EXE',0
                                            // 11  db      'Lens (PSI)                  ' / '        ' / 
