@@ -117,29 +117,29 @@ int main( int argc, char * argv[] )
     unsigned short y;
     void (*part)();
   } parts[] = {
-    /* 00 */ { 320, 400, alku_main },      // 1   db      'Alkutekstit I (WILDF)       ' / 'ALKU    ' /  'ALKU.EXE',0
-    /* 01 */ { 320, 400, u2a_main },       // 2   db      'Alkutekstit II (PSI)        ' / 'VISU    ' /  'U2A.EXE',0
-    /* 02 */ { 320, 200, pam_main },       // 3   db      'Alkutekstit III (TRUG/WILDF)' / 'PAM     ' /  'PAM.EXE',0
-    /* 03 */ { 320, 400, beg_main },       
-    /* 04 */ { 320, 200, glenz_main },     // 4   db      'Glenz (PSI)                 ' / 'GLENZ   ' /  'GLENZ.EXE',0
-    /* 05 */ { 320, 200, tun_main },       // 5   db      'Dottitunneli (TRUG)         ' / 'TUNNELI ' /  'TUNNELI.EXE',0
-    /* 06 */ { 320, 200, koe_main },       // 6   db      'Techno (PSI)                ' / 'TECHNO  ' /  'TECHNO.EXE',0
-    /* 07 */ { 320, 200, shutdown_main },  // 7   db      'Panicfake (WILDF)           ' / 'PANIC   ' /  'PANICEND.EXE',0
-    /* 08 */ { 320, 200, forest_main },    // 8   db      'Vuori-Scrolli (TRUG)        ' / 'FOREST  ' /  'MNTSCRL.EXE',0
-                                           // 11  db      'Lens (PSI)                  ' / '        ' / 
-    /* 09 */ { 320, 200, lens_main },      // 12  db      'Rotazoomer (PSI)            ' / 'LENS    ' /  'LNS&ZOOM.EXE',0
-                                           // 13  db      'Plasma (WILDF)              ' / '        ' / 
-    /* 10 */ { 320, 200, plz_main },       // 14  db      'Plasmacube (WILDF)          ' / 'PLZPART ' /  'PLZPART.EXE',0
-    /* 11 */ { 320, 200, dots_main },      // 15  db      'MiniVectorBalls (PSI)       ' / 'DOTS    ' /  'MINVBALL.EXE',0
-    /* 12 */ { 320, 200, water_main },     // 16  db      'Peilipalloscroll (TRUG)     ' / 'WATER   ' /  'RAYSCRL.EXE',0
-    /* 13 */ { 320, 400, coman_main },     // 17  db      '3D-Sinusfield (PSI)         ' / 'COMAN   ' /  '3DSINFLD.EXE',0
-    /* 14 */ { 320, 400, jplogo_main },    // 18  db      'Jellypic (PSI)              ' / 'JPLOGO  ' /  'JPLOGO.EXE',0
-    /* 15 */ { 320, 200, u2e_main },       // 19  db      'Vector Part II',0             / 'VISU    ' /  'U2E.EXE',0
-                                           
-    /* 16 */ { 320, 400, end_main },       // 20  db      'Endpictureflash (?)         ' / 'END     ' /  'ENDLOGO.EXE',0
-    /* 17 */ { 320, 400, credits_main },   // 21  db      'Credits/Greetings scrl. (?) ' / 'CREDITS ' /  'CRED.EXE',0
-    /* 18 */ { 640, 350, endscrl_main },   // 23                                           'ENDSCRL ' /  'ENDSCRL.EXE',0
-             {   0,   0, NULL },
+    /* 00  BUG  */ { 320, 400, alku_main },      // 1   db  'Alkutekstit I (WILDF)       ' / 'ALKU    ' / 'ALKU.EXE'
+    /* 01  CTD  */ { 320, 400, u2a_main },       // 2   db  'Alkutekstit II (PSI)        ' / 'VISU    ' / 'U2A.EXE'
+    /* 02  BUG  */ { 320, 200, pam_main },       // 3   db  'Alkutekstit III (TRUG/WILDF)' / 'PAM     ' / 'PAM.EXE'
+    /* 03       */ { 320, 400, beg_main },                  
+    /* 04  BUG  */ { 320, 200, glenz_main },     // 4   db  'Glenz (PSI)                 ' / 'GLENZ   ' / 'GLENZ.EXE'
+    /* 05  BUG  */ { 320, 200, tun_main },       // 5   db  'Dottitunneli (TRUG)         ' / 'TUNNELI ' / 'TUNNELI.EXE'
+    /* 06  ERR  */ { 320, 200, koe_main },       // 6   db  'Techno (PSI)                ' / 'TECHNO  ' / 'TECHNO.EXE'
+    /* 07  BUG? */ { 320, 200, shutdown_main },  // 7   db  'Panicfake (WILDF)           ' / 'PANIC   ' / 'PANICEND.EXE'
+    /* 08       */ { 320, 200, forest_main },    // 8   db  'Vuori-Scrolli (TRUG)        ' / 'FOREST  ' / 'MNTSCRL.EXE'
+                                                 // 11  db  'Lens (PSI)                  ' / '        ' / 
+    /* 09       */ { 320, 200, lens_main },      // 12  db  'Rotazoomer (PSI)            ' / 'LENS    ' / 'LNS&ZOOM.EXE'
+                                                 // 13  db  'Plasma (WILDF)              ' / '        ' / 
+    /* 10  CTD  */ { 320, 200, plz_main },       // 14  db  'Plasmacube (WILDF)          ' / 'PLZPART ' / 'PLZPART.EXE'
+    /* 11       */ { 320, 200, dots_main },      // 15  db  'MiniVectorBalls (PSI)       ' / 'DOTS    ' / 'MINVBALL.EXE'
+    /* 12       */ { 320, 200, water_main },     // 16  db  'Peilipalloscroll (TRUG)     ' / 'WATER   ' / 'RAYSCRL.EXE'
+    /* 13       */ { 320, 400, coman_main },     // 17  db  '3D-Sinusfield (PSI)         ' / 'COMAN   ' / '3DSINFLD.EXE'
+    /* 14       */ { 320, 400, jplogo_main },    // 18  db  'Jellypic (PSI)              ' / 'JPLOGO  ' / 'JPLOGO.EXE'
+    /* 15  CTD  */ { 320, 200, u2e_main },       // 19  db  'Vector Part II              ' / 'VISU    ' / 'U2E.EXE'
+                                                            
+    /* 16       */ { 320, 400, end_main },       // 20  db  'Endpictureflash (?)         ' / 'END     ' / 'ENDLOGO.EXE'
+    /* 17  BUG  */ { 320, 400, credits_main },   // 21  db  'Credits/Greetings scrl. (?) ' / 'CREDITS ' / 'CRED.EXE'
+    /* 18       */ { 640, 350, endscrl_main },   // 23                                       'ENDSCRL ' / 'ENDSCRL.EXE'
+                   {   0,   0, NULL },
   };
 
   int start = 18;
