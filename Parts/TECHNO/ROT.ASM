@@ -1,11 +1,11 @@
-code 	SEGMENT para public 'CODE'
-	ASSUME cs:code
-	
-start	call	rol
+section .code
+
+start:
+  call	_rol
 	mov	ax,4c00h
 	int	21h
 	
-waitb	PROC NEAR
+waitb:
 	mov	dx,3dah
 @@1:	in	al,dx
 	test	al,8
@@ -14,14 +14,9 @@ waitb	PROC NEAR
 	test	al,8
 	jnz	@@2
 	ret
-waitb	ENDP
 
-rol	PROC NEAR
+_rol:
 	call	waitb
 	
 	ret
-rol	ENDP
-	
-code	ENDS
-	END start
 	

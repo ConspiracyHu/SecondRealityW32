@@ -575,6 +575,7 @@
     <YASM Include="Parts\TECHNO\KOEB.ASM" />
     <YASM Include="Parts\TECHNO\POLYCLIP.ASM" />
     <YASM Include="Parts\TECHNO\ROT.ASM" />
+    <YASM Include="Parts\TECHNO\TECHNO_DATA.ASM" />
     <YASM Include="Parts\TUNNELI\TUNNEL_DATA.ASM" />
     <YASM Include="Parts\VISU\ACALC.ASM" />
     <YASM Include="Parts\VISU\ADATA.ASM" />

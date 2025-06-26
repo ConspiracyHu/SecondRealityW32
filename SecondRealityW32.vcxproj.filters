@@ -536,6 +536,9 @@
     <YASM Include="Parts\TECHNO\ROT.ASM">
       <Filter>Parts\06-Techno</Filter>
     </YASM>
+    <YASM Include="Parts\TECHNO\TECHNO_DATA.ASM">
+      <Filter>Parts\06-Techno</Filter>
+    </YASM>
   </ItemGroup>
   <ItemGroup>
     <FreePascal Include="Parts\TUNNELI\TUN10.PAS">
