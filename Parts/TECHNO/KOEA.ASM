@@ -43,18 +43,11 @@ extern clipanypoly
 
 global _asminit	
 _asminit:
-	push 	bp
-	mov	bp,sp
-	push	si
-	push	di
-	push	ds
-	mov	ax,[bp+8]
-	mov	[_vbufseg],ax
+	push 	ebp
+	mov	eax,[esp+8]
+	mov	[_vbufseg],eax
 	call	blitinit
-	pop	ds
-	pop	di
-	pop	si
-	pop	bp
+	pop	ebp
 	ret
 
 global _asmdoit	
@@ -93,16 +86,16 @@ _asmdoit2:
 
 blitinit:
 	mov	ebx,_rows
-	mov	cx,200
-	mov	dx,40
-	xor	ax,ax
+	mov	ecx,200
+	mov	edx,40
+	xor	eax,eax
 blit_l1:
   mov	[ebx],ax
 	add	ax,dx
 	add	bx,2
 	loop	blit_l1
 	xor	al,al
-	mov	bx,_blit16t
+	mov	ebx,_blit16t
 	mov	cx,256
 blit_1:	mov	dh,255
 	mov	dl,al
@@ -121,7 +114,7 @@ LBL(x):	shr	dh,1
 	ror	ah,1
 	and	ah,80h
 	mov	[ebx+1],ah
-	add	bx,2
+	add	ebx,2
 	inc	al
 	loop	blit_1
 	ret
@@ -396,19 +389,19 @@ drawline_0:	pop	bp
 
 global _asmbox	
 _asmbox:
-	push 	bp
-	mov	bp,sp
-	push	si
-	push	di
-	push	ds
+	push 	ebp
+	;mov	bp,sp
+	;push	si
+	;push	di
+	;push	ds
 	
-	mov	eax,[bp+6]
+	mov	eax,[esp+8]
 	mov	dword [polyixy+0],eax
-	mov	eax,[bp+10]
+	mov	eax,[esp+12]
 	mov	dword [polyixy+4],eax
-	mov	eax,[bp+14]
+	mov	eax,[esp+16]
 	mov	dword [polyixy+8],eax
-	mov	eax,[bp+18]
+	mov	eax,[esp+20]
 	mov	dword [polyixy+12],eax
 	mov	word [polyisides],4
 	call	clipanypoly
@@ -438,10 +431,10 @@ _asmbox:
 	mov	cx,[polyxy+2]
 	call	drawline
 
-@@0:	pop	ds
-	pop	di
-	pop	si
-	pop	bp
+@@0:	;pop	ds
+	;pop	di
+	;pop	si
+	pop	ebp
 	ret
 
 
@@ -465,7 +458,7 @@ db 35,163,99,227,19,147,83,211,51,179,115,243,11,139,75,203,43,171,107,235
 db 27,155,91,219,59,187,123,251,7,135,71,199,39,167,103,231,23,151,87,215
 db 55,183,119,247,15,143,79,207,47,175,111,239,31,159,95,223,63,191,127,255
 
-circles times 8 dw	0
+circles times 8 dd	0
 
 pal2:
 	db	 0, 0*7/9, 0
@@ -530,61 +523,61 @@ section .code
 %macro PLANE 1 ; pl
 	mov	dx,3c4h
 	mov	ax,0002h+%1*100h
-	out	dx,ax
+	;out	dx,ax
 %endmacro
 
 bltline:
-	push	si
+	push	esi
 	mov	dx,3c4h
 	mov	al,2
-	out	dx,al
+	;out	dx,al
 	inc	dx
 @@1:	mov	al,ch
-	out	dx,al
+	;out	dx,al
 	%assign zzz 0
 	%rep	10
 	mov	eax,[esi+zzz]
 	mov	[edi+zzz],eax
 	%assign zzz zzz+4
 	%endrep
-	add	si,40
+	add	esi,40
 	shl	ch,1
 	dec	cl
 	jnz	@@1
-	pop	si
+	pop	esi
 	ret
 
 
 bltlinerev:
-	push	si
+	push	esi
 	mov	dx,3c4h
 	mov	al,2
-	out	dx,al
+	;out	dx,al
 	inc	dx
-	xor	bx,bx
+	xor	ebx,ebx
 @@1:	mov	al,ch
-	out	dx,al
+	;out	dx,al
 	%assign zzz 0
 	%rep	10
 	mov	bl,[esi+36-zzz]
-	mov	al,[flip8+bx]
+	mov	al,[flip8+ebx]
 	rol	eax,8
 	mov	bl,[esi+37-zzz]
-	mov	al,[flip8+bx]
+	mov	al,[flip8+ebx]
 	rol	eax,8
 	mov	bl,[esi+38-zzz]
-	mov	al,[flip8+bx]
+	mov	al,[flip8+ebx]
 	rol	eax,8
 	mov	bl,[esi+39-zzz]
-	mov	al,[flip8+bx]
+	mov	al,[flip8+ebx]
 	mov	[edi+zzz],eax
 	%assign zzz zzz+4
 	%endrep
-	add	si,40
+	add	esi,40
 	shl	ch,1
 	dec	cl
 	jnz	@@1
-	pop	si
+	pop	esi
 	ret
 
 
@@ -616,14 +609,22 @@ resetmode13:
 	loop	@@clp
 	ret
 
+extern _setpalarea
 
 outpal:
-	mov	dx,3c8h
-	out	dx,al
-	mov	ax,cs
-	mov	ds,ax
-	inc	dx
-	REPOUTSB
+	;mov	dx,3c8h
+	;out	dx,al
+	;mov	ax,cs
+	;mov	ds,ax
+	;inc	dx
+	;rep	outsb
+  movzx ecx, cl
+  push ecx
+  movzx eax, al
+  push eax
+  push esi
+  call _setpalarea
+  add esp, 12
 	ret
 
 
@@ -673,120 +674,131 @@ overx	dw	0
 overya	dw	0
 patdir	dw	0
 
-memseg	dw	0
+memseg	dd	0
 
 section .code
 
+extern _shim_vram
+
 init_interference:
-	mov	dx,3d4h
-	mov	ax,2813h
-	out	dx,ax
+	;mov	dx,3d4h
+	;mov	ax,2813h
+	;out	dx,ax
 	
-	mov	bx,20+100*80
+	;mov	bx,20+100*80
 	
 	;get mem for circles
-	mov	ah,48h
-	mov	bx,16384
-	int	21h
-	mov	[memseg],ax
+	;mov	ah,48h
+	;mov	bx,16384
+	;int	21h
+	mov	[memseg],eax
 	%assign zzz 0
 	%rep 8
-	mov	[circles+zzz],ax
+	mov	[circles+zzz],eax
 	add	ax,2048
-	%assign zzz zzz+2
+	%assign zzz zzz+4
 	%endrep
 	
-	mov	ax,SEG _circle2
-	mov	ds,ax
-	xor	si,si
-	mov	ax,0a000h
-	mov	es,ax
-	mov	cx,200
-	xor	di,di
-	mov	bp,80*399
-@@1:	push	cx
-	push	di
-	mov	cx,0401h
+	mov	esi,_circle2
+	;mov	ds,eax
+	;xor	esi,esi
+	;mov	ax,0a000h
+	;mov	es,ax
+	mov	ecx,200
+	;xor	edi,edi
+  mov edi, _shim_vram
+	mov	ebp,_shim_vram+80*399
+@@1:	push	ecx
+	push	edi
+	mov	ecx,0401h
 	call	bltline
-	add	di,40
-	mov	cx,0401h
+	add	edi,40
+	mov	ecx,0401h
 	call	bltlinerev
-	add	di,40
-	mov	di,bp
-	mov	cx,0401h
+	add	edi,40
+	mov	edi,ebp
+	mov	ecx,0401h
 	call	bltline
-	add	di,40
-	mov	cx,0401h
+	add	edi,40
+	mov	ecx,0401h
 	call	bltlinerev
-	add	di,40
-	pop	di
-	add	di,80
-	sub	bp,80
-	add	si,40
-	pop	cx
+	add	edi,40
+	pop	edi
+	add	edi,80
+	sub	ebp,80
+	add	esi,40
+	pop	ecx
 	loop	@@1
 	
 	mov	dx,3ceh
 	mov	ax,0204h
-	out	dx,ax
-	mov	cx,400
-	mov	es,[circles+0]
-	mov	ax,0a000h
-	mov	ds,ax
+	;out	dx,ax
+	mov	ecx,400
+	;mov	es,[circles+0]
+	;mov	ax,0a000h
+	;mov	ds,ax
 	mov	cx,32000/4
-	xor	si,si
-	xor	di,di
+  mov esi,[circles+0]
+  mov edi,_shim_vram
+	;xor	esi,esi
+	;xor	edi,edi
 	rep	movsd
 	%assign zzz 0
 	%rep	7	
-	mov	ds,[circles+zzz]
-	mov	es,[circles+zzz+2]
+	mov	esi,[circles+zzz]
+	mov	edi,[circles+zzz+4]
 	call	rotate1
-	%assign zzz zzz+2
+	%assign zzz zzz+4
 	%endrep
 
-	mov	ax,SEG _circle
-	mov	ds,ax
-	xor	si,si
-	mov	ax,0a000h
-	mov	es,ax
+	;mov	ax,SEG _circle
+	;mov	ds,ax
+	;xor	si,si
+  mov esi, _circle
+	;mov	ax,0a000h
+	;mov	es,ax
 	mov	cx,200
-	xor	di,di
-	mov	bp,80*399
-@@10:	push	cx
-	push	di
-	mov	cx,0103h ;start at plane 1, copy 3 planes
+	;xor	di,di
+  mov edi, _shim_vram
+	mov	ebp,_shim_vram+80*399
+@@10:	push	ecx
+	push	edi
+	mov	ecx,0103h ;start at plane 1, copy 3 planes
 	call	bltline
-	add	di,40
-	mov	cx,0103h ;start at plane 1, copy 3 planes
+	add	edi,40
+	mov	ecx,0103h ;start at plane 1, copy 3 planes
 	call	bltlinerev
-	add	di,40
-	mov	di,bp
-	mov	cx,0103h ;start at plane 1, copy 3 planes
+	add	edi,40
+	mov	edi,ebp
+	mov	ecx,0103h ;start at plane 1, copy 3 planes
 	call	bltline
-	add	di,40
-	mov	cx,0103h ;start at plane 1, copy 3 planes
+	add	edi,40
+	mov	ecx,0103h ;start at plane 1, copy 3 planes
 	call	bltlinerev
-	add	di,40
-	pop	di
-	add	di,80
-	sub	bp,80
-	add	si,40*3
-	pop	cx
+	add	edi,40
+	pop	edi
+	add	edi,80
+	sub	ebp,80
+	add	esi,40*3
+	pop	ecx
 	loop	@@10
 	mov	word [framecount],0
 	ret
 
+extern _dis_waitb
+extern _dis_musrow
+extern _dis_exit
+extern _demo_blit
 
 do_interference:
-@@aga:	call	waitb
-	mov	dx,3c0h
-	mov	al,13h
-	out	dx,al
-	mov	al,byte [scrnposl]
-	out	dx,al
-	mov	al,32
-	out	dx,al
+@@aga:	call	_dis_waitb
+	;mov	dx,3c0h
+	;mov	al,13h
+	;out	dx,al
+	;mov	al,byte [scrnposl]
+	;out	dx,al
+	;mov	al,32
+	;out	dx,al
 	
 	mov	si,[palanimc]
 	add	si,[patdir]
@@ -799,43 +811,45 @@ do_interference:
 @@a1:	mov	[palanimc],si
 	mov	[palanimc2],si
 
-	mov	si,[palanimc]
-	add	si,pal1
+	movzx	esi,word [palanimc]
+	add	esi,pal1
 	xor	al,al
-	mov	cx,8*3
+	mov	ecx,8*3
 	call	outpal
-	mov	si,[palanimc]
-	add	si,pal2
+	movzx	esi,word [palanimc]
+	add	esi,pal2
 	mov	al,8
-	mov	cx,8*3
+	mov	ecx,8*3
 	call	outpal
 
 	PLANE 8
-	mov	ax,0a000h
-	mov	es,ax
-	xor	si,si
-	mov	di,[scrnpos]
-	mov	bp,[sinurot]
+	;mov	ax,0a000h
+	;mov	es,ax
+	;xor	si,si
+	movzx edi, word [scrnpos]
+  add edi, _shim_vram
+  movzx ebp, word [sinurot]
 	add	bp,7*2
 	and	bp,2047
 	mov	[sinurot],bp
-	mov	cx,200
+	mov	ecx,200
 @@cp1:
   %assign zzz 0
-	push	si
+	push	esi
 	add	bp,9*2
 	and	bp,2047
-	mov	bx,[_koe_sin1024+bp]
+	movzx	ebx,word [_koe_sin1024+ebp]
 	sar	bx,3
 	mov	bh,[sinuspower]
-	movsx	ax,byte [power0+bx]
+	movsx	ax,byte [power0+ebx]
 	sub	ax,[scrnposl]
 	add	ax,[overx]
 	mov	bx,ax
 	and	bx,7
-	shl	bx,1
-	neg	bx
-	mov	ds,[circles+bx+7*2]
+  xor bx,7
+  shl	bx,2
+	;neg	bx
+	mov	esi,[circles+ebx]
 	sar	ax,3
 	add	si,ax
 	add	si,[overya]
@@ -844,17 +858,19 @@ do_interference:
 	mov	[edi+zzz],eax
 	%assign zzz zzz+4
 	%endrep
-	pop	si
-	add	di,80
-	add	si,80
-	dec	cx
+	pop	esi
+	add	edi,80
+	add	esi,80
+	dec	ecx
 	jz	@@cp0
 	jmp	@@cp1
 @@cp0:
 	;MOVE
 
 	mov	bx,6
-	int	0fch
+	;int	0fch
+  call _dis_musrow
+  mov bx,ax
 	;bx=row
 	and	bx,7
 	cmp	bx,0
@@ -864,36 +880,36 @@ do_interference:
 	jne	@@m2
 	mov	word [patdir],-3 ;-3
 @@m2:
-	mov	bx,[scrnrot]
+	movzx	ebx, word [scrnrot]
 	add	bx,5
 	and	bx,1023
 	mov	[scrnrot],bx
 
 	shl	bx,1
-	mov	ax,[_koe_sin1024+bx]
+	mov	ax,[_koe_sin1024+ebx]
 	sar	ax,2
 	add	ax,160
 	mov	[scrnx],ax
 	add	bx,256*2
 	and	bx,1024*2-1
-	mov	ax,[_koe_sin1024+bx]
+	mov	ax,[_koe_sin1024+ebx]
 	sar	ax,2
 	add	ax,100
 	mov	[scrny],ax
 
-	mov	bx,[overrot]
+	movzx	ebx,word [overrot]
 	add	bx,7
 	and	bx,1023
 	mov	[overrot],bx
 
 	shl	bx,1
-	mov	ax,[_koe_sin1024+bx]
+	mov	ax,[_koe_sin1024+ebx]
 	sar	ax,2
 	add	ax,160
 	mov	[overx],ax
 	add	bx,256*2
 	and	bx,1024*2-1
-	mov	ax,[_koe_sin1024+bx]
+	mov	ax,[_koe_sin1024+ebx]
 	sar	ax,2
 	add	ax,100
 	mov	bx,80
@@ -914,10 +930,10 @@ do_interference:
 	mov	dx,3d4h
 	mov	al,0ch
 	mov	ah,bh
-	out	dx,ax
+	;out	dx,ax
 	inc	al
 	mov	ah,bl
-	out	dx,ax
+	;out	dx,ax
 
 	cmp	word [framecount],70*5
 	jb	@@p1	
@@ -932,13 +948,14 @@ do_interference:
 	inc	word [framecount]
 	;cmp	[framecount],70*13
 	;je	@@xx
+  call _demo_blit
  	mov	ax,0
 	mov	bx,9
-	int	0fch
+	;int	0fch
 	cmp	ax,925
 	jae	@@xx
 	mov	bx,2
-	int	0fch
+	;int	0fch
 	or	ax,ax
 	jz	@@aga
 @@xx:	ret
@@ -946,11 +963,11 @@ do_interference:
 
 global _initinterference
 _initinterference:
-	push	bp
-	mov	bp,sp
-	push	si
-	push	di
-	push	ds
+	push	ebp
+	;mov	bp,sp
+	;push	si
+	;push	di
+	;push	ds
 	
 ;	call	resetmode13
 
@@ -963,34 +980,34 @@ _initinterference:
 ;	int	0fch
 ;	cmp	ax,0f1h
 ;	jne	@@wm1
-	
+	mov eax, [esp+8]
 	call	init_interference
 	
-	pop	ds
-	pop	di
-	pop	si
-	pop	bp
+	;pop	ds
+	;pop	di
+	;pop	si
+	pop	ebp
 	ret
 
 
 global _dointerference
 _dointerference:
-	push	bp
-	mov	bp,sp
-	push	si
-	push	di
-	push	ds
+	push	ebp
+	;mov	bp,sp
+	;push	si
+	;push	di
+	;push	ds
 	
 	call	do_interference	
 	
-	mov	es,[memseg]
-	mov	ah,49h
-	int	21h
+	;mov	es,[memseg]
+	;mov	ah,49h
+	;int	21h
 
-	pop	ds
-	pop	di
-	pop	si
-	pop	bp
+	;pop	ds
+	;pop	di
+	;pop	si
+	pop	ebp
 	ret
 
 	

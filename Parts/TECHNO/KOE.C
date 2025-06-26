@@ -17,10 +17,13 @@
 //extern char pic[];
 extern int sin1024[];
 
+char circlemem[20+100*80];
+char circlemem2[16384*16];
+
 void asminit();
-void initinterference();
+void initinterference(char * memory);
 void dointerference();
-void dointerference2();
+void dointerference2( char * memory );
 void asmbox( int x1, int y1, int x2, int y2, int x3, int y3, int x4, int y4 );
 void asmdoit( char * vbuf, char * vram );
 void asmdoit2();
@@ -231,12 +234,12 @@ void koe_main()
 		}
 	}
 	
-	while(!dis_exit() && dis_musplus()<-4) ;
+	//while(!dis_exit() && dis_musplus()<-4) ;
 	dis_setmframe(0);
 
-	dointerference2();
+	dointerference2(circlemem2);
 	
-	initinterference();
+	initinterference(circlemem);
 
     if(!dis_exit())
     {
