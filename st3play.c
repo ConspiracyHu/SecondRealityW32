@@ -2750,7 +2750,7 @@ uint32_t st3play_GetMixerTicks(void)
 	return sampleCounter / (audioRate / 1000);
 }
 
-static bool loadS3M(const uint8_t *dat, uint32_t modLen)
+static bool loadS3M(const uint8_t *dat, uint32_t modLen, uint32_t startingOrder)
 {
 	bool signedSamples;
 	uint8_t pan, *ptr8, chan;
@@ -3028,14 +3028,14 @@ static bool loadS3M(const uint8_t *dat, uint32_t modLen)
 	np_patoff = -1;
 	jmptoord = -1;
 
-	np_ord = 0;
+	np_ord = startingOrder > ordNum ? 0 : startingOrder - 1;
 	neworder();
 
 	lastachannelused = 1;
 	return true;
 }
 
-bool st3play_PlaySong(const uint8_t *moduleData, uint32_t dataLength, bool useInterpolationFlag, uint32_t audioFreq)
+bool st3play_PlaySong(const uint8_t *moduleData, uint32_t dataLength, bool useInterpolationFlag, uint32_t audioFreq, uint32_t startingOrder )
 {
 	st3play_Close();
 	memset(songname, 0, sizeof (songname));
@@ -3071,7 +3071,7 @@ bool st3play_PlaySong(const uint8_t *moduleData, uint32_t dataLength, bool useIn
 		return false;
 	}
 
-	if (!loadS3M(moduleData, dataLength))
+	if (!loadS3M(moduleData, dataLength, startingOrder))
 	{
 		st3play_Close();
 		return false;
