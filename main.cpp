@@ -1,3 +1,5 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
 #include "Graphics.h"
 #include "shims.h"
 
@@ -26,6 +28,9 @@ extern "C" void koe_main();
 extern "C" void rotate( int, int, int, int );
 extern "C" void rotlist();
 extern "C" void plzline(int,int);
+
+extern "C" bool st3play_PlaySong( const unsigned char * moduleData, unsigned int dataLength, bool useInterpolationFlag, unsigned int audioFreq );
+extern "C" void st3play_Close( void );
 
 unsigned int * screen32;
 
@@ -91,6 +96,31 @@ void demo_vsync()
 #endif
 }
 
+unsigned char * musicdata = NULL;
+void start_music( const char * path, int start_order )
+{
+  FILE * f1 = fopen( path, "rb" );
+  fseek( f1, 0L, SEEK_END );
+  unsigned int size = ftell( f1 );
+  musicdata = (unsigned char *)malloc( size );
+  fseek( f1, 0L, SEEK_SET );
+  fread( musicdata, (size_t)size, 1, f1 );
+  fclose( f1 );
+
+  st3play_PlaySong( musicdata, size, true, 44100 );
+}
+
+void end_music( const char * path, int start_order )
+{
+  st3play_Close();
+
+  free( musicdata );
+  musicdata = NULL;
+}
+
+#define MUSIC_SKAV 1
+#define MUSIC_PM 2
+
 int main( int argc, char * argv[] )
 {
   // self-modifying code everywhere, wahey!
@@ -113,33 +143,35 @@ int main( int argc, char * argv[] )
 
   struct  
   {
+    unsigned char music;
+    unsigned char music_startorder;
     unsigned short x;
     unsigned short y;
     void (*part)();
   } parts[] = {
-    /* 00  BUG  */ { 320, 400, alku_main },      // 1   db  'Alkutekstit I (WILDF)       ' / 'ALKU    ' / 'ALKU.EXE'
-    /* 01  CTD  */ { 320, 400, u2a_main },       // 2   db  'Alkutekstit II (PSI)        ' / 'VISU    ' / 'U2A.EXE'
-    /* 02  BUG  */ { 320, 200, pam_main },       // 3   db  'Alkutekstit III (TRUG/WILDF)' / 'PAM     ' / 'PAM.EXE'
-    /* 03       */ { 320, 400, beg_main },                  
-    /* 04  BUG  */ { 320, 200, glenz_main },     // 4   db  'Glenz (PSI)                 ' / 'GLENZ   ' / 'GLENZ.EXE'
-    /* 05  BUG  */ { 320, 200, tun_main },       // 5   db  'Dottitunneli (TRUG)         ' / 'TUNNELI ' / 'TUNNELI.EXE'
-    /* 06  BUG  */ { 320, 200, koe_main },       // 6   db  'Techno (PSI)                ' / 'TECHNO  ' / 'TECHNO.EXE'
-    /* 07  BUG  */ { 320, 200, shutdown_main },  // 7   db  'Panicfake (WILDF)           ' / 'PANIC   ' / 'PANICEND.EXE'
-    /* 08       */ { 320, 200, forest_main },    // 8   db  'Vuori-Scrolli (TRUG)        ' / 'FOREST  ' / 'MNTSCRL.EXE'
-                                                 // 11  db  'Lens (PSI)                  ' / '        ' / 
-    /* 09       */ { 320, 200, lens_main },      // 12  db  'Rotazoomer (PSI)            ' / 'LENS    ' / 'LNS&ZOOM.EXE'
-                                                 // 13  db  'Plasma (WILDF)              ' / '        ' / 
-    /* 10  CTD  */ { 320, 200, plz_main },       // 14  db  'Plasmacube (WILDF)          ' / 'PLZPART ' / 'PLZPART.EXE'
-    /* 11       */ { 320, 200, dots_main },      // 15  db  'MiniVectorBalls (PSI)       ' / 'DOTS    ' / 'MINVBALL.EXE'
-    /* 12       */ { 320, 200, water_main },     // 16  db  'Peilipalloscroll (TRUG)     ' / 'WATER   ' / 'RAYSCRL.EXE'
-    /* 13       */ { 320, 400, coman_main },     // 17  db  '3D-Sinusfield (PSI)         ' / 'COMAN   ' / '3DSINFLD.EXE'
-    /* 14       */ { 320, 400, jplogo_main },    // 18  db  'Jellypic (PSI)              ' / 'JPLOGO  ' / 'JPLOGO.EXE'
-    /* 15  CTD  */ { 320, 200, u2e_main },       // 19  db  'Vector Part II              ' / 'VISU    ' / 'U2E.EXE'
-                                                            
-    /* 16       */ { 320, 400, end_main },       // 20  db  'Endpictureflash (?)         ' / 'END     ' / 'ENDLOGO.EXE'
-    /* 17  BUG  */ { 320, 400, credits_main },   // 21  db  'Credits/Greetings scrl. (?) ' / 'CREDITS ' / 'CRED.EXE'
-    /* 18       */ { 640, 350, endscrl_main },   // 23                                       'ENDSCRL ' / 'ENDSCRL.EXE'
-                   {   0,   0, NULL },
+    /* 00  BUG  */ { MUSIC_SKAV,  0, 320, 400, alku_main },      // 1   db  'Alkutekstit I (WILDF)       ' / 'ALKU    ' / 'ALKU.EXE'
+    /* 01  CTD  */ { MUSIC_SKAV,  0, 320, 400, u2a_main },       // 2   db  'Alkutekstit II (PSI)        ' / 'VISU    ' / 'U2A.EXE'
+    /* 02  BUG  */ { MUSIC_SKAV,  0, 320, 200, pam_main },       // 3   db  'Alkutekstit III (TRUG/WILDF)' / 'PAM     ' / 'PAM.EXE'
+    /* 03       */ { MUSIC_SKAV,  0, 320, 400, beg_main },                  
+    /* 04  BUG  */ { MUSIC_PM,    0, 320, 200, glenz_main },     // 4   db  'Glenz (PSI)                 ' / 'GLENZ   ' / 'GLENZ.EXE'
+    /* 05  BUG  */ { MUSIC_PM,    0, 320, 200, tun_main },       // 5   db  'Dottitunneli (TRUG)         ' / 'TUNNELI ' / 'TUNNELI.EXE'
+    /* 06  BUG  */ { MUSIC_PM,    0, 320, 200, koe_main },       // 6   db  'Techno (PSI)                ' / 'TECHNO  ' / 'TECHNO.EXE'
+    /* 07  BUG  */ { MUSIC_PM,    0, 320, 200, shutdown_main },  // 7   db  'Panicfake (WILDF)           ' / 'PANIC   ' / 'PANICEND.EXE'
+    /* 08       */ { MUSIC_PM,    0, 320, 200, forest_main },    // 8   db  'Vuori-Scrolli (TRUG)        ' / 'FOREST  ' / 'MNTSCRL.EXE'
+                                                                 // 11  db  'Lens (PSI)                  ' / '        ' / 
+    /* 09       */ { MUSIC_PM,    0, 320, 200, lens_main },      // 12  db  'Rotazoomer (PSI)            ' / 'LENS    ' / 'LNS&ZOOM.EXE'
+                                                                 // 13  db  'Plasma (WILDF)              ' / '        ' / 
+    /* 10  CTD  */ { MUSIC_PM,    0, 320, 200, plz_main },       // 14  db  'Plasmacube (WILDF)          ' / 'PLZPART ' / 'PLZPART.EXE'
+    /* 11       */ { MUSIC_PM,    0, 320, 200, dots_main },      // 15  db  'MiniVectorBalls (PSI)       ' / 'DOTS    ' / 'MINVBALL.EXE'
+    /* 12       */ { MUSIC_PM,    0, 320, 200, water_main },     // 16  db  'Peilipalloscroll (TRUG)     ' / 'WATER   ' / 'RAYSCRL.EXE'
+    /* 13       */ { MUSIC_PM,    0, 320, 400, coman_main },     // 17  db  '3D-Sinusfield (PSI)         ' / 'COMAN   ' / '3DSINFLD.EXE'
+    /* 14       */ { MUSIC_PM,    0, 320, 400, jplogo_main },    // 18  db  'Jellypic (PSI)              ' / 'JPLOGO  ' / 'JPLOGO.EXE'
+    /* 15  CTD  */ { MUSIC_SKAV,  0, 320, 200, u2e_main },       // 19  db  'Vector Part II              ' / 'VISU    ' / 'U2E.EXE'
+                                                                            
+    /* 16       */ { MUSIC_SKAV,  0, 320, 400, end_main },       // 20  db  'Endpictureflash (?)         ' / 'END     ' / 'ENDLOGO.EXE'
+    /* 17  BUG  */ { MUSIC_SKAV,  0, 320, 400, credits_main },   // 21  db  'Credits/Greetings scrl. (?) ' / 'CREDITS ' / 'CRED.EXE'
+    /* 18       */ { MUSIC_SKAV,  0, 640, 350, endscrl_main },   // 23                                       'ENDSCRL ' / 'ENDSCRL.EXE'
+                   { MUSIC_SKAV,  0,   0,   0, NULL },
   };
 
   int start = 8;
@@ -153,9 +185,19 @@ int main( int argc, char * argv[] )
     case '5': start = 18; break;
     }
   }
-  
+
+  const char * music_paths[ 3 ];
+  music_paths[MUSIC_SKAV] = "Data\\2ND_SKAV.S3M";
+  music_paths[MUSIC_PM] = "Data\\2ND_PM.S3M";
+
+  int lastmusic = 0;
   for ( int i = start; parts[ i ].x; i++ )
   {
+    if ( lastmusic != parts[ i ].music )
+    {
+      lastmusic = parts[ i ].music;
+      start_music( music_paths[ parts[ i ].music ], parts[ i ].music_startorder );
+    }
     demo_changemode( parts[ i ].x, parts[ i ].y );
     parts[ i ].part();
     if ( dis_exit() )

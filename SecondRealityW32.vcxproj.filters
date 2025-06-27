@@ -76,6 +76,7 @@
     <ClCompile Include="Parts\TECHNO\KOE.C">
       <Filter>Parts\06-Techno</Filter>
     </ClCompile>
+    <ClCompile Include="st3play.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Graphics.h" />
