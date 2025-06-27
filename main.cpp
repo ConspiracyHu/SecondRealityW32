@@ -31,6 +31,7 @@ extern "C" void plzline(int,int);
 
 extern "C" bool st3play_PlaySong( const unsigned char * moduleData, unsigned int dataLength, bool useInterpolationFlag, unsigned int audioFreq, unsigned int startingOrder );
 extern "C" void st3play_Close( void );
+extern "C" void st3play_SetMasterVol( unsigned short volume );
 
 unsigned int * screen32;
 
@@ -108,6 +109,9 @@ void start_music( const char * path, int start_order )
   fclose( f1 );
 
   st3play_PlaySong( musicdata, size, true, 44100, start_order );
+#ifdef _DEBUG
+  st3play_SetMasterVol( 10 );
+#endif // _DEBUG
 }
 
 void end_music( const char * path, int start_order )
@@ -174,7 +178,7 @@ int main( int argc, char * argv[] )
                    { 0         ,  0x00,   0,   0, NULL },
   };
 
-  int start = 8;
+  int start = 5;
   if ( argc > 1 )
   {
     switch( argv[ 1 ][ 0 ] )
