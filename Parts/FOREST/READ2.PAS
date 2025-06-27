@@ -193,7 +193,7 @@ begin
      jl    @a
      end;
      }
-     repeat demo_blit until dis_muscode(0)<=0;
+     repeat demo_blit until dis_musplus(0)<=0;
 
 {     for y := 0 to 150 do waitr;}
 

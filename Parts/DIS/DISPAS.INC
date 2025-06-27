@@ -1,6 +1,7 @@
 function dis_waitb:integer;cdecl;external;
 function dis_exit:boolean;cdecl;external;
 function dis_muscode(code:integer):integer;cdecl;external;
+function dis_musplus(code:integer):integer;cdecl;external;
 function dis_musorder(code:integer):integer;cdecl;external;
 function dis_musrow(code:integer):integer;cdecl;external;
 
