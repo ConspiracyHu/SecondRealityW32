@@ -14,8 +14,8 @@ const veke = 1060;    { frame count to exit }
 
 type
       bc     = record
-                 x : integer;
-                 y : integer;
+                 x : smallInt;
+                 y : smallInt;
                end;
       ptr_bc = ^bc;
 
@@ -28,9 +28,12 @@ var
       putki  : array[0..102] of rengas;
       pcalc  : array[0..137,0..63] of bc;
 
+      {
       aa1    : array[0..100] of word;
       rows   : array[0..200] of word;
       aa2    : array[0..200] of word;
+      }
+      rows   : array[0..500] of word;
 
       sinit  : array[0..4096] of word;
       cosit  : array[0..2048] of word;
@@ -128,9 +131,19 @@ begin
 
 {    fillchar(oldpos,sizeof(oldpos),#0);}
 
+    {
     for x := 0 to 100 do aa1[x] := 64000;
     move(@aa1[0],@aa2[0],sizeof(aa1));
-    for x := 0 to 200 do rows[x] := x*320;
+    }
+    for x := 0 to 500 do
+    begin
+      if x < 100 then
+        rows[x] := 64000
+      else if x >= 100+200 then
+        rows[x] := 64000
+      else
+        rows[x] := (x-100)*320;
+    end;
     move(@sini[0],@sinit[0],4097*2);
     cosptr := @sini[4097];
     move(@cosptr[0],@cosit[0],2048*2);
@@ -200,27 +213,27 @@ begin
         mov    es,ax
         }
         mov      esi,pcp
-        movzx    edx,word [_bx]
-        movzx    eax,byte [bbc]
+        movsx    edx,word [_bx]
+        mov    al,byte [bbc]
         mov    byte [@c+6],al
 
         mov    ecx,64
         movzx  eax, word [RY]
 
         push   ebp
-        movzx  ebp, word [BY]
+        movsx  ebp, word [BY]
 @a:     mov    ebx,eax
         movzx  edi,word [oldpos+ebx]
         mov    byte ptr [shim_vram+edi],0
 
-        movzx  edi,word ptr [esi]
+        movsx  edi,word ptr [esi]
         add    edi,edx
         cmp    edi,319
         ja     @yli
-        mov    ebx,ebp
-        add    bx,word ptr [esi+2]
+        movsx  ebx,word ptr [esi+2]
+        add    ebx,ebp
         add    ebx,ebx
-        add    di,word ptr [rows+ebx]
+        add    di,word ptr [rows+ebx+100*2]
 @c:     mov    byte ptr [shim_vram+edi],15
 @yli:
         mov    ebx,eax

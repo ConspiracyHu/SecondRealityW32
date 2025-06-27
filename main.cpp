@@ -158,7 +158,7 @@ int main( int argc, char * argv[] )
     /* 02  BUG  */ { MUSIC_SKAV,  0x0D, 320, 200, pam_main },       // 3   db  'Alkutekstit III (TRUG/WILDF)' / 'PAM     ' / 'PAM.EXE'
     /* 03       */ { MUSIC_SKAV,  0x0E, 320, 400, beg_main },                  
     /* 04  BUG  */ { MUSIC_PM,    0x00, 320, 200, glenz_main },     // 4   db  'Glenz (PSI)                 ' / 'GLENZ   ' / 'GLENZ.EXE'
-    /* 05  BUG  */ { MUSIC_PM,    0x0F, 320, 200, tun_main },       // 5   db  'Dottitunneli (TRUG)         ' / 'TUNNELI ' / 'TUNNELI.EXE'
+    /* 05       */ { MUSIC_PM,    0x0F, 320, 200, tun_main },       // 5   db  'Dottitunneli (TRUG)         ' / 'TUNNELI ' / 'TUNNELI.EXE'
     /* 06  BUG  */ { MUSIC_PM,    0x14, 320, 200, koe_main },       // 6   db  'Techno (PSI)                ' / 'TECHNO  ' / 'TECHNO.EXE'
     /* 07  BUG  */ { MUSIC_PM,    0x18, 320, 200, shutdown_main },  // 7   db  'Panicfake (WILDF)           ' / 'PANIC   ' / 'PANICEND.EXE'
     /* 08       */ { MUSIC_PM,    0x2A, 320, 200, forest_main },    // 8   db  'Vuori-Scrolli (TRUG)        ' / 'FOREST  ' / 'MNTSCRL.EXE'
