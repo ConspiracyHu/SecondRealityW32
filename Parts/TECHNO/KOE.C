@@ -237,7 +237,7 @@ void koe_main()
 	//while(!dis_exit() && dis_musplus()<-4) ;
 	dis_setmframe(0);
 
-#if 1
+#if 0
 	dointerference2(circlemem2);
 	
 	initinterference(circlemem);
@@ -376,7 +376,30 @@ void koe_main()
 	//return(0);
 }
 
-int	doit1(int count)
+unsigned char planar_vram[ 4 ][ 8 ][ 40 * 200 ] = { 0 };
+
+void resolve_16color( int page )
+{
+  // resolve 16 color planar mode (EGA) to chunky
+  int idx = 0;
+  char * dst = vram;
+  for ( int y = 0; y < 200; y++ )
+  {
+    for ( int x = 0; x < 320; x++ )
+    {
+      char bit = ( x & 0x7 );
+      unsigned char color = 0;
+      color |= ( ( planar_vram[ 0 ][ page ][ idx ] ) & ( 1 << ( 7 - bit ) ) ) ? 1 : 0;
+      color |= ( ( planar_vram[ 1 ][ page ][ idx ] ) & ( 1 << ( 7 - bit ) ) ) ? 2 : 0;
+      color |= ( ( planar_vram[ 2 ][ page ][ idx ] ) & ( 1 << ( 7 - bit ) ) ) ? 4 : 0;
+      color |= ( ( planar_vram[ 3 ][ page ][ idx ] ) & ( 1 << ( 7 - bit ) ) ) ? 8 : 0;
+      *(dst++) = color;
+      if ( bit == 7 ) idx++;
+    }
+  }
+}
+
+int	doit1( int count )
 {
 	int	rot=45;
 	int	x,y,c,x1,y1,x2,y2,x3,y3,x4,y4,a,hx,hy,vx,vy,cx,cy;
@@ -384,7 +407,7 @@ int	doit1(int count)
 	vm=50; vma=0;
 	waitborder();
 	plv=0; pl=1;
-	while(!dis_exit() && count>0)
+  while ( !dis_exit() && count > 0 )
 	{
 		count-=waitborder();
 		//setborder(1);
@@ -418,7 +441,10 @@ int	doit1(int count)
 		//_asm mov ah,pl
 		//_asm mov al,2
 		//_asm out dx,ax
-    asmdoit(vbuf,vram);
+    //asmdoit(vbuf,vram);
+    asmdoit( vbuf, planar_vram[ pl ][ plv ] );
+    resolve_16color( plv );
+
 		a=plv*0x20;
 		//_asm mov dx,3d4h
 		//_asm mov al,0ch
@@ -428,8 +454,9 @@ int	doit1(int count)
 		//vram=(char *)(0xa0000000L+0x2000000L*(long)plv);
 		if(!plv)
 		{
-			pl<<=1;
-			if(pl>15) pl=1;
+      pl = ( pl + 1 ) & 3;
+			//pl<<=1;
+			//if(pl>15) pl=1;
 		}
     demo_blit();
 		//setborder(0);
@@ -445,7 +472,7 @@ int	doit2(int count)
 	vm=100*64; vma=0;
 	waitborder();
 	plv=0; pl=1;
-	while(!dis_exit() && count>0)
+  while ( !dis_exit() && count > 0 )
 	{
 		count-=waitborder();
 		//setborder(1);
@@ -480,8 +507,10 @@ int	doit2(int count)
 		//_asm mov ah,pl
 		//_asm mov al,2
 		//_asm out dx,ax
-		asmdoit(vbuf,vram);
-		a=plv*0x20;
+    asmdoit( vbuf, planar_vram[ pl ][ plv ] );
+    resolve_16color( plv );
+
+    a = plv * 0x20;
 		//_asm mov dx,3d4h
 		//_asm mov al,0ch
 		//_asm mov ah,byte ptr a
@@ -490,9 +519,10 @@ int	doit2(int count)
 		//vram=(char *)(0xa0000000L+0x2000000L*(long)plv);
 		if(!plv)
 		{
-			pl<<=1;
-			if(pl>15) pl=1;
-		}
+      pl = ( pl + 1 ) & 3;
+      //pl<<=1;
+      //if(pl>15) pl=1;
+    }
     demo_blit();
 		//setborder(0);
 	}
@@ -614,7 +644,10 @@ int	doit3(int count)
 		//_asm mov ah,pl
 		//_asm mov al,2
 		//_asm out dx,ax
-		asmdoit2(vbuf,vram);
+		//asmdoit2(vbuf,vram);
+    asmdoit2( vbuf, planar_vram[ pl ][ plv ] );
+    resolve_16color( plv );
+
 		a=plv*0x20;
 		//_asm mov dx,3d4h
 		//_asm mov al,0ch
@@ -624,9 +657,10 @@ int	doit3(int count)
 		//vram=(char *)(0xa0000000L+0x2000000L*(long)plv+40);
 		if(!plv)
 		{
-			pl<<=1;
-			if(pl>15) pl=1;
-		}
+      pl = ( pl + 1 ) & 3;
+      //pl<<=1;
+      //if(pl>15) pl=1;
+    }
     demo_blit();
 		//setborder(0);
 	}
@@ -634,6 +668,7 @@ int	doit3(int count)
 	//_asm mov ax,13h
 	//_asm int 10h
 	//inittwk();
+  demo_changemode( 320, 400 );
   /*
 	_asm 
 	{

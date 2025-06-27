@@ -128,7 +128,7 @@ blit16:
 	xor	ebx,ebx
 	mov	ecx,200	
 	jmp	@@1
-	ALIGN	16
+	;ALIGN	16
 @@1:
   %assign zzz 0
 	xor	dh,dh ;line starts black
@@ -158,7 +158,7 @@ blit16b:
 	xor	ebx,ebx
 	mov	ecx,200	
 	jmp	@@1
-	ALIGN	16
+	;ALIGN	16
 @@1:
   %assign zzz 0
 	xor	dh,dh ;line starts black

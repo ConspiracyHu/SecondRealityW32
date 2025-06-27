@@ -119,6 +119,8 @@ section .code
 	out	dx,ax
 %endmacro
 
+; ch = mask
+; cl = plane count
 bltline:
 	push	esi
 	mov	dx,3c4h
@@ -482,55 +484,55 @@ do_interference:
 	call	outpal
 
 	jmp	@@OVER3
-	mov	dx,3c4h
-	mov	al,2
-	mov	ah,[zumplane]
-	rol	ah,1
-	mov	[zumplane],ah
-	;out	dx,ax
-
-	;mov	ax,0a000h
-	;mov	es,ax
-	;xor	si,si
-	movzx edi, word [scrnpos]
-  add edi, _shim_vram
-  movzx	ebp, word [sinurot]
-	add	bp,7*2
-	and	bp,2047
-	mov	[sinurot],bp
-	mov	ecx,200
-@@cp1:
-  %assign zzz 0
-	push	esi
-	add	bp,9*2
-	and	bp,2047
-	movzx	ebx,word [_koe_sin1024+ebp]
-	sar	bx,3
-	mov	bh,[sinuspower]
-	movsx	ax,byte [power0+ebx]
-	sub	ax,[scrnposl]
-	add	ax,[overx]
-	mov	bx,ax
-	and	bx,7
-  xor bx,7
-  shl	bx,2
-	;neg	bx
-	mov	esi,[circlesB+ebx]
-	sar	ax,3
-	add	si,ax
-	add	si,[overya]
-	%rep	40/4+1
-	mov	eax,[esi+zzz]
-	mov	[edi+zzz],eax
-	%assign zzz zzz+4
-  %endrep
-	pop	esi
-	add	edi,80
-	add	esi,80
-	dec	ecx
-	jz	@@cp0
-	jmp	@@cp1
-@@cp0:
+;	mov	dx,3c4h
+;	mov	al,2
+;	mov	ah,[zumplane]
+;	rol	ah,1
+;	mov	[zumplane],ah
+;	;out	dx,ax
+;
+;	;mov	ax,0a000h
+;	;mov	es,ax
+;	;xor	si,si
+;	movzx edi, word [scrnpos]
+;  add edi, _shim_vram
+;  movzx	ebp, word [sinurot]
+;	add	bp,7*2
+;	and	bp,2047
+;	mov	[sinurot],bp
+;	mov	ecx,200
+;@@cp1:
+;  %assign zzz 0
+;	push	esi
+;	add	bp,9*2
+;	and	bp,2047
+;	movzx	ebx,word [_koe_sin1024+ebp]
+;	sar	bx,3
+;	mov	bh,[sinuspower]
+;	movsx	ax,byte [power0+ebx]
+;	sub	ax,[scrnposl]
+;	add	ax,[overx]
+;	mov	bx,ax
+;	and	bx,7
+;  xor bx,7
+;  shl	bx,2
+;	;neg	bx
+;	mov	esi,[circlesB+ebx]
+;	sar	ax,3
+;	add	si,ax
+;	add	si,[overya]
+;	%rep	40/4+1
+;	mov	eax,[esi+zzz]
+;	mov	[edi+zzz],eax
+;	%assign zzz zzz+4
+;  %endrep
+;	pop	esi
+;	add	edi,80
+;	add	esi,80
+;	dec	ecx
+;	jz	@@cp0
+;	jmp	@@cp1
+;@@cp0:
 @@OVER3:
 	;MOVE
 	;mov	bx,6
