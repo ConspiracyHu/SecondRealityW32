@@ -372,6 +372,9 @@
     <None Include="Parts\TECHNO\SIN1024.INC">
       <Filter>Parts\06-Techno</Filter>
     </None>
+    <None Include="Parts\DIS\DISPAS.INC">
+      <Filter>Parts\DIS</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <YASM Include="Parts\ALKU\ALKU_ASMYT.ASM">

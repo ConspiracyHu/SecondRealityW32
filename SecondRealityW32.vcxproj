@@ -190,6 +190,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Parts\CREDITS\FONA.INC" />
+    <None Include="Parts\DIS\DISPAS.INC" />
     <None Include="Parts\FOREST\HILLBACK.CLX">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </None>

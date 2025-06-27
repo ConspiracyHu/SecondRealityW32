@@ -12,12 +12,7 @@ uses crt;
 
 const  veke = 2800;
 
-procedure shim_setpal(idx:integer; r:byte; g:byte; b:byte);cdecl;external;
-procedure demo_blit;cdecl;external;
-function dis_waitb:integer;cdecl;external;
-function dis_exit_c:integer;cdecl;external name 'dis_exit';
-procedure memcpy(dest:pointer; source:pointer; count: sizeint);cdecl;external;
-procedure memset(dest:pointer; val:byte; count: sizeint);cdecl;external;
+{$I ..\DIS\DISPAS.INC}
 
 procedure setrgb(c,r,g,b:byte);
 begin
@@ -51,20 +46,18 @@ begin
         frames := dis_waitb;
 end;
 
-
+{
 function dis_exit:boolean;
 var   a : byte;
 begin
-{
         asm
 	mov	bx,2
 	int	0fch
         mov     a,al
         end;
         if a = 0 then dis_exit := false else dis_exit := true;
-        }
-        if dis_exit_c = 0 then dis_exit := false else dis_exit := true;
 end;
+}
 
 var   f : file;
       inx : word;
@@ -103,18 +96,18 @@ begin
       mov   esi,offset posi1
       mov   ebx,offset font
       call  putrouts
-     end;
+     end ['esi','ebx'];
    1:asm
       mov   esi,offset posi2
       mov   ebx,offset font
       call  putrouts
-     end;
+     end ['esi','ebx'];
    2:begin
       asm
        mov   esi,offset posi3
        mov   ebx,offset font
        call  putrouts
-      end;
+      end ['esi','ebx'];
       move(@font[1],@font[0],237*31);
       for ff := 0 to 30 do font[ff*237+236] := fbuf[ff*640+scp];
       if scp < 639 then inc(scp);
@@ -200,6 +193,8 @@ begin
      jl    @a
      end;
      }
+     repeat demo_blit until dis_muscode(0)<=0;
+
 {     for y := 0 to 150 do waitr;}
 
      sss := 0;

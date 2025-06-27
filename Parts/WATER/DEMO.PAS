@@ -10,12 +10,7 @@ implementation
 
 uses crt;
 
-procedure shim_setpal(idx:integer; r:byte; g:byte; b:byte);cdecl;external;
-procedure demo_blit;cdecl;external;
-function dis_waitb:integer;cdecl;external;
-function dis_exit_c:integer;cdecl;external name 'dis_exit';
-procedure memcpy(dest:pointer; source:pointer; count: sizeint);cdecl;external;
-procedure memset(dest:pointer; val:byte; count: sizeint);cdecl;external;
+{$I ..\DIS\DISPAS.INC}
 
 procedure setrgb(c,r,g,b:byte);
 begin
@@ -48,20 +43,18 @@ begin
         frames := dis_waitb;
 end;
 
-
+{
 function dis_exit:boolean;
 var   a : byte;
 begin
-{
         asm
 	mov	bx,2
 	int	0fch
         mov     a,al
         end;
         if a = 0 then dis_exit := false else dis_exit := true;
-}
-  if dis_exit_c = 0 then dis_exit := false else dis_exit := true;
 end;
+}
 
 var   f : file;
       inx : word;
@@ -98,17 +91,17 @@ begin
       mov   esi,offset wat1
       mov   ebx,offset fbuf
       call  putrouts1
-     end;
+     end ['esi','ebx'];
    1:asm
       mov   esi,offset wat2
       mov   ebx,offset fbuf
       call  putrouts1
-     end;
+     end ['esi','ebx'];
    2:asm
       mov   esi,offset wat3
       mov   ebx,offset fbuf
       call  putrouts1
-      end;
+     end ['esi','ebx'];
   end;
 end;
 
@@ -139,6 +132,8 @@ begin
 
      end;
      }
+     co := dis_musorder(0);
+
      fillchar(@fbuf[0],sizeof(fbuf),#0);
      move(@miekka[10],@pal[0],768);
      move(@miekka[778],@font[0],400*34);
@@ -177,6 +172,9 @@ begin
      jl    @a
      end;
      }
+     repeat
+       demo_blit;
+     until not ((dis_musorder(0) = co) and (dis_musrow(0) > 16));
 
 
     {######################################################################}
@@ -199,6 +197,7 @@ begin
      mov   fadeout,1
 @a:  end;
 }
+      if dis_muscode(0)=-11 then fadeout:=true;
 
       if fadeout then
         begin

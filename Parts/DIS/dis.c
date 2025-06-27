@@ -54,6 +54,11 @@ int dis_musrow( int code )
   return 0;
 }
 
+int dis_musorder( int code )
+{
+  return 0;
+}
+
 void dis_setcopper( int routine_number, void ( *routine )( void ) )
 {
 }

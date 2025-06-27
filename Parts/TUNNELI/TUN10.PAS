@@ -52,11 +52,7 @@ procedure tun;external;
 procedure sini;external;
 }
 
-procedure shim_setpal(idx:integer; r:byte; g:byte; b:byte);cdecl;external;
-procedure demo_blit;cdecl;external;
-function dis_waitb:integer;cdecl;external;
-function dis_exit_c:integer;cdecl;external name 'dis_exit';
-procedure memcpy(dest:pointer; source:pointer; count: sizeint);cdecl;external;
+{$I ..\DIS\DISPAS.INC}
 
 procedure move(src:pointer; dst:pointer; count:sizeint);
 begin
@@ -89,19 +85,18 @@ begin
         frames := dis_waitb;
 end;
 
+{
 function dis_exit:boolean;
 var   a : byte;
 begin
-{
         asm
 	mov	bx,2
 	int	0fch
         mov     a,al
         end;
         if a = 0 then dis_exit := false else dis_exit := true;
-        }
-        if dis_exit_c = 0 then dis_exit := false else dis_exit := true;
 end;
+}
 
 procedure tun_main; cdecl; [Alias:'_tun_main'];
 
@@ -204,8 +199,6 @@ begin
         mov    ax,$a000
         mov    es,ax
         }
-        fnop
-        fnop
         mov      esi,pcp
         movzx    edx,word [_bx]
         movzx    eax,byte [bbc]
@@ -238,9 +231,7 @@ begin
         jnz    @a
         pop    ebp
         mov    [RY],ax
-        fnop
-        fnop
-       end;
+       end['esi','eax','ebx','ecx'];
      end;
 
      for sync := 1 to frames do
@@ -250,6 +241,8 @@ begin
      memcpy(@putki[0],@putki[1],ofs(putki[100])-ofs(putki[0]));
      inc(sy);
      inc(sx);
+
+     if dis_muscode(0)=-4 then quit:=true;
 {
      asm
      mov   ax,0

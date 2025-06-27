@@ -49,6 +49,11 @@ extern int dis_musrow(int);
 ** code you are waiting, so a skip can be easily done by DIS.
 */
 
+extern int dis_musorder(int);
+/* returns a music syncronization code. As a parameter, give the
+** code you are waiting, so a skip can be easily done by DIS.
+*/
+
 extern void dis_setcopper(int routine_number,void (*routine)(void));
 /* routine=1(top of screen)/2(bottom of screen)/3(retrace)
 ** routine=pointer to routine

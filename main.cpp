@@ -142,7 +142,7 @@ int main( int argc, char * argv[] )
                    {   0,   0, NULL },
   };
 
-  int start = 6;
+  int start = 8;
   if ( argc > 1 )
   {
     switch( argv[ 1 ][ 0 ] )
