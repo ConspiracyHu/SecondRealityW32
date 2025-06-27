@@ -39,6 +39,10 @@ void * dis_msgarea( int areanumber )
   return NULL;
 }
 
+unsigned short st3play_GetOrder();
+unsigned short st3play_GetRow();
+short st3play_GetPlusFlags();
+
 int dis_muscode( int code )
 {
   return 0;
@@ -46,17 +50,17 @@ int dis_muscode( int code )
 
 int dis_musplus()
 {
-  return 0;
+  return st3play_GetPlusFlags();
 }
 
 int dis_musrow( int code )
 {
-  return 0;
+  return st3play_GetRow();
 }
 
 int dis_musorder( int code )
 {
-  return 0;
+  return st3play_GetOrder();
 }
 
 void dis_setcopper( int routine_number, void ( *routine )( void ) )

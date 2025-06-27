@@ -132,6 +132,8 @@ uint16_t st3play_GetMasterVol(void); // 0..256
 void st3play_SetInterpolation(bool flag); // true/false
 char *st3play_GetSongName(void); // max 28 chars (29 witrh '\0'), string is in code page 437
 uint32_t st3play_GetMixerTicks(void); // returns the amount of milliseconds of mixed audio (not realtime)
+uint16_t st3play_GetOrder(void); // 0..256
+uint16_t st3play_GetRow(void); // 0..256
 */
 
 //#define FORCE_SOUNDCARD_TYPE SOUNDCARD_SBPRO
@@ -2638,7 +2640,7 @@ static void mixAudio(int16_t *stream, int32_t sampleBlockLength)
 	}
 }
 
-static bool st3play_FillAudioBuffer(int16_t *buffer, int32_t samples)
+static bool st3play_FillAudioBuffer( int16_t * audioBuffer, uint8_t * orderBuffer, uint8_t * rowBuffer, int32_t samples )
 {
 	int32_t a, b;
 
@@ -2660,8 +2662,13 @@ static bool st3play_FillAudioBuffer(int16_t *buffer, int32_t samples)
 		if (b > samplesLeft)
 			b = samplesLeft;
 
-		mixAudio(buffer, b);
-		buffer += (uint32_t)b * 2;
+		mixAudio(audioBuffer, b);
+		audioBuffer += (uint32_t)b * 2;
+    for ( int32_t i = 0; i < b; i++ )
+    {
+      *(orderBuffer++) = (uint8_t)np_ord;
+      *(rowBuffer++) = (uint8_t)np_row;
+    }
 
 		a -= b;
 		samplesLeft -= b;
@@ -3190,7 +3197,8 @@ static DWORD WINAPI mixThread(LPVOID lpParam)
 	while (audioRunningFlag)
 	{
 		waveBlock = &waveBlocks[currBuffer];
-		st3play_FillAudioBuffer((int16_t *)waveBlock->lpData, MIX_BUF_SAMPLES);
+    static uint8_t dummy[ MIX_BUF_SAMPLES ];
+		st3play_FillAudioBuffer((int16_t *)waveBlock->lpData, dummy, dummy, MIX_BUF_SAMPLES);
 		waveOutWrite(hWave, waveBlock, sizeof (WAVEHDR));
 		currBuffer = (currBuffer + 1) % MIX_BUF_NUM;
 
@@ -3322,6 +3330,33 @@ omError:
 	return FALSE;
 }
 
+uint16_t st3play_GetOrder( void )
+{
+  return 0;
+}
+
+uint16_t st3play_GetRow( void )
+{
+  return 0;
+}
+
+int16_t st3play_GetPlusFlags( void )
+{
+  uint16_t currentOrder = st3play_GetOrder();
+  uint16_t currentRow = st3play_GetRow();
+
+  uint8_t flags = 0;
+  if ( order[ currentOrder ] == PATT_SEP ) flags |= 1;
+  if ( currentOrder > 0 && order[ currentOrder-1 ] == PATT_SEP ) flags |= 2;
+
+  switch ( flags )
+  {
+  case 0: return -32;
+  case 1: return currentRow - 64 < -32 ? -32 : currentRow - 64;
+  case 2: return currentRow >= 32 ? -32 : currentRow;
+  case 3: return currentRow < -32 ? currentRow : currentRow - 64;
+  }
+}
 
 // ---------------------------------------------------------------------------
 
