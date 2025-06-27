@@ -29,12 +29,12 @@ extern polyxy
 global clipanypoly
 clipanypoly:
 	;polyisides/polyixy =>polysides/polyxy
-	mov	ax,cs
-	mov	ds,ax
-	mov	cx,[polyisides]
-	cmp	cx,2
+	;mov	ax,cs
+	;mov	ds,ax
+	movzx	ecx,word [polyisides]
+	cmp	ecx,2
 	jg	cap3
-	cmp	cx,1
+	cmp	ecx,1
 	je	cap4
 	JCXZ_LARGE	cap0
 	;line
@@ -77,63 +77,63 @@ cap0:	;all clipped away
 	mov	word [polysides],0
 	ret
 cap3:	;polygon, first clip y, then x
-	mov	si,cx
-	shl	si,2
-	sub	si,4
-	mov	di,0
-	mov	eax,dword [polyixy+si]
+	mov	esi,ecx
+	shl	esi,2
+	sub	esi,4
+	mov	edi,0
+	mov	eax,dword [polyixy+esi]
 	mov	dword [clip_x1],eax
-	mov	eax,dword [polyixy+di]
+	mov	eax,dword [polyixy+edi]
 	mov	dword [clip_x2],eax
 	call	clipliney
 	;
 	mov	cx,[polyisides]
-	xor	di,di
-	xor	bx,bx
+	xor	edi,edi
+	xor	ebx,ebx
 	mov	edx,80008000h
 	jmp	cap35
-cap32:	push	di
-	push	bx
-	push	cx
+cap32:	push	edi
+	push	ebx
+	push	ecx
 	push	edx
-	mov	si,di
-	sub	si,4
-	mov	eax,dword [polyixy+si]
+	mov	esi,edi
+	sub	esi,4
+	mov	eax,dword [polyixy+esi]
 	mov	dword [clip_x1],eax
-	mov	eax,dword [polyixy+di]
+	mov	eax,dword [polyixy+edi]
 	mov	dword [clip_x2],eax
 	call	clipliney
 	pop	edx
-	pop	cx
-	pop	bx
-	pop	di
+	pop	ecx
+	pop	ebx
+	pop	edi
 cap35:	cmp	ax,0
 	jnz	cap34
 	mov	eax,dword [clip_x1]
 	cmp	eax,edx
 	je	cap33
-	mov	dword [clipxy2+bx],eax
+	mov	dword [clipxy2+ebx],eax
 	mov	edx,eax
-	add	bx,4
+	add	ebx,4
 cap33:	mov	eax,dword [clip_x2]
 	cmp	eax,edx
 	je	cap34
-	mov	dword [clipxy2+bx],eax
+	mov	dword [clipxy2+ebx],eax
 	mov	edx,eax
-	add	bx,4
-cap34:	add	di,4
+	add	ebx,4
+cap34:	add	edi,4
 	loop	cap32
 	;
-	mov	cx,bx
-	shr	cx,2
+	mov	ecx,ebx
+	shr	ecx,2
 	cmp	dword [clipxy2+0],edx
 	jne	cap31
-	dec	cx
+	dec	ecx
 cap31:	mov	[polysides],cx
 	
-	cmp	cx,2
+	cmp	ecx,2
 	jg	cap39
-	cmp	cx,0
+	cmp	ecx,0
 	je	cap38
 	mov	eax,dword [clipxy2+0]
 	mov	dword [clip_x1],eax
@@ -142,58 +142,58 @@ cap31:	mov	[polysides],cx
 	jmp	cap2r ;reclip the remaining line
 cap38:	ret
 cap39:
-	mov	si,cx
-	shl	si,2
-	sub	si,4
-	mov	di,0
-	mov	eax,dword [clipxy2+si]
+	mov	esi,ecx
+	shl	esi,2
+	sub	esi,4
+	mov	edi,0
+	mov	eax,dword [clipxy2+esi]
 	mov	dword [clip_x1],eax
-	mov	eax,dword [clipxy2+di]
+	mov	eax,dword [clipxy2+edi]
 	mov	dword [clip_x2],eax
 	call	cliplinex
 	;
-	mov	cx,[polysides]
-	xor	di,di
-	xor	bx,bx
+	movzx	ecx,word [polysides]
+	xor	edi,edi
+	xor	ebx,ebx
 	mov	edx,80008000h
 	jmp	cbp35
-cbp32:	push	di
-	push	bx
-	push	cx
+cbp32:	push	edi
+	push	ebx
+	push	ecx
 	push	edx
-	mov	si,di
-	sub	si,4
-	mov	eax,dword [clipxy2+si]
+	mov	esi,edi
+	sub	esi,4
+	mov	eax,dword [clipxy2+esi]
 	mov	dword [clip_x1],eax
-	mov	eax,dword [clipxy2+di]
+	mov	eax,dword [clipxy2+edi]
 	mov	dword [clip_x2],eax
 	call	cliplinex
 	pop	edx
-	pop	cx
-	pop	bx
-	pop	di
+	pop	ecx
+	pop	ebx
+	pop	edi
 cbp35:	cmp	ax,0
 	jnz	cbp34
 	mov	eax,dword [clip_x1]
 	cmp	eax,edx
 	je	cbp33
-	mov	dword [polyxy+bx],eax
+	mov	dword [polyxy+ebx],eax
 	mov	edx,eax
-	add	bx,4
+	add	ebx,4
 cbp33:	mov	eax,dword [clip_x2]
 	cmp	eax,edx
 	je	cbp34
-	mov	dword [polyxy+bx],eax
+	mov	dword [polyxy+ebx],eax
 	mov	edx,eax
-	add	bx,4
+	add	ebx,4
 cbp34:	add	di,4
 	loop	cbp32
 	;
-	mov	cx,bx
-	shr	cx,2
+	mov	ecx,ebx
+	shr	ecx,2
 	cmp	dword [polyxy+0],edx
 	jne	cbp31
-	dec	cx
+	dec	ecx
 cbp31:	mov	[polysides],cx
 
 	ret

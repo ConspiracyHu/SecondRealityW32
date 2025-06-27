@@ -15,18 +15,18 @@
 //#include "readp.c"
 
 //extern char pic[];
-extern int sin1024[];
+extern short koe_sin1024[];
 
 char circlemem[20+100*80];
 char circlemem2[16384*16];
 
-void asminit();
 void initinterference(char * memory);
 void dointerference();
 void dointerference2( char * memory );
+void asminit( char * vbuf );
 void asmbox( int x1, int y1, int x2, int y2, int x3, int y3, int x4, int y4 );
 void asmdoit( char * vbuf, char * vram );
-void asmdoit2();
+void asmdoit2( char * vbuf, char * vram );
 void koe_lineblit( char * vram, char * rowbuf );
 
 int	doit1(int count);
@@ -41,7 +41,7 @@ char	rowbuf[320];
 
 int	pl=1,plv=0;
 
-char *vbuf;
+extern char vbuf[];
 
 char	pal[16*16*3];
 
@@ -138,7 +138,7 @@ void koe_main()
 	
 	dis_partstart();
 	
-	vbuf=halloc(8192,1);
+  // vbuf = halloc( 8192, 1 );
 	
 	for(c=0;c<16;c++)
 	{
@@ -237,6 +237,7 @@ void koe_main()
 	//while(!dis_exit() && dis_musplus()<-4) ;
 	dis_setmframe(0);
 
+#if 1
 	dointerference2(circlemem2);
 	
 	initinterference(circlemem);
@@ -300,6 +301,7 @@ void koe_main()
 		ip[a*3+2]=a*8/2;
 	}
 
+  /*
 	while(!dis_exit() && dis_musplus()<-3) ;
 
 	while(!dis_exit())
@@ -307,6 +309,7 @@ void koe_main()
 		a=dis_musrow(0)&7;
 		if(a==7) break;
 	}
+  */
 
 	for(b=0;b<4 && !dis_exit();b++)
 	{	
@@ -326,13 +329,16 @@ void koe_main()
 			}
 			if(a>=0) flash(a);
 			else flash(0);
+      demo_blit();
 		}
-		
+
+    /*
 		while(!dis_exit())
 		{
 			a=dis_musrow(0)&7;
 			if(a==7) break;
 		}
+    */
 		{
 			flash(-1);
 			flash(32);
@@ -342,6 +348,7 @@ void koe_main()
 		}
 	}
     }
+#endif
 	pic=halloc(20000,4);
 	if(!pic) 
 	{
@@ -351,6 +358,8 @@ void koe_main()
 		//getch();
     return;
 	}
+
+  //for ( int i = 0; i < 256; i++ )shim_setpal( i, i/4, i/4, i/4 );
 	palfade=halloc(13000,1);
 	dis_partstart();
 	doit1(70*6);
@@ -381,10 +390,10 @@ int	doit1(int count)
 		//setborder(1);
 		memset(vbuf,0,8000);
 		{
-			hx=sin1024[(rot+0)&1023]*16*6/5;
-			hy=sin1024[(rot+256)&1023]*16;
-			vx=sin1024[(rot+256)&1023]*6/5;
-			vy=sin1024[(rot+512)&1023];
+			hx=koe_sin1024[(rot+0)&1023]*16*6/5;
+			hy=koe_sin1024[(rot+256)&1023]*16;
+			vx=koe_sin1024[(rot+256)&1023]*6/5;
+			vy=koe_sin1024[(rot+512)&1023];
 			vx=vx*vm/100;
 			vy=vy*vm/100;
 			for(c=-10;c<11;c+=2)
@@ -409,7 +418,7 @@ int	doit1(int count)
 		//_asm mov ah,pl
 		//_asm mov al,2
 		//_asm out dx,ax
-		asmdoit(vbuf,vram);
+    asmdoit(vbuf,vram);
 		a=plv*0x20;
 		//_asm mov dx,3d4h
 		//_asm mov al,0ch
@@ -422,6 +431,7 @@ int	doit1(int count)
 			pl<<=1;
 			if(pl>15) pl=1;
 		}
+    demo_blit();
 		//setborder(0);
 	}
   return 0;
@@ -441,10 +451,10 @@ int	doit2(int count)
 		//setborder(1);
 		memset(vbuf,0,8000);		
 		{
-			hx=sin1024[(rot+0)&1023]*16*6/5;
-			hy=sin1024[(rot+256)&1023]*16;
-			vx=sin1024[(rot+256)&1023]*6/5;
-			vy=sin1024[(rot+512)&1023];
+			hx=koe_sin1024[(rot+0)&1023]*16*6/5;
+			hy=koe_sin1024[(rot+256)&1023]*16;
+			vx=koe_sin1024[(rot+256)&1023]*6/5;
+			vy=koe_sin1024[(rot+512)&1023];
 			vx=vx*(vm/64)/100;
 			vy=vy*(vm/64)/100;
 			for(c=-10;c<11;c+=2)
@@ -483,6 +493,7 @@ int	doit2(int count)
 			pl<<=1;
 			if(pl>15) pl=1;
 		}
+    demo_blit();
 		//setborder(0);
 	}
   return 0;
@@ -544,13 +555,13 @@ int	doit3(int count)
 		}
 		if(rot2<32)
 		{
-			wx=sin1024[(rot2+0)&1023]*rot2/8+160;
-			wy=sin1024[(rot2+256)&1023]*rot2/8+100;
+			wx=koe_sin1024[(rot2+0)&1023]*rot2/8+160;
+			wy=koe_sin1024[(rot2+256)&1023]*rot2/8+100;
 		}
 		else
 		{
-			wx=sin1024[(rot2+0)&1023]/4+160;
-			wy=sin1024[(rot2+256)&1023]/4+100;
+			wx=koe_sin1024[(rot2+0)&1023]/4+160;
+			wy=koe_sin1024[(rot2+256)&1023]/4+100;
 		}
 		rot2+=17;
 		a=xpos/8;
@@ -572,10 +583,10 @@ int	doit3(int count)
 		//setborder(1);
 		memset(vbuf,0,8000);		
 		{
-			hx=sin1024[(rot+0)&1023]*16*6/5;
-			hy=sin1024[(rot+256)&1023]*16;
-			vx=sin1024[(rot+256)&1023]*6/5;
-			vy=sin1024[(rot+512)&1023];
+			hx=koe_sin1024[(rot+0)&1023]*16*6/5;
+			hy=koe_sin1024[(rot+256)&1023]*16;
+			vx=koe_sin1024[(rot+256)&1023]*6/5;
+			vy=koe_sin1024[(rot+512)&1023];
 			vx=vx*(vm/64)/100;
 			vy=vy*(vm/64)/100;
 			for(c=-10;c<11;c+=2)
@@ -616,6 +627,7 @@ int	doit3(int count)
 			pl<<=1;
 			if(pl>15) pl=1;
 		}
+    demo_blit();
 		//setborder(0);
 	}
 
@@ -637,7 +649,7 @@ int	doit3(int count)
 	{
 		FILE	*h;
 		char	*p=pic;
-		h=fopen("troll.up","rb");
+		h=fopen("Data\\troll.up","rb");
 		dis_waitb();
 		fread(p,40000,1,h);
 		dis_waitb();
@@ -652,8 +664,8 @@ int	doit3(int count)
 	readp(palette,-1,pic);
 	for(y=0;y<400;y++)
 	{
-		readp(rowbuf,y,pic);
-		koe_lineblit(vram+80U+(unsigned)y*160U,rowbuf);
+		readp(vram+y*320,y,pic);
+		//koe_lineblit(vram+80U+(unsigned)y*160U,rowbuf);
 	}
 	
 	p=palfade;
@@ -669,6 +681,7 @@ int	doit3(int count)
 	}
 
 	dis_waitb();
+  demo_blit();
 	setpalarea(palette,0,256);
 
   /*
@@ -708,6 +721,7 @@ int	doit3(int count)
 		//_asm out dx,al
 		//_asm mov al,20h
 		//_asm out dx,al
+    demo_blit();
 	}
 	count=50; c=0;
 	ripple=0; ripplep=8;
@@ -715,7 +729,7 @@ int	doit3(int count)
 	{
 		if(ripplep>1023) ripplep=1024;
 		else ripplep=ripplep*5/4;
-		xpos=320+sin1024[ripple&1023]/ripplep;
+		xpos=320+koe_sin1024[ripple&1023]/ripplep;
 		ripple+=ripplep+100;
 		a=xpos/4;
 		//_asm mov dx,3d4h
@@ -738,6 +752,7 @@ int	doit3(int count)
 			setpalarea(palfade+c*768,0,256);
 			c++;
 		}
+    demo_blit();
 	}
 	setpalarea(palette,0,256);
 	count=420; xpos=320;
@@ -761,6 +776,7 @@ int	doit3(int count)
 		//_asm out dx,al
 		//_asm mov al,20h
 		//_asm out dx,al
+    demo_blit();
 	}
   return 0;
 }

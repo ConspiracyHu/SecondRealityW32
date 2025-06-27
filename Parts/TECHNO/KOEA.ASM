@@ -4,10 +4,14 @@ extern _circle2
 section .data
 
 ;ALIGN 16
+
+global _vbuf
+_vbuf times 8192 db 0
+
 _rows	times 200 dw	0
 _blit16t times 256 dw	0
-_vbufseg dw	0
 clipleft dw	0
+
 
 global polyisides
 polyisides dw	0
@@ -45,42 +49,42 @@ global _asminit
 _asminit:
 	push 	ebp
 	mov	eax,[esp+8]
-	mov	[_vbufseg],eax
+	;mov	[_vbuf],eax
 	call	blitinit
 	pop	ebp
 	ret
 
 global _asmdoit	
 _asmdoit:
-	push 	bp
-	mov	bp,sp
-	push	si
-	push	di
-	push	ds
-	lds	si,[bp+6]
-	les	di,[bp+10]
+	push 	ebp
+	mov	ebp,esp
+	;push	si
+	;push	di
+	;push	ds
+	mov esi,[esp+8]
+	mov edi,[esp+12]
 	call	blit16
-	pop	ds
-	pop	di
-	pop	si
-	pop	bp
+	;pop	ds
+	;pop	di
+	;pop	si
+	pop	ebp
 	ret
 
 
 global _asmdoit2
 _asmdoit2:
-	push 	bp
-	mov	bp,sp
-	push	si
-	push	di
-	push	ds
-	lds	si,[bp+6]
-	les	di,[bp+10]
+	push 	ebp
+	mov	ebp,esp
+	;push	si
+	;push	di
+	;push	ds
+	mov esi,[esp+8]
+	mov edi,[esp+12]
 	call	blit16b
-	pop	ds
-	pop	di
-	pop	si
-	pop	bp
+	;pop	ds
+	;pop	di
+	;pop	si
+	pop	ebp
 	ret
 
 
@@ -92,11 +96,11 @@ blitinit:
 blit_l1:
   mov	[ebx],ax
 	add	ax,dx
-	add	bx,2
+	add	ebx,2
 	loop	blit_l1
 	xor	al,al
 	mov	ebx,_blit16t
-	mov	cx,256
+	mov	ecx,256
 blit_1:	mov	dh,255
 	mov	dl,al
 	xor	ah,ah
@@ -122,7 +126,7 @@ LBL(x):	shr	dh,1
 
 blit16:
 	xor	ebx,ebx
-	mov	cx,200	
+	mov	ecx,200	
 	jmp	@@1
 	ALIGN	16
 @@1:
@@ -132,16 +136,18 @@ blit16:
 	mov	bl,[esi+zzz]
 	xor	bl,dh
 	mov	ax,[_blit16t+ebx*2]
+
 	mov	bl,[esi+1+zzz]
 	xor	bl,ah
 	mov	dx,[_blit16t+ebx*2]
+
 	mov	ah,dl
 	mov	[edi+zzz],ax
 	%assign zzz zzz+2
 	%endrep
-	add	si,40
-	add	di,40
-	dec	cx
+	add	esi,40
+	add	edi,40
+	dec	ecx
 	jz	@@2
 	jmp	@@1
 @@2:
@@ -150,7 +156,7 @@ blit16:
 
 blit16b:
 	xor	ebx,ebx
-	mov	cx,200	
+	mov	ecx,200	
 	jmp	@@1
 	ALIGN	16
 @@1:
@@ -167,9 +173,9 @@ blit16b:
 	mov	[edi+zzz],ax
 	%assign zzz zzz+2
 	%endrep
-	add	si,40
-	add	di,80
-	dec	cx
+	add	esi,40
+	add	edi,80
+	dec	ecx
 	jz	@@2
 	jmp	@@1
 @@2:
@@ -177,9 +183,9 @@ blit16b:
 
 
 drawline:
-	push	si
-	push	di
-	push	bp
+	push	esi
+	push	edi
+	push	ebp
 @@vis:	movzx	ebx,bx
 	cmp	bx,cx
 	je	drawline_0
@@ -188,23 +194,26 @@ drawline:
 	xchg	ax,dx
 drawline_1:	sub	cx,bx
 	mov	di,cx
-	mov	si,[_rows+ebx*2]
-	mov	bp,[clipleft]
+	movzx	esi, word [_rows+ebx*2]
+	movzx	ebp, word [clipleft]
 	or	bp,bp
 	jz	@@nl
-	push	si
+	push	esi
 	;left overflow fill
 	jge	@@ndn
-@@nup:	add	si,40
-	xor	byte [esi],080h
+@@nup:
+  add	esi,40
+	xor	byte [_vbuf+esi],080h ;ds:
 	inc	bp
 	jnz	@@nup
 	jmp	@@nl2
-@@ndn:	sub	si,40
-	xor	byte [esi],080h
+@@ndn:
+  sub	esi,40
+	xor	byte [_vbuf+esi],080h ;ds:
 	dec	bp
 	jnz	@@ndn
-@@nl2:	pop	si
+@@nl2:
+  pop	esi
 @@nl:	;
 	JCXZ_LARGE	drawline_0
 	movzx	ebp,ax
@@ -221,7 +230,7 @@ drawline_1:	sub	cx,bx
 	mov	bx,di
 	shr	bx,1
 	neg	bx
-	jmp	[_loffs+ebp*2]
+	jmp	[_loffs+ebp*4]
 ALIGN 16
 
 _loffs:
@@ -240,8 +249,8 @@ _loffs:
 	;di=ycnt
 	;dx=xcnt
 	;bx=counter
-%%l1:	xor	byte [esi],%1
-	add	si,40
+%%l1:	xor	byte [_vbuf+esi],%1 ;ds:
+	add	esi,40
 	dec	cx
 	jz	drawline_0
 	add	bx,dx
@@ -303,7 +312,7 @@ ll_r:	;=============== right
 	mov	bx,di
 	shr	bx,1
 	neg	bx
-	jmp	[_roffs+ebp*2]
+	jmp	[_roffs+ebp*4]
 
 ;ALIGN 16
 _roffs:
@@ -323,8 +332,8 @@ _roffs:
 	;dx=xcnt
 	;bx=counter
 %%l1:
-  xor	byte [esi],%1
-	add	si,40
+  xor	byte [_vbuf+esi],%1 ;ds:
+	add	esi,40
 	dec	cx
 	jz	drawline_0
 	add	bx,dx
@@ -381,9 +390,10 @@ rl_r3:	rlinemacro 00001000b,rl_r2,rl_r1,rl_r0,rl_r7,rl_r6,rl_r5,rl_r4,rl_r3
 rl_r2:	rlinemacro 00000100b,rl_r1,rl_r0,rl_r7,rl_r6,rl_r5,rl_r4,rl_r3,rl_r2
 rl_r1:	rlinemacro 00000010b,rl_r0,rl_r7,rl_r6,rl_r5,rl_r4,rl_r3,rl_r2,rl_r1
 rl_r0:	rlinemacro 00000001b,rl_r7,rl_r6,rl_r5,rl_r4,rl_r3,rl_r2,rl_r1,rl_r0
-drawline_0:	pop	bp
-	pop	di
-	pop	si
+drawline_0:
+	pop	ebp
+	pop	edi
+	pop	esi
 	ret
 
 
@@ -394,41 +404,40 @@ _asmbox:
 	;push	si
 	;push	di
 	;push	ds
-	
-	mov	eax,[esp+8]
-	mov	dword [polyixy+0],eax
-	mov	eax,[esp+12]
-	mov	dword [polyixy+4],eax
-	mov	eax,[esp+16]
-	mov	dword [polyixy+8],eax
-	mov	eax,[esp+20]
-	mov	dword [polyixy+12],eax
+
+  %assign P 0
+  %rep 8	
+	mov	eax,[esp+8+P*4]
+	mov	word [polyixy+P*2],ax
+  %assign P P+1
+  %endrep
+
 	mov	word [polyisides],4
 	call	clipanypoly
 
-	mov	ds,[_vbufseg]
-	mov	si,polyxy
-	mov	di,[polysides]
-	or	di,di
+	;mov	ds,[_vbuf]
+	mov	esi,polyxy
+	movzx	edi,word [polysides]
+	or	edi,edi
 	jz	@@0
-	dec	di
+	dec	edi
 	jz	@@2
 
 @@1:
-  mov	ax,[esi+0]
-	mov	bx,[esi+2]
-	mov	dx,[esi+4]
-	mov	cx,[esi+6]
+  movzx	eax,word [esi+0]
+	movzx	ebx,word [esi+2]
+	movzx	edx,word [esi+4]
+	movzx	ecx,word [esi+6]
 	call	drawline
-	add	si,4
-	dec	di
+	add	esi,4
+	dec	edi
 	jnz	@@1
 
 @@2:
-  mov	ax,[esi+0]
-	mov	bx,[esi+2]
-	mov	dx,[polyxy+0]
-	mov	cx,[polyxy+2]
+  movzx eax,word [esi+0]
+	movzx ebx,word [esi+2]
+	movzx edx,word [polyxy+0]
+	movzx ecx,word [polyxy+2]
 	call	drawline
 
 @@0:	;pop	ds
@@ -788,6 +797,7 @@ init_interference:
 extern _dis_waitb
 extern _dis_musrow
 extern _dis_exit
+extern _dis_getmframe
 extern _demo_blit
 
 do_interference:
@@ -952,10 +962,12 @@ do_interference:
  	mov	ax,0
 	mov	bx,9
 	;int	0fch
+  call _dis_getmframe
 	cmp	ax,925
 	jae	@@xx
 	mov	bx,2
 	;int	0fch
+  call _dis_exit
 	or	ax,ax
 	jz	@@aga
 @@xx:	ret
