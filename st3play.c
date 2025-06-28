@@ -2640,7 +2640,26 @@ static void mixAudio(int16_t *stream, int32_t sampleBlockLength)
 	}
 }
 
-static bool st3play_FillAudioBuffer( int16_t * audioBuffer, uint8_t * orderBuffer, uint8_t * rowBuffer, int32_t samples )
+typedef struct 
+{
+  unsigned int sampleCountStart;
+  unsigned char row;
+  unsigned char order;
+} SampleMarker;
+
+SampleMarker sampleMarkers[ 0x40 * 0x70 ];
+unsigned short sampleMarkerCount = 0;
+unsigned int totalSampleCount = 0;
+
+static void insertSampleMarker()
+{
+  sampleMarkers[ sampleMarkerCount ].sampleCountStart = totalSampleCount;
+  sampleMarkers[ sampleMarkerCount ].order = np_ord;
+  sampleMarkers[ sampleMarkerCount ].row = np_row;
+  sampleMarkerCount++;
+}
+
+static bool st3play_FillAudioBuffer( int16_t * audioBuffer, int32_t samples )
 {
 	int32_t a, b;
 
@@ -2650,10 +2669,18 @@ static bool st3play_FillAudioBuffer( int16_t * audioBuffer, uint8_t * orderBuffe
 	a = samples;
 	while (a > 0)
 	{
+    if ( totalSampleCount == 0 && !musicPaused )
+    {
+      insertSampleMarker();
+    }
+
 		if (samplesLeft == 0)
 		{
-			if (!musicPaused) // new replayer tick
-				dorow();
+      if ( !musicPaused ) // new replayer tick
+      {
+        dorow();
+        insertSampleMarker();
+      }
 
 			samplesLeft = samplesPerTick;
 		}
@@ -2664,11 +2691,8 @@ static bool st3play_FillAudioBuffer( int16_t * audioBuffer, uint8_t * orderBuffe
 
 		mixAudio(audioBuffer, b);
 		audioBuffer += (uint32_t)b * 2;
-    for ( int32_t i = 0; i < b; i++ )
-    {
-      *(orderBuffer++) = (uint8_t)np_ord;
-      *(rowBuffer++) = (uint8_t)np_row;
-    }
+
+    totalSampleCount += b;
 
 		a -= b;
 		samplesLeft -= b;
@@ -3035,7 +3059,7 @@ static bool loadS3M(const uint8_t *dat, uint32_t modLen, uint32_t startingOrder)
 	np_patoff = -1;
 	jmptoord = -1;
 
-	np_ord = startingOrder > ordNum ? 0 : startingOrder - 1;
+	np_ord = startingOrder > ordNum ? 0 : startingOrder;
 	neworder();
 
 	lastachannelused = 1;
@@ -3198,7 +3222,7 @@ static DWORD WINAPI mixThread(LPVOID lpParam)
 	{
 		waveBlock = &waveBlocks[currBuffer];
     static uint8_t dummy[ MIX_BUF_SAMPLES ];
-		st3play_FillAudioBuffer((int16_t *)waveBlock->lpData, dummy, dummy, MIX_BUF_SAMPLES);
+		st3play_FillAudioBuffer((int16_t *)waveBlock->lpData, MIX_BUF_SAMPLES);
 		waveOutWrite(hWave, waveBlock, sizeof (WAVEHDR));
 		currBuffer = (currBuffer + 1) % MIX_BUF_NUM;
 
@@ -3288,6 +3312,8 @@ static bool openMixer(uint32_t audioFreq)
 
 	samplesLeft = 0;
 	currBuffer = 0;
+  totalSampleCount = 0;
+  sampleMarkerCount = 0;
 
 	if (waveOutOpen(&hWave, WAVE_MAPPER, &wfx, (DWORD_PTR)&waveProc, 0, CALLBACK_FUNCTION) != MMSYSERR_NOERROR)
 		goto omError;
@@ -3330,23 +3356,67 @@ omError:
 	return FALSE;
 }
 
+void st3play_GetOrderAndRow( uint16_t * orderPtr, uint16_t * rowPtr )
+{
+  MMTIME mmTime;
+  mmTime.wType = TIME_SAMPLES;
+  waveOutGetPosition( hWave, &mmTime, sizeof( MMTIME ) );
+
+  if ( sampleMarkerCount == 0 )
+  {
+    return;
+  }
+
+  if ( sampleMarkerCount == 1 )
+  {
+    *orderPtr = sampleMarkers[ 0 ].order - 1;
+    *rowPtr = sampleMarkers[ 0 ].row;
+    return;
+  }
+
+  int i0 = 0;
+  int i1 = sampleMarkerCount - 1;
+  while ( i1 - i0 != 1 )
+  {
+    int half = ( i1 + i0 ) / 2;
+    if ( sampleMarkers[ half ].sampleCountStart < mmTime.u.sample )
+    {
+      i0 = half;
+    }
+    else
+    {
+      i1 = half;
+    }
+  }
+
+  *orderPtr = sampleMarkers[ i0 ].order - 1; // st3play is always one order ahead
+  *rowPtr = sampleMarkers[ i0 ].row;
+}
+
 uint16_t st3play_GetOrder( void )
 {
-  return 0;
+  uint16_t currentOrder = 0;
+  uint16_t currentRow = 0;
+  st3play_GetOrderAndRow( &currentOrder, &currentRow );
+  return currentOrder;
 }
 
 uint16_t st3play_GetRow( void )
 {
-  return 0;
+  uint16_t currentOrder = 0;
+  uint16_t currentRow = 0;
+  st3play_GetOrderAndRow( &currentOrder, &currentRow );
+  return currentRow;
 }
 
 int16_t st3play_GetPlusFlags( void )
 {
-  uint16_t currentOrder = st3play_GetOrder();
-  uint16_t currentRow = st3play_GetRow();
+  uint16_t currentOrder = 0;
+  uint16_t currentRow = 0;
+  st3play_GetOrderAndRow( &currentOrder, &currentRow );
 
   uint8_t flags = 0;
-  if ( order[ currentOrder ] == PATT_SEP ) flags |= 1;
+  if ( order[ currentOrder + 1 ] == PATT_SEP ) flags |= 1;
   if ( currentOrder > 0 && order[ currentOrder-1 ] == PATT_SEP ) flags |= 2;
 
   switch ( flags )

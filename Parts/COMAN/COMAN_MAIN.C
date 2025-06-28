@@ -51,7 +51,7 @@ void	coman_doit(void)
 	rot=0; rot2=0;
 	cameralevel=-270;
 	dis_waitb();
-	//while(!dis_exit() && dis_musplus()<0);
+	while(!dis_exit() && dis_musplus()<0);
 	while(!dis_exit() && frame<4444)
 	{
 		a=dis_musplus();

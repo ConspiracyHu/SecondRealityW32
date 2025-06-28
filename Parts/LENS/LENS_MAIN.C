@@ -111,7 +111,7 @@ void	part1(void)
 		firfade1[b]=170*64+(100-b)*50;
 		firfade2[b]=170*64+(100-b)*50;
 	}
-	//if(dis_musplus>-30) while(!dis_exit() && dis_musplus()<-6) ;
+	if(dis_musplus>-30) while(!dis_exit() && dis_musplus()<-6) ;
 	dis_waitb();
 	//dis_setmframe(0);
 	while(!dis_exit() && frame<300)
@@ -227,7 +227,7 @@ void	part3(void)
 		frame=0;
 		while(!dis_exit() && frame<2000)
 		{	
-			//if(dis_musplus()>-4) break;
+			if(dis_musplus()>-4) break;
 			#ifdef SAVEPATH
 			x=70.0*sin(d1)-30;
 			y=70.0*cos(d1)+60;
@@ -418,7 +418,7 @@ void lens_main()
 	#endif
 
 	if(!dis_exit()) part1();
-	//while(!dis_exit() && dis_musplus()<-20) ;
+	while(!dis_exit() && dis_musplus()<-20) ;
 	dis_waitb();
 	if(!dis_exit()) part2();
 	#ifdef SAVEPATH

@@ -242,6 +242,7 @@ begin
      mov   fadeout,1
 @a:  end;
       }
+      if dis_musplus(0)=-11 then fadeout:=true;
 
       if fadeout then
         begin

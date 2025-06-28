@@ -174,7 +174,7 @@ begin
      }
      repeat
        demo_blit;
-     until not ((dis_musorder(0) = co) and (dis_musrow(0) > 16));
+     until not ((dis_musorder(0) = co) or (dis_musrow(0) < 16));
 
 
     {######################################################################}
@@ -183,6 +183,7 @@ begin
     scp  := 0;
     frame := 0;
     quit  := 0;
+    fp := 0;
     fadeout := false;
     fillchar(@tmppal[0],768,#0);
     repeat

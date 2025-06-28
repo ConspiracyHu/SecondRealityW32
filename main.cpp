@@ -32,6 +32,8 @@ extern "C" void plzline(int,int);
 extern "C" bool st3play_PlaySong( const unsigned char * moduleData, unsigned int dataLength, bool useInterpolationFlag, unsigned int audioFreq, unsigned int startingOrder );
 extern "C" void st3play_Close( void );
 extern "C" void st3play_SetMasterVol( unsigned short volume );
+extern "C" void st3play_GetOrderAndRow( unsigned short * orderPtr, unsigned short * rowPtr );
+extern "C" short st3play_GetPlusFlags();
 
 unsigned int * screen32;
 
@@ -55,6 +57,14 @@ void demo_changemode( int x, int y )
 
 void demo_blit()
 {
+#if 1
+  unsigned short order = 0;
+  unsigned short row = 0;
+  st3play_GetOrderAndRow( &order, &row );
+  unsigned short plus = st3play_GetPlusFlags();
+  printf( "%04X %04X %04X\r", order, row, plus );
+#endif
+
   graphics.HandleMessages();
 
   int count = screen_width * screen_height;
@@ -167,7 +177,7 @@ int main( int argc, char * argv[] )
                                                                     // 13  db  'Plasma (WILDF)              ' / '        ' / 
     /* 10  CTD  */ { MUSIC_PM,    0x3F, 320, 200, plz_main },       // 14  db  'Plasmacube (WILDF)          ' / 'PLZPART ' / 'PLZPART.EXE'
     /* 11       */ { MUSIC_PM,    0x4E, 320, 200, dots_main },      // 15  db  'MiniVectorBalls (PSI)       ' / 'DOTS    ' / 'MINVBALL.EXE'
-    /* 12       */ { MUSIC_PM,    0x59, 320, 200, water_main },     // 16  db  'Peilipalloscroll (TRUG)     ' / 'WATER   ' / 'RAYSCRL.EXE'
+    /* 12       */ { MUSIC_PM,    0x58, 320, 200, water_main },     // 16  db  'Peilipalloscroll (TRUG)     ' / 'WATER   ' / 'RAYSCRL.EXE'
     /* 13       */ { MUSIC_PM,    0x5E, 320, 400, coman_main },     // 17  db  '3D-Sinusfield (PSI)         ' / 'COMAN   ' / '3DSINFLD.EXE'
     /* 14       */ { MUSIC_PM,    0x63, 320, 400, jplogo_main },    // 18  db  'Jellypic (PSI)              ' / 'JPLOGO  ' / 'JPLOGO.EXE'
     /* 15  CTD  */ { MUSIC_SKAV,  0x12, 320, 200, u2e_main },       // 19  db  'Vector Part II              ' / 'VISU    ' / 'U2E.EXE'
@@ -178,7 +188,7 @@ int main( int argc, char * argv[] )
                    { 0         ,  0x00,   0,   0, NULL },
   };
 
-  int start = 6;
+  int start = 12;
   if ( argc > 1 )
   {
     switch( argv[ 1 ][ 0 ] )
