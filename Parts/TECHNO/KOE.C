@@ -234,10 +234,9 @@ void koe_main()
 		}
 	}
 	
-	//while(!dis_exit() && dis_musplus()<-4) ;
+	while(!dis_exit() && dis_musplus()<-4) ;
 	dis_setmframe(0);
 
-#if 0
 	dointerference2(circlemem2);
 	
 	initinterference(circlemem);
@@ -301,7 +300,6 @@ void koe_main()
 		ip[a*3+2]=a*8/2;
 	}
 
-  /*
 	while(!dis_exit() && dis_musplus()<-3) ;
 
 	while(!dis_exit())
@@ -309,7 +307,6 @@ void koe_main()
 		a=dis_musrow(0)&7;
 		if(a==7) break;
 	}
-  */
 
 	for(b=0;b<4 && !dis_exit();b++)
 	{	
@@ -332,13 +329,11 @@ void koe_main()
       demo_blit();
 		}
 
-    /*
 		while(!dis_exit())
 		{
 			a=dis_musrow(0)&7;
 			if(a==7) break;
 		}
-    */
 		{
 			flash(-1);
 			flash(32);
@@ -348,7 +343,7 @@ void koe_main()
 		}
 	}
     }
-#endif
+
 	pic=halloc(20000,4);
 	if(!pic) 
 	{
@@ -756,9 +751,9 @@ int	doit3(int count)
   demo_blit();
 	setpalarea(palette,0,256);
 
-  /*
-	while(!dis_exit())
+  while(!dis_exit())
 	{
+    /*
 		_asm
 		{
 			mov	bx,6
@@ -766,9 +761,12 @@ int	doit3(int count)
 			mov	b,bx
 			mov	a,cx
 		}
+    */
+    b = dis_musrow(0);
+    a = dis_musorder(0);
 		if(a>35 || (a==35 && b>48)) break;
 	}
-  */
+  
 	count=300;
 	xposa=0; xpos=0;
 	while(!dis_exit() && count>0)

@@ -52,7 +52,7 @@ void	coman_doit(void)
 	cameralevel=-270;
 	dis_waitb();
   memset( vbuf, 0, sizeof( vbuf ) );
-	while(!dis_exit() && dis_musplus()<0);
+	//while(!dis_exit() && dis_musplus()<0);
 	while(!dis_exit() && frame<4444)
 	{
 		a=dis_musplus();

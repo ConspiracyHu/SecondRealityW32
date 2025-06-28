@@ -39,6 +39,7 @@ void * dis_msgarea( int areanumber )
   return NULL;
 }
 
+void st3play_GetOrderAndRow( unsigned short * orderPtr, unsigned short * rowPtr );
 unsigned short st3play_GetOrder();
 unsigned short st3play_GetRow();
 short st3play_GetPlusFlags();
@@ -69,7 +70,7 @@ void dis_setcopper( int routine_number, void ( *routine )( void ) )
 
 void dis_setmframe( int frame )
 {
-
+  dis_frame = frame;
 }
 
 int dis_getmframe( void )
@@ -77,8 +78,47 @@ int dis_getmframe( void )
   return dis_frame;
 }
 
-int sync = 0;
+struct Sync
+{
+  unsigned short order_and_row;
+  unsigned short syncnumber;
+}
+syncdata[] =
+{
+  { 0x0000,0 },
+  { 0x0200,1 },
+  { 0x0300,2 },
+  { 0x032f,3 },
+
+  { 0x042f,4 },
+  { 0x052f,5 },
+  { 0x062f,6 },
+  { 0x072f,7 },
+
+  { 0x082f,8 },
+  { 0x0900,9 },
+  { 0x0d00,10},
+  { 0x3d00,1 },
+
+  { 0x3f00,2 },
+  { 0x4100,3 },
+  { 0x4200,4 },
+};
+
 int dis_sync( void )
 {
-  return sync++;
+  unsigned short order = 0;
+  unsigned short row = 0;
+  st3play_GetOrderAndRow( &order, &row );
+  unsigned short order_and_row = (order << 8) | row;
+
+  for ( int i = 1; i <= sizeof( syncdata ); i++ )
+  {
+    if ( syncdata[ i ].order_and_row >= order_and_row )
+    {
+      return syncdata[ i - 1 ].syncnumber;
+    }
+  }
+
+  return 0;
 }

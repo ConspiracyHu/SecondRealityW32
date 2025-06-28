@@ -266,7 +266,7 @@ begin
 @a:
      end;
 }
-     if dis_muscode(0)=-4 then quit:=true;
+     if dis_musplus(0)=-4 then quit:=true;
 
      if (sy and 15) > 7 then putki[99].c := 128 else putki[99].c := 64;
      if frame >= veke-102 then putki[99].c := 0;

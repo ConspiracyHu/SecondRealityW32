@@ -51,7 +51,7 @@ int	picin[768];
 int	textin[768];
 int	textout[768];
 
-char	*alku_fonaorder="ABCDEFGHIJKLMNOPQRSTUVWXabcdefghijklmnopqrstuvwxyz0123456789!?,.:èè()+-*='èô";
+char	*alku_fonaorder="ABCDEFGHIJKLMNOPQRSTUVWXabcdefghijklmnopqrstuvwxyz0123456789!?,.:\x8f\x8f()+-*='\x8f\x99";
 int	fonap[256];
 int	fonaw[256];
 
@@ -85,29 +85,27 @@ void alku_main()
 
 	alku_init();
 
-  /*
-	while(dis_sync()<1 && !dis_exit());
+	while(dis_sync()<1 && !dis_exit()) demo_blit();
 
 	prtc(160,120,"A");
 	prtc(160,160,"Future Crew");
 	prtc(160,200,"Production");
 	dofade(fade1,fade2); wait(300); dofade(fade2,fade1); fonapois();
 
-	while(dis_sync()<2 && !dis_exit());
+	while(dis_sync()<2 && !dis_exit()) demo_blit();
 
 	prtc(160,160,"First Presented");
 	prtc(160,200,"at Assembly 93");
 	dofade(fade1,fade2); wait(300); dofade(fade2,fade1); fonapois();
 
-	while(dis_sync()<3 && !dis_exit());
+	while(dis_sync()<3 && !dis_exit()) demo_blit();
 
 	prtc(160,120,"in");
-	prtc(160,160,"è");
-	prtc(160,179,"ô");
+	prtc(160,160,"\x8f");
+	prtc(160,179,"\x99");
 	dofade(fade1,fade2); wait(300); dofade(fade2,fade1); fonapois();
 
-  */
-	while(dis_sync()<4 && !dis_exit());
+	while(dis_sync()<4 && !dis_exit()) demo_blit();
 
 	memcpy(fadepal,fade1,768);
 	cop_fadepal=(char*)picin;
