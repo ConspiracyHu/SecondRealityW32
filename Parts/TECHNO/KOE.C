@@ -362,10 +362,8 @@ void koe_main()
   //for ( int i = 0; i < 256; i++ )shim_setpal( i, i/4, i/4, i/4 );
 	palfade=halloc(13000,1);
 	dis_partstart();
-  /*
 	doit1(70*6);
 	doit2(70*12);
-  */
 	doit3(70*14);
 	hfree(palfade);
 	hfree(pic);

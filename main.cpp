@@ -87,8 +87,8 @@ void demo_vsync()
   while ( GetAsyncKeyState( ' ' ) & 0x8000 ) { Sleep( 1 ); }
 #else
   const unsigned int now = GetTickCount();
-  const unsigned int cycle = 1000 / 60;
-  const unsigned int elapsed = now - lastVblank;
+  const unsigned int cycle = 1000 / 70;
+  const unsigned int elapsed = 0;// now - lastVblank;
   if ( elapsed < cycle )
   {
     Sleep( cycle - elapsed );
@@ -110,7 +110,7 @@ void start_music( const char * path, int start_order )
 
   st3play_PlaySong( musicdata, size, true, 44100, start_order );
 #ifdef _DEBUG
-  st3play_SetMasterVol( 10 );
+  //st3play_SetMasterVol( 40 );
 #endif // _DEBUG
 }
 
@@ -159,7 +159,7 @@ int main( int argc, char * argv[] )
     /* 03       */ { MUSIC_SKAV,  0x0E, 320, 400, beg_main },                  
     /* 04  BUG  */ { MUSIC_PM,    0x00, 320, 200, glenz_main },     // 4   db  'Glenz (PSI)                 ' / 'GLENZ   ' / 'GLENZ.EXE'
     /* 05       */ { MUSIC_PM,    0x0F, 320, 200, tun_main },       // 5   db  'Dottitunneli (TRUG)         ' / 'TUNNELI ' / 'TUNNELI.EXE'
-    /* 06  BUG  */ { MUSIC_PM,    0x14, 320, 200, koe_main },       // 6   db  'Techno (PSI)                ' / 'TECHNO  ' / 'TECHNO.EXE'
+    /* 06  BUG  */ { MUSIC_PM,    0x1c, 320, 200, koe_main },       // 6   db  'Techno (PSI)                ' / 'TECHNO  ' / 'TECHNO.EXE'
     /* 07  BUG  */ { MUSIC_PM,    0x18, 320, 200, shutdown_main },  // 7   db  'Panicfake (WILDF)           ' / 'PANIC   ' / 'PANICEND.EXE'
     /* 08       */ { MUSIC_PM,    0x2A, 320, 200, forest_main },    // 8   db  'Vuori-Scrolli (TRUG)        ' / 'FOREST  ' / 'MNTSCRL.EXE'
                                                                     // 11  db  'Lens (PSI)                  ' / '        ' / 
