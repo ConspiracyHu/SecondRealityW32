@@ -362,8 +362,10 @@ void koe_main()
   //for ( int i = 0; i < 256; i++ )shim_setpal( i, i/4, i/4, i/4 );
 	palfade=halloc(13000,1);
 	dis_partstart();
+  /*
 	doit1(70*6);
 	doit2(70*12);
+  */
 	doit3(70*14);
 	hfree(palfade);
 	hfree(pic);
@@ -378,14 +380,18 @@ void koe_main()
 
 unsigned char planar_vram[ 4 ][ 8 ][ 40 * 200 ] = { 0 };
 
-void resolve_16color( int page )
+void resolve_16color( int page, int x_shift )
 {
   // resolve 16 color planar mode (EGA) to chunky
   int idx = 0;
   char * dst = vram;
+  int dst_stride = 320 - x_shift;
+  int src_stride = ( x_shift + 7 ) >> 3;
   for ( int y = 0; y < 200; y++ )
   {
-    for ( int x = 0; x < 320; x++ )
+    memset( dst, 0, x_shift );
+    dst += x_shift;
+    for ( int x = 0; x < dst_stride; x++ )
     {
       char bit = ( x & 0x7 );
       unsigned char color = 0;
@@ -395,6 +401,38 @@ void resolve_16color( int page )
       color |= ( ( planar_vram[ 3 ][ page ][ idx ] ) & ( 1 << ( 7 - bit ) ) ) ? 8 : 0;
       *(dst++) = color;
       if ( bit == 7 ) idx++;
+    }
+    idx += src_stride;
+  }
+}
+
+void sidescroll_256color( char * src, int x_shift )
+{
+  int idx = 0;
+  char * dst = vram;
+  if ( x_shift >= 0 )
+  {
+    int dst_stride = 320 - x_shift;
+    for ( int y = 0; y < 400; y++ )
+    {
+      memset( dst, 0, x_shift );
+      dst += x_shift;
+      memcpy( dst, src, dst_stride );
+      dst += dst_stride;
+      src += 320;
+    }
+  }
+  else
+  {
+    x_shift = -x_shift;
+    int stride = 320 - x_shift;
+    for ( int y = 0; y < 400; y++ )
+    {
+      src += x_shift;
+      memcpy( dst, src, stride );
+      src += stride;
+      memset( dst, 0, x_shift );
+      dst += 320;
     }
   }
 }
@@ -443,7 +481,7 @@ int	doit1( int count )
 		//_asm out dx,ax
     //asmdoit(vbuf,vram);
     asmdoit( vbuf, planar_vram[ pl ][ plv ] );
-    resolve_16color( plv );
+    resolve_16color( plv, 0 );
 
 		a=plv*0x20;
 		//_asm mov dx,3d4h
@@ -508,7 +546,7 @@ int	doit2(int count)
 		//_asm mov al,2
 		//_asm out dx,ax
     asmdoit( vbuf, planar_vram[ pl ][ plv ] );
-    resolve_16color( plv );
+    resolve_16color( plv, 0 );
 
     a = plv * 0x20;
 		//_asm mov dx,3d4h
@@ -645,9 +683,9 @@ int	doit3(int count)
 		//_asm mov al,2
 		//_asm out dx,ax
 		//asmdoit2(vbuf,vram);
-    asmdoit2( vbuf, planar_vram[ pl ][ plv ] );
-    resolve_16color( plv );
-
+    asmdoit( vbuf, planar_vram[ pl ][ plv ] );
+    resolve_16color( plv, 320 - xpos );
+    
 		a=plv*0x20;
 		//_asm mov dx,3d4h
 		//_asm mov al,0ch
@@ -696,10 +734,11 @@ int	doit3(int count)
 
 	dis_waitb();
 
+  char picdata[ 320 * 400 ];
 	readp(palette,-1,pic);
 	for(y=0;y<400;y++)
 	{
-		readp(vram+y*320,y,pic);
+		readp(picdata+y*320,y,pic);
 		//koe_lineblit(vram+80U+(unsigned)y*160U,rowbuf);
 	}
 	
@@ -756,6 +795,7 @@ int	doit3(int count)
 		//_asm out dx,al
 		//_asm mov al,20h
 		//_asm out dx,al
+    sidescroll_256color( picdata, 320 - xpos );
     demo_blit();
 	}
 	count=50; c=0;
@@ -787,6 +827,7 @@ int	doit3(int count)
 			setpalarea(palfade+c*768,0,256);
 			c++;
 		}
+    sidescroll_256color( picdata, 320 - xpos );
     demo_blit();
 	}
 	setpalarea(palette,0,256);
@@ -811,6 +852,7 @@ int	doit3(int count)
 		//_asm out dx,al
 		//_asm mov al,20h
 		//_asm out dx,al
+    sidescroll_256color( picdata, 320 - xpos );
     demo_blit();
 	}
   return 0;
