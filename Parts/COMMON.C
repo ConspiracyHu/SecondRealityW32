@@ -84,17 +84,18 @@ int cop_start;
 int cop_scrl;
 int cop_dofade;
 short * cop_fadepal;
-short fadepal[ 256 * 3 ] = { 0 };
+short fadepal_short[ 256 * 3 ] = { 0 };
+char fadepal[ 256 * 3 ] = { 0 };
 int cop_drop;
 
 void copper2()
 {
+  frame_count++;
   if ( do_pal )
   {
     for ( int i = 0; i < 256; i++ )
     {
-      //setpalarea( cop_pal, 0, 256 );
-      shim_setpal( i, cop_pal[ i * 6 + 1 ], cop_pal[ i * 6 + 3 ], cop_pal[ i * 6 + 5 ] );
+      setpalarea( cop_pal, 0, 256 );
     }
     do_pal = 0;
   }
@@ -111,7 +112,8 @@ void copper3()
     cop_pal = fadepal;
     for ( int i = 0; i < 768; i++ )
     {
-      fadepal[ i ] += cop_fadepal[ i ];
+      fadepal_short[ i ] += cop_fadepal[ i ];
+      fadepal[ i ] = fadepal_short[ i ] >> 8;
     }
     cop_dofade--;
   }

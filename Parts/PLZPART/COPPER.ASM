@@ -20,14 +20,19 @@ extern _ik4
 
 section .data
 
-frame_count     dw      0
-cop_drop	dw	0
-cop_pal	    	dd	0
-do_pal		dw	0
-cop_start	dw	0
-cop_scrl	dw	0
-cop_plz		dw	1
-
+;frame_count     dw      0
+;cop_drop	dw	0
+;cop_pal	    	dd	0
+;do_pal		dw	0
+;cop_start	dw	0
+;cop_scrl	dw	0
+;cop_plz		dw	1
+extern _cop_drop
+extern _cop_scrl
+extern _do_pal
+extern _cop_pal
+extern _fadepal
+extern _cop_fadepal
 
 global _dtau
 _dtau:
@@ -152,7 +157,7 @@ section .code
 global _pompota
 _pompota:
 
-	mov	word [cop_scrl], 4
+	mov	word [_cop_scrl], 4
 	mov	dx, 3d4h
 	mov	ax, 3c18h
 	out	dx, ax
@@ -162,7 +167,7 @@ _pompota:
 	inc     byte [pompi]
 	test    byte [pompi], 1
 	jz      @@l1
-	mov	word [cop_scrl], 0
+	mov	word [_cop_scrl], 0
 	mov	ax, 3d18h
 @@l1:
 	out	dx, ax
@@ -195,12 +200,12 @@ _moveplz:
 
 do_drop:
 
-	inc	word [cop_drop]
-	cmp	word [cop_drop], 64
+	inc	word [_cop_drop]
+	cmp	word [_cop_drop], 64
 	ja	@@over
 
 	push	bx
-	mov	bx, [cop_drop]
+	mov	bx, [_cop_drop]
 	shl	bx, 1
 	add	bx, _dtau
 
@@ -220,18 +225,18 @@ do_drop:
 	ret
 
 @@over:
-	cmp	word [cop_drop], 256
+	cmp	word [_cop_drop], 256
 	jae	@@end
-	cmp	word [cop_drop], 128
+	cmp	word [_cop_drop], 128
 	jae	@@lll
-	cmp	word [cop_drop], 64+32
+	cmp	word [_cop_drop], 64+32
 	ja	@@end
 
-@@lll:	mov	word [cop_pal], fadepal
-	mov	word [cop_pal+2], fadepal
-	mov	word [do_pal], 1
+@@lll:	mov	word [_cop_pal], _fadepal
+	mov	word [_cop_pal+2], _fadepal
+	mov	word [_do_pal], 1
 
-	cmp	word [cop_drop], 65
+	cmp	word [_cop_drop], 65
 	je	@@l5
 
 	mov	dx, 3d4h
@@ -242,8 +247,8 @@ do_drop:
 
 	;push	ds si di cx
 
-	lds	si, [cop_fadepal]
-	mov	di, fadepal
+	lds	si, [_cop_fadepal]
+	mov	di, _fadepal
 	mov	cx, 768/16
 @@l4:
 	%assign ccc 0
@@ -270,7 +275,7 @@ do_drop:
 	call	_initpparas
 	ret
 @@end:
-	mov	word [cop_drop], 0
+	mov	word [_cop_drop], 0
 	ret
 
 global _initpparas

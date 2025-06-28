@@ -74,7 +74,6 @@ void alku_main()
 
 	alku_init();
 
-  /*
 	while(dis_sync()<1 && !dis_exit()) demo_blit();
 
 	prtc(160,120,"A");
@@ -96,7 +95,6 @@ void alku_main()
 	dofade(fade1,fade2); wait(300); dofade(fade2,fade1); fonapois();
 
 	while(dis_sync()<4 && !dis_exit()) demo_blit();
-  */
 
 	memcpy(fadepal,fade1,768);
 	cop_fadepal=(char*)picin;
@@ -112,6 +110,8 @@ void alku_main()
 
 	for(f=60;a<320 && !dis_exit();)
 		{
+    copper2();
+    copper3();
 		if(f==0) {
 			cop_fadepal=(char*)textin;
 			cop_dofade=64;
@@ -162,7 +162,13 @@ void alku_main()
 				break;
 				}
 			while(((a&1) || dis_sync()<4+alku_tptr) && !dis_exit() && a<319)
+      {
+        copper2();
+        copper3();
 				alku_do_scroll(0);
+        dis_waitb();
+        demo_blit();
+      }
 			aa=a;
 			if(aa<320-12) fmaketext(aa+16);
 			f=0;
@@ -172,7 +178,6 @@ void alku_main()
 		alku_do_scroll(1);
     dis_waitb();
     demo_blit();
-    cop_dofade--;
   }
 	if(f>63/SCRLF){
 		dofade(palette2,palette);
@@ -387,10 +392,10 @@ void addtext(int tx,int ty,char *txt)
 		}
 	}
 
-
+/*
 void maketext(int scrl)
 	{
-  char * vvmem = shim_vram;
+  char * vvmem = planar_vram;
 	int	*p1=dtau;
 	int	mtau[]={1*256+2,2*256+2,4*256+2,8*256+2};
 	int	a,b,c,x,y,m;
@@ -420,7 +425,7 @@ void maketext(int scrl)
 
 void scrolltext(int scrl)
 	{
-	char 	*vvmem=shim_vram;
+	char 	*vvmem= planar_vram;
 	int	mtau[]={1*256+2,2*256+2,4*256+2,8*256+2,1*256+2,2*256+2,4*256+2,8*256+2};
 	int	*p1=dtau;
 	int	x,y,a,c,m,aa;
@@ -440,17 +445,19 @@ void scrolltext(int scrl)
 		p1+=2;
 		}
 	}
+*/
 
 
 int alku_do_scroll(int mode)
 	{
-	if(mode==0 && frame_count++<SCRLF) return(0);
-	while(frame_count<SCRLF){frame_count++;}
+	//if(mode==0 && frame_count<SCRLF) return(0);
+	//while(frame_count<SCRLF);
+  if (frame_count<SCRLF) return( 0 );
 	frame_count-=SCRLF;
 	if(mode==1) ascrolltext(a+p*352,dtau);
 	cop_start=a/4+p*88;
   cop_scrl=(a&3)*2;
-  
+
 	if((a&3)==0)
 		{
 		outline(hzpic+(a/4+86)*4+784, planar_vram + (a/4+86)+176*50);
@@ -485,11 +492,11 @@ void faddtext(int tx,int ty,char *txt)
 
 void fmaketext(int scrl)
 	{
-	char 	*vvmem=shim_vram;
+	char 	*vvmem=planar_vram;
 	int	*p1=dtau;
 	int	mtau[]={1*256+2,2*256+2,4*256+2,8*256+2};
 	int	b,c,x,y,m;
-
+  /*
 	for(m=0;m<4;m++)
 		{
 		for(x=m;x<320;x+=4) {
@@ -502,25 +509,32 @@ void fmaketext(int scrl)
 		*p1++=-1;
 		*p1++=-1;
 		}
-
+  */
 	for(x=0;x<320;x++)
 		{
-		shim_outp(0x3c4,mtau[(x+scrl)&3]);
-		shim_outp(0x3ce,((x+scrl)&3)*256+4);
+		//shim_outp(0x3c4,mtau[(x+scrl)&3]);
+		//shim_outp(0x3ce,((x+scrl)&3)*256+4);
 		for(y=1;y<184;y++)
 			{
-			vvmem[y*176+176*100+(x+scrl)/4]^=tbuf[y][x-1-1];
-			vvmem[y*176+176*100+(x+scrl)/4+88]^=tbuf[y][x-1];
+			//vvmem[y*176+176*100+(x+scrl)]^=tbuf[y][x-1-1];
+			vvmem[y*176+176*100+(x+scrl)]^=tbuf[y][x-1];
 			}
-		alku_do_scroll(0);
+		//alku_do_scroll(0);
 		}
 
-	while(a<=scrl) alku_do_scroll(0);
+  while ( a <= scrl )
+  {
+    copper2();
+    copper3();
+    alku_do_scroll( 0 );
+    dis_waitb();
+    demo_blit();
+  }
 	}
 
 void ffonapois()
 	{
-  unsigned int * vvmem = ( unsigned int * )shim_vram;// MK_FP( 0x0a000, 0 );
+  unsigned int * vvmem = ( unsigned int * )planar_vram;// MK_FP( 0x0a000, 0 );
 	unsigned a;
 
   for(a=80*64;a<80U*(64+256+10);a++) vvmem[a]=vvmem[a]&0x3f3f3f3f;

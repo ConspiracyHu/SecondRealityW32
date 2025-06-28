@@ -164,7 +164,7 @@ int main( int argc, char * argv[] )
     void (*part)();
   } parts[] = {
     /* 00  BUG  */ { MUSIC_SKAV,  0x00, 320, 400, alku_main },      // 1   db  'Alkutekstit I (WILDF)       ' / 'ALKU    ' / 'ALKU.EXE'
-    /* 01  CTD  */ { MUSIC_SKAV,  0x0C, 320, 400, u2a_main },       // 2   db  'Alkutekstit II (PSI)        ' / 'VISU    ' / 'U2A.EXE'
+    /* 01  CTD  */ { MUSIC_SKAV,  0x0C, 320, 200, u2a_main },       // 2   db  'Alkutekstit II (PSI)        ' / 'VISU    ' / 'U2A.EXE'
     /* 02  BUG  */ { MUSIC_SKAV,  0x0D, 320, 200, pam_main },       // 3   db  'Alkutekstit III (TRUG/WILDF)' / 'PAM     ' / 'PAM.EXE'
     /* 03       */ { MUSIC_SKAV,  0x0E, 320, 400, beg_main },                  
     /* 04  BUG  */ { MUSIC_PM,    0x00, 320, 200, glenz_main },     // 4   db  'Glenz (PSI)                 ' / 'GLENZ   ' / 'GLENZ.EXE'
