@@ -13,9 +13,6 @@
 //
 //extern	init_copper();
 //extern	close_copper();
-extern	int frame_count;
-extern  char *cop_pal;
-extern  int do_pal;
 
 extern	void init_uframe(char * seg);
 extern	void ulosta_frame(char * start);

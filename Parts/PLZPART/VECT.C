@@ -6,6 +6,7 @@
 #include <fcntl.h>
 #include "tweak.h"
 #include "..\DIS\dis.h"
+#include "..\COMMON.H"
 
 #define SX sinit[kx]
 #define SY sinit[ky]
@@ -23,11 +24,6 @@ extern shadepal(char *fpal, char *ppal, int shade);
 //extern	init_copper();
 //extern	close_copper();
 extern 	int cop_rotatev;
-extern	int frame_count;
-extern  char * cop_pal;
-extern  int do_pal;
-extern  int cop_start;
-extern  int cop_scrl;
 
 extern int do_poly();
 extern int getspl(int where);

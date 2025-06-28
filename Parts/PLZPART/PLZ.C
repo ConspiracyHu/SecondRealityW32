@@ -19,14 +19,6 @@
 
 //extern int init_copper();
 //extern int close_copper();
-extern int frame_count;
-int cop_drop;
-int cop_plz;
-extern int cop_start;
-extern char * cop_fadepal;
-extern char fadepal[768];
-extern  char * cop_pal;
-extern  int do_pal;
 
 extern int plzline(int y, int vseg);
 extern int setplzparas(int c1, int c2, int c3, int c4);
@@ -134,7 +126,7 @@ void plz()
 		}
 	//cop_drop=0; frame_count=0; while(frame_count==0);
 	set_plzstart(500);
-	cop_plz=0;
+	//cop_plz=0;
 	}
 
 void init_plz()

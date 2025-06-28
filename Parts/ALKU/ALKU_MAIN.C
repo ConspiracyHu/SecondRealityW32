@@ -9,17 +9,6 @@
 
 #define SCRLF 9
 
-//extern	init_copper();
-//extern	close_copper();
-int frame_count;
-char * cop_pal;
-int do_pal;
-int cop_start;
-int cop_scrl;
-int cop_dofade;
-char * cop_fadepal;
-char fadepal[256*3];
-
 extern char hzpic[];
 extern void outline(char *f, char *t);
 extern void ascrolltext(int scrl, int *dtau);
@@ -47,9 +36,9 @@ char	palette2[768];		// pic & text
 char	fade1[768];			// black
 char	fade2[768];			// text
 
-int	picin[768];
-int	textin[768];
-int	textout[768];
+short	picin[768];
+short	textin[768];
+short	textout[768];
 
 char	*alku_fonaorder="ABCDEFGHIJKLMNOPQRSTUVWXabcdefghijklmnopqrstuvwxyz0123456789!?,.:\x8f\x8f()+-*='\x8f\x99";
 int	fonap[256];
@@ -85,6 +74,7 @@ void alku_main()
 
 	alku_init();
 
+  /*
 	while(dis_sync()<1 && !dis_exit()) demo_blit();
 
 	prtc(160,120,"A");
@@ -106,17 +96,18 @@ void alku_main()
 	dofade(fade1,fade2); wait(300); dofade(fade2,fade1); fonapois();
 
 	while(dis_sync()<4 && !dis_exit()) demo_blit();
+  */
 
 	memcpy(fadepal,fade1,768);
 	cop_fadepal=(char*)picin;
 	cop_dofade=128;
 	for(a=1,p=1,f=0,frame_count=0;cop_dofade!=0 && !dis_exit();)
   {
-    for ( int i = 0; i < 768; i++ ) fadepal[ i ] = picin[ i ];
-    setpalarea( fadepal, 0, 256 );
+    copper2();
+    copper3();
 		alku_do_scroll(2);
+    dis_waitb();
     demo_blit();
-    cop_dofade--;
   }
 
 	for(f=60;a<320 && !dis_exit();)
