@@ -109,13 +109,13 @@ _do_block:
 	jge	..@end				; y-clip
 
 	mov	ebp, [_ctau]
-	movzx	eax, word [_xx2+2]
+	movsx	eax, word [_xx2+2]
 	cmp	ax, [ebp]
 	ja	..@l7
 	mov	[ebp], ax			; x1..
 ..@l7:	shr	eax, 2
 	add	edi, eax
-	movzx	esi, word [_xx1+2]
+	movsx	esi, word [_xx1+2]
 	cmp	si, [ebp+2]
 	jb	..@l8
 	mov	[ebp+2], si			; x2..
@@ -261,7 +261,7 @@ plz_y0:
 
 ..@singlebyte:
   mov ebp, _dseg
-	movzx	ebx, byte [_txx2+2]	; txt x
+	movsx	ebx, byte [_txx2+2]	; txt x
   mov	bh, byte [_txy2+2]       ; txt y
 	movzx	si, byte [ebp+ebx]
 	mov	cl, [ebx+esi]
