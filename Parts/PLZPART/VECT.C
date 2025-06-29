@@ -16,7 +16,7 @@
 #define CZ kosinit[kz]
 
 extern	char (* vmem)[160];
-extern char pal[768];
+extern char plz_pal[768];
 
 extern clear();
 extern init();
@@ -123,9 +123,12 @@ void vect()
 		a=dis_musplus();
 		if(a>=-4 && a<0) break;
 		swappage();
-		//while(frame_count<1); frames+=frame_count; frame_count=0;
+		//while(frame_count<1);
+    frames+=dis_waitb(); frame_count=0;
 		cop_pal=fpal; do_pal=1;
 
+    copper2();
+    copper3();
 		calculate(1);
 		draw(15);
     demo_blit();
@@ -141,9 +144,10 @@ void calculate(int k)
 
 	getspl(4*256+frames*4);
 
-  dis = 3000;
+  dis = 5000;
   tx = 0;
   ty = 0;
+
 
 	kx=kx&1023;
 	ky=ky&1023;
@@ -246,7 +250,7 @@ void sort_faces()
 		c=object.pg[a].color;
 		if(lls[p]!=light_src[p])
 			{
-			shadepal(&fpal[c*64*3],&pal[c*64*3], light_src[p]);
+			shadepal(&fpal[c*64*3],&plz_pal[c*64*3], light_src[p]);
 			lls[p]=light_src[p];
 			}
 

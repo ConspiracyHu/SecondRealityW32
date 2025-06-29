@@ -192,13 +192,13 @@ PLZ(x) :
   push ebp
   mov ebp, _dseg
 
-	movzx	si, [ebp+ebx]
+	movzx	esi, byte [ebp+ebx]
 	add	ecx, eax
 	mov	ah, [ebx+esi]
 	adc	ebx, edx
 	adc	bh, 0
 
-	movzx	si, [ebp+ebx]
+	movzx	esi, byte [ebp+ebx]
 	add	ecx, eax
 	mov	al, [ebx+esi]
 	adc	ebx, edx
