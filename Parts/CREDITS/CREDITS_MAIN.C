@@ -165,7 +165,7 @@ void credits_main()
 	//tw_closegraph();
 	}
 
-char vram_split_top[320*200]={0};
+char vram_split_top[320*100]={0};
 char vram_split_bottom[320*200]={0};
 char * split_vram = shim_vram;
 #define tw_getpixel(b,x,y) b[(x)+(y)*320]
@@ -180,11 +180,11 @@ void reconstitute_split(int vertical, int horizontal)
   {
     if ( horizontal < 0 )
     {
-      memcpy( shim_vram + 320 * i, vram_split_top + 320 * i - horizontal, 320 + horizontal );
+      memcpy( shim_vram + 320 * i, vram_split_top + 320 * ( i / 2 ) - horizontal, 320 + horizontal );
     }
     else
     {
-      memcpy( shim_vram + 320 * i + horizontal, vram_split_top + 320 * i, 320 - horizontal );
+      memcpy( shim_vram + 320 * i + horizontal, vram_split_top + 320 * (i / 2), 320 - horizontal );
     }
 
     if ( i + 200 + vertical < 400 )
@@ -202,7 +202,7 @@ void screenin(char * pic, char *text)
 	//tw_clrscr();
   memset(shim_vram,0,320*400);
   memset(vram_split_bottom,0,320*200);
-  memset(vram_split_top,0,320*200);
+  memset(vram_split_top,0,320*100);
 	//tw_setstart(160*200);
 	dis_waitb();
 	//tw_setpalette(&pic[0][16]);
@@ -214,9 +214,9 @@ void screenin(char * pic, char *text)
 
   split_vram = shim_vram;
 	//for(x=0;x<160;x++) for(y=0;y<100;y++) tw_putpixel(400+x,400+y*2,pic[y*160+x]+16);
-	for(x=0;x<160;x++) for(y=0;y<100;y++) tw_putpixel( vram_split_top, 80+x,100+y,pic[y*160+x]+16);
+	for(x=0;x<160;x++) for(y=0;y<100;y++) tw_putpixel( vram_split_top, 80+x,0+y,pic[y*160+x]+16);
 
-	for(y=200*128;y>0;y=y*12L/13)
+	for(y=200*128;y>0 && !dis_exit();y=y*12L/13)
 		{
 		dis_waitb();
 		//tw_setsplit(y/128+200);
@@ -244,7 +244,7 @@ void screenin(char * pic, char *text)
     demo_blit();
   }
 
-	for(y=0,v=0;y<128*200;y=y+v,v+=15)
+	for(y=0,v=0;y<128*200 && !dis_exit();y=y+v,v+=15)
 		{
 		dis_waitb();
 		//tw_setsplit(y/128+200);
