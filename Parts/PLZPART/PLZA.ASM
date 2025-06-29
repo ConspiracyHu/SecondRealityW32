@@ -30,7 +30,7 @@ end_mask:
 global _to
 _to	  dd	0a0000000h
 global _dseg
-_dseg	dw	0
+_dseg	dd	0
 ycnt	dw	0
 
 section .bss
@@ -81,8 +81,6 @@ _linecount	resw	1
 
 section .code
 
-extern _dist1
-
 global _do_block
 _do_block:
 	;ARG	ycount:word
@@ -99,9 +97,9 @@ _do_block:
 	; gs:si = ctau
 	; fs = dseg
 
-	mov ebx, [_from]
-	mov edi, [_to]
-	mov esi, [_ctau]
+	mov ebx, _from
+	mov edi, _to
+	mov esi, _ctau
 	;mov	fs, [_dseg]
 
 ..@doline:
@@ -110,23 +108,23 @@ _do_block:
 	cmp	word [_yy], 134
 	jge	..@end				; y-clip
 
-	mov	bp, word [_ctau]
-	mov	ax, word [_xx2+2]
-	cmp	ax, [gs:bp]
+	mov	ebp, [_ctau]
+	movzx	eax, word [_xx2+2]
+	cmp	ax, [ebp]
 	ja	..@l7
-	mov	[gs:bp], ax			; x1..
-..@l7:	shr	ax, 2
-	add	di, ax
-	mov	si, word [_xx1+2]
-	cmp	si, [gs:bp+2]
+	mov	[ebp], ax			; x1..
+..@l7:	shr	eax, 2
+	add	edi, eax
+	movzx	esi, word [_xx1+2]
+	cmp	si, [ebp+2]
 	jb	..@l8
-	mov	[gs:bp+2], si			; x2..
-..@l8:	shr	si, 2
-	sub	si, ax			; si = bytes to copy
+	mov	[ebp+2], si			; x2..
+..@l8:	shr	esi, 2
+	sub	esi, eax			; si = bytes to copy
 	jb	..@endline
 	jz	..@singlebyte
-	mov	bp, si
-	dec	si
+	mov	ebp, esi
+	dec	esi
 	jz	..@twobyte
 
 	mov	dx, 3c4h
@@ -156,13 +154,14 @@ _do_block:
 	jz	..@l2
 	dec	dh
 ..@l2:
+	movzx	ebx, byte [_txx1+2]	; txt x
 	mov	bh, byte [_txy1+2]       ; txt y
-	mov	bl, byte [_txx1+2]	; txt x
 	test	si, 1
 	jz	..@ll1
 
-	movzx	si, [_dist1+ebx]		; out odd byte
 	add	ecx, eax
+  mov eax, _dseg
+	movzx	si, byte [eax+ebx]		; out odd byte
 	mov	al, [ebx+esi]
 	adc	ebx, edx
 	adc	bh, 0
@@ -181,18 +180,20 @@ _do_block:
 
 ;	ALIGN	4
 ;IRP ccc, <200,199,198,197,196,195,194,193,192,191,190,189,188,187,186,185,184,183,182,181,180,179,178,177,176,175,174,173,172,171,170,169,168,167,166,165,164,163,162,161,160,159,158,157,156,155,154,153,152,151,150,149,148,147,146,145,144,143,142,141,140,139,138,137,136,135,134,133,132,131,130,129,128,127,126,125,124,123,122,121,120,119,118,117,116,115,114,113,112,111,110,109,108,107,106,105,104,103,102,101,100,99,98,97,96,95,94,93,92,91,90,89,88,87,86,85,84,83,82,81,80,79,78,77,76,75,74,73,72,71,70,69,68,67,66,65,64,63,62,61,60,59,58,57,56,55,54,53,52,51,50,49,48,47,46,45,44,43,42,41,40,39,38,37,36,35,34,33,32,31,30,29,28,27,26,25,24,23,22,21,20,19,18,17,16,15,14,13,12,11,10,9,8,7,6,5,4,3,2,1>
+  push ebp
+  mov ebp, _dseg
 %assign ccc 200
 %rep 200
 
 PLZ(x) :
 
-	movzx	si, [_dist1+ebx]
+	movzx	si, [ebp+ebx]
 	add	ecx, eax
 	mov	ah, [ebx+esi]
 	adc	ebx, edx
 	adc	bh, 0
 
-	movzx	si, [_dist1+ebx]
+	movzx	si, [ebp+ebx]
 	add	ecx, eax
 	mov	al, [ebx+esi]
 	adc	ebx, edx
@@ -201,17 +202,21 @@ PLZ(x) :
 	mov	[edi+ccc*2-1], ax	; output byte
   %assign ccc ccc-1
 %endrep
+  pop ebp
 plz_y0:
 
 ..@twobyte:
+  push ebp
+  mov ebp, _dseg
 	mov	bh, byte [_txy2+2]       ; txt y
 	mov	bl, byte [_txx2+2]	; txt x
-	movzx	si, [_dist1+bx]
+	movzx	si, byte [ebp+ebx]
 	mov	cl, [ebx+esi]
 	mov	bh, byte [_txy1+2]       ; txt y
 	mov	bl, byte [_txx1+2]	; txt x
-	movzx	si, [_dist1+bx]
+	movzx	si, byte [ebp+ebx]
 	mov	ch, [ebx+esi]
+  pop ebp
 
 	mov	bx, word [_xx2+2]
 	and	bx, 3
@@ -255,19 +260,20 @@ plz_y0:
 
 
 ..@singlebyte:
-	mov	bh, byte [_txy2+2]       ; txt y
-	mov	bl, byte [_txx2+2]	; txt x
-	movzx	si, [_dist1+bx]
+  mov ebp, _dseg
+	movzx	ebx, byte [_txx2+2]	; txt x
+  mov	bh, byte [_txy2+2]       ; txt y
+	movzx	si, byte [ebp+ebx]
 	mov	cl, [ebx+esi]
 
 	mov	al, 02
 	mov	dx, 3c4h
 	mov	bx, word [_xx2+2]
 	and	bx, 3
-	mov	ah, [start_mask+bx]
+	mov	ah, [start_mask+ebx]
 	mov	bx, word [_xx1+2]
 	and	bx, 3
-	and	ah, [end_mask+bx]
+	and	ah, [end_mask+ebx]
 	;out	dx, ax
 	mov	[es:di], cl
 
@@ -335,34 +341,37 @@ _do_clear:
 	;out	dx, ax
 
 	mov edx, [vmem]
+  mov edi, edx
 	mov ebx, [otau]		; dx:bx-> otau
 	mov esi, [ntau]
-	sub	si, bx                  ; dx:bx+si-> ntau
-	mov	dl, [ntau]		; fill latches
+	sub	esi, ebx                  ; dx:bx+si-> ntau
+	movzx	edx, byte [vmem]		; fill latches
 	mov	word [ycnt], 134
-	xor	ax, ax
+	xor	eax, eax
 
 ..@lineloop:
 	cmp	word [ebx], 640
 	je	..@nextline
 
-	mov	di, word [ebx]
-	shr	di, 2
-	mov	cx, word [ebx+esi]
-	shr	cx, 2
-	sub	cx, di
+	movzx	edi, word [ebx]
+	shr	edi, 2
+	movzx	ecx, word [ebx+esi]
+	shr	ecx, 2
+	sub	ecx, edi
 	jb	..@l1
-	add	di, dx
+	add	edi, edx
+  add edi, [vmem]
 	rep	stosb
 ..@l1:
-	mov	di, word [ebx+esi+2]
-	shr	di, 2
-	mov	cx, word [ebx+2]
-	shr	cx, 2
-	sub	cx, di
+	movzx	edi, word [ebx+esi+2]
+	shr	edi, 2
+	movzx	ecx, word [ebx+2]
+	shr	ecx, 2
+	sub	ecx, edi
 	jb	..@nextline
-	add	di, dx
-	inc	di
+	add	edi, edx
+	inc	edi
+  add edi, [vmem]
 	rep	stosb
 
 ..@nextline:
@@ -376,25 +385,25 @@ _do_clear:
 
 ; Maskaa p„„t...
 
-	les	di, [vmem]
-	lds	si, [ntau]		; dx:bx-> ntau
+	mov edi, [vmem]
+	mov esi, [ntau]		; dx:bx-> ntau
 	mov	cx, 134
 	mov	dx, 3c4h
 	mov	ax, 0f02h
 ..@maskloop:
-	mov	bx, [ds:si]
+	movzx	ebx, word [esi]
 	dec	bx
-	mov	ah, [end_mask+bx]
-	out	dx, ax
+	mov	ah, [end_mask+ebx]
+	;out	dx, ax
 	shr	bx, 2
-	mov	[es:bx+di], ch
+	mov	[ebx+edi], ch
 
-	mov	bx, [ds:si+2]
+	movzx	ebx, word [esi+2]
 	inc	bx
-	mov	ah, [start_mask+bx]
-	out	dx, ax
+	mov	ah, [start_mask+ebx]
+	;out	dx, ax
 	shr	bx, 2
-	mov	[es:bx+di], ch
+	mov	[ebx+edi], ch
 
 ..@nextmask:
 	add	si,4
