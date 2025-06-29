@@ -161,7 +161,7 @@ _do_block:
 
 	add	ecx, eax
   mov eax, _dseg
-	movzx	si, byte [eax+ebx]		; out odd byte
+	movzx	esi, byte [eax+ebx]		; out odd byte
 	mov	al, [ebx+esi]
 	adc	ebx, edx
 	adc	bh, 0
@@ -208,12 +208,12 @@ plz_y0:
 ..@twobyte:
   push ebp
   mov ebp, _dseg
+	movzx	ebx, byte [_txx2+2]	; txt x
 	mov	bh, byte [_txy2+2]       ; txt y
-	mov	bl, byte [_txx2+2]	; txt x
 	movzx	si, byte [ebp+ebx]
 	mov	cl, [ebx+esi]
+	movzx	ebx, byte [_txx1+2]	; txt x
 	mov	bh, byte [_txy1+2]       ; txt y
-	mov	bl, byte [_txx1+2]	; txt x
 	movzx	si, byte [ebp+ebx]
 	mov	ch, [ebx+esi]
   pop ebp
