@@ -186,7 +186,8 @@ void screenin(char * pic, char *text)
 	y=16;while(*(text=credits_prtc(160,y,text))) y+=FONAY+10;
 
   split_vram = shim_vram;
-	for(x=0;x<160;x++) for(y=0;y<100;y++) tw_putpixel(400+x,400+y*2,pic[y*160+x]+16);
+	//for(x=0;x<160;x++) for(y=0;y<100;y++) tw_putpixel(400+x,400+y*2,pic[y*160+x]+16);
+	for(x=0;x<160;x++) for(y=0;y<100;y++) tw_putpixel(400+x,100+y,pic[y*160+x]+16);
 
 	for(y=200*128;y>0;y=y*12L/13)
 		{
@@ -295,7 +296,6 @@ void credits_init()
 	credits_fonap[32]=1500-32;
 	credits_fonaw[32]=8;
 
-  /*
 	memmove(&credits_pic1[16*3+16],&credits_pic1[16],768-16*3);
 	memmove(&credits_pic2[16*3+16],&credits_pic2[16],768-16*3);
 	memmove(&credits_pic3[16*3+16],&credits_pic3[16],768-16*3);
@@ -317,7 +317,6 @@ void credits_init()
 	memmove(&credits_pic16[16*3+16],&credits_pic16[16],768-16*3);
 	memmove(&credits_pic17[16*3+16],&credits_pic17[16],768-16*3);
 	memmove(&credits_pic18[16*3+16],&credits_pic18[16],768-16*3);
-  */
 	for(a=0;a<10;a++)
 		{
 		credits_pic1[a*3+0+16]=credits_pic1[a*3+1+16]=credits_pic1[a*3+2+16]=7*a;
