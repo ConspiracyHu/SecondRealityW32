@@ -140,7 +140,12 @@ void calculate(int k)
 	static int px=0,py=256;
 
 	getspl(4*256+frames*4);
-        kx=kx&1023;
+
+  dis = 3000;
+  tx = 0;
+  ty = 0;
+
+	kx=kx&1023;
 	ky=ky&1023;
 	kz=kz&1023;
 	ls_kx=ls_kx&1023;

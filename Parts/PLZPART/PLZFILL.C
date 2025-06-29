@@ -13,8 +13,8 @@ extern do_clear(char *vmem, int *otau, int *ntau);
 
 extern int acstau[256];
 int	sini[2000];
-//char	(* vmem)[160]=MK_FP(0x0a000,0);
-#define vmem shim_vram
+char	(* vmem)[160]=shim_vram;
+//#define vmem shim_vram
 
 extern char kuva1[128][256];
 extern char kuva2[128][256];
@@ -24,7 +24,7 @@ char	buu[1000];
 char	sinx[128], siny[128];
 char	pal[768];
 
-int	clrtau[8][256][2];
+short	clrtau[8][256][2];
 int	clrptr=0;
 
 initvect() {
@@ -74,7 +74,7 @@ initvect() {
 
 extern char * to;
 extern char * from;
-extern int * ctau;
+extern short * ctau;
 extern int dseg;
 extern short	xx, yy;
 extern long	ay1,ay2,ax1,ax2,xx1,yy1,xx2,yy2;
@@ -182,10 +182,10 @@ int	x1,y1,x2,y2,x3,y3,x4,y4,color, dd;
 
 clear()
 	{
-	int	*otau=clrtau[(clrptr-3)&7], *ntau=clrtau[clrptr];
+  short *otau=clrtau[(clrptr-3)&7], *ntau=clrtau[clrptr];
 
 	clrptr=(clrptr+1)&7;
 
-	do_clear(vmem,otau,ntau);
+	do_clear(vmem[0],otau,ntau);
 	}
 
