@@ -211,13 +211,13 @@ plz_y0:
   mov ebp, _dseg
 	movzx	ebx, byte [_txx2+2]	; txt x
 	mov	bh, byte [_txy2+2]       ; txt y
-	movzx	si, byte [ebp+ebx]
-  add esi, _from
+	movzx	esi, byte [ebp+ebx]
+  add esi, [_from]
 	mov	cl, [ebx+esi]
 	movzx	ebx, byte [_txx1+2]	; txt x
 	mov	bh, byte [_txy1+2]       ; txt y
-	movzx	si, byte [ebp+ebx]
-  add esi, _from
+	movzx	esi, byte [ebp+ebx]
+  add esi, [_from]
 	mov	ch, [ebx+esi]
   pop ebp
 
