@@ -165,9 +165,34 @@ void credits_main()
 	//tw_closegraph();
 	}
 
+char vram_split_top[320*200]={0};
+char vram_split_bottom[320*200]={0};
 char * split_vram = shim_vram;
-#define tw_getpixel(x,y) split_vram[(x)+(y)*320]
-#define tw_putpixel(x,y,c) split_vram[(x)+(y)*320]=(c)
+#define tw_getpixel(b,x,y) b[(x)+(y)*320]
+#define tw_putpixel(b,x,y,c) b[(x)+(y)*320]=(c)
+
+void reconstitute_split(int vertical, int horizontal)
+{
+  memset( shim_vram, 0, 320 * 400 );
+  //memcpy( shim_vram, vram_split_top, 320 * 200 );
+
+  for ( int i = 0; i < 200; i++ )
+  {
+    if ( horizontal < 0 )
+    {
+      memcpy( shim_vram + 320 * i, vram_split_top + 320 * i - horizontal, 320 + horizontal );
+    }
+    else
+    {
+      memcpy( shim_vram + 320 * i + horizontal, vram_split_top + 320 * i, 320 - horizontal );
+    }
+
+    if ( i + 200 + vertical < 400 )
+    {
+      memcpy( shim_vram + 320 * ( i + 200 + vertical ), vram_split_bottom + 320 * i, 320 );
+    }
+  }
+}
 
 void screenin(char * pic, char *text)
 	{
@@ -176,6 +201,8 @@ void screenin(char * pic, char *text)
 	//tw_setsplit(400);
 	//tw_clrscr();
   memset(shim_vram,0,320*400);
+  memset(vram_split_bottom,0,320*200);
+  memset(vram_split_top,0,320*200);
 	//tw_setstart(160*200);
 	dis_waitb();
 	//tw_setpalette(&pic[0][16]);
@@ -187,7 +214,7 @@ void screenin(char * pic, char *text)
 
   split_vram = shim_vram;
 	//for(x=0;x<160;x++) for(y=0;y<100;y++) tw_putpixel(400+x,400+y*2,pic[y*160+x]+16);
-	for(x=0;x<160;x++) for(y=0;y<100;y++) tw_putpixel(400+x,100+y,pic[y*160+x]+16);
+	for(x=0;x<160;x++) for(y=0;y<100;y++) tw_putpixel( vram_split_top, 80+x,100+y,pic[y*160+x]+16);
 
 	for(y=200*128;y>0;y=y*12L/13)
 		{
@@ -207,6 +234,7 @@ void screenin(char * pic, char *text)
 			out	dx, al
 			}
       */
+    reconstitute_split(y / 128, 320 - yy );
     demo_blit();
 		}
 
@@ -234,8 +262,9 @@ void screenin(char * pic, char *text)
 			out	dx, al
 			}
     */
-		}
+    reconstitute_split(y / 128, 320 - yy);
     demo_blit();
+		}
 	}
 
 void credits_prt(int x,int y,char *txt)
@@ -250,7 +279,7 @@ void credits_prt(int x,int y,char *txt)
 			for(y2=y;y2<y2w;y2++)
 			{
 				d=credits_font[y2-y][sx];
-				tw_putpixel(x2,y2,d);
+				tw_putpixel( vram_split_bottom,x2,y2,d);
 			}
 			sx++;
 		}
