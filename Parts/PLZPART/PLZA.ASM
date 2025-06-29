@@ -162,6 +162,7 @@ _do_block:
 	add	ecx, eax
   mov eax, _dseg
 	movzx	esi, byte [eax+ebx]		; out odd byte
+  add esi, _from
 	mov	al, [ebx+esi]
 	adc	ebx, edx
 	adc	bh, 0
@@ -211,10 +212,12 @@ plz_y0:
 	movzx	ebx, byte [_txx2+2]	; txt x
 	mov	bh, byte [_txy2+2]       ; txt y
 	movzx	si, byte [ebp+ebx]
+  add esi, _from
 	mov	cl, [ebx+esi]
 	movzx	ebx, byte [_txx1+2]	; txt x
 	mov	bh, byte [_txy1+2]       ; txt y
 	movzx	si, byte [ebp+ebx]
+  add esi, _from
 	mov	ch, [ebx+esi]
   pop ebp
 
