@@ -97,9 +97,9 @@ _do_block:
 	; gs:si = ctau
 	; fs = dseg
 
-	mov ebx, _from
-	mov edi, _to
-	mov esi, _ctau
+	mov ebx, [_from]
+	mov edi, [_to]
+	mov esi, [_ctau]
 	;mov	fs, [_dseg]
 
 ..@doline:
