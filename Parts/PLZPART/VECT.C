@@ -27,8 +27,8 @@ extern 	int cop_rotatev;
 
 extern int do_poly();
 extern int getspl(int where);
-extern int sinit[1024];
-extern int kosinit[1024];
+extern short sinit[1024];
+extern short kosinit[1024];
 
 void swappage();
 void calculate( int k );
@@ -39,7 +39,7 @@ void sort_faces();
 
 char 	fpal[768];
 
-struct	object {
+struct	t_plz_object {
 	char	name[100];
 
 	int	pnts;
@@ -73,7 +73,7 @@ struct	object {
 		int	n;
 		int	col;
 		} lin[256];
-	} object={
+	} plz_object={
 		"Cube",
 		8,				// points
 		{
@@ -195,13 +195,13 @@ void plz_rotate()
 	{
 	int	a,b,x,y,z,xx,yy,zz;
 
-	for(a=0;a<object.pnts;a++)
+	for(a=0;a<plz_object.pnts;a++)
 		{
-		x=object.point[a].x; y=object.point[a].y; z=object.point[a].z;
+		x=plz_object.point[a].x; y=plz_object.point[a].y; z=plz_object.point[a].z;
 
-		object.point[a].xx=xx=((x*cxx>>1) + (y*cxy>>1) + (z*cxz>>1)>>7)+tx;
-		object.point[a].yy=yy=((x*cyx>>1) + (y*cyy>>1) + (z*cyz>>1)>>7)+ty;
-		object.point[a].zz=zz=((x*czx>>1) + (y*czy>>1) + (z*czz>>1)>>7)+dis;
+		plz_object.point[a].xx=xx=((x*cxx>>1) + (y*cxy>>1) + (z*cxz>>1)>>7)+tx;
+		plz_object.point[a].yy=yy=((x*cyx>>1) + (y*cyy>>1) + (z*cyz>>1)>>7)+ty;
+		plz_object.point[a].zz=zz=((x*czx>>1) + (y*czy>>1) + (z*czz>>1)>>7)+dis;
 
 /*
 		1000,1000,1000
@@ -209,8 +209,8 @@ void plz_rotate()
 		x*256, y*213, / (
 */
 
-		object.point[a].xxx=(xx*256L)/zz+160;
-		object.point[a].yyy=(yy*142L)/zz+66;
+		plz_object.point[a].xxx=(xx*256L)/zz+160;
+		plz_object.point[a].yyy=(yy*142L)/zz+66;
 		}
 	}
 
@@ -219,19 +219,19 @@ void sort_faces()
 	int 	a=0,b,c,x,y,z,p=0;
 	long	ax,ay,az,bx,by,bz,kx,ky,kz,nx,ny,nz,s,l;
 
-	while(a<object.faces)
+	while(a<plz_object.faces)
 		{
-		x=object.point[object.pg[a].p1].xx;
-		y=object.point[object.pg[a].p1].yy;
-		z=object.point[object.pg[a].p1].zz;
+		x=plz_object.point[plz_object.pg[a].p1].xx;
+		y=plz_object.point[plz_object.pg[a].p1].yy;
+		z=plz_object.point[plz_object.pg[a].p1].zz;
 
-		ax=object.point[object.pg[a].p2].xx-x;
-		ay=object.point[object.pg[a].p2].yy-y;
-		az=object.point[object.pg[a].p2].zz-z;
+		ax=plz_object.point[plz_object.pg[a].p2].xx-x;
+		ay=plz_object.point[plz_object.pg[a].p2].yy-y;
+		az=plz_object.point[plz_object.pg[a].p2].zz-z;
 
-		bx=object.point[object.pg[a].p3].xx-x;
-		by=object.point[object.pg[a].p3].yy-y;
-		bz=object.point[object.pg[a].p3].zz-z;
+		bx=plz_object.point[plz_object.pg[a].p3].xx-x;
+		by=plz_object.point[plz_object.pg[a].p3].yy-y;
+		bz=plz_object.point[plz_object.pg[a].p3].zz-z;
 
 		nx = ay * bz - az * by;
 		ny = az * bx - ax * bz;
@@ -247,7 +247,7 @@ void sort_faces()
 
 		s=(ls_x*nx+ls_y*ny+ls_z*nz)/250000+32;
 		light_src[p]=s;
-		c=object.pg[a].color;
+		c=plz_object.pg[a].color;
 		if(lls[p]!=light_src[p])
 			{
 			shadepal(&fpal[c*64*3],&plz_pal[c*64*3], light_src[p]);
@@ -267,11 +267,11 @@ void draw(int unused)
 
 	for(a=0;a<plz_polys;a++)
 		{
-		c=object.pg[ptodraw[a].p].color;
-		do_poly(object.point[object.pg[ptodraw[a].p].p1].xxx+(page&1)*2, object.point[object.pg[ptodraw[a].p].p1].yyy,
-			object.point[object.pg[ptodraw[a].p].p2].xxx+(page&1)*2, object.point[object.pg[ptodraw[a].p].p2].yyy,
-			object.point[object.pg[ptodraw[a].p].p3].xxx+(page&1)*2, object.point[object.pg[ptodraw[a].p].p3].yyy,
-			object.point[object.pg[ptodraw[a].p].p4].xxx+(page&1)*2, object.point[object.pg[ptodraw[a].p].p4].yyy,
+		c=plz_object.pg[ptodraw[a].p].color;
+		do_poly(plz_object.point[plz_object.pg[ptodraw[a].p].p1].xxx+(page&1)*2, plz_object.point[plz_object.pg[ptodraw[a].p].p1].yyy,
+			plz_object.point[plz_object.pg[ptodraw[a].p].p2].xxx+(page&1)*2, plz_object.point[plz_object.pg[ptodraw[a].p].p2].yyy,
+			plz_object.point[plz_object.pg[ptodraw[a].p].p3].xxx+(page&1)*2, plz_object.point[plz_object.pg[ptodraw[a].p].p3].yyy,
+			plz_object.point[plz_object.pg[ptodraw[a].p].p4].xxx+(page&1)*2, plz_object.point[plz_object.pg[ptodraw[a].p].p4].yyy,
 			c, frames&63);
 		}
 	}

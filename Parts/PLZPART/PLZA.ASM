@@ -395,9 +395,9 @@ _do_clear:
 
 	mov edi, [vmem]
 	mov esi, [ntau]		; dx:bx-> ntau
-	mov	cx, 134
-	mov	dx, 3c4h
-	mov	ax, 0f02h
+	mov	ecx, 134
+	mov	edx, 3c4h
+	mov	eax, 0f02h
 ..@maskloop:
 	movzx	ebx, word [esi]
 	dec	bx
