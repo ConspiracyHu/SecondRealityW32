@@ -6,7 +6,7 @@ _kuva1:
 
 global _dist1
 _dist1:
-	resb	16384 
+	resw	16384 
 
 global _kuva2
 _kuva2:

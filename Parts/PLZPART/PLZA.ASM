@@ -209,7 +209,7 @@ PLZ(x) :
 	adc	ebx, edx
 	adc	bh, 0			; immediate = y_hi
 
-  mov ax,0x1f3f ; ---DEBUG---
+  ;mov ax,0x1f3f ; ---DEBUG---
 	mov	[edi+ccc*2-1], ax	; output byte
 
   pop ebp
@@ -233,20 +233,20 @@ plz_y0:
 	mov	ch, [ebx+esi]
   pop ebp
 
-	movzx ebx, word [_xx2+2]
-	and	bx, 3
-	mov	ah, [start_mask+ebx]
-	mov	al, 02
-	mov	dx, 3c4h
+	;movzx ebx, word [_xx2+2]
+	;and	bx, 3
+	;mov	ah, [start_mask+ebx]
+	;mov	al, 02
+	;mov	dx, 3c4h
 	;out	dx, ax
-  mov cx, 0x5f7f ; ---DEBUG---
+  ;mov cx, 0x5f7f ; ---DEBUG---
 	mov	[edi], cl
 
-	movzx	ebx, word [_xx1+2]
-	and	bx, 3
-	mov	ah, [end_mask+ebx]
+	;movzx	ebx, word [_xx1+2]
+	;and	bx, 3
+	;mov	ah, [end_mask+ebx]
 	;out	dx, ax
-	mov	[ebp+edi], ch
+	;mov	[ebp+edi], ch
 
 ..@endline:
 	add	dword [_to], 160		; next line
@@ -283,19 +283,20 @@ plz_y0:
   add esi, [_from]
 	mov	cl, [ebx+esi]
 
-	mov	al, 02
-	mov	dx, 3c4h
-	mov	bx, word [_xx2+2]
-	and	bx, 3
-	mov	ah, [start_mask+ebx]
-	mov	bx, word [_xx1+2]
-	and	bx, 3
-	and	ah, [end_mask+ebx]
+	;mov	al, 02
+	;mov	dx, 3c4h
+	;mov	bx, word [_xx2+2]
+	;and	bx, 3
+	;mov	ah, [start_mask+ebx]
+	;mov	bx, word [_xx1+2]
+	;and	bx, 3
+	;and	ah, [end_mask+ebx]
 	;out	dx, ax
+  ;mov cx, 0x9faf ; ---DEBUG---
 	mov	[edi], cl
 
-	add	word [_to], 160		; next line
-	mov	di, word [_to]
+	add	dword [_to], 160		; next line
+	mov	edi, [_to]
 	inc	word [_yy]
 	add	word [_ctau], 4
 

@@ -17,9 +17,9 @@ char vram_half[ 160 * 400 ] = { 0 };
 char	(* vmem)[160]= vram_half;
 //#define vmem shim_vram
 
-extern char kuva1[128][256];
-extern char kuva2[128][256];
-extern char kuva3[128][256];
+extern char kuva1[64][256];
+extern char kuva2[64][256];
+extern char kuva3[64][256];
 extern char dist1[128][256];
 char	buu[1000];
 char	sinx[128], siny[128];
