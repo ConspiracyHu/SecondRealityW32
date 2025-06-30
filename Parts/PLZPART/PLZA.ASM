@@ -108,18 +108,18 @@ _do_block:
 	cmp	word [_yy], 134
 	jge	..@end				; y-clip
 
-	movzx	ebp, word [_ctau]
+	mov	ebp, [_ctau]
 
 	movsx	eax, word [_xx2+2]
-	cmp	ax, [_ctau+ebp]
+	cmp	ax, [ebp]
 	ja	..@l7
-	mov	[_ctau+ebp], ax			; x1..
+	mov	[ebp], ax			; x1..
 ..@l7:	shr	eax, 2
 	add	edi, eax
 	movsx	esi, word [_xx1+2]
-	cmp	si, [_ctau+ebp+2]
+	cmp	si, [ebp+2]
 	jb	..@l8
-	mov	[_ctau+ebp+2], si			; x2..
+	mov	[ebp+2], si			; x2..
 ..@l8:	shr	esi, 2
 	sub	esi, eax			; si = bytes to copy
 	jb	..@endline
@@ -240,7 +240,7 @@ plz_y0:
 	mov	[ebp+edi], ch
 
 ..@endline:
-	add	word [_to], 160		; next line
+	add	word [_to], 320		; next line
 	mov	di, word [_to]
 	inc	word [_yy]
 	add	word [_ctau], 4
@@ -285,7 +285,7 @@ plz_y0:
 	;out	dx, ax
 	mov	[edi], cl
 
-	add	word [_to], 160		; next line
+	add	word [_to], 320		; next line
 	mov	di, word [_to]
 	inc	word [_yy]
 	add	word [_ctau], 4
@@ -358,7 +358,7 @@ _do_clear:
 	xor	eax, eax
 
 ..@lineloop:
-	cmp	word [ebx], 640
+	cmp	word [ebx], 320
 	je	..@nextline
 
 	movzx	edi, word [ebx]
@@ -383,10 +383,10 @@ _do_clear:
 	rep	stosb
 
 ..@nextline:
-	mov	word [ebx], 640
+	mov	word [ebx], 320
 	mov	word [ebx+2], 0
 
-	add	dx, 160
+	add	dx, 320
 	add	bx, 4
 	sub	word [ycnt], 1
 	jae	..@lineloop
@@ -415,7 +415,7 @@ _do_clear:
 
 ..@nextmask:
 	add	si,4
-	add	di, 160
+	add	di, 320
 	loop	..@maskloop
 
 	pop	ebp

@@ -15,7 +15,7 @@
 #define CY kosinit[ky]
 #define CZ kosinit[kz]
 
-extern	char (* vmem)[160];
+extern	char (* vmem)[320];
 extern char plz_pal[768];
 
 extern clear();
@@ -209,7 +209,7 @@ void plz_rotate()
 		x*256, y*213, / (
 */
 
-		object.point[a].xxx=(xx*256L)/zz+160+160;
+		object.point[a].xxx=(xx*256L)/zz+160;
 		object.point[a].yyy=(yy*142L)/zz+66;
 		}
 	}
