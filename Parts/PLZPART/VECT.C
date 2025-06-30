@@ -7,6 +7,7 @@
 #include "tweak.h"
 #include "..\DIS\dis.h"
 #include "..\COMMON.H"
+#include "../../shims.h"
 
 #define SX sinit[kx]
 #define SY sinit[ky]
@@ -17,6 +18,7 @@
 
 extern	char (* vmem)[320];
 extern char plz_pal[768];
+extern char vram_half[];
 
 extern clear();
 extern init();
@@ -106,8 +108,8 @@ int	light_src[6]={0};
 int	lls[6]={0};
 
 int	cxx, cxy, cxz, cyx, cyy, cyz, czx, czy, czz;
-int  	kx=0,ky=0,kz=0,dis=320,tx=0,ty=-50;
-int	ls_kx=0,ls_ky=0,ls_kz=0,ls_x=0,ls_y=0,ls_z=128;
+short  	kx=0,ky=0,kz=0,dis=320,tx=0,ty=-50;
+short	ls_kx=0,ls_ky=0,ls_kz=0,ls_x=0,ls_y=0,ls_z=128;
 int 	page=0;
 int	frames=0;
 
@@ -130,9 +132,14 @@ void vect()
     copper2();
     copper3();
 		calculate(1);
+    memset( vram_half,0,160*400);
 		draw(15);
+    for ( int i = 0; i < 400; i++ )
+    {
+      memcpy( shim_vram + i * 320, vram_half + i * 160, 160 );
+    }
     demo_blit();
-		clear();
+		//clear();
 		}
 //	tw_closegraph();
 	}
@@ -144,10 +151,10 @@ void calculate(int k)
 
 	getspl(4*256+frames*4);
 
-  dis = 5000;
-  tx = 0;
-  ty = 0;
-
+  dis = 700;
+  //kx = 47;
+  //ky = 79;
+  //kz = 93;
 
 	kx=kx&1023;
 	ky=ky&1023;
@@ -265,15 +272,33 @@ void draw(int unused)
 	int 	a=0,b,c,f,x,y,z;
 	long	ax,ay,az,bx,by,bz,kx,ky,kz,nx,ny,nz,s;
 
-	for(a=0;a<plz_polys;a++)
+	//for(a=0;a<plz_polys;a++)
+	for(a=0;a<1;a++)
 		{
 		c=plz_object.pg[ptodraw[a].p].color;
-		do_poly(plz_object.point[plz_object.pg[ptodraw[a].p].p1].xxx+(page&1)*2, plz_object.point[plz_object.pg[ptodraw[a].p].p1].yyy,
-			plz_object.point[plz_object.pg[ptodraw[a].p].p2].xxx+(page&1)*2, plz_object.point[plz_object.pg[ptodraw[a].p].p2].yyy,
-			plz_object.point[plz_object.pg[ptodraw[a].p].p3].xxx+(page&1)*2, plz_object.point[plz_object.pg[ptodraw[a].p].p3].yyy,
-			plz_object.point[plz_object.pg[ptodraw[a].p].p4].xxx+(page&1)*2, plz_object.point[plz_object.pg[ptodraw[a].p].p4].yyy,
+		do_poly(
+      plz_object.point[plz_object.pg[ptodraw[a].p].p1].xxx/*+(page&1)*2*/, plz_object.point[plz_object.pg[ptodraw[a].p].p1].yyy,
+			plz_object.point[plz_object.pg[ptodraw[a].p].p2].xxx/*+(page&1)*2*/, plz_object.point[plz_object.pg[ptodraw[a].p].p2].yyy,
+			plz_object.point[plz_object.pg[ptodraw[a].p].p3].xxx/*+(page&1)*2*/, plz_object.point[plz_object.pg[ptodraw[a].p].p3].yyy,
+			plz_object.point[plz_object.pg[ptodraw[a].p].p4].xxx/*+(page&1)*2*/, plz_object.point[plz_object.pg[ptodraw[a].p].p4].yyy,
 			c, frames&63);
-		}
+    for ( int i = 0; i < plz_object.pnts; i++ )
+    {
+      int x = plz_object.point[ plz_object.pg[ptodraw[a].p].p1 ].xxx;
+      int y = plz_object.point[ plz_object.pg[ptodraw[a].p].p1 ].yyy;
+      vram_half[ x / 2 + y * 160 ] = 190;
+      x = plz_object.point[ plz_object.pg[ptodraw[a].p].p2 ].xxx;
+      y = plz_object.point[ plz_object.pg[ptodraw[a].p].p2 ].yyy;
+      vram_half[ x / 2 + y * 160 ] = 190;
+      x = plz_object.point[ plz_object.pg[ptodraw[a].p].p3 ].xxx;
+      y = plz_object.point[ plz_object.pg[ptodraw[a].p].p3 ].yyy;
+      vram_half[ x / 2 + y * 160 ] = 190;
+      x = plz_object.point[ plz_object.pg[ptodraw[a].p].p4 ].xxx;
+      y = plz_object.point[ plz_object.pg[ptodraw[a].p].p4 ].yyy;
+      vram_half[ x / 2 + y * 160 ] = 190;
+    }
+  }
+
 	}
 
 void swappage()

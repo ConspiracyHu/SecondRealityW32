@@ -193,21 +193,28 @@ PLZ(x) :
   push ebp
   mov ebp, _dseg
 
+  movzx ebx, bx
 	movzx	esi, byte [ebp+ebx]
+  add esi, [_from]
 	add	ecx, eax
 	mov	ah, [ebx+esi]
 	adc	ebx, edx
 	adc	bh, 0
 
+  movzx ebx, bx
 	movzx	esi, byte [ebp+ebx]
+  add esi, [_from]
 	add	ecx, eax
 	mov	al, [ebx+esi]
 	adc	ebx, edx
 	adc	bh, 0			; immediate = y_hi
 
+  mov ax,0x1f3f ; ---DEBUG---
 	mov	[edi+ccc*2-1], ax	; output byte
-  %assign ccc ccc-1
+
   pop ebp
+
+  %assign ccc ccc-1
 %endrep
 plz_y0:
 
@@ -232,6 +239,7 @@ plz_y0:
 	mov	al, 02
 	mov	dx, 3c4h
 	;out	dx, ax
+  mov cx, 0x5f7f ; ---DEBUG---
 	mov	[edi], cl
 
 	movzx	ebx, word [_xx1+2]
@@ -241,8 +249,8 @@ plz_y0:
 	mov	[ebp+edi], ch
 
 ..@endline:
-	add	word [_to], 320		; next line
-	mov	di, word [_to]
+	add	dword [_to], 160		; next line
+	mov	edi, [_to]
 	inc	word [_yy]
 	add	word [_ctau], 4
 
@@ -286,7 +294,7 @@ plz_y0:
 	;out	dx, ax
 	mov	[edi], cl
 
-	add	word [_to], 320		; next line
+	add	word [_to], 160		; next line
 	mov	di, word [_to]
 	inc	word [_yy]
 	add	word [_ctau], 4
