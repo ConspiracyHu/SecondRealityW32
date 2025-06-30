@@ -120,7 +120,7 @@ void start_music( const char * path, int start_order )
 
   st3play_PlaySong( musicdata, size, true, 44100, start_order );
 #ifdef _DEBUG
-  //st3play_SetMasterVol( 40 );
+  st3play_SetMasterVol( 100 );
 #endif // _DEBUG
 }
 
