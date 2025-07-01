@@ -136,7 +136,7 @@ void vect()
     memset( vram_half, 0, 640 * 134 );
 		draw(15);
 
-    char * src = vram_half;
+    char * src = vram_half + 160;
     char * dst = shim_vram;
     for ( int i = 0; i < 134; i++ )
     {

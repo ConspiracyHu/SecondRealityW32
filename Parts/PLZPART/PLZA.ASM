@@ -117,8 +117,10 @@ _do_block:
 	cmp	ax, [ebp]
 	ja	..@l7
 	mov	[ebp], ax			; x1..
-..@l7:	shr	eax, 2
+..@l7:
+  and eax, ~3 ; simulate 4-pixel mode
 	add	edi, eax
+  shr	eax, 2
 	movsx	esi, word [_xx1+2]
 	cmp	si, [ebp+2]
 	jb	..@l8
@@ -164,7 +166,7 @@ _do_block:
 	jz	..@ll1
 
 	add	ecx, eax
-  mov eax, _dseg
+  mov eax, [_dseg]
 	movzx	esi, byte [eax+ebx]		; out odd byte
   add esi, _from
 	mov	al, [ebx+esi]
@@ -193,7 +195,7 @@ _do_block:
 
 PLZ(x) :
   push ebp
-  mov ebp, _dseg
+  mov ebp, [_dseg]
 
   movzx ebx, bx
 	movzx	esi, byte [ebp+ebx]
@@ -212,7 +214,10 @@ PLZ(x) :
 	adc	bh, 0			; immediate = y_hi
 
   ;mov ax,0x1f3f ; ---DEBUG---
-	mov	[edi+ccc*2-1], ax	; output byte
+	mov	[edi+ccc*8-1+0], ax	; output byte
+	mov	[edi+ccc*8-1+2], ax	; output byte
+	mov	[edi+ccc*8-1+4], ax	; output byte
+	mov	[edi+ccc*8-1+6], ax	; output byte
 
   pop ebp
 
@@ -222,7 +227,7 @@ plz_y0:
 
 ..@twobyte:
   push ebp
-  mov ebp, _dseg
+  mov ebp, [_dseg]
 	movzx	ebx, byte [_txx2+2]	; txt x
 	mov	bh, byte [_txy2+2]       ; txt y
 	movzx	esi, byte [ebp+ebx]
@@ -278,7 +283,7 @@ plz_y0:
 
 
 ..@singlebyte:
-  mov ebp, _dseg
+  mov ebp, [_dseg]
 	movzx	ebx, byte [_txx2+2]	; txt x
   mov	bh, byte [_txy2+2]       ; txt y
 	movzx	esi, byte [ebp+ebx]
