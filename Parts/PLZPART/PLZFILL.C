@@ -125,7 +125,7 @@ int	x1,y1,x2,y2,x3,y3,x4,y4,color, dd;
 	yy=(long)pnts[s1].y;
 	from=kuvataus[color];
 	to=vmem[yy];		// initialize gfx pointers
-	dseg=disttaus[color]+dd*16;
+	dseg=disttaus[color]+dd*16*16;
 	ctau=&clrtau[clrptr][yy];
 	for(n=0;n<4;)
 		{

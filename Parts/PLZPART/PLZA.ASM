@@ -214,10 +214,14 @@ PLZ(x) :
 	adc	bh, 0			; immediate = y_hi
 
   ;mov ax,0x1f3f ; ---DEBUG---
-	mov	[edi+ccc*8-1+0], ax	; output byte
-	mov	[edi+ccc*8-1+2], ax	; output byte
-	mov	[edi+ccc*8-1+4], ax	; output byte
-	mov	[edi+ccc*8-1+6], ax	; output byte
+	mov	[edi+ccc*8-1+0], al
+	mov	[edi+ccc*8-1+1], al
+	mov	[edi+ccc*8-1+2], al
+	mov	[edi+ccc*8-1+3], al
+	mov	[edi+ccc*8-1+4], ah
+	mov	[edi+ccc*8-1+5], ah
+	mov	[edi+ccc*8-1+6], ah
+	mov	[edi+ccc*8-1+7], ah
 
   pop ebp
 
