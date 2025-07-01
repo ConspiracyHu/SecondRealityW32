@@ -13,8 +13,8 @@ extern do_clear(char *vmem, int *otau, int *ntau);
 
 extern int acstau[256];
 int	sini[2000];
-char vram_half[ 160 * 400 ] = { 0 };
-char	(* vmem)[160]= vram_half;
+char vram_half[ 640 * 134 ] = { 0 };
+char	(* vmem)[640]= vram_half;
 //#define vmem shim_vram
 
 extern char kuva1[64][256];
@@ -70,7 +70,7 @@ initvect() {
 	for(y=0;y<128;y++) for(x=0;x<256;x++)
 		dist1[y][x]=sini[y*8]/3;
 
-	for(a=0;a<8*256;a++) { clrtau[0][a][0]=320; clrtau[0][a][1]=0; }
+	for(a=0;a<8*256;a++) { clrtau[0][a][0]=640; clrtau[0][a][1]=0; }
 	}
 
 extern char * to;

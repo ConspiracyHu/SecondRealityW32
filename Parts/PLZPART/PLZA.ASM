@@ -82,6 +82,8 @@ _linecount	resw	1
 
 section .code
 
+%define SCREEN_STRIDE 640
+
 global _do_block
 _do_block:
 	;ARG	ycount:word
@@ -249,7 +251,7 @@ plz_y0:
 	;mov	[ebp+edi], ch
 
 ..@endline:
-	add	dword [_to], 160		; next line
+	add	dword [_to], SCREEN_STRIDE		; next line
 	mov	edi, [_to]
 	inc	word [_yy]
 	add	word [_ctau], 4
@@ -295,7 +297,7 @@ plz_y0:
   ;mov cx, 0x9faf ; ---DEBUG---
 	mov	[edi], cl
 
-	add	dword [_to], 160		; next line
+	add	dword [_to], SCREEN_STRIDE		; next line
 	mov	edi, [_to]
 	inc	word [_yy]
 	add	word [_ctau], 4

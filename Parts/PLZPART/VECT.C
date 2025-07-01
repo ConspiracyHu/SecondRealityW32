@@ -16,7 +16,7 @@
 #define CY kosinit[ky]
 #define CZ kosinit[kz]
 
-extern	char (* vmem)[320];
+extern	char (* vmem)[640];
 extern char plz_pal[768];
 extern char vram_half[];
 
@@ -118,6 +118,7 @@ void vect()
 	int	c=0,a;
 
 	//tw_opengraph();
+  demo_changemode( 320, 400 );
 
 	//while(dis_musplus()<13 && !dis_exit()); frame_count=0;
 	while(!dis_exit())
@@ -127,17 +128,24 @@ void vect()
 		swappage();
 		//while(frame_count<1);
     frames+=dis_waitb(); frame_count=0;
-		cop_pal=fpal; do_pal=1;
+    cop_pal=fpal; do_pal=1;
 
     copper2();
     copper3();
 		calculate(1);
-    memset( vram_half,0,160*400);
+    memset( vram_half, 0, 640 * 134 );
 		draw(15);
-    for ( int i = 0; i < 400; i++ )
+
+    char * src = vram_half;
+    char * dst = shim_vram;
+    for ( int i = 0; i < 134; i++ )
     {
-      memcpy( shim_vram + i * 320, vram_half + i * 160, 160 );
+      memcpy( dst, src, 320 ); dst += 320;
+      memcpy( dst, src, 320 ); dst += 320;
+      memcpy( dst, src, 320 ); dst += 320;
+      src += 640;
     }
+
     demo_blit();
 		//clear();
 		}
@@ -151,12 +159,7 @@ void calculate(int k)
 
 	getspl(4*256+frames*4);
 
-  //dis = 700;
-  //kx = 47;
-  //ky = 79;
-  //kz = 93;
-
-	kx=kx&1023;
+  kx=kx&1023;
 	ky=ky&1023;
 	kz=kz&1023;
 	ls_kx=ls_kx&1023;
@@ -216,7 +219,7 @@ void plz_rotate()
 		x*256, y*213, / (
 */
 
-		plz_object.point[a].xxx=(xx*256L)/zz+160;
+		plz_object.point[a].xxx=(xx*256L)/zz+160+160;
 		plz_object.point[a].yyy=(yy*142L)/zz+66;
 		}
 	}
