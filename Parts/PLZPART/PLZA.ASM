@@ -244,20 +244,20 @@ plz_y0:
 	mov	ch, [ebx+esi]
   pop ebp
 
-	;movzx ebx, word [_xx2+2]
-	;and	bx, 3
+	movzx ebx, word [_xx2+2]
+	and	bx, 3
 	;mov	ah, [start_mask+ebx]
 	;mov	al, 02
 	;mov	dx, 3c4h
 	;out	dx, ax
   ;mov cx, 0x5f7f ; ---DEBUG---
-	mov	[edi], cl
+	mov	[edi+ebx], cl
 
-	;movzx	ebx, word [_xx1+2]
-	;and	bx, 3
-	;mov	ah, [end_mask+ebx]
+	movzx	ebx, word [_xx1+2]
+	and	bx, 3
+  ;mov	ah, [end_mask+ebx]
 	;out	dx, ax
-	;mov	[ebp+edi], ch
+	mov	[edi+ebx], ch
 
 ..@endline:
 	add	dword [_to], SCREEN_STRIDE		; next line
