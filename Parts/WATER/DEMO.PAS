@@ -132,6 +132,7 @@ begin
 
      end;
      }
+     repeat until dis_musplus(0)>0;
      co := dis_musorder(0);
 
      fillchar(@fbuf[0],sizeof(fbuf),#0);
@@ -174,7 +175,7 @@ begin
      }
      repeat
        demo_blit;
-     until not ((dis_musorder(0) = co) or (dis_musrow(0) < 16));
+     until dis_exit or not ((dis_musorder(0) = co) or (dis_musrow(0) < 16));
 
 
     {######################################################################}

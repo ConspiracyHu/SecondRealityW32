@@ -14,7 +14,8 @@ extern int cop_scrl;
 extern int cop_dofade;
 extern int cop_drop;
 extern short * cop_fadepal;
-extern short fadepal[];
+extern char fadepal[];
+extern short fadepal_short[];
 
 void copper2();
 void copper3();
