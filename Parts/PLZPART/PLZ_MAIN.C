@@ -7,7 +7,7 @@ void plz_main()  {
 	dis_partstart();
 	//init_copper();
 	initvect();
-	//plz();
+	plz();
 	vect();
 	//close_copper();
 	}

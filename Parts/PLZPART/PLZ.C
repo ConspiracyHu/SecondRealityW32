@@ -34,12 +34,13 @@ extern int lsini16[8192];
 //#include "psini.pre"
 //char	lsini[16384]=
 //#include "lsini.pre"
+char plz_vidmem[2][ 84 * 280 ];
 
 void init_plz();
 
 #include "ptau.pre"
 
-unsigned char	pals[6][768];
+unsigned short	pals[6][768];
 int	curpal=0;
 int	timetable[10]={64*6*2-45,64*6*4-45,64*6*5-45,64*6*6-45,64*6*7+90,0};
 int	ttptr=0;
@@ -59,6 +60,43 @@ int	inittable[10][8]={{1000,2000,3000,4000,3500,2300,3900,3670},
 
 extern unsigned short dtau[ 65 ];
 
+int drop_y = 0;
+void copper_update()
+{
+  cop_drop++;
+  if ( cop_drop < 64 )
+  {
+    drop_y = dtau[ cop_drop ];
+    return;
+  }
+
+  if ( cop_drop >= 256 )
+  {
+    cop_drop = 0;
+    return;
+  }
+  else if ( cop_drop >= 128 )
+  {
+    drop_y = dtau[ 0 ];
+    cop_dofade = 256 - cop_drop;
+  }
+  else if ( cop_drop > 64 + 32 )
+  {
+    cop_drop = 0;
+    return;
+  }
+  else
+  {
+    drop_y = dtau[ 0 ];
+    cop_dofade = 96 - cop_drop;
+  }
+  if ( cop_drop == 65 )
+  {
+    initpparas();
+  }
+  copper3();
+}
+
 void plz()
 {
 	register int x,y;
@@ -66,13 +104,14 @@ void plz()
 	long	tim=0,count=0;
 	int	ch=0,sync=2;
 
+  demo_changemode( 384, 400 );
 	while(dis_musplus()<0 && !dis_exit());
-	//dis_setmframe(0);
+	dis_setmframe(0);
 
 	init_plz();
 	cop_drop=128;
 	cop_fadepal=pals[curpal++];
-  setpalarea( cop_fadepal, 0, 256 );
+  drop_y = dtau[ 0 ];
 
 	frame_count=0;
   initpparas();
@@ -82,9 +121,9 @@ void plz()
 		if(dis_getmframe()>timetable[ttptr])
 			{
 			memset(fadepal,0,768);
+      memset(fadepal_short,0,768*2);
 			cop_drop=1;
 			cop_fadepal=pals[curpal++];
-      setpalarea( cop_fadepal, 0, 256 );
 			ttptr++;
 			il1=inittable[ttptr][0];
 			il2=inittable[ttptr][1];
@@ -94,7 +133,6 @@ void plz()
 			ik2=inittable[ttptr][5];
 			ik3=inittable[ttptr][6];
 			ik4=inittable[ttptr][7];
-      initpparas();
 			}
 		if(curpal==5 && cop_drop>64) break;
 
@@ -104,10 +142,10 @@ void plz()
 
 		setplzparas(k1,k2,k3,k4);
 		for(y=0;y<MAXY;y+=2)
-			plzline(y,shim_vram+y*6+YADD*6);
+			plzline(y,plz_vidmem[0]+y*84+YADD*6);
 		setplzparas(l1,l2,l3,l4);
 		for(y=1;y<MAXY;y+=2)
-			plzline(y,shim_vram+y*6+YADD*6);
+			plzline(y,plz_vidmem[0]+y*84+YADD*6);
 
 
 		//asm	mov dx, 3c4h
@@ -116,15 +154,43 @@ void plz()
 
 		setplzparas(k1,k2,k3,k4);
 		for(y=1;y<MAXY;y+=2)
-			plzline(y,shim_vram+y*6+YADD*6);
+			plzline(y,plz_vidmem[1]+y*84+YADD*6);
 		setplzparas(l1,l2,l3,l4);
 		for(y=0;y<MAXY;y+=2)
-			plzline(y,shim_vram+y*6+YADD*6);
-    demo_blit();
+			plzline(y,plz_vidmem[1]+y*84+YADD*6);
+
+    if ( cop_drop > 0 )
+    {
+      copper_update();
+    }
+    copper2();
     moveplz();
+
+    char * src1 = plz_vidmem[0];
+    char * src2 = plz_vidmem[1];
+    char * dst = shim_vram + drop_y * 384;
+    memset( shim_vram, 0, 384 * 400 );
+    for ( int y = 0; y < MAXY; y++ )
+    {
+      if ( y + drop_y >= 400 )
+      {
+        break;
+      }
+      for ( int x = 0; x < 84; x++ )
+      {
+        *dst++ = *src2;
+        *dst++ = *src1;
+        *dst++ = *src2++;
+        *dst++ = *src1++;
+      }
+      dst += 384 - 84 * 4;
+    }
+
+    demo_blit();
     frame_count += dis_waitb();
 		}
-	//cop_drop=0; frame_count=0; while(frame_count==0);
+  //drop_y = dtau[ 0 ];
+  //cop_drop = 0; //frame_count = 0; while ( frame_count == 0 );
 	set_plzstart(500);
 	//cop_plz=0;
 	}
@@ -132,7 +198,7 @@ void plz()
 void init_plz()
 	{
 	int	a,b,c,z;
-	unsigned char *pptr=pals;
+	unsigned short *pptr=pals;
 
 #ifdef	DO_TABLES
 	{

@@ -70,7 +70,7 @@ LC_OFS(lc3) equ $+3
         shl     eax, 16
 %endif
 %if (ccc & 3) == 0
-        mov     [ecx + edi + ccc], eax
+        mov     [ecx + ccc], eax
 %endif
         %assign ccc_inc ccc_inc+1
         %endrep
