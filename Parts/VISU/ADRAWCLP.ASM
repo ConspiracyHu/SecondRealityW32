@@ -18,9 +18,9 @@
 
 section .data
 newclipflip db 0,0
-newclipprog dw 0
+newclipprog dd 0
 clipcount dw	0
-clipzero dw	0
+clipzero dd	0
 clipvisfl dw	0
 
 section .code
@@ -39,9 +39,9 @@ newclip_grd:
 %macro NEWCLIPCALC 2 ;clipped,other
 	;local	l1,l2,l3,l4,l5,l6
 	;DS:BX->DS:SI is clipped at (-,BP) with result stored to DS:DI
-	push	si
-	push	bx
-	push	bp
+	push	esi
+	push	ebx
+	push	ebp
 	mov	dx,[esi+%2]
 	mov	cx,[esi+%1]
 	mov	ax,[ebx+%2]
@@ -52,7 +52,7 @@ newclip_grd:
 	mov	byte [newclipflip],1
 	xchg	cx,bx
 	xchg	ax,dx
-%%l3:	push	dx
+%%l3:	push	edx
 	sub	bp,cx
 	sub	ax,dx
 	push	ax
@@ -65,12 +65,12 @@ newclip_grd:
 	idiv	bx
 	mov	bx,ax
 	;bx=0..16384 multiplier 
-	pop	ax
+	pop	eax
 	imul	bx
 	shld	dx,ax,2
-	pop	ax
+	pop	eax
 	add	dx,ax ;dx=clipped other
-	pop	bp
+	pop	ebp
 	mov	cx,bp
 	cmp	[edi+%2-4],dx
 	jne	%%l1
@@ -80,19 +80,19 @@ newclip_grd:
 %%l1:	mov	[edi+%2],dx
 	mov	[edi+%1],cx
 	mov	cx,bx
-	pop	bx
-	mov	ax,[newclipprog]
-	or	ax,ax
+	pop	ebx
+	mov	eax,[newclipprog]
+	or	eax,eax
 	jz	%%l4
 	mov	dl,[newclipflip]
 	or	dl,dl
 	jz	%%l6
 	xchg	si,bx
-%%l6:	call	ax ;also stores gouraud&texture clipped
-%%l4:	add	di,4
+%%l6:	call	eax ;also stores gouraud&texture clipped
+%%l4:	add	edi,4
 	jmp	%%l5
-%%l2:	pop	bx
-%%l5:	pop	si
+%%l2:	pop	ebx
+%%l5:	pop	esi
 %endmacro
 
 %macro NEWCLIPNEXT 0 ;sets bx(last)=si(current) and loads si with next vertex
@@ -105,7 +105,7 @@ newclip_grd:
 	mov	[clipcount],dx
 	jg	%%l1
 	;1 vertex left, means we rotated the list
-	mov	si,[clipzero]
+	mov	esi,[clipzero]
 	jmp	%%l2
 %%l1:	add	si,4
 %%l2:
@@ -128,14 +128,14 @@ newclip_grd:
 %macro ZCLIPCLIP 0
 	;local	l1,l41,l42,l43,l44
 	;(fs:bp)-(fs:bx) is clipped at (-,-,ECX) with result stored to (DX,CX) & AX=visfl
-	push	bx
-	push	bp
+	push	ebx
+	push	ebp
 	push	esi
 	push	edi
 	push	ecx
 	;
-	mov	eax,[ebx+vlist_z]
-	mov	edx,[ebp+vlist_z]
+	mov	eax,[ebx+vlist_z] ;fs
+	mov	edx,[ebp+vlist_z] ;fs
 	cmp	eax,edx
 	jg	%%l1
 	xchg	eax,edx
@@ -146,18 +146,18 @@ newclip_grd:
 	sub	esi,edx ;>=0 divver
 	sub	edi,ecx ;>=0 muller, esi>edi
 	;
-	mov	eax,[ebp+vlist_x]
-	sub	eax,[ebx+vlist_x]
+	mov	eax,[ebp+vlist_x] ;fs
+	sub	eax,[ebx+vlist_x] ;fs
 	imul	edi
 	idiv	esi
-	add	eax,[ebx+vlist_x]
+	add	eax,[ebx+vlist_x] ;fs
 	push	eax
 	;
-	mov	eax,[ebp+vlist_y]
-	sub	eax,[ebx+vlist_y]
+	mov	eax,[ebp+vlist_y] ;fs
+	sub	eax,[ebx+vlist_y] ;fs
 	imul	edi
 	idiv	esi
-	add	eax,[ebx+vlist_y]
+	add	eax,[ebx+vlist_y] ;fs
 	;
 	pop	esi ;X
 	pop	ecx ;cliplimit
@@ -191,8 +191,8 @@ newclip_grd:
 	;dx=x,cx=y,ax=visfl
 	pop	edi
 	pop	esi
-	pop	bp
-	pop	bx
+	pop	ebp
+	pop	ebx
 	;NOTE: ECX was destroyed while clipping. It is used to return data.
 	;It must be pushed by the 'calling' procedure after the macro and
 	;the usage of the data the macro returned!
@@ -200,6 +200,7 @@ newclip_grd:
 
 %macro ZCLIPGETVX 0 ;reads to bx the offset of next vertex from DS:SI (copies last vx to bp) 
 	;local	l1,l2
+  push ebp
 	mov	bp,bx
 	mov	dx,[clipcount]
 	dec	dx
@@ -208,14 +209,16 @@ newclip_grd:
 	mov	[clipcount],dx
 	jg	%%l1
 	;1 vertex left, means we rotated the list
-	mov	si,[clipzero]
+	mov	esi,[clipzero]
 	jmp	%%l2
 %%l1:	add	si,4
 %%l2:	mov	bx,[esi+POLYVX]
+  pop ebp
 %endmacro 
 
 %macro ZCLIPADDVISVX 0 ;adds ds:si[bx+POLYX/Y] to list (the vx must be visible for this to work) at DS:DI
 	;local	l1,l2
+  push eax
 	mov	dx,[esi+POLYX]
 	mov	ax,[esi+POLYY]
 	cmp	[edi+POLYX-4],dx
@@ -227,12 +230,14 @@ newclip_grd:
 	mov	[edi+POLYY],ax
 	mov	ax,[esi+POLYGR]
 	mov	[edi+POLYGR],ax
-	add	di,4
+	add	edi,4
+  pop eax
 %%l2:	;;;
 %endmacro
 
 %macro ZCLIPADDVX 0 ;adds (DX,CX) to list at DS:DI
 	;local	l1,l2
+  push eax
 	cmp	[edi+POLYX-4],dx
 	jne	%%l1
 	cmp	[edi+POLYY-4],cx
@@ -242,16 +247,17 @@ newclip_grd:
 	mov	[edi+POLYY],cx
 	mov	ax,[edi-4+POLYGR]
 	mov	[edi+POLYGR],ax
-	add	di,4
+	add	edi,4
+  pop eax
 %%l2:	;;;
 %endmacro 
 
 clipnear:
 	;clips list DS:SI -> DS:DI (source list must NOT be empty)
-	push	bp
-	push	si
-	push	di
-	mov	[clipzero],si
+	push	ebp
+	push	esi
+	push	edi
+	mov	[clipzero],esi
 	mov	ecx,[_projclipz+CLIPMIN] ;ECX=cliplimit
 	mov	eax,[esi+POLYSIDES] ;&POLYCOLOR
 	mov	[edi+POLYSIDES],eax
@@ -259,17 +265,17 @@ clipnear:
 	mov	[clipcount],ax
 	mov	eax,[esi+POLYFLAGS] ;&POLYVXSEG
 	mov	[edi+POLYFLAGS],eax
-	mov	fs,[esi+POLYVXSEG]
-	
+
 	mov	word [edi+POLYX-4],07fffh ;for CLIPADDVX to surely do it's work
 		
-	mov	bx,[esi+POLYVX]
-	cmp	ecx,[ebx+vlist_z]
+	movzx	ebx,word [esi+POLYVX]
+
+	cmp	ecx,[ebx+vlist_z] ;fs
 	jle	@@2
 	
 @@1:	;LAST POINT HIDDEN
 	ZCLIPGETVX
-	cmp	ecx,[ebx+vlist_z]
+	cmp	ecx,[ebx+vlist_z] ;fs
 	jge	@@1
 	;this point visible, clip
 	ZCLIPCLIP ;returns data in cx
@@ -280,7 +286,7 @@ clipnear:
 @@2:	;LAST POINT VISIBLE
 	ZCLIPADDVISVX
 	ZCLIPGETVX
-	cmp	ecx,[ebx+vlist_z]
+	cmp	ecx,[ebx+vlist_z] ;fs
 	jle	@@2
 	;this point hidden, clip
 	ZCLIPCLIP ;returns data in cx
@@ -289,14 +295,14 @@ clipnear:
 	mov	ecx,[_projclipz+CLIPMIN] ;ECX was destroyed by ZCLIPCLIP
 	jmp	@@1 ;to hidden
 
-@@0:	pop	bx
-	sub	di,bx
-	shr	di,2
+@@0:	pop	ebx
+	sub	edi,ebx
+	shr	edi,2
 	mov	[ebx+POLYSIDES],di ;Sides in clipped polygon
-	mov	di,bx
-	pop	si
-	pop	bp
-	mov	ax,[clipvisfl]
+	mov	edi,ebx
+	pop	esi
+	pop	ebp
+	movzx	eax,[clipvisfl]
 	ret
 
 
@@ -307,7 +313,7 @@ newclipup:
 	push	bp
 	push	si
 	push	di
-	mov	[clipzero],si
+	mov	[clipzero],esi
 	mov	bp,word [_projclipy+CLIPMIN]
 	mov	eax,[esi+POLYSIDES] ;&POLYCOLOR
 	mov	[edi+POLYSIDES],eax
@@ -353,7 +359,7 @@ newclipdown:
 	push	bp
 	push	si
 	push	di
-	mov	[clipzero],si
+	mov	[clipzero],esi
 	mov	bp,word [_projclipy+CLIPMAX]
 	mov	eax,[esi+POLYSIDES] ;&POLYCOLOR
 	mov	[edi+POLYSIDES],eax
@@ -399,7 +405,7 @@ newclipleft:
 	push	bp
 	push	si
 	push	di
-	mov	[clipzero],si
+	mov	[clipzero],esi
 	mov	bp,word [_projclipx+CLIPMIN]
 	mov	eax,[esi+POLYSIDES] ;&POLYCOLOR
 	mov	[edi+POLYSIDES],eax
@@ -445,7 +451,7 @@ newclipright:
 	push	bp
 	push	si
 	push	di
-	mov	[clipzero],si
+	mov	[clipzero],esi
 	mov	bp,word [_projclipx+CLIPMAX]
 	mov	eax,[esi+POLYSIDES] ;&POLYCOLOR
 	mov	[edi+POLYSIDES],eax
@@ -497,8 +503,8 @@ newclip:
 	xor	bx,bx
 	test	ax,F_GOURAUD
 	jz	@@f1
-	mov	bx,newclip_grd
-@@f1:	mov	[newclipprog],bx
+	mov	ebx,newclip_grd
+@@f1:	mov	[newclipprog],ebx
 	;
 	LOADGS
 	test	dh,VF_FAR	;If *ANY* vertex is 'far', entire polygon is
