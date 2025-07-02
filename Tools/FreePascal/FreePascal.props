@@ -14,7 +14,7 @@
       <IntermediatePath>$(IntDir)</IntermediatePath>
       <ObjectFileName>$(IntDir)%(FileName).o</ObjectFileName>
       <CommandLineTemplate>fpc.exe -XS -Xt -Twin32 [AllOptions] [AdditionalOptions] "%(FullPath)"</CommandLineTemplate>
-      <ExecutionDescription>%(Identity)</ExecutionDescription>
+      <ExecutionDescription>Compiling %(Filename)%(Extension)</ExecutionDescription>
     </FreePascal>
   </ItemDefinitionGroup>
 </Project>
