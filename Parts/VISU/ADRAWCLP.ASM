@@ -302,7 +302,7 @@ clipnear:
 	mov	edi,ebx
 	pop	esi
 	pop	ebp
-	movzx	eax,[clipvisfl]
+	movzx	eax,word [clipvisfl]
 	ret
 
 
