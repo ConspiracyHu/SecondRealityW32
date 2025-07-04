@@ -30,7 +30,7 @@ db 35,163,99,227,19,147,83,211,51,179,115,243,11,139,75,203,43,171,107,235
 db 27,155,91,219,59,187,123,251,7,135,71,199,39,167,103,231,23,151,87,215
 db 55,183,119,247,15,143,79,207,47,175,111,239,31,159,95,223,63,191,127,255
 
-circlesB times 8 dd	0
+;circlesB times 8 dd	0
 
 pal	times 32*3 db	0
 
@@ -123,6 +123,7 @@ section .code
 ; cl = plane count
 bltline:
 	push	esi
+	push	edi
 	mov	dx,3c4h
 	mov	al,2
 	;out	dx,al
@@ -136,15 +137,18 @@ bltline:
 	%assign zzz zzz+4
   %endrep
 	add	esi,40
+  add edi,80 * 400
 	shl	ch,1
 	dec	cl
 	jnz	@@1
+	pop	edi
 	pop	esi
 	ret
 
 
 bltlinerev:
 	push	esi
+	push	edi
 	mov	dx,3c4h
 	mov	al,2
 	;out	dx,al
@@ -169,9 +173,11 @@ bltlinerev:
 	%assign zzz zzz+4
   %endrep
 	add	esi,40
+  add edi,80 * 400
 	shl	ch,1
 	dec	cl
 	jnz	@@1
+	pop	edi
 	pop	esi
 	ret
 
@@ -273,29 +279,29 @@ waitb:
 	ret
 
 
-rotate1:
-	;xor	esi,esi
-	mov	ecx,32000/32-2
-	cld
-	jmp	@@2
-	;edx.eax
-@@1:	popf
-	%assign zzz 0
-	%rep 16
-	mov	ax,[esi+zzz]
-	rcr	al,1
-	rcr	ah,1
-	mov	[edi+zzz],ax ; es
-	%assign zzz zzz+2
-  %endrep
-@@2:	pushf
-	add	esi,zzz
-	add	edi,zzz
-	dec	ecx
-	jz	@@0
-	jmp	@@1
-@@0:	popf
-	ret
+;rotate1:
+;	;xor	esi,esi
+;	mov	ecx,32000/32-2
+;	cld
+;	jmp	@@2
+;	;edx.eax
+;@@1:	popf
+;	%assign zzz 0
+;	%rep 16
+;	mov	ax,[esi+zzz]
+;	rcr	al,1
+;	rcr	ah,1
+;	mov	[edi+zzz],ax ; es
+;	%assign zzz zzz+2
+;  %endrep
+;@@2:	pushf
+;	add	esi,zzz
+;	add	edi,zzz
+;	dec	ecx
+;	jz	@@0
+;	jmp	@@1
+;@@0:	popf
+;	ret
 
 section .data
 
@@ -319,6 +325,8 @@ memseg	dd	0
 section .code
 
 extern _shim_vram
+extern _koeb_planar1
+extern _koeb_planar2
 
 init_interference:
 	;mov	dx,3d4h
@@ -331,13 +339,13 @@ init_interference:
 	;mov	ah,48h
 	;mov	bx,16384
 ;	int	21h
-	mov	[memseg],eax
-	%assign zzz 0
-	%rep 8
-	mov	[circlesB+zzz],eax
-	add	eax,2048
-	%assign zzz zzz+4
-  %endrep
+	;mov	[memseg],eax
+	;%assign zzz 0
+	;%rep 8
+	;mov	[circlesB+zzz],eax
+	;add	eax,2048
+	;%assign zzz zzz+4
+  ;%endrep
 	
 	;mov	ax,SEG _circle2
 	;mov	ds,ax
@@ -345,11 +353,11 @@ init_interference:
 	;mov	ax,0a000h
 	;mov	es,ax
   mov esi, _circle2
-  mov edi, _shim_vram
+  mov edi, _koeb_planar1
 
 	mov	ecx,200
 	;xor	edi,edi
-	mov	ebp,_shim_vram+80*399
+	mov	ebp,_koeb_planar1+80*399
 @@1:	push	ecx
 	push	edi
 	mov	ecx,0401h
@@ -375,24 +383,24 @@ init_interference:
 	;mov	dx,3ceh
 	;mov	ax,0204h
 	;out	dx,ax
-	mov	cx,400
+	;mov	cx,400
 	;mov	es,[circlesB+0]
 	;mov	ax,0a000h
 	;mov	ds,ax
-  mov esi, [circlesB]
-  mov edi, _shim_vram
+  ;mov esi, _koeb_planar1
+  ;mov edi, [circlesB]
 
-	mov	ecx,32000/4
+	;mov	ecx,32000/4
 	;xor	esi,esi
 	;xor	edi,edi
-	rep	movsd
-	%assign zzz 0
-	%rep	7	
-	mov	esi,[circlesB+zzz]
-	mov	edi,[circlesB+zzz+4]
-	call	rotate1
-	%assign zzz zzz+4
-  %endrep
+	;rep	movsd
+	;%assign zzz 0
+	;%rep	7	
+	;mov	esi,[circlesB+zzz]
+	;mov	edi,[circlesB+zzz+4]
+	;call	rotate1
+	;%assign zzz zzz+4
+  ;%endrep
 
 	;mov	ax,SEG _circle
 	;mov	ds,ax
@@ -400,10 +408,10 @@ init_interference:
 	;mov	ax,0a000h
 	;mov	es,ax
   mov esi, _circle
-  mov edi, _shim_vram
+  mov edi, _koeb_planar2
 	mov	ecx,200
 	;xor	di,di
-	mov	ebp,_shim_vram+80*399
+	mov	ebp,_koeb_planar2+80*399
 @@10:
 	push	ecx
 	push	edi
@@ -433,6 +441,52 @@ extern _dis_waitb
 extern _dis_musrow
 extern _dis_exit
 extern _demo_blit
+
+extern _shim_vram
+extern _koeb_planar1
+extern _koeb_planar2
+
+_resolve_planar:
+  ;movzx esi, word [scrnposl]
+  ;shl esi, 3
+  ;add esi, 0x2000 >> 3
+  mov esi, 80 * 100 + 20
+  mov edi, _shim_vram
+  mov ecx, 320*400
+  mov edx, 320
+  mov bl, 0x80
+  resolve_byte:
+    xor al, al
+    test [_koeb_planar1+esi], bl
+    jz nah1
+      or al, 1
+    nah1:
+    test [_koeb_planar2+esi], bl
+    jz nah2
+      or al, 2
+    nah2:
+    test [_koeb_planar2+esi+80*400], bl
+    jz nah3
+      or al, 4
+    nah3:
+    test [_koeb_planar2+esi+80*400+2], bl
+    jz nah4
+      or al, 8
+    nah4:
+    stosb
+    ror bl,1
+    test bl,0x80
+    jz nextbyte
+      inc esi
+    nextbyte:
+    dec edx
+    cmp edx, 0
+    jne nextrow
+      add esi, 40
+      mov edx, 320
+    nextrow:
+  loop resolve_byte
+  ret
 
 do_interference:
 @@aga:	call	_dis_waitb
@@ -636,6 +690,7 @@ do_interference:
 	inc	word [framecountB]
 	cmp	word [framecountB],256
 	je	@@xx
+  call _resolve_planar
   call _demo_blit
   call _dis_exit
 	;mov	bx,2
@@ -654,7 +709,7 @@ _dointerference2:
 	;push	ds
 	
 ;	call	resetmode13
-  mov eax, [esp+8]
+  ;mov eax, [esp+8]
 	call	init_interference
 	call	do_interference	
 	;mov	es,[memseg]

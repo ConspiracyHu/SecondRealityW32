@@ -17,12 +17,11 @@
 //extern char pic[];
 extern short koe_sin1024[];
 
-char circlemem[20+100*80];
-char circlemem2[16384*16];
+char circlemem[ 16384 ];
 
 void initinterference(char * memory);
 void dointerference();
-void dointerference2( char * memory );
+void dointerference2();
 void asminit( char * vbuf );
 void asmbox( int x1, int y1, int x2, int y2, int x3, int y3, int x4, int y4 );
 void asmdoit( char * vbuf, char * vram );
@@ -52,6 +51,9 @@ int	koe_curpal=0;
 
 extern char power0[];
 extern char power1[];
+
+unsigned char koeb_planar1[ 80 * 400 ];
+unsigned char koeb_planar2[ 80 * 400 * 3 ];
 
 int 	waitborder(void)
 {	
@@ -237,7 +239,7 @@ void koe_main()
 	while(!dis_exit() && dis_musplus()<-4) ;
 	dis_setmframe(0);
 
-	dointerference2(circlemem2);
+	dointerference2();
 	
 	initinterference(circlemem);
 
