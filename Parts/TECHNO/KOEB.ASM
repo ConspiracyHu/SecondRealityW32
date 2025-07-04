@@ -309,8 +309,8 @@ section .data
 framecountB dw	0
 palanimcB dd	0
 palanimc2B dd	0
-scrnpos dw	0
-scrnposl dw	0
+scrnposB dw	0
+scrnposBl dw	0
 scrnx	dw	0
 scrny	dw	0
 scrnrot dw	0
@@ -325,8 +325,8 @@ memseg	dd	0
 section .code
 
 extern _shim_vram
-extern _koeb_planar1
-extern _koeb_planar2
+extern _koe_tempbuf
+extern _koe_planar
 
 init_interference:
 	;mov	dx,3d4h
@@ -353,11 +353,11 @@ init_interference:
 	;mov	ax,0a000h
 	;mov	es,ax
   mov esi, _circle2
-  mov edi, _koeb_planar1
+  mov edi, _koe_tempbuf
 
 	mov	ecx,200
 	;xor	edi,edi
-	mov	ebp,_koeb_planar1+80*399
+	mov	ebp,_koe_tempbuf+80*399
 @@1:	push	ecx
 	push	edi
 	mov	ecx,0401h
@@ -387,7 +387,7 @@ init_interference:
 	;mov	es,[circlesB+0]
 	;mov	ax,0a000h
 	;mov	ds,ax
-  ;mov esi, _koeb_planar1
+  ;mov esi, _koe_tempbuf
   ;mov edi, [circlesB]
 
 	;mov	ecx,32000/4
@@ -408,10 +408,10 @@ init_interference:
 	;mov	ax,0a000h
 	;mov	es,ax
   mov esi, _circle
-  mov edi, _koeb_planar2
+  mov edi, _koe_planar
 	mov	ecx,200
 	;xor	di,di
-	mov	ebp,_koeb_planar2+80*399
+	mov	ebp,_koe_planar+80*399
 @@10:
 	push	ecx
 	push	edi
@@ -443,33 +443,30 @@ extern _dis_exit
 extern _demo_blit
 
 extern _shim_vram
-extern _koeb_planar1
-extern _koeb_planar2
+extern _koe_tempbuf
+extern _koe_planar
 
 _resolve_planar:
-  ;movzx esi, word [scrnposl]
-  ;shl esi, 3
-  ;add esi, 0x2000 >> 3
-  mov esi, 80 * 100 + 20
+  movzx esi, word [scrnposB]
   mov edi, _shim_vram
-  mov ecx, 320*400
+  mov ecx, 320*200
   mov edx, 320
   mov bl, 0x80
   resolve_byte:
     xor al, al
-    test [_koeb_planar1+esi], bl
+    test [_koe_planar+esi+80*400*0], bl
     jz nah1
       or al, 1
     nah1:
-    test [_koeb_planar2+esi], bl
+    test [_koe_planar+esi+80*400*1], bl
     jz nah2
       or al, 2
     nah2:
-    test [_koeb_planar2+esi+80*400], bl
+    test [_koe_planar+esi+80*400*2], bl
     jz nah3
       or al, 4
     nah3:
-    test [_koeb_planar2+esi+80*400+2], bl
+    test [_koe_planar+esi+80*400*3], bl
     jz nah4
       or al, 8
     nah4:
@@ -493,7 +490,7 @@ do_interference:
 	;mov	dx,3c0h
 	;mov	al,13h
 	;out	dx,al
-	;mov	al,byte [scrnposl]
+	;mov	al,byte [scrnposBl]
 	;out	dx,al
 	;mov	al,32
 	;out	dx,al
@@ -548,7 +545,7 @@ do_interference:
 ;	;mov	ax,0a000h
 ;	;mov	es,ax
 ;	;xor	si,si
-;	movzx edi, word [scrnpos]
+;	movzx edi, word [scrnposB]
 ;  add edi, _shim_vram
 ;  movzx	ebp, word [sinurot]
 ;	add	bp,7*2
@@ -564,7 +561,7 @@ do_interference:
 ;	sar	bx,3
 ;	mov	bh,[sinuspower]
 ;	movsx	ax,byte [power0+ebx]
-;	sub	ax,[scrnposl]
+;	sub	ax,[scrnposBl]
 ;	add	ax,[overx]
 ;	mov	bx,ax
 ;	and	bx,7
@@ -656,14 +653,14 @@ do_interference:
 	mov	ax,[scrnx]
 	mov	bx,ax
 	and	ax,7
-	mov	[scrnposl],ax
+	mov	[scrnposBl],ax
 	mov	ax,80
 	mul	word [scrny]
 	sar	bx,3
 	add	ax,bx
-	mov	[scrnpos],ax
+	mov	[scrnposB],ax
 
-	mov	bx,[scrnpos]
+	mov	bx,[scrnposB]
 	mov	dx,3d4h
 	mov	al,0ch
 	mov	ah,bh

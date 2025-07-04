@@ -17,7 +17,7 @@
 //extern char pic[];
 extern short koe_sin1024[];
 
-char circlemem[ 16384 ];
+char circlemem[ 16384*16 ];
 
 void initinterference(char * memory);
 void dointerference();
@@ -52,8 +52,8 @@ int	koe_curpal=0;
 extern char power0[];
 extern char power1[];
 
-unsigned char koeb_planar1[ 80 * 400 ];
-unsigned char koeb_planar2[ 80 * 400 * 3 ];
+unsigned char koe_tempbuf[ 80 * 400 ] = { 0 };
+unsigned char koe_planar[ 80 * 400 * 4 ] = { 0 };
 
 int 	waitborder(void)
 {	

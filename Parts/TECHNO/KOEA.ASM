@@ -537,6 +537,7 @@ section .code
 
 bltline:
 	push	esi
+	push	edi
 	mov	dx,3c4h
 	mov	al,2
 	;out	dx,al
@@ -550,15 +551,18 @@ bltline:
 	%assign zzz zzz+4
 	%endrep
 	add	esi,40
+  add edi,80 * 400
 	shl	ch,1
 	dec	cl
 	jnz	@@1
+	pop	edi
 	pop	esi
 	ret
 
 
 bltlinerev:
 	push	esi
+	push	edi
 	mov	dx,3c4h
 	mov	al,2
 	;out	dx,al
@@ -583,9 +587,11 @@ bltlinerev:
 	%assign zzz zzz+4
 	%endrep
 	add	esi,40
+  add edi,80 * 400
 	shl	ch,1
 	dec	cl
 	jnz	@@1
+	pop	edi
 	pop	esi
 	ret
 
@@ -644,8 +650,8 @@ waitb:
 
 
 rotate1:
-	xor	si,si
-	mov	cx,32000/32-2
+	;xor	esi,esi
+	mov	ecx,32000/32-2
 	cld
 	jmp	@@2
 	;edx.eax
@@ -655,12 +661,13 @@ rotate1:
 	mov	ax,[esi+zzz]
 	rcr	al,1
 	rcr	ah,1
-	mov	[esi+zzz],ax ;es
+	mov	[edi+zzz],ax ;es
 	%assign zzz zzz+2
 	%endrep
 @@2:	pushf
-	add	si,zzz
-	dec	cx
+	add	esi,zzz
+	add	edi,zzz
+	dec	ecx
 	jz	@@0
 	jmp	@@1
 @@0:	popf
@@ -688,6 +695,8 @@ memseg	dd	0
 section .code
 
 extern _shim_vram
+extern _koe_tempbuf
+extern _koe_planar
 
 init_interference:
 	;mov	dx,3d4h
@@ -704,7 +713,7 @@ init_interference:
 	%assign zzz 0
 	%rep 8
 	mov	[circles+zzz],eax
-	add	ax,2048
+	add	ax,2048*16
 	%assign zzz zzz+4
 	%endrep
 	
@@ -715,8 +724,8 @@ init_interference:
 	;mov	es,ax
 	mov	ecx,200
 	;xor	edi,edi
-  mov edi, _shim_vram
-	mov	ebp,_shim_vram+80*399
+  mov edi, _koe_tempbuf
+	mov	ebp,_koe_tempbuf+80*399
 @@1:	push	ecx
 	push	edi
 	mov	ecx,0401h
@@ -739,16 +748,16 @@ init_interference:
 	pop	ecx
 	loop	@@1
 	
-	mov	dx,3ceh
-	mov	ax,0204h
+	;mov	dx,3ceh
+	;mov	ax,0204h
 	;out	dx,ax
-	mov	ecx,400
+	;mov	ecx,400
 	;mov	es,[circles+0]
 	;mov	ax,0a000h
 	;mov	ds,ax
-	mov	cx,32000/4
-  mov esi,[circles+0]
-  mov edi,_shim_vram
+	mov	ecx,32000/4
+  mov esi,_koe_tempbuf
+  mov edi,[circles+0]
 	;xor	esi,esi
 	;xor	edi,edi
 	rep	movsd
@@ -768,8 +777,8 @@ init_interference:
 	;mov	es,ax
 	mov	cx,200
 	;xor	di,di
-  mov edi, _shim_vram
-	mov	ebp,_shim_vram+80*399
+  mov edi, _koe_planar
+	mov	ebp,_koe_planar+80*399
 @@10:	push	ecx
 	push	edi
 	mov	ecx,0103h ;start at plane 1, copy 3 planes
@@ -799,6 +808,45 @@ extern _dis_musrow
 extern _dis_exit
 extern _dis_getmframe
 extern _demo_blit
+
+_resolve_planar:
+  movzx esi, word [scrnpos]
+  mov edi, _shim_vram
+  mov ecx, 320*200
+  mov edx, 320
+  mov bl, 0x80
+  resolve_byte:
+    xor al, al
+    test [_koe_planar+esi+80*400*0], bl
+    jz nah1
+      or al, 1
+    nah1:
+    test [_koe_planar+esi+80*400*1], bl
+    jz nah2
+      or al, 2
+    nah2:
+    test [_koe_planar+esi+80*400*2], bl
+    jz nah3
+      or al, 4
+    nah3:
+    test [_koe_planar+esi+80*400*3], bl
+    jz nah4
+      or al, 8
+    nah4:
+    stosb
+    ror bl,1
+    test bl,0x80
+    jz nextbyte
+      inc esi
+    nextbyte:
+    dec edx
+    cmp edx, 0
+    jne nextrow
+      add esi, 40
+      mov edx, 320
+    nextrow:
+  loop resolve_byte
+  ret
 
 do_interference:
 @@aga:	call	_dis_waitb
@@ -835,34 +883,34 @@ do_interference:
 	PLANE 8
 	;mov	ax,0a000h
 	;mov	es,ax
-	;xor	si,si
+	xor	esi,esi
 	movzx edi, word [scrnpos]
-  add edi, _shim_vram
+  add edi, _koe_planar+80 * 400 * 3
   movzx ebp, word [sinurot]
-	add	bp,7*2
-	and	bp,2047
+	add	ebp,7*2
+	and	ebp,2047
 	mov	[sinurot],bp
 	mov	ecx,200
 @@cp1:
   %assign zzz 0
 	push	esi
-	add	bp,9*2
-	and	bp,2047
-	movzx	ebx,word [_koe_sin1024+ebp]
-	sar	bx,3
+	add	ebp,9*2
+	and	ebp,2047
+	movsx	ebx,word [_koe_sin1024+ebp]
+	sar	ebx,3
 	mov	bh,[sinuspower]
-	movsx	ax,byte [power0+ebx]
-	sub	ax,[scrnposl]
+	movsx	eax,byte [power0+ebx]
+  sub	ax,[scrnposl]
 	add	ax,[overx]
-	mov	bx,ax
-	and	bx,7
-  xor bx,7
-  shl	bx,2
-	;neg	bx
-	mov	esi,[circles+ebx]
-	sar	ax,3
-	add	si,ax
-	add	si,[overya]
+	movzx	ebx,ax
+	and	ebx,7
+  shl ebx,2
+  neg ebx
+  add esi,[circles+ebx+7*4]  
+	sar	eax,3
+	add	esi,eax
+  movzx eax,word [overya]
+	add	esi,eax
 	%rep	40/4+1
 	mov	eax,[esi+zzz]
 	mov	[edi+zzz],eax
@@ -958,12 +1006,13 @@ do_interference:
 	inc	word [framecount]
 	;cmp	[framecount],70*13
 	;je	@@xx
+  call _resolve_planar
   call _demo_blit
  	mov	ax,0
 	mov	bx,9
 	;int	0fch
   call _dis_getmframe
-	cmp	ax,925
+	cmp	eax,925
 	jae	@@xx
 	mov	bx,2
 	;int	0fch
