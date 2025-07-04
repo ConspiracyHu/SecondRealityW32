@@ -507,6 +507,7 @@ pal1:
 	
 sinuspower db	0
 powercnt db	0
+
 global _power0
 _power0:
 power0
@@ -899,6 +900,7 @@ do_interference:
 	movsx	ebx,word [_koe_sin1024+ebp]
 	sar	ebx,3
 	mov	bh,[sinuspower]
+  and ebx, 0xFFFF
 	movsx	eax,byte [power0+ebx]
   sub	ax,[scrnposl]
 	add	ax,[overx]

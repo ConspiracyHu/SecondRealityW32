@@ -293,7 +293,7 @@ void koe_main()
 		out	dx,ax
 	}
   */
-	memset(vram,255,8000);
+	memset(vram,15,8000*8);
 	ip=flash(-2);
 	for(a=0;a<16;a++)
 	{
@@ -320,11 +320,11 @@ void koe_main()
 			zly=zy;
 			zya++;
 			zy+=zya;
-			v=vram+zly*40;
+			v=vram+zly*320;
 			for(y=zly;y<zy;y++)
 			{
-				memset(v+b*10,0,10);
-				v+=40;
+				memset(v+b*80,0,80);
+				v+=320;
 			}
 			if(a>=0) flash(a);
 			else flash(0);
