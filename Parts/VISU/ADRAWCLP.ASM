@@ -22,6 +22,7 @@ newclipprog dd 0
 clipcount dw	0
 clipzero dd	0
 clipvisfl dw	0
+vxseg dd	0
 
 section .code
 newclip_grd:
@@ -55,7 +56,7 @@ newclip_grd:
 %%l3:	push	edx
 	sub	bp,cx
 	sub	ax,dx
-	push	ax
+	push	eax
 	mov	dx,bp
 	xor	ax,ax
 	shrd	ax,dx,2
@@ -136,7 +137,7 @@ newclip_grd:
 	;
 
   ; simulate FS
-  mov eax, [esi+POLYVXSEG]
+  mov eax, [vxseg]
   add ebx, eax
   add ebp, eax
 
@@ -167,7 +168,7 @@ newclip_grd:
 	;
 	pop	esi ;X
 	pop	ecx ;cliplimit
-	xor	di,di
+	xor	edi,edi
 	;
 	imul	dword [_projmuly]
 	idiv	ecx
@@ -206,11 +207,10 @@ newclip_grd:
 
 %macro ZCLIPGETVX 0 ;reads to bx the offset of next vertex from DS:SI (copies last vx to bp) 
 	;local	l1,l2
-  push ebp
-	mov	bp,bx
-	mov	dx,[clipcount]
-	dec	dx
-	cmp	dx,1
+	mov	ebp,ebx
+	movzx	edx, word [clipcount]
+	dec	edx
+	cmp	edx,1
 	jl	@@0 ;list ended, jmp to end of clip procedure
 	mov	[clipcount],dx
 	jg	%%l1
@@ -219,7 +219,6 @@ newclip_grd:
 	jmp	%%l2
 %%l1:	add	esi,4
 %%l2:	movzx	ebx, word [esi+POLYVX]
-  pop ebp
 %endmacro 
 
 %macro ZCLIPADDVISVX 0 ;adds ds:si[bx+POLYX/Y] to list (the vx must be visible for this to work) at DS:DI
@@ -273,11 +272,12 @@ clipnear:
 	mov	[edi+POLYFLAGS],eax
 	mov	eax,[esi+POLYVXSEG] ;&POLYVXSEG
 	mov	[edi+POLYVXSEG],eax
+	mov	[vxseg],eax
 
 	mov	word [edi+POLYX-4],07fffh ;for CLIPADDVX to surely do it's work
 
   push ebp
-  mov	ebp,[esi+POLYVXSEG]
+  mov	ebp,[vxseg]
 	movzx	ebx,word [esi+POLYVX]
 	cmp	ecx,[ebp+ebx+vlist_z] ;fs
 	jle	@@2
@@ -287,7 +287,7 @@ clipnear:
 	ZCLIPGETVX ; <- can jump to @@0
 
   push ebp
-  mov	ebp,[esi+POLYVXSEG]
+  mov	ebp,[vxseg]
 
 	cmp	ecx,[ebp+ebx+vlist_z] ;fs
 	jge	@@1
@@ -306,7 +306,7 @@ clipnear:
 	ZCLIPGETVX ; <- can jump to @@0
 
   push ebp
-  mov	ebp,[esi+POLYVXSEG]
+  mov	ebp,[vxseg]
 
 	cmp	ecx,[ebp+ebx+vlist_z] ;fs
 
@@ -340,9 +340,9 @@ clipnear:
 
 newclipup:
 	;clips list DS:SI -> DS:DI (source list must NOT be empty)
-	push	bp
-	push	si
-	push	di
+	push	ebp
+	push	esi
+	push	edi
 	mov	[clipzero],esi
 	mov	bp,word [_projclipy+CLIPMIN]
 	mov	eax,[esi+POLYSIDES] ;&POLYCOLOR
@@ -376,21 +376,21 @@ newclipup:
 	NEWCLIPCALC POLYY,POLYX
 	jmp	@@1 ;to hidden
 
-@@0:	pop	bx
-	sub	di,bx
-	shr	di,2
+@@0:	pop	ebx
+	sub	edi,ebx
+	shr	edi,2
 	mov	[ebx+POLYSIDES],di ;Sides in clipped polygon
-	mov	di,bx
-	pop	si
-	pop	bp
+	mov	edi,ebx
+	pop	esi
+	pop	ebp
 	ret
 
 
 newclipdown:
 	;clips list DS:SI -> DS:DI (source list must NOT be empty)
-	push	bp
-	push	si
-	push	di
+	push	ebp
+	push	esi
+	push	edi
 	mov	[clipzero],esi
 	mov	bp,word [_projclipy+CLIPMAX]
 	mov	eax,[esi+POLYSIDES] ;&POLYCOLOR
@@ -424,21 +424,21 @@ newclipdown:
 	NEWCLIPCALC POLYY,POLYX
 	jmp	@@1 ;to hidden
 
-@@0:	pop	bx
-	sub	di,bx
-	shr	di,2
+@@0:	pop	ebx
+	sub	edi,ebx
+	shr	edi,2
 	mov	[ebx+POLYSIDES],di ;Sides in clipped polygon
-	mov	di,bx
-	pop	si
-	pop	bp
+	mov	edi,ebx
+	pop	esi
+	pop	ebp
 	ret
 
 	
 newclipleft:
 	;clips list DS:SI -> DS:DI (source list must NOT be empty)
-	push	bp
-	push	si
-	push	di
+	push	ebp
+	push	esi
+	push	edi
 	mov	[clipzero],esi
 	mov	bp,word [_projclipx+CLIPMIN]
 	mov	eax,[esi+POLYSIDES] ;&POLYCOLOR
@@ -472,21 +472,21 @@ newclipleft:
 	NEWCLIPCALC POLYX,POLYY
 	jmp	@@1 ;to hidden
 
-@@0:	pop	bx
-	sub	di,bx
-	shr	di,2
+@@0:	pop	ebx
+	sub	edi,ebx
+	shr	edi,2
 	mov	[ebx+POLYSIDES],di ;Sides in clipped polygon
-	mov	di,bx
-	pop	si
-	pop	bp
+	mov	edi,ebx
+	pop	esi
+	pop	ebp
 	ret
 
 
 newclipright:
 	;clips list DS:SI -> DS:DI (source list must NOT be empty)
-	push	bp
-	push	si
-	push	di
+	push	ebp
+	push	esi
+	push	edi
 	mov	[clipzero],esi
 	mov	bp,word [_projclipx+CLIPMAX]
 	mov	eax,[esi+POLYSIDES] ;&POLYCOLOR
@@ -520,13 +520,13 @@ newclipright:
 	NEWCLIPCALC POLYX,POLYY
 	jmp	@@1 ;to hidden
 
-@@0:	pop	bx
-	sub	di,bx
-	shr	di,2
+@@0:	pop	ebx
+	sub	edi,ebx
+	shr	edi,2
 	mov	[ebx+POLYSIDES],di ;Sides in clipped polygon
-	mov	di,bx
-	pop	si
-	pop	bp
+	mov	edi,ebx
+	pop	esi
+	pop	ebp
 	ret
 
 global newclip
@@ -538,7 +538,7 @@ newclip:
 	;ax=flags for polygon (determines if texture and/or gouraud is clipped)
 	;EXIT:
 	;ds:si=clipped list (could be either of the entry lists)
-	xor	bx,bx
+	xor	ebx,ebx
 	test	ax,F_GOURAUD
 	jz	@@f1
 	mov	ebx,newclip_grd
@@ -551,10 +551,10 @@ newclip:
 	jz	@@cl6		;not all vertices are even calculated!
 	cmp	word [esi+POLYSIDES],0
 	je	@@cl6
-	push	dx
+	push	edx
 	call	clipnear
-	xchg	si,di
-	pop	dx	;  clipnear return in ax the visfl for new vertices. 
+	xchg	esi,edi
+	pop	edx	;  clipnear return in ax the visfl for new vertices. 
 	or	dl,al 	;<-this is done so that if the new vertices are outside the screen they'll be clipped
 @@cl6:	;
 	test	dl,VF_UP

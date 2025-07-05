@@ -214,7 +214,7 @@ int main( int argc, char * argv[] )
                    { 0         ,  0x00,   0,   0, NULL },
   };
 
-  int start = 13;
+  int start = 1;
   if ( argc > 1 )
   {
     switch( argv[ 1 ][ 0 ] )
