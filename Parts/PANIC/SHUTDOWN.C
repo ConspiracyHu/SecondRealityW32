@@ -45,7 +45,8 @@ void shutdown_main()  {
 
 	//dis_partstart();
 
-#ifndef _LOADER_
+  if (demo_isfirstpart())
+  {
 	//tw_opengraph();
 	//tw_setstart(80);
 	fff=fopen("monster.u","rb");
@@ -61,9 +62,11 @@ void shutdown_main()  {
 		tw_putpixel(x+320,y*2+1,255-kuva[y*320+x]);
 		}
 	tw_setpalette(kuvapal);
-#else
-	getpal(kuvapal);
-#endif
+  }
+  else
+  {
+	  getpal(kuvapal);
+  }
 	shutdown();
 	}
 

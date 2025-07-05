@@ -150,8 +150,11 @@ void	doit(void)
 {
 	int	frame=0,halt=0,storea=0,ysb=0;
 	int	a,b,c,y,ysz,ysza,xsc,spd=10,la,y1,y2;
-	//while(!dis_exit() && dis_musplus()<4);
-  while(!dis_exit() && frame<700)
+ 	if (!demo_isfirstpart())
+ 	{
+ 		while(!dis_exit() && dis_musplus()<4);
+ 	}
+ 	while(!dis_exit() && frame<700)
 	{
 		//if(*shiftstatus&16) jl_setborder(0);
 		c=waitb();

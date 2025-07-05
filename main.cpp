@@ -245,6 +245,8 @@ int main( int argc, char * argv[] )
       break;
     }
 
+    demo_finishedfirstpart();
+
     if ( i == 7 )
     {
       // wait for music between the shutdown / forest parts (see @@zh5 in U2.ASM)

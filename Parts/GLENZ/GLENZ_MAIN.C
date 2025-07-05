@@ -298,8 +298,11 @@ void glenz_main()
 
     //dis_partstart();
 
-    //while(!dis_exit() && dis_musplus()<-19) ;
-    //dis_setmframe(0);
+    if (!demo_isfirstpart())
+    {
+      while(!dis_exit() && dis_musplus()<-19) ;
+    }
+    dis_setmframe(0);
 
     zoomer2(NULL);
 

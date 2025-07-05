@@ -104,8 +104,11 @@ void plz()
 	long	tim=0,count=0;
 	int	ch=0,sync=2;
 
-  demo_changemode( 384, 400 );
-	while(dis_musplus()<0 && !dis_exit());
+ 	demo_changemode( 384, 400 );
+ 	if (!demo_isfirstpart())
+ 	{
+		while(dis_musplus()<0 && !dis_exit());
+	}
 	dis_setmframe(0);
 
 	init_plz();

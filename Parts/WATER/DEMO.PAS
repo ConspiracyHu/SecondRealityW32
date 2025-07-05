@@ -132,7 +132,8 @@ begin
 
      end;
      }
-     repeat until dis_musplus(0)>0;
+     if not demo_isfirstpart then
+       repeat until dis_musplus(0)>0;
      co := dis_musorder(0);
 
      fillchar(@fbuf[0],sizeof(fbuf),#0);

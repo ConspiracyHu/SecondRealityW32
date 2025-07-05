@@ -101,3 +101,14 @@ void shim_setstartpixel( int reg )
 {
   shim_startpixel = reg;
 }
+
+char is_first_part = 1;
+char demo_isfirstpart()
+{
+  return is_first_part;
+}
+
+EXTERN void demo_finishedfirstpart()
+{
+  is_first_part = 0;
+}

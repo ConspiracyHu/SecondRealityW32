@@ -111,9 +111,12 @@ void	part1(void)
 		firfade1[b]=170*64+(100-b)*50;
 		firfade2[b]=170*64+(100-b)*50;
 	}
-	if(dis_musplus>-30) while(!dis_exit() && dis_musplus()<-6) ;
+ 	if (!demo_isfirstpart())
+ 	{
+		if(dis_musplus>-30) while(!dis_exit() && dis_musplus()<-6) ;
+	}
 	dis_waitb();
-	//dis_setmframe(0);
+	dis_setmframe(0);
 	while(!dis_exit() && frame<300)
 	{
 		if(frame<80)

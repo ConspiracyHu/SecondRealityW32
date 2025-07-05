@@ -235,8 +235,11 @@ void koe_main()
 			}
 		}
 	}
-	
-	while(!dis_exit() && dis_musplus()<-4) ;
+
+	if ( !demo_isfirstpart() )
+	{
+		while(!dis_exit() && dis_musplus()<-4) ;
+	}
 	dis_setmframe(0);
 
 	dointerference2();

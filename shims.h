@@ -19,3 +19,5 @@ EXTERN void shim_setstartpixel( int reg );
 
 EXTERN void demo_blit();
 EXTERN void demo_changemode( int x, int y );
+EXTERN char demo_isfirstpart();
+EXTERN void demo_finishedfirstpart();
