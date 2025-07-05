@@ -356,7 +356,6 @@ void koe_main()
     return;
 	}
 
-  //for ( int i = 0; i < 256; i++ )shim_setpal( i, i/4, i/4, i/4 );
 	palfade=halloc(13000,1);
 	dis_partstart();
 	doit1(70*6);
@@ -601,11 +600,13 @@ int	doit3(int count)
 	while(!dis_exit() && count>0)
 	{
 		a=dis_getmframe();
+    /*
 		if(a>2520) 
 		{
 			if(xpos!=0) xpos=0;
 			else break;
 		}
+    */
 		if(count<333) 
 		{
 			while(repeat--)

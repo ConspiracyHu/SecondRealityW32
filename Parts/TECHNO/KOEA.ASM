@@ -714,7 +714,7 @@ init_interference:
 	%assign zzz 0
 	%rep 8
 	mov	[circles+zzz],eax
-	add	ax,2048*16
+	add	eax,2048*16
 	%assign zzz zzz+4
 	%endrep
 	
@@ -813,9 +813,11 @@ extern _demo_blit
 _resolve_planar:
   movzx esi, word [scrnpos]
   mov edi, _shim_vram
-  mov ecx, 320*200
+  movzx ecx, word [scrnposl]
   mov edx, 320
   mov bl, 0x80
+  shr bl, cl
+  mov ecx, 320*200
   resolve_byte:
     xor al, al
     test [_koe_planar+esi+80*400*0], bl
@@ -902,13 +904,15 @@ do_interference:
 	mov	bh,[sinuspower]
   and ebx, 0xFFFF
 	movsx	eax,byte [power0+ebx]
-  sub	ax,[scrnposl]
-	add	ax,[overx]
-	movzx	ebx,ax
+  movzx ebx, word [overx]
+  add	eax, ebx
+  movzx ebx, word [scrnposl]
+  sub	eax, ebx
+	mov	ebx, eax
 	and	ebx,7
   shl ebx,2
   neg ebx
-  add esi,[circles+ebx+7*4]  
+  add esi,[circles+ebx+7*4]
 	sar	eax,3
 	add	esi,eax
   movzx eax,word [overya]
