@@ -204,7 +204,7 @@ int main( int argc, char * argv[] )
     /* 10  BUG  */ { MUSIC_PM,    0x3F, 320, 200, plz_main },       // 14  db  'Plasmacube (WILDF)          ' / 'PLZPART ' / 'PLZPART.EXE'
     /* 11       */ { MUSIC_PM,    0x4D, 320, 200, dots_main },      // 15  db  'MiniVectorBalls (PSI)       ' / 'DOTS    ' / 'MINVBALL.EXE'
     /* 12       */ { MUSIC_PM,    0x58, 320, 200, water_main },     // 16  db  'Peilipalloscroll (TRUG)     ' / 'WATER   ' / 'RAYSCRL.EXE'
-    /* 13  BUG  */ { MUSIC_PM,    0x5E, 320, 400, coman_main },     // 17  db  '3D-Sinusfield (PSI)         ' / 'COMAN   ' / '3DSINFLD.EXE'
+    /* 13       */ { MUSIC_PM,    0x5E, 320, 200, coman_main },     // 17  db  '3D-Sinusfield (PSI)         ' / 'COMAN   ' / '3DSINFLD.EXE'
     /* 14       */ { MUSIC_PM,    0x63, 320, 400, jplogo_main },    // 18  db  'Jellypic (PSI)              ' / 'JPLOGO  ' / 'JPLOGO.EXE'
     /* 15  CTD  */ { MUSIC_SKAV,  0x12, 320, 200, u2e_main },       // 19  db  'Vector Part II              ' / 'VISU    ' / 'U2E.EXE'
                                                                                
@@ -214,7 +214,7 @@ int main( int argc, char * argv[] )
                    { 0         ,  0x00,   0,   0, NULL },
   };
 
-  int start = 7;
+  int start = 13;
   if ( argc > 1 )
   {
     switch( argv[ 1 ][ 0 ] )
