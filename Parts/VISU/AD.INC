@@ -55,7 +55,7 @@
 %define POLYSIDES 0
 %define POLYCOLOR 2
 %define POLYFLAGS 4
-%define POLYVXSEG 6 ;segment
+%define POLYVXSEG 8 ;segment
 %define  POLYX (16)
 %define  POLYY (16+2)
 %define POLYVX (16+MAXSIDES*4) 	;offset

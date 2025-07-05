@@ -467,7 +467,7 @@ _draw_polylist:
 	movzx	esi, word [esi]
 	cmp	si,0
 	je	@@0 ;end of list
-	movpar	eax,2
+	movpar	eax,1
 	add	esi,eax
 	;movpar	ds,2+1
 	;ds:si points to polydata/polygon we are now drawing

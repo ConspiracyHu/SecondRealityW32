@@ -134,12 +134,18 @@ newclip_grd:
 	push	edi
 	push	ecx
 	;
+
+  ; simulate FS
+  mov eax, [esi+POLYVXSEG]
+  add ebx, eax
+  add ebp, eax
+
 	mov	eax,[ebx+vlist_z] ;fs
 	mov	edx,[ebp+vlist_z] ;fs
 	cmp	eax,edx
 	jg	%%l1
 	xchg	eax,edx
-	xchg	bx,bp
+	xchg	ebx,ebp
 %%l1:	;EAX=farther vertex (>EDX), BX=offset of farther vertex
 	mov	esi,eax
 	mov	edi,eax
@@ -211,8 +217,8 @@ newclip_grd:
 	;1 vertex left, means we rotated the list
 	mov	esi,[clipzero]
 	jmp	%%l2
-%%l1:	add	si,4
-%%l2:	mov	bx,[esi+POLYVX]
+%%l1:	add	esi,4
+%%l2:	movzx	ebx, word [esi+POLYVX]
   pop ebp
 %endmacro 
 
@@ -261,22 +267,32 @@ clipnear:
 	mov	ecx,[_projclipz+CLIPMIN] ;ECX=cliplimit
 	mov	eax,[esi+POLYSIDES] ;&POLYCOLOR
 	mov	[edi+POLYSIDES],eax
-	inc	ax
+	inc	eax
 	mov	[clipcount],ax
 	mov	eax,[esi+POLYFLAGS] ;&POLYVXSEG
 	mov	[edi+POLYFLAGS],eax
+	mov	eax,[esi+POLYVXSEG] ;&POLYVXSEG
+	mov	[edi+POLYVXSEG],eax
 
 	mov	word [edi+POLYX-4],07fffh ;for CLIPADDVX to surely do it's work
-		
-	movzx	ebx,word [esi+POLYVX]
 
-	cmp	ecx,[ebx+vlist_z] ;fs
+  push ebp
+  mov	ebp,[esi+POLYVXSEG]
+	movzx	ebx,word [esi+POLYVX]
+	cmp	ecx,[ebp+ebx+vlist_z] ;fs
 	jle	@@2
-	
+
 @@1:	;LAST POINT HIDDEN
-	ZCLIPGETVX
-	cmp	ecx,[ebx+vlist_z] ;fs
+  pop ebp
+	ZCLIPGETVX ; <- can jump to @@0
+
+  push ebp
+  mov	ebp,[esi+POLYVXSEG]
+
+	cmp	ecx,[ebp+ebx+vlist_z] ;fs
 	jge	@@1
+
+  pop ebp
 	;this point visible, clip
 	ZCLIPCLIP ;returns data in cx
 	or	[clipvisfl],ax
@@ -284,15 +300,29 @@ clipnear:
 	mov	ecx,[_projclipz+CLIPMIN] ;ECX was destroyed by ZCLIPCLIP
 	
 @@2:	;LAST POINT VISIBLE
+  pop ebp
+
 	ZCLIPADDVISVX
-	ZCLIPGETVX
-	cmp	ecx,[ebx+vlist_z] ;fs
+	ZCLIPGETVX ; <- can jump to @@0
+
+  push ebp
+  mov	ebp,[esi+POLYVXSEG]
+
+	cmp	ecx,[ebp+ebx+vlist_z] ;fs
+
 	jle	@@2
+
+  pop ebp
+
 	;this point hidden, clip
 	ZCLIPCLIP ;returns data in cx
 	or	[clipvisfl],ax
 	ZCLIPADDVX
 	mov	ecx,[_projclipz+CLIPMIN] ;ECX was destroyed by ZCLIPCLIP
+
+  push ebp
+  mov	ebp,[esi+POLYVXSEG]
+
 	jmp	@@1 ;to hidden
 
 @@0:	pop	ebx
@@ -321,6 +351,8 @@ newclipup:
 	mov	[clipcount],ax
 	mov	eax,[esi+POLYFLAGS] ;&POLYVXSEG
 	mov	[edi+POLYFLAGS],eax
+	mov	eax,[esi+POLYVXSEG] ;&POLYVXSEG
+	mov	[edi+POLYVXSEG],eax
 	
 	mov	word [edi+POLYX-4],07fffh ;for CLIPADDVX to surely do it's work
 
@@ -367,6 +399,8 @@ newclipdown:
 	mov	[clipcount],ax
 	mov	eax,[esi+POLYFLAGS] ;&POLYVXSEG
 	mov	[edi+POLYFLAGS],eax
+	mov	eax,[esi+POLYVXSEG] ;&POLYVXSEG
+	mov	[edi+POLYVXSEG],eax
 	
 	mov	word [edi+POLYX-4],07fffh ;for CLIPADDVX to surely do it's work
 
@@ -413,6 +447,8 @@ newclipleft:
 	mov	[clipcount],ax
 	mov	eax,[esi+POLYFLAGS] ;&POLYVXSEG
 	mov	[edi+POLYFLAGS],eax
+	mov	eax,[esi+POLYVXSEG] ;&POLYVXSEG
+	mov	[edi+POLYVXSEG],eax
 	
 	mov	word [edi+POLYX-4],07fffh ;for CLIPADDVX to surely do it's work
 
@@ -459,6 +495,8 @@ newclipright:
 	mov	[clipcount],ax
 	mov	eax,[esi+POLYFLAGS] ;&POLYVXSEG
 	mov	[edi+POLYFLAGS],eax
+	mov	eax,[esi+POLYVXSEG] ;&POLYVXSEG
+	mov	[edi+POLYVXSEG],eax
 	
 	mov	word [edi+POLYX-4],07fffh ;for CLIPADDVX to surely do it's work
 
