@@ -212,7 +212,7 @@ static int16_t jmptoord, np_ord, np_row, np_pat, np_patoff, patloopstart, jumpto
 static uint16_t useglobalvol, patmusicrand, ordNum, insNum, patNum;
 static int32_t mastermul, mastervol = 256, mixingVol, samplesLeft, soundBufferSize, *mixBufferL, *mixBufferR;
 static int32_t prngStateL, prngStateR, randSeed = INITIAL_DITHER_SEED;
-static uint32_t samplesPerTick, audioRate, sampleCounter;
+static uint32_t samplesPerTick, audioRate, sampleCounter, np_zframe;
 static chn_t chn[32];
 static voice_t voice[32], tmpGUSVoices[32];
 static ins_t ins[100];
@@ -1202,6 +1202,8 @@ static void docmd2(void) // tick >0 commands
 
 static void dorow(void)
 {
+  np_zframe++;
+
 	patmusicrand = (((patmusicrand * 0xCDEF) >> 16) + 0x1727) & 0xFFFF;
 
 	if (np_pat == 255)
@@ -2642,20 +2644,22 @@ static void mixAudio(int16_t *stream, int32_t sampleBlockLength)
 
 typedef struct 
 {
-  unsigned int sampleCountStart;
-  unsigned char row;
-  unsigned char order;
+  uint32_t sampleCountStart;
+  uint8_t row;
+  uint8_t order;
+  uint32_t frame;
 } SampleMarker;
 
 SampleMarker sampleMarkers[ 0x40 * 0x70 ];
-unsigned short sampleMarkerCount = 0;
-unsigned int totalSampleCount = 0;
+uint16_t sampleMarkerCount = 0;
+uint32_t totalSampleCount = 0;
 
 static void insertSampleMarker()
 {
   sampleMarkers[ sampleMarkerCount ].sampleCountStart = totalSampleCount;
-  sampleMarkers[ sampleMarkerCount ].order = np_ord;
-  sampleMarkers[ sampleMarkerCount ].row = np_row;
+  sampleMarkers[ sampleMarkerCount ].order = (uint8_t)np_ord;
+  sampleMarkers[ sampleMarkerCount ].row = (uint8_t)np_row;
+  sampleMarkers[ sampleMarkerCount ].frame = np_zframe;
   sampleMarkerCount++;
 }
 
@@ -3056,6 +3060,7 @@ static bool loadS3M(const uint8_t *dat, uint32_t modLen, uint32_t startingOrder)
 	startrow = 0;
 	breakpat = 0;
 	volslidetype = 0;
+  np_zframe = 0;
 	np_patoff = -1;
 	jmptoord = -1;
 
@@ -3356,7 +3361,7 @@ omError:
 	return FALSE;
 }
 
-void st3play_GetOrderAndRow( uint16_t * orderPtr, uint16_t * rowPtr )
+void st3play_GetOrderRowAndFrame( unsigned short * orderPtr, unsigned short * rowPtr, unsigned int * framePtr )
 {
   MMTIME mmTime;
   mmTime.wType = TIME_SAMPLES;
@@ -3371,6 +3376,7 @@ void st3play_GetOrderAndRow( uint16_t * orderPtr, uint16_t * rowPtr )
   {
     *orderPtr = sampleMarkers[ 0 ].order - 1;
     *rowPtr = sampleMarkers[ 0 ].row;
+    *framePtr = sampleMarkers[ 0 ].frame;
     return;
   }
 
@@ -3391,13 +3397,15 @@ void st3play_GetOrderAndRow( uint16_t * orderPtr, uint16_t * rowPtr )
 
   *orderPtr = sampleMarkers[ i0 ].order - 1; // st3play is always one order ahead
   *rowPtr = sampleMarkers[ i0 ].row;
+  *framePtr = sampleMarkers[ i0 ].frame;
 }
 
 uint16_t st3play_GetOrder( void )
 {
   uint16_t currentOrder = 0;
   uint16_t currentRow = 0;
-  st3play_GetOrderAndRow( &currentOrder, &currentRow );
+  uint32_t currentFrame = 0;
+  st3play_GetOrderRowAndFrame( &currentOrder, &currentRow, &currentFrame );
   return currentOrder;
 }
 
@@ -3405,15 +3413,26 @@ uint16_t st3play_GetRow( void )
 {
   uint16_t currentOrder = 0;
   uint16_t currentRow = 0;
-  st3play_GetOrderAndRow( &currentOrder, &currentRow );
+  uint32_t currentFrame = 0;
+  st3play_GetOrderRowAndFrame( &currentOrder, &currentRow, &currentFrame );
   return currentRow;
+}
+
+uint32_t st3play_GetFrame( void )
+{
+  uint16_t currentOrder = 0;
+  uint16_t currentRow = 0;
+  uint32_t currentFrame = 0;
+  st3play_GetOrderRowAndFrame( &currentOrder, &currentRow, &currentFrame );
+  return currentFrame;
 }
 
 int16_t st3play_GetPlusFlags( void )
 {
   uint16_t currentOrder = 0;
   uint16_t currentRow = 0;
-  st3play_GetOrderAndRow( &currentOrder, &currentRow );
+  uint32_t currentFrame = 0;
+  st3play_GetOrderRowAndFrame( &currentOrder, &currentRow, &currentFrame );
 
   uint8_t flags = 0;
   if ( order[ currentOrder + 1 ] == PATT_SEP ) flags |= 1;

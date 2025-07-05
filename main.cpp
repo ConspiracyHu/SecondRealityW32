@@ -4,6 +4,7 @@
 #include "shims.h"
 
 extern "C" int dis_exit();
+extern "C" int dis_getmframe();
 
 extern "C" void beg_main();
 extern "C" void glenz_main();
@@ -32,7 +33,7 @@ extern "C" void plzline(int,int);
 extern "C" bool st3play_PlaySong( const unsigned char * moduleData, unsigned int dataLength, bool useInterpolationFlag, unsigned int audioFreq, unsigned int startingOrder );
 extern "C" void st3play_Close( void );
 extern "C" void st3play_SetMasterVol( unsigned short volume );
-extern "C" void st3play_GetOrderAndRow( unsigned short * orderPtr, unsigned short * rowPtr );
+extern "C" void st3play_GetOrderRowAndFrame( unsigned short * orderPtr, unsigned short * rowPtr, unsigned int * framePtr );
 extern "C" short st3play_GetPlusFlags();
 
 unsigned int * screen32;
@@ -60,9 +61,10 @@ void demo_blit()
 #if 1
   unsigned short order = 0;
   unsigned short row = 0;
-  st3play_GetOrderAndRow( &order, &row );
+  unsigned int frame = 0;
+  st3play_GetOrderRowAndFrame( &order, &row, &frame );
   unsigned short plus = st3play_GetPlusFlags();
-  printf( "%04X %04X %04X\r", order, row, plus );
+  printf( "%04X %04X %04X %d\r", order, row, plus, dis_getmframe() );
 #endif
 
   graphics.HandleMessages();
@@ -87,21 +89,43 @@ bool demo_wantstoquit()
   return graphics.WantsToQuit();
 }
 
+double currentTime = 0.0;
+LARGE_INTEGER lastPCV = { 0 };
+
+float get_time_ms_precise()
+{
+  LARGE_INTEGER count, freq;
+  if ( !lastPCV.QuadPart )
+  {
+    QueryPerformanceCounter( &lastPCV );
+  }
+  QueryPerformanceCounter( &count );
+  QueryPerformanceFrequency( &freq );
+
+  currentTime += (double)( count.QuadPart - lastPCV.QuadPart ) / (double)( freq.QuadPart );
+
+  lastPCV = count;
+
+  return (float)( currentTime * 1000.0f );
+}
+
 //#define WAIT_FOR_KEY
 extern "C" void demo_vsync();
-unsigned int lastVblank = 0;
+float lastVblank = 0;
 void demo_vsync()
 {
 #ifdef WAIT_FOR_KEY
   while ( !( GetAsyncKeyState( ' ' ) & 0x8000 ) ) { Sleep( 1 ); }
   while ( GetAsyncKeyState( ' ' ) & 0x8000 ) { Sleep( 1 ); }
 #else
-  const unsigned int now = GetTickCount();
-  const unsigned int cycle = 1000 / 70;
-  const unsigned int elapsed = 0;// now - lastVblank;
-  if ( elapsed < cycle )
+  const float cycle_ms = 1000.0f / 70.0;
+  float now = get_time_ms_precise();
+  float elapsed = now - lastVblank;
+  while ( elapsed < cycle_ms )
   {
-    Sleep( cycle - elapsed );
+    Sleep( 1 );
+    now = get_time_ms_precise();
+    elapsed = now - lastVblank;
   }
   lastVblank = now;
 #endif

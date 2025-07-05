@@ -13,13 +13,18 @@ int dis_indemo()
   return 1;
 }
 
-int dis_frame = 0;
+void st3play_GetOrderRowAndFrame( unsigned short * orderPtr, unsigned short * rowPtr, unsigned int * framePtr );
+unsigned short st3play_GetOrder();
+unsigned short st3play_GetRow();
+unsigned int st3play_GetFrame();
+short st3play_GetPlusFlags();
+
+int dis_frame_start = 0;
 
 void demo_vsync();
 int dis_waitb()
 {
   demo_vsync();
-  dis_frame++;
   return 1;
 }
 
@@ -38,11 +43,6 @@ void * dis_msgarea( int areanumber )
 {
   return NULL;
 }
-
-void st3play_GetOrderAndRow( unsigned short * orderPtr, unsigned short * rowPtr );
-unsigned short st3play_GetOrder();
-unsigned short st3play_GetRow();
-short st3play_GetPlusFlags();
 
 int dis_muscode( int code )
 {
@@ -70,12 +70,12 @@ void dis_setcopper( int routine_number, void ( *routine )( void ) )
 
 void dis_setmframe( int frame )
 {
-  dis_frame = frame;
+  dis_frame_start = frame;
 }
 
 int dis_getmframe( void )
 {
-  return dis_frame;
+  return st3play_GetFrame() - dis_frame_start;
 }
 
 struct Sync
@@ -109,7 +109,8 @@ int dis_sync( void )
 {
   unsigned short order = 0;
   unsigned short row = 0;
-  st3play_GetOrderAndRow( &order, &row );
+  unsigned int frame = 0;
+  st3play_GetOrderRowAndFrame( &order, &row, &frame );
   unsigned short order_and_row = (order << 8) | row;
 
   for ( int i = 1; i <= sizeof( syncdata ); i++ )
