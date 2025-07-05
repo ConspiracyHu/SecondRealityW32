@@ -5,6 +5,8 @@
 
 extern "C" int dis_exit();
 extern "C" int dis_getmframe();
+extern "C" int dis_musplus();
+extern "C" int dis_waitb();
 
 extern "C" void beg_main();
 extern "C" void glenz_main();
@@ -194,7 +196,7 @@ int main( int argc, char * argv[] )
     /* 04  BUG  */ { MUSIC_PM,    0x00, 320, 200, glenz_main },     // 4   db  'Glenz (PSI)                 ' / 'GLENZ   ' / 'GLENZ.EXE'
     /* 05       */ { MUSIC_PM,    0x0F, 320, 200, tun_main },       // 5   db  'Dottitunneli (TRUG)         ' / 'TUNNELI ' / 'TUNNELI.EXE'
     /* 06       */ { MUSIC_PM,    0x14, 320, 200, koe_main },       // 6   db  'Techno (PSI)                ' / 'TECHNO  ' / 'TECHNO.EXE'
-    /* 07  BUG  */ { MUSIC_PM,    0x18, 320, 200, shutdown_main },  // 7   db  'Panicfake (WILDF)           ' / 'PANIC   ' / 'PANICEND.EXE'
+    /* 07  BUG  */ { MUSIC_PM,    0x27, 320, 200, shutdown_main },  // 7   db  'Panicfake (WILDF)           ' / 'PANIC   ' / 'PANICEND.EXE'
     /* 08       */ { MUSIC_PM,    0x2A, 320, 200, forest_main },    // 8   db  'Vuori-Scrolli (TRUG)        ' / 'FOREST  ' / 'MNTSCRL.EXE'
                                                                     // 11  db  'Lens (PSI)                  ' / '        ' / 
     /* 09       */ { MUSIC_PM,    0x2F, 320, 200, lens_main },      // 12  db  'Rotazoomer (PSI)            ' / 'LENS    ' / 'LNS&ZOOM.EXE'
@@ -212,7 +214,7 @@ int main( int argc, char * argv[] )
                    { 0         ,  0x00,   0,   0, NULL },
   };
 
-  int start = 6;
+  int start = 7;
   if ( argc > 1 )
   {
     switch( argv[ 1 ][ 0 ] )
@@ -241,6 +243,21 @@ int main( int argc, char * argv[] )
     if ( dis_exit() )
     {
       break;
+    }
+
+    if ( i == 7 )
+    {
+      // wait for music between the shutdown / forest parts (see @@zh5 in U2.ASM)
+      while ( !dis_exit() && dis_musplus() >= 0 )
+      {
+        dis_waitb();
+        demo_blit();
+      }
+      while ( !dis_exit() && dis_musplus() < 0 )
+      {
+        dis_waitb();
+        demo_blit();
+      }
     }
   }
   
