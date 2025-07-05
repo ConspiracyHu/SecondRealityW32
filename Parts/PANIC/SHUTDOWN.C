@@ -45,8 +45,7 @@ void shutdown_main()  {
 
 	//dis_partstart();
 
-  if (demo_isfirstpart())
-  {
+#ifndef _LOADER_
 	//tw_opengraph();
 	//tw_setstart(80);
 	fff=fopen("monster.u","rb");
@@ -62,11 +61,23 @@ void shutdown_main()  {
 		tw_putpixel(x+320,y*2+1,255-kuva[y*320+x]);
 		}
 	tw_setpalette(kuvapal);
-  }
-  else
+#else
+  if ( demo_isfirstpart() )
   {
-	  getpal(kuvapal);
+    char pic[ 80000 ];
+    FILE * h = fopen( "Data\\troll.up", "rb" );
+    fread( pic, 80000, 1, h );
+    fclose( h );
+    readp( kuvapal, -1, pic );
+    setpal( kuvapal );
+    for ( int y = 0; y < 400; y++ )
+    {
+      readp( shim_vram + y * 320, y, pic );
+    }
   }
+  getpal(kuvapal);
+#endif
+
 	shutdown();
 	}
 
