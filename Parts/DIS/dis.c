@@ -70,7 +70,7 @@ void dis_setcopper( int routine_number, void ( *routine )( void ) )
 
 void dis_setmframe( int frame )
 {
-  dis_frame_start = frame;
+  dis_frame_start = st3play_GetFrame() - frame;
 }
 
 int dis_getmframe( void )
