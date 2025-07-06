@@ -361,31 +361,35 @@ gouraud12:
 ;----------------------------------------------------------------
 
 gouraud1: ;1 pixel accuray
-	sar	dx,1
-	add	cx,cx
+	sar	edx,1
+	add	ecx,ecx
 	;
-	mov	ax,cx
-	shl	cx,3
-	sub	ax,cx
-	;ax=-cx*7
-	add	ax,@@dgvdfg_fcode
-	mov	bx,[vdfg_color2]
-	jmp	ax
+	mov	eax,ecx
+	shl	ecx,3
+	add	eax,ecx
+  neg eax
+	;ax=-cx*9
+	add	eax,@@dgvdfg_fcode
+	mov	ebx,[vdfg_color2]
+	jmp	eax
 	
 %assign zzz MAXCOLS
 %rep	MAXCOLS+1
-	add	bx,dx			;2 bytes
-	mov	[vdfg_buf+ (zzz & 3)*(MAXCOLS/4) + (zzz >> 2) ],bh	;5 bytes
+	add	bx,dx			;3 bytes
+	mov	[vdfg_buf+ (zzz & 3)*(MAXCOLS/4) + (zzz >> 2) ],bh	;6 bytes
 	%assign zzz zzz-1
 %endrep
-	mov ax,bx			;2 bytes, 1 clock (filler)
+	;mov ax,bx			;2 bytes, 1 clock (filler)
 @@dgvdfg_fcode:
 	;push	ds
 	;mov	ax,cs
 	;mov	ds,ax
 	mov	ecx,esi
 	add	ecx,ecx
+  mov	esi,vdfg_buf
+  call	fastmovsb
 	;
+%if 0
 @@dgf1:	mov	al,00010001b
 	test	word [vdfg_lefts],1
 	jz	@@dgf2
@@ -415,6 +419,8 @@ ZZZ(x) :	pop	ecx
 	%endrep
 	;
 @@dgf0:	;pop	ds
+%endif
+
 	pop	esi
 	jmp	zzz20
 
@@ -422,28 +428,32 @@ ZZZ(x) :	pop	ecx
 ;----------------------------------------------------------------
 
 gouraud2: ;2 pixel accuray
-	mov	ax,cx
-	shl	cx,3
-	sub	ax,cx
-	;ax=-cx*7
-	add	ax,@@dgvdfg_fcode
-	mov	bx,[vdfg_color2]
-	jmp	ax
+	mov	eax,ecx
+	shl	ecx,3
+	add	eax,ecx
+  neg eax
+	;ax=-cx*9
+	add	eax,@@dgvdfg_fcode
+	mov	ebx,[vdfg_color2]
+	jmp	eax
 	
 %assign zzz MAXCOLS
 %rep	MAXCOLS+1
-	add	bx,dx			;2 bytes
-	mov	[vdfg_buf+ (zzz & 1)*(MAXCOLS/2) + (zzz >> 1) ],bh	;5 bytes
+	add	bx,dx			;3 bytes
+	mov	[vdfg_buf+ (zzz & 1)*(MAXCOLS/2) + (zzz >> 1) ],bh	;6 bytes
 	%assign zzz zzz-1
 %endrep
-	mov ax,bx			;2 bytes, 1 clock (filler)
+	;mov ax,bx			;2 bytes, 1 clock (filler)
 @@dgvdfg_fcode:
 	;push	ds
 	;mov	ax,cs
 	;mov	ds,ax
 	mov	ecx,esi
 	jcxz	@@dgf0
+	mov	esi,vdfg_buf
+	call	fastmovsb
 	;
+%if 0
 @@dgf1:	mov	al,00110011b
 	test	word [vdfg_lefts],1
 	jz	@@dgf2
@@ -471,6 +481,8 @@ gouraud2: ;2 pixel accuray
 	;out	dx,al
 	call	fastmovsb
 	;
+%endif
+
 @@dgf0:	;pop	ds
 	pop	esi
 	jmp	zzz20
@@ -479,34 +491,41 @@ gouraud2: ;2 pixel accuray
 ;----------------------------------------------------------------
 
 gouraud4: ;4 pixel accuray
-	cmp	cx,4
+	cmp	ecx,4
 	jl	gouraud2
-	sal	dx,1
+	sal	edx,1
 	;
 	mov	[vdfg_left4],cx
-	shr	cx,1 ;rescale
-	inc	cx ;one extra
-	mov	ax,cx
-	shl	cx,3
-	sub	ax,cx
-	;ax=-cx*7
-	add	ax,@@dgvdfg_fcode
-	mov	bx,[vdfg_color2]
-	sub	bx,dx ;one extra
-	jmp	ax
+	shr	ecx,1 ;rescale
+	inc	ecx ;one extra
+	mov	eax,ecx
+	shl	ecx,3
+	add	eax,ecx
+  neg eax
+	;ax=-cx*9
+	add	eax,@@dgvdfg_fcode
+	mov	ebx,[vdfg_color2]
+	sub	ebx,edx ;one extra
+	jmp	eax
 	
 %assign zzz MAXCOLS
 %rep	MAXCOLS+1
-	add	bx,dx			;2 bytes
-	mov	[vdfg_buf+zzz],bh	;5 bytes
+	add	bx,dx			;3 bytes
+	mov	[vdfg_buf+zzz],bh	;6 bytes
 	%assign zzz zzz-1
 %endrep
-	mov eax,ebx			;2 bytes, 1 clock (filler)
+	;mov eax,ebx			;2 bytes, 1 clock (filler)
 @@dgvdfg_fcode: 
 	;push	ds
 	;mov	dx,cs
 	;mov	ds,dx
 	mov	ecx,esi
+	mov	esi,vdfg_buf
+	call	fastmovsb
+	pop	esi
+	jmp	zzz20
+
+  %if 0
 	;
 @@dgf1:	mov	esi,vdfg_buf
 	test	word [vdfg_lefts],1
@@ -539,7 +558,9 @@ gouraud4: ;4 pixel accuray
 	mov	al,0ch
 	;out	dx,al
 	movsb
-	jmp	@@dgf4
+  %endif
+
+;	jmp	@@dgf4
 
 
 ;----------------------------------------------------------------
@@ -620,7 +641,7 @@ fastmovsb_e0:
 fastmovsb:
 	;copies CX bytes of data from DS:SI to ES:DI aligning destination
 	;si/di will point to the correct position after this (cx won't)
-	cmp	cx,4
+	cmp	ecx,4
 	jb	fmb4
 	mov	ebx,edi
 	and	ebx,3
@@ -628,10 +649,11 @@ fastmovsb:
 	jmp	[fastmovsb_bt+ebx]
 fastmovsb_b0:
 	mov	ebx,ecx
-	add	ebx,ebx
-	add	ebx,ebx
-	and	ebx,~ 15
-	neg	ebx
+  neg ebx
+	;add	ebx,ebx
+	;add	ebx,ebx
+	;and	ebx,~ 15
+	;neg	ebx
 	;bx=-cx*8
 	add	ebx,fmbjmp
 	jmp	ebx
@@ -640,10 +662,11 @@ fastmovsb_b0:
 	;db	83h,0c6h,04h		;add	si,4
 	;db	66h,26h,89h,05h		;mov	es:[di],eax
 	;db	81h,0c7h,04h,00h	;add	di,0004h
-  mov	eax,[esi+0000h]
-  add	esi,4
-  mov	[edi],eax
-  add	edi,0004h
+  ;mov	eax,[esi+0000h]
+  ;add	esi,4
+  ;mov	[edi],eax
+  ;add	edi,0004h
+  movsd
 	%endrep	;total 16 bytes
 fmbjmp:	movzx	ebx,cx
 	and	ebx,3
