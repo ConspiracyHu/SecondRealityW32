@@ -585,6 +585,9 @@ _draw_polylist:
 	jnz	@@cl0 ;entire polygon invisible
 	or	dl,dl ;dl=visfl orred
 	jz	@@cl4 ;no clipping
+
+  jnz	@@cl0 ; -- DEBUG --
+
 	mov	edi,poly2
 	mov	ax,[esi+POLYFLAGS]
 	call	newclip

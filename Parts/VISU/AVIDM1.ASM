@@ -79,7 +79,7 @@ global m1o_init
 m1o_init: ;oversampling version
 	mov	word [_vramseg],0a000h
 	;call	tweak320x200
-	mov	edx,320/4
+	mov	edx,320
 	mov	ecx,200
 	call	setrows
 	mov	dword [vr+PSET],m1_pset
