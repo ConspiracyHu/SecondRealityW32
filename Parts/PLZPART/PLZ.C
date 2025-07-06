@@ -137,6 +137,8 @@ void plz()
 			ik3=inittable[ttptr][6];
 			ik4=inittable[ttptr][7];
 			}
+
+    // --- W32 PORT CHANGE ---
 		//if(curpal==5 && cop_drop>64) break;
 		if(curpal==4 && cop_drop>64) break;
 
