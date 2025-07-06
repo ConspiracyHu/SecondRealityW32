@@ -160,7 +160,7 @@ poly_nrm:
 	;polydata at DS:SI. SIDES must be >=3
 	;drawing orders written to ES:DI
 	;-------Calculate bounds for SI
-	mov	ebx,[esi+POLYSIDES]
+	movzx	ebx,word [esi+POLYSIDES]
 	shl	ebx,2
 	lea	eax,[ebx-4+esi]
 	mov	[polyomax],eax
@@ -199,7 +199,7 @@ poly_nrm:
 	mov	[ebp+2],ax
 	add	ebp,4+2
 	pop	ecx
-	cmp	dx,cx
+	cmp	edx,ecx
 	je	.d0 ;heigth zero, nothing to do
 	sub	bp,2
 	;-------Set up SI for left edge (--), DI for right edge (++)
@@ -246,11 +246,11 @@ poly_nrm:
 	POLYSIDECALC edi,ebx
 	mov	edi,ebx
 .b2:	;	
-	mov	ax,[polylhig]
+	movzx	eax,word [polylhig]
 	cmp	ax,[polyrhig]
 	jl	.c1
 	;right shorter
-	mov	ax,[polyrhig]
+	movzx	eax,word [polyrhig]
 .c1:	;AX=shorter
 	mov	cl,[polyoversample]
 	mov	dx,ax
