@@ -2650,7 +2650,8 @@ typedef struct
   uint32_t frame;
 } SampleMarker;
 
-SampleMarker sampleMarkers[ 0x40 * 0x70 ];
+// TODO: trim this every so often if the music has already passed a point
+SampleMarker sampleMarkers[ 0x40 * 0x70 * 10 ];
 uint16_t sampleMarkerCount = 0;
 uint32_t totalSampleCount = 0;
 
