@@ -129,7 +129,7 @@ void u2a_main()
 		sprintf(tmpname,"Data\\%s.0%c%c",u2a_scene,a/10+'A',a%10+'A');
 		if(!indemo) printf("Scene: %s ",tmpname);
 		scenelist[scl].data=readfile(tmpname);
-		printf("(%i:@%Fp)\n",scl,scenelist[scl].data);
+		if (!indemo) printf("(%i:@%Fp)\n",scl,scenelist[scl].data);
 		scl++;
 		ip+=2;
 	}
