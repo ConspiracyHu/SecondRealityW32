@@ -61,36 +61,42 @@ void	fadeset(char *vram)
 	shim_outp(0x3c5,15);
 	for(y=0;y<25;y++)
 	{
-		memset(vram+y*80+0,0,17);
-		memset(vram+y*80+17,252,47);
+		memset(vram+y*320+0,0,17*4);
+		memset(vram+y*320+17*4,252,47*4);
 		shim_outp(0x3c4,2);
 		shim_outp(0x3c5,2+4+8);
-		*(vram+y*80+63)=0;
+		*(vram+y*320+63*4+1)=0;
+		*(vram+y*320+63*4+2)=0;
+		*(vram+y*320+63*4+3)=0;
 		shim_outp(0x3c4,2);
 		shim_outp(0x3c5,15);
-		memset(vram+y*80+252,0,16);
+		memset(vram+y*320+252*4,0,16*4);
 	}
 	for(y=25;y<175;y++)
 	{
-		memset(vram+y*80+0,254,17);
-		memset(vram+y*80+17,253,47);
+		memset(vram+y*320+0,254,17*4);
+		memset(vram+y*320+17*4,253,47*4);
 		shim_outp(0x3c4,2);
 		shim_outp(0x3c5,2+4+8);
-		*(vram+y*80+63)=254;
+		*(vram+y*320+63*4+1)=254;
+		*(vram+y*320+63*4+2)=254;
+		*(vram+y*320+63*4+3)=254;
 		shim_outp(0x3c4,2);
     shim_outp(0x3c5,15);
-		memset(vram+y*80+64,254,16);
+		memset(vram+y*320+64*4,254,16*4);
 	}
-	for(y<175;y<200;y++)
+	for(y=175;y<200;y++)
 	{
-		memset(vram+y*80+0,0,17);
-		memset(vram+y*80+17,252,47);
+		memset(vram+y*320+0,0,17*4);
+		memset(vram+y*320+17*4,252,47*4);
 		shim_outp(0x3c4,2);
 		shim_outp(0x3c5,2+4+8);
-		*(vram+y*80+63)=0;
+		*(vram+y*320+63*4+1)=0;
+		*(vram+y*320+63*4+2)=0;
+		*(vram+y*320+63*4+3)=0;
 		shim_outp(0x3c4,2);
 		shim_outp(0x3c5,15);
-		memset(vram+y*80+64,0,16);
+		memset(vram+y*320+64*4,0,16*4);
 	}
 }
 
@@ -216,6 +222,7 @@ void u2e_main()
 	
 	{
 		fadeset((char *)shim_vram);
+    /*
 		dis_waitb();
     shim_outp(0x3d4,9);
 		a= shim_inp(0x3d5);
@@ -225,6 +232,7 @@ void u2e_main()
 		fadeset((char *)shim_vram);
 		fadeset((char *)shim_vram);
 		fadeset((char *)shim_vram);
+    */
 	}
 
 	for(b=0;b<16;b++)
