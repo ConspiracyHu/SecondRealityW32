@@ -142,21 +142,25 @@ void u2a_main()
 
 	resetscene();
 
-	//for(;;)
-	{
-    /*
-		_asm
+  if (!demo_isfirstpart())
+  {
+		for(;;)
 		{
-			mov	bx,6
-			int	0fch
-			mov	a,cx
-			mov	b,bx
+      /*
+			_asm
+			{
+				mov	bx,6
+				int	0fch
+				mov	a,cx
+				mov	b,bx
+			}
+      */
+      a = dis_musorder(0);
+      b = dis_musrow(0);
+			if(a>10 && b>46) break;
+			if(dis_exit()) return;
 		}
-    */
-		//if(a>10 && b>46) break;
-		if(dis_exit()) return;
-	}
-
+  }
  	vid_init(3); ////// oversample x 4
 	cp=(char *)(scenem+16);
 	//vid_setpal(cp);
