@@ -31,7 +31,7 @@ vdf_lefta	dd	0
 vdf_rightx	dd	0
 vdf_righta	dd	0
 vdf_count	dw	0
-vdf_di		dw	0
+vdf_di		dd	0
 vdf_color	db	0
 ;ALIGN 16
 vdfg_color1	dw	0 
@@ -83,6 +83,7 @@ _vid_drawfill:
 @@1:	CEND
 
 
+extern _shim_vram
 
 ;北北北北 drawfill_nrm 北北北北
 ;entry:	DS:SI=pointer to {NORMAL-FILL-DATA} stream
@@ -90,17 +91,18 @@ _vid_drawfill:
 drawfill_nrm:
 	mov	ax,[esi]
 	mov	[vdf_color],al
-	mov	bx,[esi+2] ;StartY
-	add	si,4
-	shl	bx,1
-	mov	ax,[_rows+ebx]
-	mov	[vdf_di],ax
+	movzx	ebx, word [esi+2] ;StartY
+	add	esi,4
+	shl	ebx,1
+	movzx	eax,word [_rows+ebx]
+  add eax, _shim_vram
+	mov	[vdf_di],eax
 	;es:vdf_di=dest
 	jmp	@@dn1	
 @@dn0:	ret
 
-@@dn1:	mov	ax,[esi]
-	add	si,2
+@@dn1:	movzx	eax, word [esi]
+	add	esi,2
 	or	ax,ax
 	js	@@dn0
 	jz	@@dn11
@@ -108,9 +110,9 @@ drawfill_nrm:
 	mov	[vdf_leftx],eax
 	mov	eax,[esi+4]
 	mov	[vdf_lefta],eax
-	add	si,8
+	add	esi,8
 @@dn11:	mov	ax,[esi]
-	add	si,2
+	add	esi,2
 	or	ax,ax
 	js	@@dn0
 	jz	@@dn12
@@ -118,13 +120,13 @@ drawfill_nrm:
 	mov	[vdf_rightx],eax
 	mov	eax,[esi+4]
 	mov	[vdf_righta],eax
-	add	si,8
+	add	esi,8
 @@dn12:	mov	ax,[esi]
 	or	ax,ax
 	jz	@@dn0 ;ERROR
-	add	si,2
+	add	esi,2
 	mov	[vdf_count],ax
-	mov	di,[vdf_di]
+	mov	edi,[vdf_di]
 @@dn21:	;Fill loop
 	;;
 	mov	eax,[vdf_lefta]
@@ -132,66 +134,78 @@ drawfill_nrm:
 	mov	eax,[vdf_righta]
 	add	[vdf_rightx],eax
 	;
-	mov	dx,word [vdf_leftx+2]
-	mov	ax,word [vdf_rightx+2]
+	movzx edx,word [vdf_leftx+2]
+	movzx eax,word [vdf_rightx+2]
 	;dx=leftx, ax=rightx
 	;
-	cmp	ax,dx
+	cmp	eax,edx
 	je	@@dn20
 	jl	@@dn22
-	xchg	ax,dx
-@@dn22:	dec	dx ;don't fill the rightmost pixel
+	xchg	eax,edx
+@@dn22:	dec	edx ;don't fill the rightmost pixel
 
-	mov	bx,ax
-	sar	bx,2
-	mov	cx,dx
-	sar	cx,2
-	sub	cx,bx
-	add	di,bx
+	mov	ecx,edx
+	sub	ecx,eax
+	add	edi,eax
+  mov	al,[vdf_color]
+  mov ah, al
+  add ah, 4
+  call	faststosb
 
-	mov	bp,3
-	and	bp,ax
+%if 0
+	mov	ebx,eax
+	sar	ebx,2
+	mov	ecx,edx
+	sar	ecx,2
+	sub	ecx,ebx
+	add	edi,ebx
+
+	mov	ebp,3
+	and	ebp,eax
 	mov	bh,[leftside+ebp]
-	mov	bp,3
-	and	bp,dx
+	mov	ebp,3
+	and	ebp,edx
 	mov	bl,[rightside+ebp]
 	mov	dx,3c5h
 	
 	;(di..si,bx)
-	cmp	cx,0
+	cmp	ecx,0
 	je	@@dn29 ;end and beg in same byte
 	;left side
 	mov	al,bh
-	out	dx,al
+	;out	dx,al
 	mov	al,[vdf_color]
 	mov	[edi],al
-	inc	di
-	dec	cx
+	inc	edi
+	dec	ecx
 	mov	ah,al
 	;middle
 	jcxz	@@dn24
 	mov	al,0fh
-	out	dx,al
+	;out	dx,al
 	mov	al,ah
 	mov	bp,bx
 	call	faststosb
 	mov	bx,bp
 @@dn24:	;right side
 	mov	al,bl
-	out	dx,al
+	;out	dx,al
 	mov	al,ah
 	mov	[edi],al
 	jmp	@@dn20
 @@dn29:	;end and beg in same byte
 	mov	al,bl
 	and	al,bh
-	out	dx,al
+	;out	dx,al
 	mov	al,[vdf_color]
 	mov	[edi],al
 	;;
-@@dn20:	mov	di,[vdf_di]
-	add	di,[_rowlen]
-	mov	[vdf_di],di
+%endif
+
+@@dn20:	mov	edi,[vdf_di]
+  movzx eax,word [_rowlen]
+	add	edi,eax
+	mov	[vdf_di],edi
 	dec	word [vdf_count]
 	jnz	@@dn21
 	jmp	@@dn1
@@ -202,16 +216,16 @@ drawfill_nrm:
 ; exit: -
 drawfill_grd:
 	mov	bx,[esi+2] ;StartY
-	add	si,4
+	add	esi,4
 	shl	bx,1
 	mov	ax,[_rows+ebx]
-	mov	[vdf_di],ax
+	mov	[vdf_di],eax
 	;es:vdf_di=dest
 	jmp	dg1	
 dg0:	ret
 
 dg1:	mov	ax,[esi]
-	add	si,2
+	add	esi,2
 	or	ax,ax
 	js	dg0
 	jz	@@dg11
@@ -221,9 +235,9 @@ dg1:	mov	ax,[esi]
 	mov	[vdf_leftx],eax
 	mov	eax,[esi+8]
 	mov	[vdf_lefta],eax
-	add	si,12
+	add	esi,12
 @@dg11:	mov	ax,[esi]
-	add	si,2
+	add	esi,2
 	or	ax,ax
 	js	dg0
 	jz	@@dg12
@@ -233,13 +247,13 @@ dg1:	mov	ax,[esi]
 	mov	[vdf_rightx],eax
 	mov	eax,[esi+8]
 	mov	[vdf_righta],eax
-	add	si,12
+	add	esi,12
 @@dg12:	mov	ax,[esi]
 	or	ax,ax
 	jz	dg0 ;ERROR
-	add	si,2
+	add	esi,2
 	mov	[vdf_count],ax
-	mov	di,[vdf_di]
+	mov	edi,[vdf_di]
 dg21:	;Fill loop
 	;;
 	mov	ax,[vdfg_leftca]
@@ -529,9 +543,10 @@ gouraud4: ;4 pixel accuray
 ;----------------------------------------------------------------
 	
 zzz20:	;;
-dg20:	mov	di,[vdf_di]
-	add	di,[_rowlen]
-	mov	[vdf_di],di
+dg20:	mov	edi,[vdf_di]
+	movzx eax,word [_rowlen]
+  add	edi, eax
+	mov	[vdf_di],edi
 	dec	word [vdf_count]
 	jnz	dg21
 	jmp	dg1
@@ -551,26 +566,26 @@ fastmovsb_bt:
 	dd	fastmovsb_b3
 fastmovsb_b1:
 	mov	al,[esi]
-	sub	cx,3
+	sub	ecx,3
 	mov	[edi],al
 	mov	ax,[esi+1]
-	add	si,3
+	add	esi,3
 	mov	[edi+1],ax
-	add	di,3
+	add	edi,3
 	jmp	fastmovsb_b0
 fastmovsb_b2:
 	mov	ax,[esi]
-	sub	cx,2
-	add	si,2
+	sub	ecx,2
+	add	esi,2
 	mov	[edi],ax
 	add	di,2
 	jmp	fastmovsb_b0
 fastmovsb_b3:
 	mov	al,[esi]
-	dec	cx
-	inc	si
+	dec	ecx
+	inc	esi
 	mov	[edi],al
-	inc	di
+	inc	edi
 	jmp	fastmovsb_b0
 ALIGN 16
 fastmovsb_et:
@@ -580,23 +595,23 @@ fastmovsb_et:
 	dd fastmovsb_e3
 fastmovsb_e1:
 	mov	al,[esi]
-	inc	si
+	inc	esi
 	mov	[edi],al
-	inc	di
+	inc	edi
 	ret
 fastmovsb_e3:
 	mov	ax,[esi]
 	mov	[edi],ax
 	mov	al,[esi+2]
-	add	si,3
+	add	esi,3
 	mov	[edi+2],al
-	add	di,3
+	add	edi,3
 	ret
 fastmovsb_e2:
 	mov	ax,[esi]
-	add	si,2
+	add	esi,2
 	mov	[edi],ax
-	add	di,2
+	add	edi,2
 fastmovsb_e0:
 	ret
 ;ALIGN 16
@@ -605,35 +620,35 @@ fastmovsb:
 	;si/di will point to the correct position after this (cx won't)
 	cmp	cx,4
 	jb	fmb4
-	mov	bx,di
-	and	bx,3
-	add	bx,bx
+	mov	ebx,edi
+	and	ebx,3
+	shl	ebx,2
 	jmp	[fastmovsb_bt+ebx]
 fastmovsb_b0:
-	mov	bx,cx
-	add	bx,bx
-	add	bx,bx
-	and	bx,~ 15
-	neg	bx
+	mov	ebx,ecx
+	add	ebx,ebx
+	add	ebx,ebx
+	and	ebx,~ 15
+	neg	ebx
 	;bx=-cx*8
-	add	bx,fmbjmp
-	jmp	bx
+	add	ebx,fmbjmp
+	jmp	ebx
 	%rep	512
 	;db	66h,8bh,84h,00h,00h	;mov	eax,ds:[si+0000h]
 	;db	83h,0c6h,04h		;add	si,4
 	;db	66h,26h,89h,05h		;mov	es:[di],eax
 	;db	81h,0c7h,04h,00h	;add	di,0004h
   mov	eax,[esi+0000h]
-  add	si,4
+  add	esi,4
   mov	[edi],eax
-  add	di,0004h
+  add	edi,0004h
 	%endrep	;total 16 bytes
-fmbjmp:	mov	bx,cx
-	and	bx,3
-	add	bx,bx
+fmbjmp:	movzx	ebx,cx
+	and	ebx,3
+	shl	ebx,2
 	jmp	[fastmovsb_et+ebx]
-fmb4:	mov	bx,cx
-	add	bx,bx
+fmb4:	movzx	ebx,cx
+	shl	ebx,2
 	jmp	[fastmovsb_et+ebx]
 
 
@@ -652,19 +667,19 @@ faststosb_bt:
 	dd	faststosb_b3
 faststosb_b1:
 	mov	[edi],al
-	sub	cx,3
+	sub	ecx,3
 	mov	[edi+1],ax
-	add	di,3
+	add	edi,3
 	jmp	faststosb_b0
 faststosb_b2:
 	sub	cx,2
 	mov	[edi],ax
-	add	di,2
+	add	edi,2
 	jmp	faststosb_b0
 faststosb_b3:
 	dec	cx
 	mov	[edi],al
-	inc	di
+	inc	edi
 	jmp	faststosb_b0
 ;ALIGN 16
 faststosb_et:
@@ -674,52 +689,54 @@ faststosb_et:
 	dd faststosb_e3
 faststosb_e1:
 	mov	[edi],al
-	inc	di
+	inc	edi
 	ret
 faststosb_e3:
 	mov	[edi],ax
 	mov	[edi+2],al
-	add	di,3
+	add	edi,3
 	ret
 faststosb_e2:
 	mov	[edi],ax
-	add	di,2
+	add	edi,2
 faststosb_e0:
 	ret
 ;ALIGN 16
 faststosb:
 	;fills CX bytes of data with AX to ES:DI aligning destination
 	;di will point to the correct position after this (cx won't)
-	cmp	cx,4
+	cmp	ecx,4
 	jb	fsb4
-	mov	bx,di
-	and	bx,3
-	add	bx,bx
-	jmp	[faststosb_bt+bx]
+	mov	ebx,edi
+	and	ebx,3
+	shl	ebx,2
+	jmp	[faststosb_bt+ebx]
 faststosb_b0:
-	mov	bx,ax
+	mov	ebx,eax
 	shl	eax,16
 	mov	ax,bx
 	;eax=filler
-	mov	bx,cx
-	add	bx,bx
-	and	bx,~ 7
-	neg	bx
+	mov	ebx,ecx
+  shr ebx,2
+	;add	ebx,ebx
+	;and	ebx,~ 7
+	neg	ebx
 	;bx=-cx*8
-	add	bx,fsbjmp
-	jmp	bx
+	add	ebx,fsbjmp
+	jmp	ebx
 	%rep 512
 	;db	66h,26h,89h,05h		;mov	es:[di],eax
 	;db	81h,0c7h,04h,00h	;add	di,0004h
-  mov	[edi],eax
-  add	di,0004h
+  ;mov	[edi],eax
+  ;add	edi,0004h
+  stosd
 	%endrep	;total 8 bytes
-fsbjmp:	mov	bx,cx
-	and	bx,3
-	add	bx,bx
-	jmp	[faststosb_et+bx]
-fsb4:	mov	bx,cx
-	add	bx,bx
-	jmp	[faststosb_et+bx]
+fsbjmp:	movzx	ebx,cx
+	and	ebx,3
+	shl	ebx,2
+	jmp	[faststosb_et+ebx]
+fsb4:	movzx	ebx,cx
+	shl	ebx,2
+	jmp	[faststosb_et+ebx]
 
 

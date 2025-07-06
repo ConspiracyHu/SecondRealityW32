@@ -190,24 +190,24 @@ poly_nrm:
 	pop	esi
 	;-------Write the startup info to drawinfo
 	push	ecx
-	mov	bp,di ;es:di was to drawinfo, now ES:BP is
-	mov	ax,[esi+POLYCOLOR]
+	mov	ebp,edi ;es:di was to drawinfo, now ES:BP is
+	movzx	eax, word [esi+POLYCOLOR]
 	mov	[ebp],ax
 	mov	cl,[polyoversample]
-	mov	ax,dx
-	sar	ax,cl
+	mov	eax,edx
+	sar	eax,cl
 	mov	[ebp+2],ax
-	add	bp,4+2
+	add	ebp,4+2
 	pop	ecx
 	cmp	dx,cx
 	je	.d0 ;heigth zero, nothing to do
 	sub	bp,2
 	;-------Set up SI for left edge (--), DI for right edge (++)
-	mov	si,bx
-	mov	di,bx
+	mov	esi,ebx
+	mov	edi,ebx
 	;-------Loop
 .l1:	mov	word [ebp],0
-	add	bp,2
+	add	ebp,2
 	mov	ax,[esi+POLYY]
 	cmp	ax,[polycury]
 	jne	.a2
@@ -216,18 +216,18 @@ poly_nrm:
 	cmp	ebx,[polyomin]
 	jge	.a1
 	mov	ebx,[polyomax]
-.a1:	mov	ax,[ebx+POLYY]
+.a1:	movzx	eax, word [ebx+POLYY]
 	sub	ax,[esi+POLYY]
 	jc	.d0 ;turned upwards, end of polygon
 	jnz	.a3
-	mov	si,bx
+	mov	esi,ebx
 	jmp	.a4
 .a3:	mov	[polylhig],ax
 	POLYSIDECALC esi,ebx
 	mov	esi,ebx
 .a2:	;
 	mov	word [ebp],0
-	add	bp,2
+	add	ebp,2
 	mov	ax,[edi+POLYY]
 	cmp	ax,[polycury]
 	jne	.b2
