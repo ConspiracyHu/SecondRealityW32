@@ -214,16 +214,17 @@ drawfill_nrm:
 ;entry:	DS:SI=pointer to {GOURAUD-FILL-DATA} stream
 ; exit: -
 drawfill_grd:
-	mov	bx,[esi+2] ;StartY
+	movzx	ebx,word [esi+2] ;StartY
 	add	esi,4
-	shl	bx,1
-	mov	ax,[_rows+ebx]
+	shl	ebx,1
+	movzx	eax,word [_rows+ebx]
+  add eax, _shim_vram
 	mov	[vdf_di],eax
 	;es:vdf_di=dest
 	jmp	dg1	
 dg0:	ret
 
-dg1:	mov	ax,[esi]
+dg1:	movzx	eax,word [esi]
 	add	esi,2
 	or	ax,ax
 	js	dg0
@@ -264,22 +265,23 @@ dg21:	;Fill loop
 	mov	eax,[vdf_righta]
 	add	[vdf_rightx],eax
 	;
-	mov	dx,word [vdf_leftx+2]
-	mov	ax,word [vdf_rightx+2]
-	mov	bx,word [vdfg_leftc]
-	mov	cx,word [vdfg_rightc]
+	movzx	edx,word [vdf_leftx+2]
+	movzx	eax,word [vdf_rightx+2]
+	movzx	ebx,word [vdfg_leftc]
+	movzx	ecx,word [vdfg_rightc]
 	;dx=leftx, ax=rightx
 	;
-	cmp	ax,dx
+	cmp	eax,edx
 	je	dg20
 	jl	@@dg22
-	xchg	bx,cx
-	xchg	ax,dx
-@@dg22:	dec	dx ;don't fill the rightmost pixel
+	xchg	ebx,ecx
+	xchg	eax,edx
+@@dg22:	dec	edx ;don't fill the rightmost pixel
 	mov	[vdfg_color1],cx
 	mov	[vdfg_color2],bx
 	mov	[vdfg_left],ax
 	mov	[vdfg_right],dx
+%if 0
 	;oint colors
 	mov	dx,3c5h
 	;end
@@ -288,7 +290,7 @@ dg21:	;Fill loop
 	jnz	@@dgef2
 	and	bx,3
 	mov	al,[middledot+bx]
-	out	dx,al
+	;out	dx,al
 	mov	bx,[vdfg_right]
 	shr	bx,2
 	add	bx,di
@@ -299,59 +301,60 @@ dg21:	;Fill loop
 	test	bl,1
 	jz	@@dgef1
 	and	bx,3
-	mov	al,[middledot+bx]
-	out	dx,al
-	mov	bx,[vdfg_left]
-	shr	bx,2
-	add	bx,di
+	mov	al,[middledot+ebx]
+	;out	dx,al
+	movzx	ebx,word [vdfg_left]
+	shr	ebx,2
+	add	ebx,edi
 	mov	al,byte [vdfg_color1+1]
 	mov	[ebx],al
 @@dgef1:	;calc length & beg
-	mov	ax,[vdfg_left]
-	mov	dx,[vdfg_right]
-	inc	ax
-	shr	ax,1
+%endif
+	movzx	eax,word [vdfg_left]
+	movzx	edx,word [vdfg_right]
+	inc	eax
+	shr	eax,1
 	mov	[vdfg_lefts],ax
-	dec	dx
-	shr	dx,1
+	dec	edx
+	shr	edx,1
 	;
-	mov	cx,ax
-	shr	cx,1
-	add	di,cx
+	mov	ecx,eax
+	shr	ecx,1
+	add	edi,ecx
 	;
-	mov	cx,dx
-	sub	cx,ax
-	inc	cx ;cx=number of 2 byte blocks to fill
-	cmp	cx,0
+	mov	ecx,edx
+	sub	ecx,eax
+	inc	ecx ;cx=number of 2 byte blocks to fill
+	cmp	ecx,0
 	jg	@@dg2f2
 	;ends only
 	jmp	dg20
 @@dg2f2:
-	push	si
-	mov	ax,[vdfg_color1]
-	sub	ax,[vdfg_color2]
+	push	esi
+	movzx	eax, word [vdfg_color1]
+	sub	eax,[vdfg_color2]
 	jge	@@dg2f3
-	neg	ax
-	mov	bx,cx
-	add	bx,bx
+	neg	eax
+	mov	ebx,ecx
+	add	ebx,ebx
 	mul	word [_afilldiv+ebx]
-	neg	dx
+	neg	edx
 	jmp	@@dg2f4
-@@dg2f3:	mov	bx,cx
-	add	bx,bx
+@@dg2f3:	mov	ebx,ecx
+	add	ebx,ebx
 	mul	word [_afilldiv+ebx]
-@@dg2f4:	mov	si,cx
+@@dg2f4:	mov	esi,ecx
 
 @@dgd0:	;dx=coloradder, cx=len (in 2 byte blocks)
-	cmp	dx,128
+	cmp	edx,128
 	jge	gouraud12
-	cmp	dx,-128
+	cmp	edx,-128
 	jle	gouraud12
 	jmp	gouraud4
 gouraud12:
-	cmp	dx,400
+	cmp	edx,400
 	jge	gouraud1
-	cmp	dx,-400
+	cmp	edx,-400
 	jle	gouraud1
 	jmp	gouraud2
 
@@ -377,11 +380,11 @@ gouraud1: ;1 pixel accuray
 %endrep
 	mov ax,bx			;2 bytes, 1 clock (filler)
 @@dgvdfg_fcode:
-	push	ds
-	mov	ax,cs
-	mov	ds,ax
-	mov	cx,si
-	add	cx,cx
+	;push	ds
+	;mov	ax,cs
+	;mov	ds,ax
+	mov	ecx,esi
+	add	ecx,ecx
 	;
 @@dgf1:	mov	al,00010001b
 	test	word [vdfg_lefts],1
@@ -389,30 +392,30 @@ gouraud1: ;1 pixel accuray
 	mov	al,01000100b
 @@dgf2:	;
 	%assign zzz 0
-	add	cx,3
+	add	ecx,3
 	%rep 4
 	;local	l1
-	push	cx
+	push	ecx
 	shr	cx,2
 %define ZZZ(x) gour1_ %+ zzz
 	jz	ZZZ(x)
-	push	ax
-	push	di
+	push	eax
+	push	edi
 	mov	dx,3c5h
-	out	dx,al
-	mov	si,vdfg_buf+zzz*(MAXCOLS/4)
+	;out	dx,al
+	mov	esi,vdfg_buf+zzz*(MAXCOLS/4)
 	call	fastmovsb
-	pop	di
-	pop	ax
-ZZZ(x) :	pop	cx
-	dec	cx
+	pop	edi
+	pop	eax
+ZZZ(x) :	pop	ecx
+	dec	ecx
 	rol	al,1
 	adc	di,0
 	%assign zzz zzz+1
 	%endrep
 	;
-@@dgf0:	pop	ds
-	pop	si
+@@dgf0:	;pop	ds
+	pop	esi
 	jmp	zzz20
 
 
@@ -435,10 +438,10 @@ gouraud2: ;2 pixel accuray
 %endrep
 	mov ax,bx			;2 bytes, 1 clock (filler)
 @@dgvdfg_fcode:
-	push	ds
-	mov	ax,cs
-	mov	ds,ax
-	mov	cx,si
+	;push	ds
+	;mov	ax,cs
+	;mov	ds,ax
+	mov	ecx,esi
 	jcxz	@@dgf0
 	;
 @@dgf1:	mov	al,00110011b
@@ -446,30 +449,30 @@ gouraud2: ;2 pixel accuray
 	jz	@@dgf2
 	mov	al,11001100b
 @@dgf2:	;
-	mov	si,vdfg_buf
-	push	cx
-	push	di
-	push	ax
+	mov	esi,vdfg_buf
+	push	ecx
+	push	edi
+	push	eax
 	inc	cx
 	shr	cx,1
 	mov	dx,3c5h
-	out	dx,al
+	;out	dx,al
 	call	fastmovsb
-	pop	ax
-	pop	di
-	pop	cx
+	pop	eax
+	pop	edi
+	pop	ecx
 	rol	al,2
 	jnc	@@dgf3
 	inc	di
-@@dgf3:	mov	si,vdfg_buf+MAXCOLS/2
-	shr	cx,1
+@@dgf3:	mov	esi,vdfg_buf+MAXCOLS/2
+	shr	ecx,1
 	jz	@@dgf0
 	mov	dx,3c5h
-	out	dx,al
+	;out	dx,al
 	call	fastmovsb
 	;
-@@dgf0:	pop	ds
-	pop	si
+@@dgf0:	;pop	ds
+	pop	esi
 	jmp	zzz20
 
 
@@ -498,43 +501,43 @@ gouraud4: ;4 pixel accuray
 	mov	[vdfg_buf+zzz],bh	;5 bytes
 	%assign zzz zzz-1
 %endrep
-	mov ax,bx			;2 bytes, 1 clock (filler)
+	mov eax,ebx			;2 bytes, 1 clock (filler)
 @@dgvdfg_fcode: 
-	push	ds
-	mov	dx,cs
-	mov	ds,dx
-	mov	cx,si
+	;push	ds
+	;mov	dx,cs
+	;mov	ds,dx
+	mov	ecx,esi
 	;
-@@dgf1:	mov	si,vdfg_buf
+@@dgf1:	mov	esi,vdfg_buf
 	test	word [vdfg_lefts],1
 	jnz	@@dgf3
-	inc	cx
-@@dgf4:	shr	cx,1
+	inc	ecx
+@@dgf4:	shr	ecx,1
 	jnc	@@dgf5
 	mov	dx,3c5h
 	mov	al,0fh
-	out	dx,al
+	;out	dx,al
 	call	fastmovsb
-@@dgf0:	pop	ds
-	pop	si
+@@dgf0:	;pop	ds
+	pop	esi
 	jmp	zzz20
 
-@@dgf5:	dec	cx
+@@dgf5:	dec	ecx
 	mov	dx,3c5h
 	mov	al,0fh
-	out	dx,al
+	;out	dx,al
 	call	fastmovsb
 	mov	dx,3c5h
 	mov	al,03h
-	out	dx,al
+	;out	dx,al
 	movsb
-	pop	ds
-	pop	si
+	;pop	ds
+	pop	esi
 	jmp	zzz20
 
 @@dgf3:	mov	dx,3c5h
 	mov	al,0ch
-	out	dx,al
+	;out	dx,al
 	movsb
 	jmp	@@dgf4
 
