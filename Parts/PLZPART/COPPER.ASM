@@ -34,8 +34,8 @@ extern _cop_pal
 extern _fadepal
 extern _cop_fadepal
 
-global _dtau
-_dtau:
+global _plz_dtau
+_plz_dtau:
 %assign ccc 0
 %assign cccc 0
 %rep 65				; 43=dy*512/dtý
@@ -207,7 +207,7 @@ do_drop:
 	push	bx
 	mov	bx, [_cop_drop]
 	shl	bx, 1
-	add	bx, _dtau
+	add	bx, _plz_dtau
 
 	mov	bx, [cs:bx]
 	mov	dx, 3d4h

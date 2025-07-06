@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <memory.h>
 #include <math.h>
 #include <conio.h>
 #include <dos.h>
@@ -58,7 +59,7 @@ int	inittable[10][8]={{1000,2000,3000,4000,3500,2300,3900,3670},
 			  {1000,2000,3000,4000,3500,2300,3900,3670},
 			  {1000,2000,3000,4000,3500,2300,3900,3670}};
 
-extern unsigned short dtau[ 65 ];
+extern unsigned short plz_dtau[ 65 ];
 
 int drop_y = 0;
 void copper_update()
@@ -66,7 +67,7 @@ void copper_update()
   cop_drop++;
   if ( cop_drop < 64 )
   {
-    drop_y = dtau[ cop_drop ];
+    drop_y = plz_dtau[ cop_drop ];
     return;
   }
 
@@ -77,7 +78,7 @@ void copper_update()
   }
   else if ( cop_drop >= 128 )
   {
-    drop_y = dtau[ 0 ];
+    drop_y = plz_dtau[ 0 ];
     cop_dofade = 256 - cop_drop;
   }
   else if ( cop_drop > 64 + 32 )
@@ -87,7 +88,7 @@ void copper_update()
   }
   else
   {
-    drop_y = dtau[ 0 ];
+    drop_y = plz_dtau[ 0 ];
     cop_dofade = 96 - cop_drop;
   }
   if ( cop_drop == 65 )
@@ -114,7 +115,7 @@ void plz()
 	init_plz();
 	cop_drop=128;
 	cop_fadepal=pals[curpal++];
-  drop_y = dtau[ 0 ];
+  drop_y = plz_dtau[ 0 ];
 
 	frame_count=0;
   initpparas();
