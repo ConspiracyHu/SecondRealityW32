@@ -49,7 +49,7 @@ calclight:
 normallight:
 	;return: ax=relative brightness 0..255
 	push	bp
-	mov	ax,[edi+nlist_x]
+	movzx	eax, word [edi+nlist_x]
 	imul	word [newlight+0]
 	mov	bp,ax
 	mov	cx,dx
@@ -198,7 +198,7 @@ poly_nrm:
 	sar	ax,cl
 	mov	[ebp+2],ax
 	add	bp,4+2
-	pop	cx
+	pop	ecx
 	cmp	dx,cx
 	je	.d0 ;heigth zero, nothing to do
 	sub	bp,2
@@ -449,7 +449,7 @@ _draw_polylist:
 	jz	@@invi ;F_VISIBLE not set
 	;set poly oversampling
 	mov	eax,16
-	mov	ecx,[_projoversampleshr]
+	movzx	ecx, word [_projoversampleshr]
 	mov	[polyoversample],cl
 	sub	eax,ecx
 	mov	[polyoversample16],al
@@ -511,9 +511,9 @@ _draw_polylist:
 @@nosh:	mov	al,[esi+2]
 	mov	byte [poly1+POLYCOLOR],al
 @@yosh:	;
-	mov	cx,[poly1+POLYSIDES]
+	movzx	ecx, word [poly1+POLYSIDES]
 	lespar	edi,3 ;projected vertices
-	mov	dx,0ff00h ;for vf calc
+	mov	edx,0ff00h ;for vf calc
 	push	ebp
 	movpar	eax,2
 	;movpar	bp,4+0

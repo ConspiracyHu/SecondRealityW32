@@ -249,7 +249,7 @@ calcmatrixsep: ;calc 3 separate matrices
 ;descr: Writes an identity rotation matrix to rmatrix
 _calc_setrmatrix_ident:
 	CBEG
-	lespar	di,0
+	lespar	edi,0
 	mov	edx,unit
 	xor	eax,eax
 	mov	[edi+rmatrix_m+0*4],edx
