@@ -312,19 +312,19 @@ dg21:	;Fill loop
 %endif
 	movzx	eax,word [vdfg_left]
 	movzx	edx,word [vdfg_right]
-	inc	eax
-	shr	eax,1
+	;inc	eax
+	;shr	eax,1
 	mov	[vdfg_lefts],ax
 	dec	edx
-	shr	edx,1
+	;shr	edx,1
 	;
-	mov	ecx,eax
-	shr	ecx,1
-	add	edi,ecx
+	;mov	ecx,eax
+	;shr	ecx,1
+	add	edi,eax
 	;
 	mov	ecx,edx
 	sub	ecx,eax
-	inc	ecx ;cx=number of 2 byte blocks to fill
+	;inc	ecx ;cx=number of 2 byte blocks to fill
 	cmp	ecx,0
 	jg	@@dg2f2
 	;ends only
@@ -362,7 +362,7 @@ gouraud12:
 
 gouraud1: ;1 pixel accuray
 	sar	edx,1
-	add	ecx,ecx
+	;add	ecx,ecx
 	;
 	mov	eax,ecx
 	shl	ecx,3
@@ -385,7 +385,7 @@ gouraud1: ;1 pixel accuray
 	;mov	ax,cs
 	;mov	ds,ax
 	mov	ecx,esi
-	add	ecx,ecx
+	;add	ecx,ecx
   mov	esi,vdfg_buf
   call	fastmovsb
 	;
@@ -496,8 +496,8 @@ gouraud4: ;4 pixel accuray
 	sal	edx,1
 	;
 	mov	[vdfg_left4],cx
-	shr	ecx,1 ;rescale
-	inc	ecx ;one extra
+	;shr	ecx,1 ;rescale
+	;inc	ecx ;one extra
 	mov	eax,ecx
 	shl	ecx,3
 	add	eax,ecx
@@ -649,6 +649,7 @@ fastmovsb:
 	jmp	[fastmovsb_bt+ebx]
 fastmovsb_b0:
 	mov	ebx,ecx
+  shr ebx,2
   neg ebx
 	;add	ebx,ebx
 	;add	ebx,ebx
