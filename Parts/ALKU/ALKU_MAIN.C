@@ -74,6 +74,7 @@ void alku_main()
 
 	alku_init();
 
+  /*
 	while(dis_sync()<1 && !dis_exit()) demo_blit();
 
 	prtc(160,120,"A");
@@ -95,6 +96,7 @@ void alku_main()
 	dofade(fade1,fade2); wait(300); dofade(fade2,fade1); fonapois();
 
 	while(dis_sync()<4 && !dis_exit()) demo_blit();
+  */
 
 	memcpy(fadepal,fade1,768);
 	cop_fadepal=(char*)picin;
@@ -496,7 +498,7 @@ void fmaketext(int scrl)
 	int	*p1=dtau;
 	int	mtau[]={1*256+2,2*256+2,4*256+2,8*256+2};
 	int	b,c,x,y,m;
-  /*
+  
 	for(m=0;m<4;m++)
 		{
 		for(x=m;x<320;x+=4) {
@@ -504,12 +506,12 @@ void fmaketext(int scrl)
 				*p1++=x/4+y*176+100*176;
 				*p1++=tbuf[y][x]^tbuf[y][x-2];
 				}
-			alku_do_scroll(0);
+			//alku_do_scroll(0);
 			}
 		*p1++=-1;
 		*p1++=-1;
 		}
-  */
+  
 	for(x=0;x<320;x++)
 		{
 		//shim_outp(0x3c4,mtau[(x+scrl)&3]);

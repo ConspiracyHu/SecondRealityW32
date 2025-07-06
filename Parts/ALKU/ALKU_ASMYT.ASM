@@ -12,17 +12,20 @@ _ascrolltext:
 
 ;	ARG	scrl:word, text:dword
 
+%define scrl esp+8
+%define text esp+12
+
 	push ebp
 	;push	0a000h
 	;pop	es
-	mov esi, [esp+12]
+	mov esi, [text]
 	mov	ecx, 0
 .@@l1:
 
 	mov	ebx, ecx
-	add	ebx, [esp+8]
-	and	bx, 3
-	shl	bx, 1
+	add	ebx, [scrl]
+	and	ebx, 3
+	shl	ebx, 1
 	mov	ax, [mmask+ebx]
 	mov	dx, 3c4h
 	;out	dx, ax
@@ -31,15 +34,15 @@ _ascrolltext:
 	;out	dx, ax
 
 	mov	edi, ecx
-	add	edi, [esp+8]
+	add	edi, [scrl]
 	shr	edi, 2
 .@@l3:
 	%rep	20
 	add	si, 4
-	mov	bx, [esi-4]
+	movzx	ebx, word [esi-4]
 	cmp	bx, -1
 	je	.@@l2
-	mov	ax, [esi-2]
+	movzx	eax, word [esi-2]
 	xor	[_shim_vram+ebx+edi], al
 	%endrep
 	jmp	.@@l3
