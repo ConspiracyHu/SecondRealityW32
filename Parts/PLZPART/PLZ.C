@@ -114,6 +114,8 @@ void plz()
 
 	init_plz();
 	cop_drop=128;
+	memset(fadepal,0,768);
+  memset(fadepal_short,0,768*2);
 	cop_fadepal=pals[curpal++];
   drop_y = plz_dtau[ 0 ];
 
