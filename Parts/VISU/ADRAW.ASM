@@ -201,7 +201,7 @@ poly_nrm:
 	pop	ecx
 	cmp	edx,ecx
 	je	.d0 ;heigth zero, nothing to do
-	sub	bp,2
+	sub	ebp,2
 	;-------Set up SI for left edge (--), DI for right edge (++)
 	mov	esi,ebx
 	mov	edi,ebx
@@ -269,7 +269,7 @@ poly_nrm:
 %macro POLYSIDECALC_GRD 2 ;fr,to
 	;local	l1,l2
 	;when entering, AX should be heigth
-	push	ax
+	push	eax
 	mov	word [ebp-2],07777h
 	;
 	mov	cx,ax
@@ -292,7 +292,7 @@ poly_nrm:
 	mov	ax,32768 ;NOOVERSAMPLECENTER
 	sub	eax,edx
 	cdq
-	pop	cx
+	pop	ecx
 	idiv	ecx
 	mov	cl,byte [polycury]
 	and	cl,[polyoversamplea]
@@ -311,20 +311,20 @@ poly_grd:
 	;polydata at DS:SI. SIDES must be >=3
 	;drawing orders written to ES:DI
 	;-------Calculate bounds for SI
-	mov	bx,[esi+POLYSIDES]
-	shl	bx,2
-	lea	ax,[bx-4+si]
-	mov	[polyomax],ax
-	mov	[polyomin],si
+	movzx	ebx,word [esi+POLYSIDES]
+	shl	ebx,2
+	lea	eax,[ebx-4+esi]
+	mov	[polyomax],eax
+	mov	[polyomin],esi
 	;the SI should always be in range POLYOMIN..POLYOMAX
 	;-------Find uppermost vertex in polygon
-	push	si
-	mov	bx,si
+	push	esi
+	mov	ebx,esi
 	mov	dx,[esi+POLYY]
 	mov	bp,dx
-	mov	cx,[esi+POLYSIDES]
-@@11:	add	si,4
-	dec	cx
+	movzx	ecx,word [esi+POLYSIDES]
+@@11:	add	esi,4
+	dec	ecx
 	jz	@@2
 @@1:	mov	ax,[esi+POLYY]
 	cmp	ax,bp
@@ -333,29 +333,29 @@ poly_grd:
 @@13:	cmp	ax,dx
 	jge	@@11
 	mov	dx,ax
-	mov	bx,si
+	mov	ebx,esi
 	jmp	@@11
 @@2:	mov	cx,bp
 	;DS:BX=uppermost vertex, DX=uppermost Y, CX=lowermost Y
 	mov	[polycury],dx
-	pop	si
+	pop	esi
 	;-------Write the startup info to drawinfo
-	push	cx
+	push	ecx
 	mov	ebp,edi ;es:di was to drawinfo, now ES:BP is
-	mov	ax,[esi+POLYCOLOR]
+	movzx	eax,word [esi+POLYCOLOR]
 	mov	[ebp],ax
 	mov	cl,[polyoversample]
-	mov	ax,dx
-	sar	ax,cl
+	mov	eax,edx
+	sar	eax,cl
 	mov	[ebp+2],ax
 	add	ebp,4+2
-	pop	cx
-	cmp	dx,cx
+	pop	ecx
+	cmp	edx,ecx
 	je	@@d0 ;heigth zero, nothing to do
 	sub	ebp,2
 	;-------Set up SI for left edge (--), DI for right edge (++)
-	mov	si,bx
-	mov	di,bx
+	mov	esi,ebx
+	mov	edi,ebx
 	;-------Loop
 @@l1:	mov	word [ebp],0
 	add	ebp,2
@@ -363,11 +363,11 @@ poly_grd:
 	cmp	ax,[polycury]
 	jne	@@a2
 @@a4:	;Left side reload
-	lea	bx,[esi-4] ;BX=SI--
-	cmp	bx,[polyomin]
+	lea	ebx,[esi-4] ;BX=SI--
+	cmp	ebx,[polyomin]
 	jge	@@a1
-	mov	bx,[polyomax]
-@@a1:	mov	ax,[ebx+POLYY]
+	mov	ebx,[polyomax]
+@@a1:	movzx	eax,word [ebx+POLYY]
 	sub	ax,[esi+POLYY]
 	jc	@@d0 ;turned upwards, end of polygon
 	jnz	@@a3
@@ -383,25 +383,25 @@ poly_grd:
 	cmp	ax,[polycury]
 	jne	@@b2
 @@b4:	;Right side reload
-	lea	bx,[edi+4] ;BP=DI++
-	cmp	bx,[polyomax]
+	lea	ebx,[edi+4] ;BP=DI++
+	cmp	ebx,[polyomax]
 	jle	@@b1
-	mov	bx,[polyomin]
+	mov	ebx,[polyomin]
 @@b1:	mov	ax,[ebx+POLYY]
 	sub	ax,[edi+POLYY]
 	jc	@@d0 ;turned upwards, end of polygon
 	jnz	@@b3
-	mov	di,bx
+	mov	edi,ebx
 	jmp	@@b4
 @@b3:	mov	[polyrhig],ax
-	POLYSIDECALC_GRD di,bx
-	mov	di,bx
+	POLYSIDECALC_GRD edi,ebx
+	mov	edi,ebx
 @@b2:	;	
-	mov	ax,[polylhig]
+	movzx	eax,word [polylhig]
 	cmp	ax,[polyrhig]
 	jl	@@c1
 	;right shorter
-	mov	ax,[polyrhig]
+	movzx	eax,word [polyrhig]
 @@c1:	;AX=shorter
 	mov	cl,[polyoversample]
 	mov	dx,ax
@@ -409,7 +409,7 @@ poly_grd:
 	mov	[ebp],dx ;Ycount
 	sub	[polylhig],ax
 	sub	[polyrhig],ax
-	add	bp,2
+	add	ebp,2
 	add	[polycury],ax
 	jmp	@@l1
 	
@@ -515,25 +515,26 @@ _draw_polylist:
 	lespar	edi,3 ;projected vertices
 	mov	edx,0ff00h ;for vf calc
 	push	ebp
-	movpar	eax,2
+	movpar	edi,2
 	;movpar	bp,4+0
-	xchg	ebp,edi
-	mov	[poly1+POLYVXSEG],eax
+	;xchg	ebp,edi
+	mov	[poly1+POLYVXSEG],edi
+	movpar	ebp,3
 	;ds:bp=projected vertices
 	;??:di=rotated vertices
 	%assign zzs 0
 	%assign zzd 0
 	%rep	MAXPOLYSIDES ;max sides in polygon
 	movzx	ebx, word [esi+6+zzs]
-	shl	bx,pvlist_sizeshl ;==vlist_sizeshl (required) [!!]
-	lea	ax,[ebx+edi]
-	mov	word [poly1+POLYVX+zzd],ax
+	shl	ebx,pvlist_sizeshl ;==vlist_sizeshl (required) [!!]
+	lea	eax,[ebx+edi]
+	mov	[poly1+POLYVX+zzd],eax
 	add	ebx,ebp
 	mov	al,[ebx+pvlist_vf]
 	and	dh,al ;if anded!=0, out of screen
 	or	dl,al ;if orred!=0, must clip
 	mov	eax,[ebx+pvlist_x]
-	mov	dword [poly1+POLYX+zzd],eax
+	mov	[poly1+POLYX+zzd],eax
 	dec	cx
 	jz	@@2
 	%assign zzs zzs+2
@@ -556,8 +557,8 @@ _draw_polylist:
 @@gr1:
   push	ecx
 	push	edi
-	movzx	ebx, word [POLYVX+ebp]
-	movzx	ebx, word [eax+ebx+vlist_normal]
+	mov	ebx, [POLYVX+ebp]
+	movzx	ebx, word [ebx+vlist_normal]
 	shl	ebx,nlist_sizeshl
 	add	edi,ebx
 	;es:di=now normal for which to calculate
