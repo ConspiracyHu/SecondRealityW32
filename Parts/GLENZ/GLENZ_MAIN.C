@@ -369,8 +369,11 @@ void glenz_main()
         waitb();
     }
     
-    //while(!dis_exit() && dis_getmframe()<300);
-    dis_waitb();
+    while(!dis_exit() && dis_getmframe()<300)
+    {
+      dis_waitb();
+      demo_blit();
+    }
 
     //initnewgroup();
     for(a=0;a<16;a++)

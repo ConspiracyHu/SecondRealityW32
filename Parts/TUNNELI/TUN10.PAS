@@ -166,6 +166,7 @@ begin
     for x := 0 to 64 do setrgb(64+x,(64-x) *4 div 7,(64-x) * 2 div 3,64-x);
     for x := 0 to 64 do setrgb(128+x,(64-x) div 3,(64-x) div 2,(64-x) * 2 div 3);
 }
+    for x := 0 to 256 do setrgb(x,0,0,0);
     for x := 0 to 64 do setrgb(64+x ,(64-x),(64-x),(64-x));
     for x := 0 to 64 do setrgb(128+x,(64-x) *3 div 4,(64-x) *3 div 4,(64-x) *3 div 4);
 

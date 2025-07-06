@@ -137,7 +137,8 @@ void plz()
 			ik3=inittable[ttptr][6];
 			ik4=inittable[ttptr][7];
 			}
-		if(curpal==5 && cop_drop>64) break;
+		//if(curpal==5 && cop_drop>64) break;
+		if(curpal==4 && cop_drop>64) break;
 
 		//asm	mov dx, 3c4h
 		//asm	mov ax, 0a02h
