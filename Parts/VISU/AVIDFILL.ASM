@@ -149,7 +149,6 @@ drawfill_nrm:
 	add	edi,eax
   mov	al,[vdf_color]
   mov ah, al
-  add ah, 4
   call	faststosb
 
 %if 0
