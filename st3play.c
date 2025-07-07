@@ -2651,12 +2651,17 @@ typedef struct
 } SampleMarker;
 
 // TODO: trim this every so often if the music has already passed a point
-SampleMarker sampleMarkers[ 0x40 * 0x70 * 10 ];
+#define MARKER_MAX 0x40 * 0x70 * 10
+SampleMarker sampleMarkers[ MARKER_MAX ];
 uint16_t sampleMarkerCount = 0;
 uint32_t totalSampleCount = 0;
 
 static void insertSampleMarker()
 {
+  if ( sampleMarkerCount >= MARKER_MAX )
+  {
+    __asm int 3;
+  }
   sampleMarkers[ sampleMarkerCount ].sampleCountStart = totalSampleCount;
   sampleMarkers[ sampleMarkerCount ].order = (uint8_t)np_ord;
   sampleMarkers[ sampleMarkerCount ].row = (uint8_t)np_row;
@@ -3064,6 +3069,7 @@ static bool loadS3M(const uint8_t *dat, uint32_t modLen, uint32_t startingOrder)
   np_zframe = 0;
 	np_patoff = -1;
 	jmptoord = -1;
+  sampleMarkerCount = 0;
 
 	np_ord = startingOrder > ordNum ? 0 : startingOrder;
 	neworder();
@@ -3319,7 +3325,6 @@ static bool openMixer(uint32_t audioFreq)
 	samplesLeft = 0;
 	currBuffer = 0;
   totalSampleCount = 0;
-  sampleMarkerCount = 0;
 
 	if (waveOutOpen(&hWave, WAVE_MAPPER, &wfx, (DWORD_PTR)&waveProc, 0, CALLBACK_FUNCTION) != MMSYSERR_NOERROR)
 		goto omError;
