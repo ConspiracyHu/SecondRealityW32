@@ -5,7 +5,7 @@ mrol	dd	0
 
 section .code
 
-extern _shim_vram
+extern _planar_vram
 
 global _ascrolltext
 _ascrolltext:
@@ -22,34 +22,35 @@ _ascrolltext:
 	mov	ecx, 0
 .@@l1:
 
-	mov	ebx, ecx
-	add	ebx, [scrl]
-	and	ebx, 3
-	shl	ebx, 1
-	mov	ax, [mmask+ebx]
-	mov	dx, 3c4h
+	;mov	ebx, ecx
+	;and	ebx, 3
+	;shl	ebx, 1
+	;mov	ax, [mmask+ebx]
+	;mov	dx, 3c4h
 	;out	dx, ax
-	mov	ax, [rmask+ebx]
-	mov	dx, 3ceh
+	;mov	ax, [rmask+ebx]
+	;mov	dx, 3ceh
 	;out	dx, ax
 
-	mov	edi, ecx
-	add	edi, [scrl]
-	shr	edi, 2
+	;mov	edi, ecx
+	;add	edi, [scrl]
+	;shr	edi, 2
 .@@l3:
 	%rep	20
 	add	si, 4
 	movzx	ebx, word [esi-4]
 	cmp	bx, -1
 	je	.@@l2
+  add ebx, 100*352
+	add	ebx, [scrl]
 	movzx	eax, word [esi-2]
-	xor	[_shim_vram+ebx+edi], al
+	xor	[_planar_vram+ebx], al
 	%endrep
 	jmp	.@@l3
 .@@l2:
-	inc	ecx
-	cmp	ecx, 4
-	jne	.@@l1
+;	inc	ecx
+;	cmp	ecx, 4
+;	jne	.@@l1
 
 	pop ebp
 	ret

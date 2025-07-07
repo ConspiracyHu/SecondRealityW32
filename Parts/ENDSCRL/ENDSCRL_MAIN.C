@@ -24,7 +24,7 @@ char	*fonaorder="ABCDEFGHIJKLMNOPQRSTUVWXabcdefghijklmnopqrstuvwxyz0123456789!?,
 int	fonap[256];
 int	fonaw[256];
 
-char	tbuf[FONAY][640];
+//char	tbuf[FONAY][640];
 
 void init();
 void do_scroll();

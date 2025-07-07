@@ -44,7 +44,7 @@ char	*alku_fonaorder="ABCDEFGHIJKLMNOPQRSTUVWXabcdefghijklmnopqrstuvwxyz01234567
 int	fonap[256];
 int	fonaw[256];
 
-int	dtau[30000];
+short dtau[30000];
 char	tbuf[186][352];
 
 int	a=0,p=0,alku_tptr=0;
@@ -112,8 +112,6 @@ void alku_main()
 
 	for(f=60;a<320 && !dis_exit();)
 		{
-    copper2();
-    copper3();
 		if(f==0) {
 			cop_fadepal=(char*)textin;
 			cop_dofade=64;
@@ -177,7 +175,9 @@ void alku_main()
 			}
 		else	f++;
 
-		alku_do_scroll(1);
+    copper2();
+    copper3();
+    alku_do_scroll( 1 );
     dis_waitb();
     demo_blit();
   }
@@ -229,21 +229,21 @@ void alku_init()	{
 		}
 		else if(y<128*3)
 		{
-			palette2[y+0]=(fade2[y+0]=palette[0x1*3+0])*63+((palette[y%(64*3)+0]*(63-palette[0x1*3+0]))>>6);
-			palette2[y+1]=(fade2[y+1]=palette[0x1*3+1])*63+((palette[y%(64*3)+1]*(63-palette[0x1*3+1]))>>6);
-			palette2[y+2]=(fade2[y+2]=palette[0x1*3+2])*63+((palette[y%(64*3)+2]*(63-palette[0x1*3+2]))>>6);
+			palette2[y+0]=(fade2[y+0]=palette[0x1*3+0])*63+palette[y%(64*3)+0]*(63-palette[0x1*3+0])>>6;
+			palette2[y+1]=(fade2[y+1]=palette[0x1*3+1])*63+palette[y%(64*3)+1]*(63-palette[0x1*3+1])>>6;
+			palette2[y+2]=(fade2[y+2]=palette[0x1*3+2])*63+palette[y%(64*3)+2]*(63-palette[0x1*3+2])>>6;
 		}
 		else if(y<192*3)
 		{
-			palette2[y+0]=(fade2[y+0]=palette[0x2*3+0])*63+((palette[y%(64*3)+0]*(63-palette[0x2*3+0]))>>6);
-			palette2[y+1]=(fade2[y+1]=palette[0x2*3+1])*63+((palette[y%(64*3)+1]*(63-palette[0x2*3+1]))>>6);
-			palette2[y+2]=(fade2[y+2]=palette[0x2*3+2])*63+((palette[y%(64*3)+2]*(63-palette[0x2*3+2]))>>6);
+			palette2[y+0]=(fade2[y+0]=palette[0x2*3+0])*63+palette[y%(64*3)+0]*(63-palette[0x2*3+0])>>6;
+			palette2[y+1]=(fade2[y+1]=palette[0x2*3+1])*63+palette[y%(64*3)+1]*(63-palette[0x2*3+1])>>6;
+			palette2[y+2]=(fade2[y+2]=palette[0x2*3+2])*63+palette[y%(64*3)+2]*(63-palette[0x2*3+2])>>6;
 		}
 		else
 		{
-			palette2[y+0]=(fade2[y+0]=palette[0x3*3+0])*63+((palette[y%(64*3)+0]*(63-palette[0x3*3+0]))>>6);
-			palette2[y+1]=(fade2[y+1]=palette[0x3*3+1])*63+((palette[y%(64*3)+1]*(63-palette[0x3*3+1]))>>6);
-			palette2[y+2]=(fade2[y+2]=palette[0x3*3+2])*63+((palette[y%(64*3)+2]*(63-palette[0x3*3+2]))>>6);
+			palette2[y+0]=(fade2[y+0]=palette[0x3*3+0])*63+palette[y%(64*3)+0]*(63-palette[0x3*3+0])>>6;
+			palette2[y+1]=(fade2[y+1]=palette[0x3*3+1])*63+palette[y%(64*3)+1]*(63-palette[0x3*3+1])>>6;
+			palette2[y+2]=(fade2[y+2]=palette[0x3*3+2])*63+palette[y%(64*3)+2]*(63-palette[0x3*3+2])>>6;
 		}
 	}
 
@@ -356,10 +356,11 @@ void dofade(char *pal1, char *pal2)
 
 	for(a=0;a<64 && !dis_exit();a++)
 		{
-		for(b=0;b<768;b++) pal[b]=(pal1[b]*(64-a)+pal2[b]*a>>6);
-    setpalarea( pal, 0, 256 );
-		//cop_pal=pal; do_pal=1;
 		//while(frame_count<1); frame_count=0;
+		for(b=0;b<768;b++) pal[b]=(pal1[b]*(64-a)+pal2[b]*a>>6);
+		cop_pal=pal; do_pal=1;
+    copper2();
+    copper3();
     dis_waitb();
     demo_blit();
 		}
@@ -452,11 +453,20 @@ void scrolltext(int scrl)
 
 int alku_do_scroll(int mode)
 	{
-	//if(mode==0 && frame_count<SCRLF) return(0);
-	//while(frame_count<SCRLF);
+  //if(mode==0 && frame_count<SCRLF) return(0);
+  if ( mode != 0 )
+  {
+    while ( frame_count < SCRLF )
+    {
+      copper2();
+      copper3();
+      dis_waitb();
+      demo_blit();
+    }
+  }
   if (frame_count<SCRLF) return( 0 );
 	frame_count-=SCRLF;
-	if(mode==1) ascrolltext(a+p*352,dtau);
+	if(mode==1) ascrolltext(a,dtau);
 //	cop_start=a/4+p*88;
 //  cop_scrl=(a&3)*2;
 	cop_start=a/4;
@@ -497,16 +507,16 @@ void faddtext(int tx,int ty,char *txt)
 void fmaketext(int scrl)
 	{
 	char 	*vvmem=planar_vram;
-	int	*p1=dtau;
+	short *p1=dtau;
 	int	mtau[]={1*256+2,2*256+2,4*256+2,8*256+2};
 	int	b,c,x,y,m;
   
-	for(m=0;m<4;m++)
+	//for(m=0;m<4;m++)
 		{
-		for(x=m;x<320;x+=4) {
-			for(y=1;y<184;y++) if(tbuf[y][x]!=tbuf[y][x-2]) {
-				*p1++=x/4+y*176+100*176;
-				*p1++=tbuf[y][x]^tbuf[y][x-2];
+		for(x=320;x>0;x--) {
+			for(y=1;y<184;y++) if(tbuf[y][x]!=tbuf[y][x-1]) {
+				*p1++=x+y*352;//+100*352;
+				*p1++=tbuf[y][x]^tbuf[y][x-1];
 				}
 			//alku_do_scroll(0);
 			}
@@ -521,7 +531,7 @@ void fmaketext(int scrl)
 		for(y=1;y<184;y++)
 			{
 			//vvmem[y*176+176*100+(x+scrl)]^=tbuf[y][x-1-1];
-			vvmem[y*176+176*100+(x+scrl)]^=tbuf[y][x-1];
+			vvmem[y*352+352*100+(x)]^=tbuf[y][x];
 			}
 		//alku_do_scroll(0);
 		}
@@ -542,6 +552,7 @@ void ffonapois()
 	unsigned a;
 
   for(a=80*64;a<80U*(64+256+10);a++) vvmem[a]=vvmem[a]&0x3f3f3f3f;
+	alku_do_scroll(0);
   /*
 	shim_outp(0x3c4,0x0102);
 	shim_outp(0x3ce,0x0004);
