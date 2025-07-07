@@ -190,10 +190,10 @@ int main( int argc, char * argv[] )
     void (*part)();
   } parts[] = {
     /* 00  BUG  */ { MUSIC_SKAV,  0x00, 320, 400, alku_main },      // 1   db  'Alkutekstit I (WILDF)       ' / 'ALKU    ' / 'ALKU.EXE'
-    /* 01  CTD  */ { MUSIC_SKAV,  0x0C, 320, 200, u2a_main },       // 2   db  'Alkutekstit II (PSI)        ' / 'VISU    ' / 'U2A.EXE'
+    /* 01  BUG  */ { MUSIC_SKAV,  0x0C, 320, 200, u2a_main },       // 2   db  'Alkutekstit II (PSI)        ' / 'VISU    ' / 'U2A.EXE'
     /* 02  BUG  */ { MUSIC_SKAV,  0x0D, 320, 200, pam_main },       // 3   db  'Alkutekstit III (TRUG/WILDF)' / 'PAM     ' / 'PAM.EXE'
     /* 03       */ { MUSIC_SKAV,  0x0E, 320, 400, beg_main },                  
-    /* 04  BUG  */ { MUSIC_PM,    0x00, 320, 200, glenz_main },     // 4   db  'Glenz (PSI)                 ' / 'GLENZ   ' / 'GLENZ.EXE'
+    /* 04  BUG  */ { MUSIC_PM,    0x00, 320, 400, glenz_main },     // 4   db  'Glenz (PSI)                 ' / 'GLENZ   ' / 'GLENZ.EXE'
     /* 05       */ { MUSIC_PM,    0x0F, 320, 200, tun_main },       // 5   db  'Dottitunneli (TRUG)         ' / 'TUNNELI ' / 'TUNNELI.EXE'
     /* 06       */ { MUSIC_PM,    0x14, 320, 200, koe_main },       // 6   db  'Techno (PSI)                ' / 'TECHNO  ' / 'TECHNO.EXE'
     /* 07  BUG  */ { MUSIC_PM,    0x27, 320, 200, shutdown_main },  // 7   db  'Panicfake (WILDF)           ' / 'PANIC   ' / 'PANICEND.EXE'
@@ -201,12 +201,12 @@ int main( int argc, char * argv[] )
                                                                     // 11  db  'Lens (PSI)                  ' / '        ' / 
     /* 09       */ { MUSIC_PM,    0x2F, 320, 200, lens_main },      // 12  db  'Rotazoomer (PSI)            ' / 'LENS    ' / 'LNS&ZOOM.EXE'
                                                                     // 13  db  'Plasma (WILDF)              ' / '        ' / 
-    /* 10  BUG  */ { MUSIC_PM,    0x3F, 320, 200, plz_main },       // 14  db  'Plasmacube (WILDF)          ' / 'PLZPART ' / 'PLZPART.EXE'
+    /* 10  BUG  */ { MUSIC_PM,    0x3E, 320, 200, plz_main },       // 14  db  'Plasmacube (WILDF)          ' / 'PLZPART ' / 'PLZPART.EXE'
     /* 11       */ { MUSIC_PM,    0x4D, 320, 200, dots_main },      // 15  db  'MiniVectorBalls (PSI)       ' / 'DOTS    ' / 'MINVBALL.EXE'
     /* 12       */ { MUSIC_PM,    0x58, 320, 200, water_main },     // 16  db  'Peilipalloscroll (TRUG)     ' / 'WATER   ' / 'RAYSCRL.EXE'
     /* 13       */ { MUSIC_PM,    0x5E, 320, 200, coman_main },     // 17  db  '3D-Sinusfield (PSI)         ' / 'COMAN   ' / '3DSINFLD.EXE'
-    /* 14       */ { MUSIC_PM,    0x63, 320, 400, jplogo_main },    // 18  db  'Jellypic (PSI)              ' / 'JPLOGO  ' / 'JPLOGO.EXE'
-    /* 15  CTD  */ { MUSIC_SKAV,  0x12, 320, 200, u2e_main },       // 19  db  'Vector Part II              ' / 'VISU    ' / 'U2E.EXE'
+    /* 14       */ { MUSIC_PM,    0x62, 320, 400, jplogo_main },    // 18  db  'Jellypic (PSI)              ' / 'JPLOGO  ' / 'JPLOGO.EXE'
+    /* 15  BUG  */ { MUSIC_SKAV,  0x12, 320, 200, u2e_main },       // 19  db  'Vector Part II              ' / 'VISU    ' / 'U2E.EXE'
                                                                                
     /* 16       */ { MUSIC_SKAV,  0x19, 320, 400, end_main },       // 20  db  'Endpictureflash (?)         ' / 'END     ' / 'ENDLOGO.EXE'
     /* 17       */ { MUSIC_SKAV,  0x1C, 320, 400, credits_main },   // 21  db  'Credits/Greetings scrl. (?) ' / 'CREDITS ' / 'CRED.EXE'
@@ -214,7 +214,7 @@ int main( int argc, char * argv[] )
                    { 0         ,  0x00,   0,   0, NULL },
   };
 
-  int start = 1;
+  int start = 0;
   if ( argc > 1 )
   {
     switch( argv[ 1 ][ 0 ] )
