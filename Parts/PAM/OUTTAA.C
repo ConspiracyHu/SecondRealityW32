@@ -49,7 +49,6 @@ void pam_main()
 	//frame_count=0;
 	while(!dis_exit() && f++<45)
 		{
-    setpalarea( &pam_pal[ 768 * wfade[ f ] ], 0, 256 );
     //while(frame_count<4); frame_count=0;
 		if(f<=40)
 			{
@@ -64,8 +63,10 @@ void pam_main()
 				//tw_setstart(0U);
 				}
 			}
-		//cop_pal=&pal[768*wfade[f]];
-		//do_pal=1;
+		cop_pal=&pam_pal[768*wfade[f]];
+		do_pal=1;
+    copper2();
+    copper3();
     for(int i=0; i<4; i++)
       dis_waitb();
     demo_blit();
