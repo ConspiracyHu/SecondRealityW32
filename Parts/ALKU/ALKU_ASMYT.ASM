@@ -58,31 +58,35 @@ global _outline
 _outline:
 
 ;	ARG	src:dword, dest:dword
+%define src esp+8
+%define dest esp+12
 
 	push ebp
 
-	mov	word [mrol], 0802h
+	;mov	word [mrol], 0802h
 	mov	ecx, 4
 .@@l1:
-	mov	dx, 3c4h
-	mov	ax, [mrol]
+	;mov	dx, 3c4h
+	;mov	ax, [mrol]
 	;out	dx, ax
 
-	mov esi, [esp+8]
+	mov esi, [src]
 	add	esi, ecx
-	dec	esi
-	mov edi, [esp+12]
-	xor	eax, eax
-	mov	[edi-352], al
-	mov	[edi-352+176], al
+	;dec	esi
+	mov edi, [dest]
+	add	edi, ecx
+
+	;xor	eax, eax
+	;mov	[edi-352], al
+	;mov	[edi-352+176], al
 
   ; x = esi
   ; y = ccc
 	%assign ccc 0
 	%rep	75
 	mov	al, [esi+ccc*640]
-	mov	[edi+ccc*352], al
-	;mov	[edi+ccc*352+176], al
+	mov	[edi+ccc*352*2], al
+	mov	[edi+ccc*352*2+352], al
 	%assign ccc ccc+1
 	%endrep
 
@@ -94,12 +98,12 @@ _outline:
 	%assign ccc 0
 	%rep	75
 	mov	al, [esi+ccc*640]
-	mov	[edi+ccc*352+75*352], al
-	;mov	[edi+ccc*352+75*352+176], al
+	mov	[edi+ccc*352*2+75*352*2], al
+	mov	[edi+ccc*352*2+75*352*2+352], al
 	%assign ccc ccc+1
 	%endrep
 
-	shr	word [mrol+1], 1
+	;shr	word [mrol+1], 1
 	dec	ecx
 	jnz	.@@l1
 

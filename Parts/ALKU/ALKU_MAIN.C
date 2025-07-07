@@ -14,13 +14,13 @@ extern void outline(char *f, char *t);
 extern void ascrolltext(int scrl, int *dtau);
 
 #define vmem shim_vram
-unsigned char planar_vram[ 352 * 200 ];
+unsigned char planar_vram[ 352 * 500 ];
 
 void alku_simulate_scroll()
 {
-  for ( int y = 0; y < 320; y++ )
+  for ( int y = 0; y < 400; y++ )
   {
-    memcpy( shim_vram + y * 320, planar_vram + cop_start + cop_scrl + y * 352, 320 );
+    memcpy( shim_vram + y * 320, planar_vram + cop_start * 4 + cop_scrl + y * 352, 320 );
   }
 }
 
@@ -74,6 +74,7 @@ void alku_main()
 
 	alku_init();
 
+  /*
 	while(dis_sync()<1 && !dis_exit()) demo_blit();
 
 	prtc(160,120,"A");
@@ -95,6 +96,7 @@ void alku_main()
 	dofade(fade1,fade2); wait(300); dofade(fade2,fade1); fonapois();
 
 	while(dis_sync()<4 && !dis_exit()) demo_blit();
+  */
 
 	memcpy(fadepal,fade1,768);
 	cop_fadepal=(char*)picin;
@@ -197,8 +199,8 @@ void alku_init()	{
 
 	for(a=0;a<88;a++)
 		{
-		outline(hzpic+a*4+784, planar_vram+a+176*50);
-		outline(hzpic+a*4+784, planar_vram+a+176*50+88);
+		outline(hzpic+a*4+784, planar_vram+4*(a+176*25));
+		outline(hzpic+a*4+784, planar_vram+4*(a+176*25+88));
 		}
   alku_simulate_scroll();
 
@@ -455,13 +457,15 @@ int alku_do_scroll(int mode)
   if (frame_count<SCRLF) return( 0 );
 	frame_count-=SCRLF;
 	if(mode==1) ascrolltext(a+p*352,dtau);
-	cop_start=a/4+p*88;
-  cop_scrl=(a&3)*2;
+//	cop_start=a/4+p*88;
+//  cop_scrl=(a&3)*2;
+	cop_start=a/4;
+  cop_scrl=(a&3);
 
 	if((a&3)==0)
 		{
-		outline(hzpic+(a/4+86)*4+784, planar_vram + (a/4+86)+176*50);
-		outline(hzpic+(a/4+86)*4+784, planar_vram + (a/4+86)+176*50+88);
+		outline(hzpic+(a/4+86)*4+784, planar_vram + 4*((a/4+86)+176*25));
+		outline(hzpic+(a/4+86)*4+784, planar_vram + 4*((a/4+86)+176*25+88));
 		}
   alku_simulate_scroll();
 	a+=1; p^=1;
@@ -522,7 +526,7 @@ void fmaketext(int scrl)
 		//alku_do_scroll(0);
 		}
 
-  while ( a <= scrl )
+  while ( a <= scrl && !dis_exit() )
   {
     copper2();
     copper3();
