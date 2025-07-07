@@ -36,7 +36,10 @@ void pam_main()
 	for(a=1;a<64;a++) for(b=0;b<768;b++)
 		pam_pal[a*768+b]=(63*a+(64-a)* pam_pal[b])/64;
 
-//	while(dis_waitb()<10&&!dis_exit());
+ 	if (!demo_isfirstpart())
+ 	{
+ 		while(dis_sync()<10&&!dis_exit());
+ 	}
 //	tw_waitvr();
 //	tw_setpalette(&pal[768*63]);
 //	tw_opengraph();
