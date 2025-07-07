@@ -122,6 +122,7 @@ void u2a_main()
 	sprintf(tmpname,"Data\\%s.0AA",u2a_scene);
 	if(!indemo) printf("Loading animations...\n",tmpname);
 	ip=readfile(tmpname);
+  scl=0;
 	while(*ip)
 	{
 		a=*ip;
@@ -171,6 +172,7 @@ void u2a_main()
 	dis_setcopper(2,u2a_copper2);
 	dis_partstart();
 	xit=0;
+  currframe=0;
 	coppercnt=0;
 	syncframe=0;
 	avgrepeat=1;

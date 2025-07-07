@@ -170,6 +170,7 @@ void u2e_main()
 	sprintf(tmpname,"Data\\%s.0AA",u2e_scene);
 	if(!indemo) printf("Loading animations...\n",tmpname);
 	ip=readfile(tmpname);
+  scl=0;
 	while(*ip)
 	{
 		a=*ip;
@@ -277,6 +278,7 @@ void u2e_main()
 	dis_setcopper(2,u2e_copper2);
 	dis_partstart();
 	xit=0;
+  currframe=0;
 
 	while(!dis_exit())
 	{
