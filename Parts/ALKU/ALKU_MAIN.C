@@ -523,7 +523,7 @@ void fmaketext(int scrl)
 		*p1++=-1;
 		*p1++=-1;
 		}
-  
+  /*
 	for(x=0;x<320;x++)
 		{
 		//shim_outp(0x3c4,mtau[(x+scrl)&3]);
@@ -535,7 +535,7 @@ void fmaketext(int scrl)
 			}
 		//alku_do_scroll(0);
 		}
-
+    */
   while ( a <= scrl && !dis_exit() )
   {
     copper2();
