@@ -34,9 +34,9 @@ _ulosta_frame:
 
 	;mov	edi, [esp+8]
 	;mov	es, ax
-  xor edi, edi
-  xor esi, esi
-	mov	ebp, [aseg]
+  ;xor edi, edi
+  mov edi, _shim_vram
+  mov	esi, [aseg]
   xor eax, eax
   xor ebx, ebx
   xor ecx, ecx
@@ -44,22 +44,27 @@ _ulosta_frame:
 	;mov	dx, 03c4h		; map mask... 03c4h, 02..
 
 .@@looppi:
-	mov al, [ebp+esi]
-  inc esi
+  lodsb
+	movsx eax, al
 	cmp	al, 0
 	jg	.@@outtaa
 	je	.@@over
 .@@skip:
-	cbw
-	sub	di, ax
+	sub	edi, eax
 
-	mov al, [ebp+esi]
-  inc esi
+  lodsb
+	movsx eax, al
 	cmp	al, 0
 	jl	.@@skip
 	je	.@@over
 
 .@@outtaa:
+  mov ecx, eax
+	lodsb
+  rep stosb
+  jmp .@@looppi
+
+%if 0
 	dec	al
 	jz	.@@single
 
@@ -213,17 +218,28 @@ _ulosta_frame:
 	jl	.@@skip
 	jg	.@@outtaa
 	je	.@@over
+%endif
 
 .@@over:
-	mov	edi, esi
-	;shr	esi, 4
-	mov	eax, ebp
-	add	eax, esi
-	and	edi, 15
-	jz	.@@exit
-	inc	eax
+;	mov	edi, esi
+;	;shr	esi, 4
+;	mov	eax, ebp
+;	add	eax, esi
+;	and	edi, 15
+;	jz	.@@exit
+;	inc	eax
+;.@@exit:
+  sub esi, [aseg]
+  test esi, 15
+  jz .@@exit
+  mov eax, esi
+  and eax, 15
+  xor eax, 15
+  add esi, eax
+  inc esi
+  
 .@@exit:
-	mov	[aseg], eax
+	add	[aseg], esi
 
 	pop ebp
 
