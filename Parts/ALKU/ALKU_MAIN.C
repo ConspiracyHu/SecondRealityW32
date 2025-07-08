@@ -14,13 +14,13 @@ extern void outline(char *f, char *t);
 extern void ascrolltext(int scrl, int *dtau);
 
 #define vmem shim_vram
-unsigned char planar_vram[ 352 * 500 ];
+unsigned char alku_planar_vram[ 352 * 500 ];
 
 void alku_simulate_scroll()
 {
   for ( int y = 0; y < 400; y++ )
   {
-    memcpy( shim_vram + y * 320, planar_vram + cop_start * 4 + cop_scrl + y * 352, 320 );
+    memcpy( shim_vram + y * 320, alku_planar_vram + cop_start * 4 + cop_scrl + y * 352, 320 );
   }
 }
 
@@ -44,7 +44,7 @@ char	*alku_fonaorder="ABCDEFGHIJKLMNOPQRSTUVWXabcdefghijklmnopqrstuvwxyz01234567
 int	fonap[256];
 int	fonaw[256];
 
-short dtau[30000];
+short alku_dtau[30000];
 char	tbuf[186][352];
 
 int	a=0,p=0,alku_tptr=0;
@@ -199,8 +199,8 @@ void alku_init()	{
 
 	for(a=0;a<88;a++)
 		{
-		outline(hzpic+a*4+784, planar_vram+4*(a+176*25));
-		outline(hzpic+a*4+784, planar_vram+4*(a+176*25+88));
+		outline(hzpic+a*4+784, alku_planar_vram+4*(a+176*25));
+		outline(hzpic+a*4+784, alku_planar_vram+4*(a+176*25+88));
 		}
   alku_simulate_scroll();
 
@@ -466,7 +466,7 @@ int alku_do_scroll(int mode)
   }
   if (frame_count<SCRLF) return( 0 );
 	frame_count-=SCRLF;
-	if(mode==1) ascrolltext(a,dtau);
+	if(mode==1) ascrolltext(a,alku_dtau);
 //	cop_start=a/4+p*88;
 //  cop_scrl=(a&3)*2;
 	cop_start=a/4;
@@ -474,8 +474,8 @@ int alku_do_scroll(int mode)
 
 	if((a&3)==0)
 		{
-		outline(hzpic+(a/4+86)*4+784, planar_vram + 4*((a/4+86)+176*25));
-		outline(hzpic+(a/4+86)*4+784, planar_vram + 4*((a/4+86)+176*25+88));
+		outline(hzpic+(a/4+86)*4+784, alku_planar_vram + 4*((a/4+86)+176*25));
+		outline(hzpic+(a/4+86)*4+784, alku_planar_vram + 4*((a/4+86)+176*25+88));
 		}
   alku_simulate_scroll();
 	a+=1; p^=1;
@@ -506,24 +506,25 @@ void faddtext(int tx,int ty,char *txt)
 
 void fmaketext(int scrl)
 	{
-	char 	*vvmem=planar_vram;
-	short *p1=dtau;
+	char 	*vvmem=alku_planar_vram;
+	short *p1=alku_dtau;
 	int	mtau[]={1*256+2,2*256+2,4*256+2,8*256+2};
 	int	b,c,x,y,m;
   
 	//for(m=0;m<4;m++)
 		{
-		for(x=320;x>0;x--) {
-			for(y=1;y<184;y++) if(tbuf[y][x]!=tbuf[y][x-1]) {
+    for(y=1;y<184;y++)
+		  for(x=320;x>0;x--)
+			 if(tbuf[y][x]!=tbuf[y][x-1]) {
 				*p1++=x+y*352;//+100*352;
 				*p1++=tbuf[y][x]^tbuf[y][x-1];
 				}
 			//alku_do_scroll(0);
-			}
+			
 		*p1++=-1;
 		*p1++=-1;
 		}
-  /*
+  
 	for(x=0;x<320;x++)
 		{
 		//shim_outp(0x3c4,mtau[(x+scrl)&3]);
@@ -531,11 +532,11 @@ void fmaketext(int scrl)
 		for(y=1;y<184;y++)
 			{
 			//vvmem[y*176+176*100+(x+scrl)]^=tbuf[y][x-1-1];
-			vvmem[y*352+352*100+(x)]^=tbuf[y][x];
+			vvmem[y*352+352*100+(x+scrl)]^=tbuf[y][x];
 			}
 		//alku_do_scroll(0);
 		}
-    */
+    
   while ( a <= scrl && !dis_exit() )
   {
     copper2();
@@ -548,7 +549,7 @@ void fmaketext(int scrl)
 
 void ffonapois()
 	{
-  unsigned int * vvmem = ( unsigned int * )planar_vram;// MK_FP( 0x0a000, 0 );
+  unsigned int * vvmem = ( unsigned int * )alku_planar_vram;// MK_FP( 0x0a000, 0 );
 	unsigned a;
 
   for(a=80*64;a<80U*(64+256+10);a++) vvmem[a]=vvmem[a]&0x3f3f3f3f;

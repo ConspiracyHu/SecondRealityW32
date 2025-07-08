@@ -5,7 +5,7 @@ mrol	dd	0
 
 section .code
 
-extern _planar_vram
+extern _alku_planar_vram
 
 global _ascrolltext
 _ascrolltext:
@@ -44,7 +44,7 @@ _ascrolltext:
   add ebx, 100*352
 	add	ebx, [scrl]
 	movzx	eax, word [esi-2]
-	xor	[_planar_vram+ebx], al
+	xor	[_alku_planar_vram+ebx-1], al
 	%endrep
 	jmp	.@@l3
 .@@l2:
