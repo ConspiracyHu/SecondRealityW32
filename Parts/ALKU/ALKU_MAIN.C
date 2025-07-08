@@ -74,7 +74,6 @@ void alku_main()
 
 	alku_init();
 
-  /*
 	while(dis_sync()<1 && !dis_exit()) demo_blit();
 
 	prtc(160,120,"A");
@@ -96,7 +95,6 @@ void alku_main()
 	dofade(fade1,fade2); wait(300); dofade(fade2,fade1); fonapois();
 
 	while(dis_sync()<4 && !dis_exit()) demo_blit();
-  */
 
 	memcpy(fadepal,fade1,768);
 	cop_fadepal=(char*)picin;
