@@ -279,33 +279,15 @@ void draw(int unused)
 	long	ax,ay,az,bx,by,bz,kx,ky,kz,nx,ny,nz,s;
 
 	for(a=0;a<plz_polys;a++)
-	//for(a=0;a<1;a++)
 		{
 		c=plz_object.pg[ptodraw[a].p].color;
 		do_poly(
-      plz_object.point[plz_object.pg[ptodraw[a].p].p1].xxx/*+(page&1)*2*/, plz_object.point[plz_object.pg[ptodraw[a].p].p1].yyy,
+			plz_object.point[plz_object.pg[ptodraw[a].p].p1].xxx/*+(page&1)*2*/, plz_object.point[plz_object.pg[ptodraw[a].p].p1].yyy,
 			plz_object.point[plz_object.pg[ptodraw[a].p].p2].xxx/*+(page&1)*2*/, plz_object.point[plz_object.pg[ptodraw[a].p].p2].yyy,
 			plz_object.point[plz_object.pg[ptodraw[a].p].p3].xxx/*+(page&1)*2*/, plz_object.point[plz_object.pg[ptodraw[a].p].p3].yyy,
 			plz_object.point[plz_object.pg[ptodraw[a].p].p4].xxx/*+(page&1)*2*/, plz_object.point[plz_object.pg[ptodraw[a].p].p4].yyy,
 			c, frames&63);
-    /*
-    for ( int i = 0; i < plz_object.pnts; i++ )
-    {
-      int x = plz_object.point[ plz_object.pg[ptodraw[a].p].p1 ].xxx;
-      int y = plz_object.point[ plz_object.pg[ptodraw[a].p].p1 ].yyy;
-      vram_half[ x / 4 + y * 160 ] = 190;
-      x = plz_object.point[ plz_object.pg[ptodraw[a].p].p2 ].xxx;
-      y = plz_object.point[ plz_object.pg[ptodraw[a].p].p2 ].yyy;
-      vram_half[ x / 4 + y * 160 ] = 190;
-      x = plz_object.point[ plz_object.pg[ptodraw[a].p].p3 ].xxx;
-      y = plz_object.point[ plz_object.pg[ptodraw[a].p].p3 ].yyy;
-      vram_half[ x / 4 + y * 160 ] = 190;
-      x = plz_object.point[ plz_object.pg[ptodraw[a].p].p4 ].xxx;
-      y = plz_object.point[ plz_object.pg[ptodraw[a].p].p4 ].yyy;
-      vram_half[ x / 4 + y * 160 ] = 190;
-    }
-    */
-  }
+		}
 
 	}
 

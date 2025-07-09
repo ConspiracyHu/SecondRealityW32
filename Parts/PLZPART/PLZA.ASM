@@ -84,6 +84,7 @@ section .code
 
 %define SCREEN_STRIDE 640
 
+
 global _do_block
 _do_block:
 	;ARG	ycount:word
@@ -160,20 +161,23 @@ _do_block:
 	jz	..@l2
 	dec	dh
 ..@l2:
-	movzx	ebx, byte [_txx1+2]	; txt x
+
+	push ebp
+
+	mov	bl, byte [_txx1+2]	; txt x
 	mov	bh, byte [_txy1+2]       ; txt y
 	test	si, 1
 	jz	..@ll1
 
-	add	ecx, eax
-  mov eax, [_dseg]
-	movzx	esi, byte [eax+ebx]		; out odd byte
-  add esi, _from
-	mov	al, [ebx+esi]
-	adc	ebx, edx
-	adc	bh, 0
-	mov	[ebp+edi-1],al
-  add ebp, ebp
+	;add	ecx, eax
+	;mov eax, [_dseg]
+	;movzx	esi, byte [eax+ebx]		; out odd byte
+	;add esi, _from
+	;mov	al, [ebx+esi]
+	;adc	ebx, edx
+	;adc	bh, 0
+	;mov	[ebp+edi-1],al
+	add ebp, ebp
 	jmp	[_jmp_tau+ebp-4]
 
 ..@ll1:
@@ -194,40 +198,59 @@ _do_block:
 %rep 200
 
 PLZ(x) :
-  push ebp
-  mov ebp, [_dseg]
-
-  movzx ebx, bx
-	movzx	esi, byte [ebp+ebx]
-  add esi, [_from]
 	add	ecx, eax
-	mov	ah, [ebx+esi]
+	adc	ebx, edx
+	adc	bh, 0		; immediate = y_hi
+
+	push ecx
+	mov ecx, ebx
+	and ecx, 0xFFFF
+	add ecx, [_dseg] ; fs
+	movzx esi, byte [ecx]
+	mov ecx, ebx
+	and ecx, 0xFFFF
+	add ecx, [_from] ; ds
+	mov ah, [ecx+esi]
+	pop ecx
+
+	add	ecx, eax
 	adc	ebx, edx
 	adc	bh, 0
 
-  movzx ebx, bx
-	movzx	esi, byte [ebp+ebx]
-  add esi, [_from]
-	add	ecx, eax
-	mov	al, [ebx+esi]
-	adc	ebx, edx
-	adc	bh, 0			; immediate = y_hi
+	push ecx
+	mov ecx, ebx
+	and ecx, 0xFFFF
+	add ecx, [_dseg] ; fs
+	movzx esi, byte [ecx]
+	mov ecx, ebx
+	and ecx, 0xFFFF
+	add ecx, [_from] ; ds
+	mov al, [ecx+esi]
+	pop ecx
 
-  ;mov ax,0x1f3f ; ---DEBUG---
-	mov	[edi+ccc*8-1+0], al
-	mov	[edi+ccc*8-1+1], al
-	mov	[edi+ccc*8-1+2], al
-	mov	[edi+ccc*8-1+3], al
-	mov	[edi+ccc*8-1+4], ah
-	mov	[edi+ccc*8-1+5], ah
-	mov	[edi+ccc*8-1+6], ah
-	mov	[edi+ccc*8-1+7], ah
 
-  pop ebp
+	;add	bp, bx
+	;movzx	esi, byte [ebp]
+	;add	esi, [_from]
+	;add	si, bx
+	;mov 	al, [esi+ebx]
+
+	mov	[edi+ccc*8-4+0], al
+	mov	[edi+ccc*8-4+1], al
+	mov	[edi+ccc*8-4+2], al
+	mov	[edi+ccc*8-4+3], al
+	mov	[edi+ccc*8-4+4], ah
+	mov	[edi+ccc*8-4+5], ah
+	mov	[edi+ccc*8-4+6], ah
+	mov	[edi+ccc*8-4+7], ah
+
+;  pop ebp
 
   %assign ccc ccc-1
 %endrep
 plz_y0:
+
+	pop ebp
 
 ..@twobyte:
   push ebp
@@ -251,13 +274,13 @@ plz_y0:
 	;mov	dx, 3c4h
 	;out	dx, ax
   ;mov cx, 0x5f7f ; ---DEBUG---
-	mov	[edi+ebx], cl
+	;mov	[edi+ebx], cl
 
 	movzx	ebx, word [_xx1+2]
 	and	bx, 3
   ;mov	ah, [end_mask+ebx]
 	;out	dx, ax
-	mov	[edi+ebx], ch
+	;mov	[edi+ebx], ch
 
 ..@endline:
 	add	dword [_to], SCREEN_STRIDE		; next line
