@@ -98,7 +98,7 @@ newclip_grd:
 
 %macro NEWCLIPNEXT 0 ;sets bx(last)=si(current) and loads si with next vertex
 	;local	l1,l2
-	mov	bx,si
+	mov	ebx,esi
 	mov	dx,[clipcount]
 	dec	dx
 	cmp	dx,1
@@ -108,7 +108,7 @@ newclip_grd:
 	;1 vertex left, means we rotated the list
 	mov	esi,[clipzero]
 	jmp	%%l2
-%%l1:	add	si,4
+%%l1:	add	esi,4
 %%l2:
 %endmacro
 
@@ -120,12 +120,12 @@ newclip_grd:
 	mov	[edi+POLYX],eax
 	mov	ax,[esi+POLYGR]
 	mov	[edi+POLYGR],ax
-	add	di,4
+	add	edi,4
 %%l1:
 %endmacro
 
 ;!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-	
+
 %macro ZCLIPCLIP 0
 	;local	l1,l41,l42,l43,l44
 	;(fs:bp)-(fs:bx) is clipped at (-,-,ECX) with result stored to (DX,CX) & AX=visfl
