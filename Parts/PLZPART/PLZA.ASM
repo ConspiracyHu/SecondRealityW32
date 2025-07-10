@@ -169,14 +169,22 @@ _do_block:
 	test	si, 1
 	jz	..@ll1
 
-	;add	ecx, eax
-	;mov eax, [_dseg]
-	;movzx	esi, byte [eax+ebx]		; out odd byte
-	;add esi, _from
-	;mov	al, [ebx+esi]
-	;adc	ebx, edx
-	;adc	bh, 0
-	;mov	[ebp+edi-1],al
+	add	ecx, eax
+	adc	ebx, edx
+	adc	bh, 0		; immediate = y_hi
+
+	push ecx
+	mov ecx, ebx
+	and ecx, 0xFFFF
+	add ecx, [_dseg] ; fs
+	movzx esi, byte [ecx]
+	mov ecx, ebx
+	and ecx, 0xFFFF
+	add ecx, [_from] ; ds
+	mov al, [ecx+esi]
+	mov [ebp+edi-1],al
+	pop ecx
+
 	add ebp, ebp
 	jmp	[_jmp_tau+ebp-4]
 
@@ -269,18 +277,36 @@ plz_y0:
 
 	movzx ebx, word [_xx2+2]
 	and	bx, 3
-	;mov	ah, [start_mask+ebx]
-	;mov	al, 02
-	;mov	dx, 3c4h
-	;out	dx, ax
-  ;mov cx, 0x5f7f ; ---DEBUG---
-	;mov	[edi+ebx], cl
+	mov eax, ebx
+	add ebx, ebx
+	add ebx, eax
+	add ebx, ..@leftsidetable
+	jmp ebx
+..@leftsidetable:
+	nop
+	mov	[edi+0], cl
+	mov	[edi+1], cl
+	mov	[edi+2], cl
+	mov	[edi+3], cl
 
 	movzx	ebx, word [_xx1+2]
 	and	bx, 3
   ;mov	ah, [end_mask+ebx]
 	;out	dx, ax
-	;mov	[edi+ebx], ch
+	shl ebp, 2
+	add edi, ebp
+
+	xor ebx, 3
+	mov eax, ebx
+	add ebx, ebx
+	add ebx, eax
+	add ebx, ..@rightsidetable
+	jmp ebx
+..@rightsidetable:
+	mov	[edi+3], ch
+	mov	[edi+2], ch
+	mov	[edi+1], ch
+	mov	[edi+0], ch
 
 ..@endline:
 	add	dword [_to], SCREEN_STRIDE		; next line
