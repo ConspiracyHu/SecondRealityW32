@@ -5,7 +5,8 @@
 #include "../dis/dis.h"
 #include "../../shims.h"
 
-#define FONAY 30
+// --- W32 PORT CHANGE (decompiled from final) ---
+#define FONAY 25
 
 //extern	void waitvr(void);
 void setstart( int y )
@@ -18,9 +19,9 @@ void setrgbpalette( int p, int r, int g, int b )
   shim_setpal( p, r, g, b );
 }
 
-extern char endscrl_font[ 31 ][ 1500 ];
+extern char endscrl_font[ FONAY ][ 1550 ];
 
-char	*fonaorder="ABCDEFGHIJKLMNOPQRSTUVWXabcdefghijklmnopqrstuvwxyz0123456789!?,.:èè()+-*='";
+char	*fonaorder="ABCDEFGHIJKLMNOPQRSTUVWXabcdefghijklmnopqrstuvwxyz0123456789!?,.:èè()+-*='ZÑîY/&";
 int	fonap[256];
 int	fonaw[256];
 
@@ -85,15 +86,19 @@ void do_scroll()
 			tstart+=fonaw[*tptr++]+2;
 			}
 		textline[a]=*tptr++; tstart=(639-tstart)/2;
+		if (textline[0]=='[')
+		{
+			chars = 0;
+		}
 		}
 	memset(scanbuf,0,80*4);
 
 	for(a=0,x=tstart;a<chars;a++,x+=2)
-    for(b=0;b<fonaw[textline[a]];b++,x++)
+		for(b=0;b<fonaw[textline[a]];b++,x++)
 		{
+		scanbuf[x] = endscrl_font[line][fonap[textline[a]]+b];
+		/*
 		m=mtau[x&7];
-    scanbuf[x] = endscrl_font[line][fonap[textline[a]]+b];
-    /*
 		if(endscrl_font[line][fonap[textline[a]]+b]&1)
 			scanbuf[0][x/8]^=m;
 		if(endscrl_font[line][fonap[textline[a]]+b]&2)
@@ -104,15 +109,32 @@ void do_scroll()
 			scanbuf[3][x/8]^=m;
       */
 		}
-  memcpy( shim_vram + 640 * (yscrl), scanbuf, 640 );
-  memcpy( shim_vram + 640 * (yscrl + 400), scanbuf, 640 );
+	
+		memcpy( shim_vram + 640 * (yscrl), scanbuf, 640 );
+		memcpy( shim_vram + 640 * (yscrl + 401), scanbuf, 640 );
 //	outport(0x3c4,0x0102); memcpy(MK_FP(0x0a000,80*yscrl),scanbuf[0],80); memcpy(MK_FP(0x0a000,80*(yscrl+401)),scanbuf[0],80);
 //	outport(0x3c4,0x0202); memcpy(MK_FP(0x0a000,80*yscrl),scanbuf[1],80); memcpy(MK_FP(0x0a000,80*(yscrl+401)),scanbuf[1],80);
 //	outport(0x3c4,0x0402); memcpy(MK_FP(0x0a000,80*yscrl),scanbuf[2],80); memcpy(MK_FP(0x0a000,80*(yscrl+401)),scanbuf[2],80);
 //	outport(0x3c4,0x0802); memcpy(MK_FP(0x0a000,80*yscrl),scanbuf[3],80); memcpy(MK_FP(0x0a000,80*(yscrl+401)),scanbuf[3],80);
 	yscrl=(yscrl+1)%401;
-	line=(line+1)%FONAY;
+
+	// --- W32 PORT CHANGE (decompiled from final) ---
+	if (textline[0]=='[')
+	{
+		int height = (textline[1]-'0')*10+(textline[2]-'0');
+		line=(line+1)%height;
+	}
+	else
+	{
+		line=(line+1)%FONAY;
+	}
 	setstart(yscrl*640);
+
+	// --- W32 PORT CHANGE (decompiled from final) ---
+	if (textline[0]=='%')
+	{
+		tptr = text;
+	}
 	}
 
 void init()
@@ -121,16 +143,17 @@ void init()
 
   FILE * a = fopen( "Data/endscrol.txt", "rb"); fread( text, 60000, 1, a ); fclose( a );
 
-	for(x=0;x<1500 && *fonaorder;)
+	// --- W32 PORT CHANGE (decompiled from final) ---
+	for(x=0;x<1550 && *fonaorder;)
 	{
-		while(x<1500)
+		while(x<1550)
 		{
 			for(y=0;y<FONAY;y++) if(endscrl_font[y][x]) break;
 			if(y!=FONAY) break;
 			x++;
 		}
 		b=x;
-		while(x<1500)
+		while(x<1550)
 		{
 			for(y=0;y<FONAY;y++) if(endscrl_font[y][x]) break;
 			if(y==FONAY) break;
@@ -141,6 +164,7 @@ void init()
 		fonaw[*fonaorder]=x-b;
 		fonaorder++;
 	}
-	fonap[32]=1500-20;
+	// --- W32 PORT CHANGE (decompiled from final) ---
+	fonap[32]=1550-20;
 	fonaw[32]=16;
 	}
