@@ -346,17 +346,29 @@ plz_y0:
   add esi, [_from]
 	mov	cl, [ebx+esi]
 
-	;mov	al, 02
-	;mov	dx, 3c4h
-	;mov	bx, word [_xx2+2]
-	;and	bx, 3
-	;mov	ah, [start_mask+ebx]
-	;mov	bx, word [_xx1+2]
-	;and	bx, 3
-	;and	ah, [end_mask+ebx]
-	;out	dx, ax
-  ;mov cx, 0x9faf ; ---DEBUG---
+	movzx	ebx, word [_xx2+2]
+	and	ebx, 3
+	mov	ah, [start_mask+ebx]
+	movzx	ebx, word [_xx1+2]
+	and	ebx, 3
+	and	ah, [end_mask+ebx]
+
+	test	ah, 1
+	jz ..@singlebyte_no1
 	mov	[edi], cl
+..@singlebyte_no1:
+	test	ah, 2
+	jz ..@singlebyte_no2
+	mov	[edi+1], cl
+..@singlebyte_no2:
+	test	ah, 4
+	jz ..@singlebyte_no4
+	mov	[edi+2], cl
+..@singlebyte_no4:
+	test	ah, 8
+	jz ..@singlebyte_no8
+	mov	[edi+3], cl
+..@singlebyte_no8:
 
 	add	dword [_to], SCREEN_STRIDE		; next line
 	mov	edi, [_to]
