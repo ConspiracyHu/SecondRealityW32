@@ -182,7 +182,10 @@ _do_block:
 	and ecx, 0xFFFF
 	add ecx, [_from] ; ds
 	mov al, [ecx+esi]
-	mov [ebp+edi-1],al
+	mov [ebp*4+edi-4+0],al
+	mov [ebp*4+edi-4+1],al
+	mov [ebp*4+edi-4+2],al
+	mov [ebp*4+edi-4+3],al
 	pop ecx
 
 	add ebp, ebp
