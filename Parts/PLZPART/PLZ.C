@@ -105,7 +105,7 @@ void plz()
 	long	tim=0,count=0;
 	int	ch=0,sync=2;
 
- 	demo_changemode( 384, 400 );
+ 	demo_changemode( 320, 400 );
  	if (!demo_isfirstpart())
  	{
 		while(dis_musplus()<0 && !dis_exit());
@@ -177,22 +177,25 @@ void plz()
 
     char * src1 = plz_vidmem[0];
     char * src2 = plz_vidmem[1];
-    char * dst = shim_vram + drop_y * 384;
-    memset( shim_vram, 0, 384 * 400 );
+    char * dst = shim_vram + drop_y * 320;
+    memset( shim_vram, 0, 320 * 400 );
     for ( int y = 0; y < MAXY; y++ )
     {
       if ( y + drop_y >= 400 )
       {
         break;
       }
-      for ( int x = 0; x < 84; x++ )
+      src1 += 2;
+      src2 += 2;
+      for ( int x = 0; x < 80; x++ )
       {
         *dst++ = *src2;
         *dst++ = *src1;
         *dst++ = *src2++;
         *dst++ = *src1++;
       }
-      dst += 384 - 84 * 4;
+      src1 += 2;
+      src2 += 2;
     }
 
     demo_blit();

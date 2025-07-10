@@ -201,7 +201,7 @@ int main( int argc, char * argv[] )
                                                                     // 11  db  'Lens (PSI)                  ' / '        ' / 
     /* 09       */ { MUSIC_PM,    0x2F, 320, 200, lens_main },      // 12  db  'Rotazoomer (PSI)            ' / 'LENS    ' / 'LNS&ZOOM.EXE'
                                                                     // 13  db  'Plasma (WILDF)              ' / '        ' / 
-    /* 10  BUG  */ { MUSIC_PM,    0x3E, 320, 200, plz_main },       // 14  db  'Plasmacube (WILDF)          ' / 'PLZPART ' / 'PLZPART.EXE'
+    /* 10       */ { MUSIC_PM,    0x3E, 320, 200, plz_main },       // 14  db  'Plasmacube (WILDF)          ' / 'PLZPART ' / 'PLZPART.EXE'
     /* 11       */ { MUSIC_PM,    0x4D, 320, 200, dots_main },      // 15  db  'MiniVectorBalls (PSI)       ' / 'DOTS    ' / 'MINVBALL.EXE'
     /* 12       */ { MUSIC_PM,    0x58, 320, 200, water_main },     // 16  db  'Peilipalloscroll (TRUG)     ' / 'WATER   ' / 'RAYSCRL.EXE'
     /* 13       */ { MUSIC_PM,    0x5E, 320, 200, coman_main },     // 17  db  '3D-Sinusfield (PSI)         ' / 'COMAN   ' / '3DSINFLD.EXE'
