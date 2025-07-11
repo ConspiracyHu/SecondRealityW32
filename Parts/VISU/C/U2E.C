@@ -274,7 +274,7 @@ void u2e_main()
 	cp[254*3+2]=63;
 	vid_setpal(cp);
 	vid_window(0L,319L,25L,174L,512L,9999999L);
-	
+
 	dis_setcopper(2,u2e_copper2);
 	dis_partstart();
 	xit=0;
@@ -301,9 +301,9 @@ void u2e_main()
 	cl[2].ready=0;
 	cl[3].ready=1;
 	
+	int fov = 0;
 	while(!dis_exit() && !xit)
 	{
-	  int fov = 0;
 		int onum;
 		long pflag;
 		long dis;

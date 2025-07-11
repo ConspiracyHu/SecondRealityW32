@@ -180,9 +180,9 @@ void u2a_main()
 	cl[1].ready=0;
 	cl[2].ready=0;
 	cl[3].ready=1;
+	int fov = 0;
 	while(!dis_exit() && !xit)
 	{
-		int fov = 0;
 		int onum;
 		long pflag;
 		long dis;
