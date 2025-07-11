@@ -24,7 +24,7 @@ ne	times MAXLINES * 18 db 0
 %define NE_NEXT	 10 ;dd
 %define NE_DX		14 ;dd
 ;ALIGN 4
-nl	times 256 dw 0
+nl	times 256 dd 0
 
 tmp_firstvx dd	0
 tmp_color dw	0
@@ -102,9 +102,9 @@ ng_pass3:
 	;si=new     bx=last
 	;cx=newpos  dx=lastpos
 	;al=newcol  ah=lastcol
-	movzx	edx,word [newdata1+ebx] ;ds
+	mov 	edx,[newdata1+ebx] ;ds
 	add	ebx,4
-	movzx	ecx,word [newdata1+esi] ;ds
+	mov 	ecx,[newdata1+esi] ;ds
 	add	esi,4
 	;
 .@@21:	cmp	dx,cx
@@ -415,7 +415,7 @@ __newgroup:
 	;scan if already exists
 	push	eax
 	push	esi
-	mov	esi,eax ; pointer to the existing scanline
+	mov	esi,eax ; pointer to the existing line
 	jmp	.@@h11
 .@@h1:
   mov	esi,[esi+NE_NEXT]
