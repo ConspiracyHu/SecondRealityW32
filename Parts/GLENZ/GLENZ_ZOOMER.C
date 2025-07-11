@@ -13,7 +13,7 @@ static char *bg;
 
 extern void zoom(char *to,char *from,int factor);
 
-extern int sin1024[];
+extern short sin1024[];
 
 static char pal1[768];
 static char pal2[768];

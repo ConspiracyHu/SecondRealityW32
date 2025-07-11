@@ -8,7 +8,7 @@
 #include "..\common.h"
 #include "..\..\shims.h"
 
-extern int sin1024[];
+extern short sin1024[];
 
 extern void zoomer1(char *pic);
 extern void zoomer2(char *pic);
@@ -300,7 +300,11 @@ void glenz_main()
 
     if (!demo_isfirstpart())
     {
-      while(!dis_exit() && dis_musplus()<-19) ;
+      while(!dis_exit() && dis_musplus()<-19)
+      {
+              dis_waitb();
+              demo_blit();
+      };
     }
     dis_setmframe(0);
 
@@ -418,8 +422,12 @@ void glenz_main()
     ypos=-9000; yposa=0;
     dis_waitb();
     memcpy(bgpic,vram,64000);
-    
-    //while(!dis_exit() && dis_getmframe()<333);
+
+    while(!dis_exit() && dis_getmframe()<333)
+    {
+      dis_waitb();
+      demo_blit();
+    }
 
     memcpy(pal,backpal,16*3);
 //     dis_partstart();
@@ -430,8 +438,11 @@ void glenz_main()
     //dis_setcopper(0,copper);
     while(frame<7000 && !dis_exit())
     {
-        a=dis_musplus(); if(a<0 && a>-16) break;
-        
+        if (!demo_isfirstpart())
+        {
+            a=dis_musplus(); if(a<0 && a>-16) break;
+        }
+
 	repeat=dis_waitb();
   shim_outp(0x3c8,0);
         for(a=0;a<16*3;a++) shim_outp(0x3c9,pal[a]);
