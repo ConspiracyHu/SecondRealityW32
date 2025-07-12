@@ -387,7 +387,7 @@ poly_grd:
 	cmp	ebx,[polyomax]
 	jle	@@b1
 	mov	ebx,[polyomin]
-@@b1:	mov	ax,[ebx+POLYY]
+@@b1:	movzx	eax, word [ebx+POLYY]
 	sub	ax,[edi+POLYY]
 	jc	@@d0 ;turned upwards, end of polygon
 	jnz	@@b3
