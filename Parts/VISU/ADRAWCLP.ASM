@@ -136,11 +136,6 @@ newclip_grd:
 	push	ecx
 	;
 
-  ; simulate FS
-  mov eax, [vxseg]
-  add ebx, eax
-  add ebp, eax
-
 	mov	eax,[ebx+vlist_z] ;fs
 	mov	edx,[ebp+vlist_z] ;fs
 	cmp	eax,edx
@@ -218,7 +213,7 @@ newclip_grd:
 	mov	esi,[clipzero]
 	jmp	%%l2
 %%l1:	add	esi,4
-%%l2:	movzx	ebx, word [esi+POLYVX]
+%%l2:	mov	ebx, [esi+POLYVX]
 %endmacro 
 
 %macro ZCLIPADDVISVX 0 ;adds ds:si[bx+POLYX/Y] to list (the vx must be visible for this to work) at DS:DI
@@ -268,31 +263,24 @@ clipnear:
 	mov	[edi+POLYSIDES],eax
 	inc	eax
 	mov	[clipcount],ax
-	mov	eax,[esi+POLYFLAGS] ;&POLYVXSEG
+	mov	eax,[esi+POLYFLAGS]
 	mov	[edi+POLYFLAGS],eax
-	mov	eax,[esi+POLYVXSEG] ;&POLYVXSEG
+	mov	eax,[esi+POLYVXSEG]
 	mov	[edi+POLYVXSEG],eax
 	mov	[vxseg],eax
 
 	mov	word [edi+POLYX-4],07fffh ;for CLIPADDVX to surely do it's work
 
-  push ebp
-  mov	ebp,[vxseg]
-	movzx	ebx,word [esi+POLYVX]
-	cmp	ecx,[ebp+ebx+vlist_z] ;fs
+	mov	ebx,[esi+POLYVX]
+	cmp	ecx,[ebx+vlist_z] ;fs
 	jle	@@2
 
 @@1:	;LAST POINT HIDDEN
-  pop ebp
 	ZCLIPGETVX ; <- can jump to @@0
 
-  push ebp
-  mov	ebp,[vxseg]
-
-	cmp	ecx,[ebp+ebx+vlist_z] ;fs
+	cmp	ecx,[ebx+vlist_z] ;fs
 	jge	@@1
 
-  pop ebp
 	;this point visible, clip
 	ZCLIPCLIP ;returns data in cx
 	or	[clipvisfl],ax
@@ -300,28 +288,18 @@ clipnear:
 	mov	ecx,[_projclipz+CLIPMIN] ;ECX was destroyed by ZCLIPCLIP
 	
 @@2:	;LAST POINT VISIBLE
-  pop ebp
-
 	ZCLIPADDVISVX
 	ZCLIPGETVX ; <- can jump to @@0
 
-  push ebp
-  mov	ebp,[vxseg]
-
-	cmp	ecx,[ebp+ebx+vlist_z] ;fs
+	cmp	ecx,[ebx+vlist_z] ;fs
 
 	jle	@@2
-
-  pop ebp
 
 	;this point hidden, clip
 	ZCLIPCLIP ;returns data in cx
 	or	[clipvisfl],ax
 	ZCLIPADDVX
 	mov	ecx,[_projclipz+CLIPMIN] ;ECX was destroyed by ZCLIPCLIP
-
-  push ebp
-  mov	ebp,[esi+POLYVXSEG]
 
 	jmp	@@1 ;to hidden
 
@@ -561,37 +539,37 @@ newclip:
 	jz	@@cl1
 	cmp	word [esi+POLYSIDES],0
 	je	@@cl1
-	push	dx
+	push	edx
 	call	newclipup
-	xchg	si,di
-	pop	dx
+	xchg	esi,edi
+	pop	edx
 @@cl1:	;
 	test	dl,VF_DOWN
 	jz	@@cl2
 	cmp	word [esi+POLYSIDES],0
 	je	@@cl2
-	push	dx
+	push	edx
 	call	newclipdown
-	xchg	si,di
-	pop	dx
+	xchg	esi,edi
+	pop	edx
 @@cl2:	;
 	test	dl,VF_LEFT
 	jz	@@cl3
 	cmp	word [esi+POLYSIDES],0
 	je	@@cl3
-	push	dx
+	push	edx
 	call	newclipleft
-	xchg	si,di
-	pop	dx
+	xchg	esi,edi
+	pop	edx
 @@cl3:	;
 	test	dl,VF_RIGHT
 	jz	@@cl4
 	cmp	word [esi+POLYSIDES],0
 	je	@@cl4
-	push	dx
+	push	edx
 	call	newclipright
-	xchg	si,di
-	pop	dx
+	xchg	esi,edi
+	pop	edx
 	;
 @@cl4:	ret
 @@cl7:	;polygon marked invisible:
