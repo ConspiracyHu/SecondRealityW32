@@ -361,7 +361,7 @@ gouraud12:
 ;----------------------------------------------------------------
 
 gouraud1: ;1 pixel accuray
-	sar	edx,1
+	;sar	edx,1
 	;add	ecx,ecx
 	;
 	mov	eax,ecx
@@ -370,7 +370,7 @@ gouraud1: ;1 pixel accuray
   neg eax
 	;ax=-cx*9
 	add	eax,@@dgvdfg_fcode
-	mov	ebx,[vdfg_color2]
+	movzx	ebx, word[vdfg_color2]
 	jmp	eax
 	
 %assign zzz MAXCOLS
@@ -434,7 +434,7 @@ gouraud2: ;2 pixel accuray
   neg eax
 	;ax=-cx*9
 	add	eax,@@dgvdfg_fcode
-	mov	ebx,[vdfg_color2]
+	movzx	ebx, word [vdfg_color2]
 	jmp	eax
 	
 %assign zzz MAXCOLS
@@ -493,7 +493,7 @@ gouraud2: ;2 pixel accuray
 gouraud4: ;4 pixel accuray
 	cmp	ecx,4
 	jl	gouraud2
-	sal	edx,1
+	;sal	edx,1
 	;
 	mov	[vdfg_left4],cx
 	;shr	ecx,1 ;rescale
@@ -504,7 +504,7 @@ gouraud4: ;4 pixel accuray
   neg eax
 	;ax=-cx*9
 	add	eax,@@dgvdfg_fcode
-	mov	ebx,[vdfg_color2]
+	movzx	ebx, word [vdfg_color2]
 	sub	ebx,edx ;one extra
 	jmp	eax
 	
