@@ -31,19 +31,21 @@ extern	_projaddy
 ;entry: bx=angle (0..65535)
 ; exit: ax=sin(angle) [range -unit..unit]
 sin:
-	shr	bx,4-1
-	and	bx,~ 1
-	mov	ax,[_sintable+ebx]
+	movzx	ebx, bx
+	shr	ebx,4-1
+	and	ebx,(~1) & 0xFFFF
+	movzx	eax, word [_sintable+ebx]
 	ret
 
 	
 ;entry: bx=angle (0..65535)
 ; exit: ax=cos(angle) [range -unit..unit]
 cos:
-	shr	bx,4-1
-	add	bx,1024*2
-	and	bx,~ (8192 | 1)
-	mov	ax,[_sintable+ebx]
+	movzx	ebx, bx
+	shr	ebx,4-1
+	add	ebx,1024*2
+	and	ebx,~ (8192 | 1)
+	movzx	eax, word [_sintable+ebx]
 	ret
 
 	
@@ -51,12 +53,13 @@ cos:
 ; exit: ax=sin(angle) [range -unit..unit]
 ;       bx=cos(angle) [range -unit..unit]
 sincos:
-	shr	bx,4-1
-	and	bx,~ 1
-	mov	ax,[_sintable+ebx]
-	add	bx,1024*2
-	and	bx,~ (8192 | 1)
-	mov	bx,[_sintable+ebx]
+	movzx	ebx, bx
+	shr	ebx,4-1
+	and	ebx,(~1) & 0xFFFF
+	movzx	eax, word [_sintable+ebx]
+	add	ebx,1024*2
+	and	ebx,~ (8192 | 1)
+	movzx	ebx, word [_sintable+ebx]
 	ret
 
 
@@ -77,9 +80,9 @@ sincos:
 ;entry:	fs:si=matrix1, es:di=matrix2
 ; exit: fs:si=matrix1*matrix2 (matrix 1 overwritten)
 mulmatrices:
-	push	ds
-	mov	ax,fs
-	mov	ds,ax
+;	push	ds
+;	mov	ax,fs
+;	mov	ds,ax
 	
 	mulmacro 0,0
 	push	ebx
@@ -110,7 +113,7 @@ mulmatrices:
 	pop	dword [esi+8]
 	pop	dword [esi+4]
 	pop	dword [esi+0]
-	pop	ds
+;	pop	ds
 	ret
 
 
@@ -157,34 +160,31 @@ mulmatrices2:
 ;entry:	ax=rotx, bx=roty, cx=rotz, es:di=rmatrix.m
 ; exit: (writes rmatrix.m)
 calcmatrixsep: ;calc 3 separate matrices
-	push	bp
-	mov	bp,sp
-	sub	sp,12 ;for local variables
-	push	ds
-	push	di
+	push	ebp
+	mov	ebp,esp
+	sub	esp,12 ;for local variables
+	push	edi
 	
-	push	bx
-	push	cx
-	mov	bx,ax
-	neg	bx
+	push	ebx
+	push	ecx
+	mov	ebx,eax
+	neg	ebx
 	call	sincos
 	mov	[ebp-12+0],ax ;rxsin
 	mov	[ebp-12+2],bx ;rxcos
-	pop	bx
-	neg	bx
+	pop	ebx
+	neg	ebx
 	call	sincos
 	mov	[ebp-12+4],ax ;rysin
 	mov	[ebp-12+6],bx ;rycos
-	pop	bx
-	neg	bx
+	pop	ebx
+	neg	ebx
 	call	sincos
 	mov	[ebp-12+8],ax ;rzsin
 	mov	[ebp-12+10],bx ;rzcos
 
 	mov	ebx,0
 	mov	ecx,unit
-	mov	ax,es
-	mov	ds,ax
 	
 	;rX
 	mov	[edi+2*0],ecx
@@ -201,7 +201,7 @@ calcmatrixsep: ;calc 3 separate matrices
 	mov	[edi+2*14],eax
 	movsx	eax,word [ebp-12+2]
 	mov	[edi+2*16],eax
-	add	di,36
+	add	edi,36
 	
 	;rY
 	movsx	eax,word [ebp-12+6]
@@ -218,7 +218,7 @@ calcmatrixsep: ;calc 3 separate matrices
 	mov	[edi+2*14],ebx
 	movsx	eax,word [ebp-12+6]
 	mov	[edi+2*16],eax
-	add	di,36
+	add	edi,36
 	
 	;rZ
 	movsx	eax,word [ebp-12+10]
@@ -236,10 +236,9 @@ calcmatrixsep: ;calc 3 separate matrices
 	mov	[edi+2*14],ebx
 	mov	[edi+2*16],ecx
 
-	pop	di
-	pop	ds
-	mov	sp,bp
-	pop	bp
+	pop	edi
+	mov	esp,ebp
+	pop	ebp
 	ret
 
 
@@ -271,21 +270,21 @@ _calc_setrmatrix_ident:
 ;descr: Calculates a rotation matrix
 _calc_setrmatrix_rotyxz:
 	CBEGR	36*3
-	mov	ax,ss
-	mov	es,ax
-	mov	fs,ax
-	movpar	ax,2
-	movpar	bx,3
-	movpar	cx,4
-	lea	di,[bp-36*3]
+;	mov	ax,ss
+;	mov	es,ax
+;	mov	fs,ax
+	movpar	eax,1
+	movpar	ebx,2
+	movpar	ecx,3
+	lea	edi,[ebp-36*3]
 	call	calcmatrixsep
-	lea	si,[bp-36*3+36*1]
-	lea	di,[bp-36*3+36*0]
+	lea	esi,[ebp-36*3+36*1]
+	lea	edi,[ebp-36*3+36*0]
 	call	mulmatrices ;Y*=X
-	lea	si,[bp-36*3+36*1]
-	lea	di,[bp-36*3+36*2]
+	lea	esi,[ebp-36*3+36*1]
+	lea	edi,[ebp-36*3+36*2]
 	call	mulmatrices ;Y*=Z
-	lespar	di,0
+	lespar	edi,0
 	%assign zzz 0
 	%rep 9
 	mov	eax,[esi+zzz]
@@ -302,21 +301,21 @@ _calc_setrmatrix_rotyxz:
 ;descr: Calculates a rotation matrix
 _calc_setrmatrix_rotxyz:
 	CBEGR	36*3
-	mov	ax,ss
-	mov	es,ax
-	mov	fs,ax
-	movpar	ax,2
-	movpar	bx,3
-	movpar	cx,4
-	lea	di,[bp-36*3]
+	;mov	ax,ss
+	;mov	es,ax
+	;mov	fs,ax
+	movpar	eax,1
+	movpar	ebx,2
+	movpar	ecx,3
+	lea	edi,[ebp-36*3]
 	call	calcmatrixsep
-	lea	si,[bp-36*3+36*0]
-	lea	di,[bp-36*3+36*1]
+	lea	esi,[ebp-36*3+36*0]
+	lea	edi,[ebp-36*3+36*1]
 	call	mulmatrices ;X*=Y
-	lea	si,[bp-36*3+36*0]
-	lea	di,[bp-36*3+36*2]
+	lea	esi,[ebp-36*3+36*0]
+	lea	edi,[ebp-36*3+36*2]
 	call	mulmatrices ;X*=Z
-	lespar	di,0
+	lespar	edi,0
 	%assign zzz 0
 	%rep	9
 	mov	eax,[esi+zzz]
@@ -334,21 +333,21 @@ _calc_setrmatrix_rotxyz:
 ;descr: Calculates a rotation matrix
 _calc_setrmatrix_rotzyx:
 	CBEGR	36*3
-	mov	ax,ss
-	mov	es,ax
-	mov	fs,ax
-	movpar	ax,2
-	movpar	bx,3
-	movpar	cx,4
-	lea	di,[bp-36*3]
+	;mov	ax,ss
+	;mov	es,ax
+	;mov	fs,ax
+	movpar	eax,1
+	movpar	ebx,2
+	movpar	ecx,3
+	lea	edi,[ebp-36*3]
 	call	calcmatrixsep
-	lea	si,[bp-36*3+36*2]
-	lea	di,[bp-36*3+36*1]
+	lea	esi,[ebp-36*3+36*2]
+	lea	edi,[ebp-36*3+36*1]
 	call	mulmatrices ;Z*=Y
-	lea	si,[bp-36*3+36*2]
-	lea	di,[bp-36*3+36*0]
+	lea	esi,[ebp-36*3+36*2]
+	lea	edi,[ebp-36*3+36*0]
 	call	mulmatrices ;Z*=X
-	lespar	di,0
+	lespar	edi,0
 	%assign zzz 0
 	%rep	9
 	mov	eax,[esi+zzz]
