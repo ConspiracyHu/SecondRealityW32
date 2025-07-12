@@ -332,7 +332,7 @@ dg21:	;Fill loop
 @@dg2f2:
 	push	esi
 	movzx	eax, word [vdfg_color1]
-	sub	eax,[vdfg_color2]
+	sub	ax,[vdfg_color2]
 	jge	@@dg2f3
 	neg	eax
 	mov	ebx,ecx
