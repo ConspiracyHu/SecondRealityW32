@@ -124,7 +124,7 @@ void u2e_main()
   */
 	/*if(a>3) */jellywas=1;
 
-	dis_partstart();
+	//dis_partstart();
 	sprintf(tmpname,"Data\\%s.00M",u2e_scene);
 	if(!indemo) printf("Loading materials %s...\n",tmpname);
 	scene0=scenem=readfile(tmpname);
@@ -282,14 +282,7 @@ void u2e_main()
 
 	while(!dis_exit())
 	{
-    /*
-		_asm
-		{
-			mov	bx,6
-			int	0fch
-			mov	a,cx
-		}
-    */
+		a = dis_musorder(0);
 		if(a>18) break;
 	}
 	
