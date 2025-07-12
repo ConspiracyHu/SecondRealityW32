@@ -276,7 +276,7 @@ dg21:	;Fill loop
 	jl	@@dg22
 	xchg	ebx,ecx
 	xchg	eax,edx
-@@dg22:	dec	edx ;don't fill the rightmost pixel
+@@dg22:	;dec	edx ;don't fill the rightmost pixel
 	mov	[vdfg_color1],cx
 	mov	[vdfg_color2],bx
 	mov	[vdfg_left],ax
@@ -315,7 +315,7 @@ dg21:	;Fill loop
 	;inc	eax
 	;shr	eax,1
 	mov	[vdfg_lefts],ax
-	dec	edx
+	;dec	edx
 	;shr	edx,1
 	;
 	;mov	ecx,eax
