@@ -281,18 +281,30 @@ void	part3(void)
       for ( int y = 0; y < 100; y++ )
       {
         unsigned char * linesrc = src;
-        for ( int x = 0; x < 160; x++ )
+        for ( int x = 0; x < 40; x++ )
         {
-          *dst++ = *linesrc;
-          *dst++ = *linesrc;
-          linesrc++;
+          *dst++ = linesrc[0];
+          *dst++ = linesrc[0];
+          *dst++ = linesrc[2];
+          *dst++ = linesrc[2];
+          *dst++ = linesrc[1];
+          *dst++ = linesrc[1];
+          *dst++ = linesrc[3];
+          *dst++ = linesrc[3];
+          linesrc+=4;
         }
         linesrc = src;
-        for ( int x = 0; x < 160; x++ )
+        for ( int x = 0; x < 40; x++ )
         {
-          *dst++ = *linesrc;
-          *dst++ = *linesrc;
-          linesrc++;
+          *dst++ = linesrc[0];
+          *dst++ = linesrc[0];
+          *dst++ = linesrc[2];
+          *dst++ = linesrc[2];
+          *dst++ = linesrc[1];
+          *dst++ = linesrc[1];
+          *dst++ = linesrc[3];
+          *dst++ = linesrc[3];
+          linesrc+=4;
         }
         src += 160;
       }
@@ -420,6 +432,7 @@ void lens_main()
 	putw(0,fp);
 	#endif
 
+	/*
 	if(!dis_exit()) part1();
 	while(!dis_exit() && dis_musplus()<-20) ;
 	dis_waitb();
@@ -427,6 +440,7 @@ void lens_main()
 	#ifdef SAVEPATH
 	pathstart2=(ftell(fp)-4)/2;
 	#endif
+	*/
 	if(!dis_exit()) part3();
 	
 	#ifdef SAVEPATH
