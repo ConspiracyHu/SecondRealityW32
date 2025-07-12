@@ -236,7 +236,7 @@ poly_nrm:
 	cmp	ebx,[polyomax]
 	jle	.b1
 	mov	ebx,[polyomin]
-.b1:	mov	ax,[ebx+POLYY]
+.b1:	movzx	eax, word [ebx+POLYY]
 	sub	ax,[edi+POLYY]
 	jc	.d0 ;turned upwards, end of polygon
 	jnz	.b3
@@ -585,9 +585,6 @@ _draw_polylist:
 	jnz	@@cl0 ;entire polygon invisible
 	or	dl,dl ;dl=visfl orred
 	jz	@@cl4 ;no clipping
-
-  jnz	@@cl0 ; -- DEBUG --
-
 	mov	edi,poly2
 	mov	ax,[esi+POLYFLAGS]
 	call	newclip
