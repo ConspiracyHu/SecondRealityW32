@@ -142,7 +142,7 @@ drawfill_nrm:
 	je	@@dn20
 	jl	@@dn22
 	xchg	eax,edx
-@@dn22:	dec	edx ;don't fill the rightmost pixel
+@@dn22:	;dec	edx ;don't fill the rightmost pixel
 
 	mov	ecx,edx
 	sub	ecx,eax
