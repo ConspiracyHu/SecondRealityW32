@@ -239,7 +239,7 @@ int main( int argc, char * argv[] )
     /* 04       */ { MUSIC_PM,    0x00, 320, 400, glenz_main },     // 4   db  'Glenz (PSI)                 ' / 'GLENZ   ' / 'GLENZ.EXE'
     /* 05       */ { MUSIC_PM,    0x0F, 320, 200, tun_main },       // 5   db  'Dottitunneli (TRUG)         ' / 'TUNNELI ' / 'TUNNELI.EXE'
     /* 06       */ { MUSIC_PM,    0x14, 320, 200, koe_main },       // 6   db  'Techno (PSI)                ' / 'TECHNO  ' / 'TECHNO.EXE'
-    /* 07  BUG  */ { MUSIC_PM,    0x27, 320, 200, shutdown_main },  // 7   db  'Panicfake (WILDF)           ' / 'PANIC   ' / 'PANICEND.EXE'
+    /* 07       */ { MUSIC_PM,    0x27, 320, 400, shutdown_main },  // 7   db  'Panicfake (WILDF)           ' / 'PANIC   ' / 'PANICEND.EXE'
     /* 08       */ { MUSIC_PM,    0x2A, 320, 200, forest_main },    // 8   db  'Vuori-Scrolli (TRUG)        ' / 'FOREST  ' / 'MNTSCRL.EXE'
                                                                     // 11  db  'Lens (PSI)                  ' / '        ' / 
     /* 09       */ { MUSIC_PM,    0x2F, 320, 200, lens_main },      // 12  db  'Rotazoomer (PSI)            ' / 'LENS    ' / 'LNS&ZOOM.EXE'
@@ -257,7 +257,7 @@ int main( int argc, char * argv[] )
   };
 
 #ifdef _DEBUG
-  int start = 17;
+  int start = 6;
 #else
   int start = 0;
 #endif
