@@ -49,13 +49,15 @@ void demo_clear()
   ZeroMemory( shim_vram, shim_vram_x * shim_vram_y );
 }
 
-int screen_width = 320;
-int screen_height = 200;
+const int virtual_screen_width = 640;
+const int virtual_screen_height = 400;
+int demo_screen_width = 320;
+int demo_screen_height = 200;
 
 void demo_changemode( int x, int y )
 {
-  screen_width = x;
-  screen_height = y;
+  demo_screen_width = x;
+  demo_screen_height = y;
 }
 
 void demo_blit()
@@ -71,10 +73,52 @@ void demo_blit()
 
   graphics.HandleMessages();
 
-  int count = screen_width * screen_height;
-  for ( int i = 0; i < count; i++ )
+  if ( demo_screen_width == 320 && demo_screen_height == 200 )
   {
-    screen32[ i ] = shim_palette[ shim_vram[ i + shim_startpixel ] ];
+    unsigned char * src = shim_vram + shim_startpixel;
+    unsigned int * dst = screen32;
+    for ( int y = 0; y < demo_screen_height; y++ )
+    {
+      for ( int x = 0; x < demo_screen_width; x++ )
+      {
+        unsigned int c = shim_palette[ *src++ ];
+        *dst++ = c;
+        *dst++ = c;
+      }
+      memcpy( dst, dst - virtual_screen_width, virtual_screen_width * sizeof( unsigned int ) );
+      dst += virtual_screen_width;
+    }
+  }
+  else if ( demo_screen_width == 320 && demo_screen_height == 400 )
+  {
+    unsigned char * src = shim_vram + shim_startpixel;
+    unsigned int * dst = screen32;
+    for ( int y = 0; y < demo_screen_height; y++ )
+    {
+      for ( int x = 0; x < demo_screen_width; x++ )
+      {
+        unsigned int c = shim_palette[ *src++ ];
+        *dst++ = c;
+        *dst++ = c;
+      }
+    }
+  }
+  else if ( demo_screen_width == 640 && demo_screen_height == 350 )
+  {
+    unsigned char * src = shim_vram + shim_startpixel;
+    unsigned int * dst = screen32 + virtual_screen_width * ( virtual_screen_height - 350 ) / 2;
+    for ( int y = 0; y < demo_screen_height; y++ )
+    {
+      for ( int x = 0; x < demo_screen_width; x++ )
+      {
+        *dst++ = shim_palette[ *src ];
+      }
+      dst += virtual_screen_width;
+    }
+  }
+  else
+  {
+    DebugBreak(); // Unknown screen mode?!
   }
 
   if ( GetAsyncKeyState('P') &0x8000 )
@@ -82,7 +126,7 @@ void demo_blit()
     for ( int i = 0; i < 256; i++ ) screen32[ i ] = shim_palette[ i ];
   }
 
-  graphics.Update( screen32, screen_width, screen_height );
+  graphics.Update( screen32, virtual_screen_width, virtual_screen_height );
 }
 
 extern "C" bool demo_wantstoquit();
@@ -178,8 +222,8 @@ int main( int argc, char * argv[] )
     return false;
   }
 
-  screen32 = new unsigned int[ shim_vram_x * shim_vram_y ];
-  ZeroMemory( screen32, shim_vram_x * shim_vram_y * sizeof( unsigned int ) );
+  screen32 = new unsigned int[ virtual_screen_width * virtual_screen_height ];
+  ZeroMemory( screen32, virtual_screen_width * virtual_screen_height * sizeof( unsigned int ) );
 
   struct  
   {
@@ -213,7 +257,7 @@ int main( int argc, char * argv[] )
                    { 0         ,  0x00,   0,   0, NULL },
   };
 
-  int start = 0;
+  int start = 9;
   if ( argc > 1 )
   {
     switch( argv[ 1 ][ 0 ] )
