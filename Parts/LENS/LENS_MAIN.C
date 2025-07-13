@@ -432,7 +432,6 @@ void lens_main()
 	putw(0,fp);
 	#endif
 
-	/*
 	if(!dis_exit()) part1();
 	while(!dis_exit() && dis_musplus()<-20) ;
 	dis_waitb();
@@ -440,7 +439,6 @@ void lens_main()
 	#ifdef SAVEPATH
 	pathstart2=(ftell(fp)-4)/2;
 	#endif
-	*/
 	if(!dis_exit()) part3();
 	
 	#ifdef SAVEPATH
