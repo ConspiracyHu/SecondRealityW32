@@ -256,7 +256,11 @@ int main( int argc, char * argv[] )
                    { 0         ,  0x00,   0,   0, NULL },
   };
 
+#ifdef _DEBUG
   int start = 17;
+#else
+  int start = 0;
+#endif
   if ( argc > 1 )
   {
     switch( argv[ 1 ][ 0 ] )

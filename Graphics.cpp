@@ -266,7 +266,11 @@ void Graphics::Update( void * _buffer, int _width, int _height )
   int mCenterX = ( mPhysicalWidth - zoomedX ) / 2;
   int mCenterY = ( mPhysicalHeight - zoomedY ) / 2;
 
+#ifdef _DEBUG
   memset( mPhysicalScreen, 0x30, mPhysicalWidth * mPhysicalHeight * sizeof( unsigned int ) );
+#else
+  memset( mPhysicalScreen, 0x00, mPhysicalWidth * mPhysicalHeight * sizeof( unsigned int ) );
+#endif // _DEBUG
 
   unsigned int * src = (unsigned int *) _buffer;
   unsigned int * dst = (unsigned int *) mPhysicalScreen + mCenterY * mPhysicalWidth + mCenterX;
