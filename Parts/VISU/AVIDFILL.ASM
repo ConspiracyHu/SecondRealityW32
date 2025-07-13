@@ -440,7 +440,8 @@ gouraud2: ;2 pixel accuray
 %assign zzz MAXCOLS
 %rep	MAXCOLS+1
 	add	bx,dx			;3 bytes
-	mov	[vdfg_buf+ (zzz & 1)*(MAXCOLS/2) + (zzz >> 1) ],bh	;6 bytes
+	;mov	[vdfg_buf+ (zzz & 1)*(MAXCOLS/2) + (zzz >> 1) ],bh	;6 bytes
+	mov	[vdfg_buf+ zzz],bh	;6 bytes
 	%assign zzz zzz-1
 %endrep
 	;mov ax,bx			;2 bytes, 1 clock (filler)
