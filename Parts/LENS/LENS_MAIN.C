@@ -113,7 +113,7 @@ void	part1(void)
 	}
  	if (!demo_isfirstpart())
  	{
-		if(dis_musplus>-30) while(!dis_exit() && dis_musplus()<-6) ;
+		if(dis_musplus()>-30) while(!dis_exit() && dis_musplus()<-6) ;
 	}
 	dis_waitb();
 	dis_setmframe(0);

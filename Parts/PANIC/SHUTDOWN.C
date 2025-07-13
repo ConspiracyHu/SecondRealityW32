@@ -84,7 +84,7 @@ void resolve_shutdown_vram()
 	unsigned char * src = shutdown_vram + shutdown_offset;
 	unsigned char * dst = shim_vram;
 	unsigned int height = shutdown_scandoubling ? 200 : 400;
-	for ( int i = 0; i < height; i++ )
+	for ( unsigned int i = 0; i < height; i++ )
 	{
 		memcpy( dst, src, 320 );
 		src += shutdown_scrwidth;

@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <conio.h>
+#include <memory.h>
 #include <dos.h>
 #include <math.h>
 #include <io.h>

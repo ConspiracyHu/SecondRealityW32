@@ -2,6 +2,7 @@
 
 extern void plz();
 extern void vect();
+extern void initvect();
 
 void plz_main()  {
 	dis_partstart();

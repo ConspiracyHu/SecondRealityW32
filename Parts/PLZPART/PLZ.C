@@ -21,7 +21,7 @@
 //extern int init_copper();
 //extern int close_copper();
 
-extern int plzline(int y, int vseg);
+extern int plzline(int y, char * vseg);
 extern int setplzparas(int c1, int c2, int c3, int c4);
 extern void initpparas();
 extern void moveplz();

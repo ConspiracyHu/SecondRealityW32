@@ -120,7 +120,7 @@ void u2a_main()
 	camobject.r0=&cam;
 
 	sprintf(tmpname,"Data\\%s.0AA",u2a_scene);
-	if(!indemo) printf("Loading animations...\n",tmpname);
+	if(!indemo) printf("Loading animations...\n");
 	ip=readfile(tmpname);
   scl=0;
 	while(*ip)
@@ -300,7 +300,7 @@ void u2a_main()
 			#endif
 			if(onum>=conum)
 			{
-				return(3);
+				return;
 			}
 			
 			r=co[onum].o->r0;
@@ -377,5 +377,5 @@ void u2a_main()
 	#ifdef DEBUG
 	fclose(fr);
 	#endif
-	return(0);
+	return;
 }

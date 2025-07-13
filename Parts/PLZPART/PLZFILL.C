@@ -28,7 +28,7 @@ char	plz_pal[768];
 short	clrtau[8][256][2];
 int	clrptr=0;
 
-initvect() {
+void initvect() {
 	int	a,b,x,y,s,d=0,p=0,ch;
 
 	for(a=0;a<1524;a++)
