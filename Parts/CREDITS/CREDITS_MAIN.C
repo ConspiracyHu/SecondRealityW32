@@ -55,6 +55,7 @@ void credits_main()
 		"GRAPHICS - MARVEL\0"
 		"MUSIC - SKAVEN\0"
 		"CODE - PSI\0"
+		"OBJECTS - WILDFIRE\0"  // --- W32 PORT CHANGE (updated from final) ---
 		);
 
 	if(!dis_exit()) screenin(credits_pic3,
@@ -102,13 +103,15 @@ void credits_main()
 		);
 
 	if(!dis_exit()) screenin(credits_pic10,
-		"GRAPHICS - PIXEL, SKAVEN\0"
+		"SKETCH - SKAVEN\0"  // --- W32 PORT CHANGE (updated from final) ---
+		"GRAPHICS - PIXEL\0"
 		"MUSIC - PURPLE MOTION\0"
 		"CODE - PSI\0"
 		);
 
 	if(!dis_exit()) screenin(credits_pic10b,
-		"GRAPHICS - PIXEL, SKAVEN\0"
+		"SKETCH - SKAVEN\0"  // --- W32 PORT CHANGE (updated from final) ---
+		"GRAPHICS - PIXEL\0"
 		"MUSIC - PURPLE MOTION\0"
 		"CODE - PSI\0"
 		);
@@ -147,18 +150,19 @@ void credits_main()
 		);
 
 	if(!dis_exit()) screenin(credits_pic16,
-		"\0MUSIC - SKAVEN\0"
+		"MUSIC - SKAVEN\0"
 		"CODE - PSI\0"
+		"WORLD - TRUG\0" // --- W32 PORT CHANGE (updated from final) ---
 		);
 
 	if(!dis_exit()) screenin(credits_pic17,
-		"\0GRAPHICS - PIXEL\0"
-		"MUSIC - PURPLE MOTION\0"
+		"GRAPHICS - PIXEL\0"
+		"MUSIC - SKAVEN\0" // --- W32 PORT CHANGE (updated from final) ---
 		);
 
 	if(!dis_exit()) screenin(credits_pic18,
 		"GRAPHICS - PIXEL\0"
-		"MUSIC - PURPLE MOTION\0"
+		"MUSIC - SKAVEN\0" // --- W32 PORT CHANGE (updated from final) ---
 		"CODE - WILDFIRE\0"
 		);
 
