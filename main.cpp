@@ -111,9 +111,8 @@ void demo_blit()
     {
       for ( int x = 0; x < demo_screen_width; x++ )
       {
-        *dst++ = shim_palette[ *src ];
+        *dst++ = shim_palette[ *src++ ];
       }
-      dst += virtual_screen_width;
     }
   }
   else
@@ -257,7 +256,7 @@ int main( int argc, char * argv[] )
                    { 0         ,  0x00,   0,   0, NULL },
   };
 
-  int start = 14;
+  int start = 17;
   if ( argc > 1 )
   {
     switch( argv[ 1 ][ 0 ] )
