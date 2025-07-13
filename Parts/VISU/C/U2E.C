@@ -476,6 +476,7 @@ void u2e_main()
 		dis_waitb();
     shim_outp(0x3c8,255);
 		for(a=0;a<768;a++) shim_outp(0x3c9,fpal[a]);
+		demo_blit();
 	}
 	if(!dis_indemo())
 	{
