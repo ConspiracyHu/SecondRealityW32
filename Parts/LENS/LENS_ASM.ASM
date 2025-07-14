@@ -6,6 +6,7 @@ global _rotpic
 _rotpic	dw	0,0
 global _rotpic90
 _rotpic90 dw	0,0
+dseg dd 0
 
 section .code
 
@@ -23,6 +24,10 @@ extern _shim_vram
 global _dorow
 _dorow:
 	push ebp
+	mov ebp, esp
+	push esi
+	push edi
+	push ebx
 
   ; ds:si => esi (lens)
   ; es:bp => ebp (vram)
@@ -31,20 +36,21 @@ _dorow:
 	;mov	fs,cs:_back[2]
 	;mov	ax,0a000h
 	;mov	es,ax
-	mov	esi,[esp+8] ; ptr/lens
-	mov	edx,[esp+20] ; M
+	mov	esi,[ebp+8] ; ptr/lens
+	mov	[dseg], esi
+	mov	edx,[ebp+20] ; M
 	mov	dh,dl
-	mov	edi,[esp+12] ; U 
-	mov	esi,[esp+16] ; Y
+	mov	edi,[ebp+12] ; U 
+	mov	esi,[ebp+16] ; Y
 	shl	si,2
-  add esi, [esp+8] ; +ds:
+  add esi, [dseg] ; +ds:
 	mov	cx,[esi+2]
 	movzx	esi, word [esi]
 	cmp	cx,4
 	jge	.@@2
 	jmp	.@@0
 .@@2:
-  add esi, [esp+8] ; +ds:
+  add esi, [dseg] ; +ds:
   mov ax,[esi]
   movsx eax, ax
   add edi, eax
@@ -100,31 +106,40 @@ _dorow:
 	or	ax,dx
 	mov	[ebp+320],al
 .@@0:	
+	pop ebx
+	pop edi
+	pop esi
 	pop ebp
 	ret
 
 global _dorow2
 _dorow2:
 	push ebp
+	mov ebp, esp
+	push esi
+	push edi
+	push ebx
 
   ; ds = back
   ; es = vram
   ; fs = ptr (lens)
 
-	mov	esi,[esp+16] ; Y
+	mov	eax,[ebp+8]
+	mov	[dseg], eax
+	mov	esi,[ebp+16] ; Y
 	shl	esi,2
-	add	esi,[esp+8] ; ptr
+	add	esi,[dseg] ; ptr
 	mov	cx,[esi+2] ; fs
 	movzx	esi, word [esi]   ; fs
 	or	cx,cx
 	jcxz	.@@0
 
-	mov	edx, [esp+20]    ; M
+	mov	edx, [ebp+20]    ; M
 	mov	dh, dl
 
-	mov	edi, [esp+12]    ; U
+	mov	edi, [ebp+12]    ; U
   push esi
-  add esi, [esp+8+4] ; ptr
+  add esi, [dseg] ; ptr
   add di, [esi]
   pop esi
 
@@ -134,7 +149,7 @@ _dorow2:
 
   add esi, _shim_vram
   add edi, [_back]
-  add ebp, [esp+8] ; ptr
+  add ebp, [dseg] ; ptr
 
   ; ds:di => edi (back)
   ; es:si => esi (vram)
@@ -151,22 +166,29 @@ _dorow2:
 	jnz	.@@3
 	
 .@@0:
+	pop	ebx
+	pop	edi
+	pop	esi
 	pop ebp
 	ret
 
 global _dorow3
 _dorow3:
 	push ebp
+	mov ebp, esp
+	push	esi
+	push	edi
+	push	ebx
 	
-	mov	esi,[esp+16] ; Y
+	mov	esi,[ebp+16] ; Y
 	shl	esi,2
-	add	esi,[esp+8] ; ptr
+	add	esi,[ebp+8] ; ptr
 	mov	cx,[esi+2] ; fs
 	movzx	esi, word [esi]   ; fs
-  add	esi,[esp+8] ; ptr
+  add	esi,[ebp+8] ; ptr
 	or	cx,cx
 	jcxz	.@@0
-	mov	edi, [esp+12] ; U
+	mov	edi, [ebp+12] ; U
 	add	di, [esi] ; fs
 	add	esi, 2
 
@@ -183,6 +205,9 @@ _dorow3:
   pop ebp
 	
 .@@0:
+	pop	ebx
+	pop	edi
+	pop	esi
 	pop ebp
 	ret
 
@@ -294,19 +319,23 @@ section .code
 global _rotate
 _rotate:
 	push	ebp
+	mov	ebp, esp
+	push	esi
+	push	edi
+	push	ebx
 	
-	mov	eax,[esp+8] ; x
+	mov	eax,[ebp+8] ; x
 	shl	eax,16
 	mov	[_xpos],eax
-	mov	eax,[esp+12]  ; y
+	mov	eax,[ebp+12]  ; y
 	shl	eax,16
 	mov	[_ypos],eax
 	
-	mov	eax,[esp+20] ; xa
+	mov	eax,[ebp+20] ; xa
 	cwde
 	shl	eax,6
 	mov	ebx,eax
-	mov	eax,[esp+16] ; ya
+	mov	eax,[ebp+16] ; ya
 	cwde
 	shl	eax,6
 	
@@ -432,6 +461,9 @@ _rotate:
 	jz	.@@1
 	jmp	.@@2
 .@@1:	
+	pop	ebx
+	pop	edi
+	pop	esi
 	pop	ebp
 	ret
 	

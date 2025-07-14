@@ -58,15 +58,17 @@ global _asmdoit
 _asmdoit:
 	push 	ebp
 	mov	ebp,esp
-	;push	si
-	;push	di
+	push	esi
+	push	edi
+	push	ebx
 	;push	ds
-	mov esi,[esp+8]
-	mov edi,[esp+12]
+	mov esi,[ebp+8]
+	mov edi,[ebp+12]
 	call	blit16
 	;pop	ds
-	;pop	di
-	;pop	si
+	pop	ebx
+	pop	edi
+	pop	esi
 	pop	ebp
 	ret
 
@@ -75,15 +77,17 @@ global _asmdoit2
 _asmdoit2:
 	push 	ebp
 	mov	ebp,esp
-	;push	si
-	;push	di
+	push	esi
+	push	edi
+	push	ebx
 	;push	ds
-	mov esi,[esp+8]
-	mov edi,[esp+12]
+	mov esi,[ebp+8]
+	mov edi,[ebp+12]
 	call	blit16b
 	;pop	ds
-	;pop	di
-	;pop	si
+	pop	ebx
+	pop	edi
+	pop	esi
 	pop	ebp
 	ret
 
@@ -400,14 +404,15 @@ drawline_0:
 global _asmbox	
 _asmbox:
 	push 	ebp
-	;mov	bp,sp
-	;push	si
-	;push	di
+	mov	ebp,esp
+	push	esi
+	push	edi
+	push	ebx
 	;push	ds
 
   %assign P 0
   %rep 8	
-	mov	eax,[esp+8+P*4]
+	mov	eax,[ebp+8+P*4]
 	mov	word [polyixy+P*2],ax
   %assign P P+1
   %endrep
@@ -441,8 +446,9 @@ _asmbox:
 	call	drawline
 
 @@0:	;pop	ds
-	;pop	di
-	;pop	si
+	pop	ebx
+	pop	edi
+	pop	esi
 	pop	ebp
 	ret
 

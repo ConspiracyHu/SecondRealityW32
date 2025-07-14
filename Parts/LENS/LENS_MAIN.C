@@ -34,7 +34,7 @@ char	pathdata[13000];
 #define vram shim_vram
 int *lens1,*lens2,*lens3,*lens4;
 extern char *back;
-char *fade,*fade2;
+char *lens_fade,*lens_fade2;
 extern char *rotpic;
 extern char *rotpic90;
 int	lenswid,lenshig,lensxs,lensys;
@@ -165,7 +165,7 @@ void	part2(void)
 		{
 			a=(uframe-32)/2;
 			if(a<0) a=0;
-			setpalarea(fade2+a*3*192,64,192);
+			setpalarea(lens_fade2+a*3*192,64,192);
 		}
 		#ifdef SAVEPATH
 		putw(x/64,fp);
@@ -216,7 +216,7 @@ void	part3(void)
 		}
 	}
 	waitb();
-	setpalarea(fade+64*64*3,0,64);
+	setpalarea(lens_fade+64*64*3,0,64);
 
 	//inittwk();
 	{
@@ -315,11 +315,11 @@ void	part3(void)
 				a=frame-(2000-128);
 				a/=2;
 				if(a>63) a=63;
-				setpalarea(fade+a*64*3,0,64);
+				setpalarea(lens_fade+a*64*3,0,64);
 			}
 			if(frame<16)
 			{
-				setpalarea(fade+(64+frame)*64*3,0,64);
+				setpalarea(lens_fade+(64+frame)*64*3,0,64);
 			}
       demo_blit();
 		}
@@ -338,10 +338,10 @@ void lens_main()
 	dis_partstart();
 	rotpic=halloc(16384,4);
 	if(!rotpic) exit(1);
-	fade=halloc(16000,1);
-	if(!fade) exit(1);
-	fade2=halloc(20000,1);
-	if(!fade2) exit(1);
+	lens_fade=halloc(16000,1);
+	if(!lens_fade) exit(1);
+	lens_fade2=halloc(20000,1);
+	if(!lens_fade2) exit(1);
 	//setvmode(0x13);
 	shim_outp(0x3c8,0);
 	for(a=0;a<768;a++) shim_outp(0x3c9,0);
@@ -383,7 +383,7 @@ void lens_main()
 	lens2=(int*)lensex2;
 	lens3=(int*)lensex3;
 	lens4=(int*)lensex4;
-	cp=fade;
+	cp=lens_fade;
 	for(x=0;x<64;x++)
 	{
 		for(y=0;y<64*3;y++)
@@ -401,7 +401,7 @@ void lens_main()
 			*cp++=a;
 		}
 	}
-	cp=fade2;
+	cp=lens_fade2;
 	for(x=0;x<32;x++)
 	{
 		for(y=64*3;y<256*3;y++)
