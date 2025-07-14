@@ -124,6 +124,7 @@ int *	flash(int i)
 		dis_waitb();
 		shim_outp(0x3c8,0);
 		for(a=0;a<16*3;a++) shim_outp(0x3c9,pal2[a]);
+		demo_blit();
 	}
 	return(pal1);
 }
