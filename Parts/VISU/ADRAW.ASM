@@ -444,6 +444,10 @@ _draw_setfillroutine:
 ;descr: draw the contents of the polylist.
 _draw_polylist:
 	CBEG
+	push	esi
+	push	edi
+	push	ebx
+
 	movpar	eax,5
 	test	eax,1
 	jz	@@invi ;F_VISIBLE not set
@@ -617,5 +621,9 @@ _draw_polylist:
 	jmp	@@1
 @@0:
   pop	esi
-@@invi:	CEND
+@@invi:
+	pop	ebx
+	pop	edi
+	pop	esi
+	CEND
 

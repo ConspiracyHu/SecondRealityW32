@@ -248,6 +248,8 @@ calcmatrixsep: ;calc 3 separate matrices
 ;descr: Writes an identity rotation matrix to rmatrix
 _calc_setrmatrix_ident:
 	CBEG
+	push	edi
+
 	lespar	edi,0
 	mov	edx,unit
 	xor	eax,eax
@@ -260,6 +262,8 @@ _calc_setrmatrix_ident:
 	mov	[edi+rmatrix_m+6*4],eax
 	mov	[edi+rmatrix_m+7*4],eax
 	mov	[edi+rmatrix_m+8*4],edx
+
+	pop	edi
 	CEND
 
 
@@ -398,6 +402,10 @@ _calc_mulrmatrix:
 ;	according to the camera.
 _calc_applyrmatrix:
 	CBEG
+	push	esi
+	push	edi
+	push	ebx
+
 	;fs:si=source, es:di=dest
 	lfspar	esi,1
 	lespar	edi,0
@@ -420,7 +428,11 @@ _calc_applyrmatrix:
 	add	[esi+rmatrix_y],eax
 	mov	eax,[edi+rmatrix_z]
 	add	[esi+rmatrix_z],eax
-@@x:	CEND
+@@x:
+	pop	ebx
+	pop	edi
+	pop	esi
+	CEND
 
 
 rotatesingle:
@@ -522,6 +534,10 @@ _calc_sftranslate:
 ;descr: Rotates (and moves) the given list
 _calc_rotate:
 	CBEG
+	push	esi
+	push	edi
+	push	ebx
+
 	movpar	ecx,0
 	JCXZ_LARGE	@@0
 	lespar	edi,1 ;destination
@@ -585,7 +601,11 @@ _calc_rotate:
 	add	edi,vlist_size
 	pop	ecx
 	LOOP_LARGE	@@1
-@@0:	CEND
+@@0:
+	pop	ebx
+	pop	edi
+	pop	esi
+	CEND
 
 
 ;北北北北 _calc_singlez(int vertex,vlist *vertexlist,rmatrix *matrix) 北北北北
@@ -595,6 +615,10 @@ _calc_rotate:
 ;descr: Rotates the single vertex and returns the resulting Z coordinate.
 _calc_singlez:
 	CBEG
+	push	esi
+	push	edi
+	push	ebx
+
 	ldspar	esi,2 ;matrix - dataseg not used in procedure, so DS can be used
 	movpar	eax,0
 	lfspar	ebp,1 ;source - NOTE: bp/parameter pointer destroyed!
@@ -619,6 +643,10 @@ _calc_singlez:
 	mov	eax,ebx
 	;shr	ebx,16
 	;mov	dx,bx
+
+	pop	ebx
+	pop	edi
+	pop	esi
 	CEND
 
 
@@ -631,6 +659,10 @@ _calc_singlez:
 ;descr: Rotates the given normal list
 _calc_nrotate:
 	CBEG
+	push	esi
+	push	edi
+	push	ebx
+
 	movpar	ecx,0
 	JCXZ_LARGE	@@0
 	lespar	edi,1 ;destination
@@ -688,7 +720,11 @@ _calc_nrotate:
 	add	edi,nlist_size
 	pop	ecx
 	LOOP_LARGE	@@1
-@@0:	CEND
+@@0:
+	pop	ebx
+	pop	edi
+	pop	esi
+	CEND
 
 
 ;北北北北 _calc_rotate16(int count,nlist *dest,nlist *source,rmatrix *matrix) 北北北北
@@ -769,6 +805,10 @@ _calc_rotate16:
 ;descr: Projects the given list = does perspective transformation
 _calc_project:
 	CBEG
+	push	esi
+	push	edi
+	push	ebx
+
 	lfspar	esi,2
 	lespar	edi,1
 	mov	eax,0ffffh
@@ -824,7 +864,11 @@ _calc_project:
 	pop	ecx
 	and	eax,ebp
 	LOOP_LARGE	@@1
-@@0:	CEND
+@@0:
+	pop	ebx
+	pop	edi
+	pop	esi
+	CEND
 
 	
 ;北北北北 _calc_project16(int count,pvlist *dest,vlist *source) 北北北北
@@ -836,6 +880,10 @@ _calc_project:
 ;descr: Projects the given list = does perspective transformation
 _calc_project16:
 	CBEG
+	push	esi
+	push	edi
+	push	ebx
+
 	lfspar	esi,2
 	lespar	edi,1
 	mov	eax,0ffffh
@@ -891,4 +939,8 @@ _calc_project16:
 	pop	ecx
 	and	eax,ebp
 	LOOP_LARGE	@@1
-@@0:	CEND
+@@0:
+	pop	ebx
+	pop	edi
+	pop	esi
+	CEND

@@ -16,21 +16,24 @@
 	%endmacro
 
 %macro movpar	2 ;reg,par ;loads parameter [par(0..)] to register [reg]
-	mov	%1,[esp+8+%2]
+	mov	%1,[ebp+8+%2]
 	%endmacro
 
 %macro CBEG 0	;C/Assembler procedure begin
 	push	ebp
+	mov	ebp, esp
 ;	mov	bp,sp
-;	push	si
-;	push	di
+	push	esi
+	push	edi
+	push	ebx
 ;	push	ds
 	%endmacro
 
 %macro CEND 0	;C/Assembler procedure end
 ;	pop	ds
-;	pop	di
-;	pop	si
+	pop	ebx
+	pop	edi
+	pop	esi
 	pop	ebp
 	ret
 	%endmacro

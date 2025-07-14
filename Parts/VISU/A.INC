@@ -34,7 +34,7 @@
 
 %macro CBEG 0 ;C/Assembler procedure begin
 	push ebp
-  mov ebp, esp
+	mov ebp, esp
 	;LOADDS	;since all routines expect to have DS pointed to the
 		;data segment, it's loaded at every public entrypoint
 		;(which should all be C procedures).
@@ -47,16 +47,16 @@
 
 %macro CBEGR 1 ; bytes ;C/Assembler procedure begin - with local variable reserve
 	push ebp ;just in case the asm routine changes bp
-  mov ebp, esp
-  sub esp, %1
-  
+	mov ebp, esp
+	sub esp, %1
+	  
 	;LOADDS	;since all routines expect to have DS pointed to the
 		;data segment, it's loaded at every public entrypoint
 		;(which should all be C procedures).
 %endmacro
 
 %macro CENDR 0 ;C/Assembler procedure end
-  mov esp, ebp
+	mov esp, ebp
 	pop	ebp
 	ret
 %endmacro

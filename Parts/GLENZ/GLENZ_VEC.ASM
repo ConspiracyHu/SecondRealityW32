@@ -38,13 +38,13 @@ global _csetmatrix
 _csetmatrix:
 	CBEG
 	LOADDS
-	mov	eax,[esp+12]
+	mov	eax,[ebp+12]
 	mov	[_xadd],eax		
-	mov	eax,[esp+16]
+	mov	eax,[ebp+16]
 	mov	[_yadd],eax		
-	mov	eax,[esp+20]
+	mov	eax,[ebp+20]
 	mov	[_zadd],eax		
-	mov	esi,[esp+8]
+	mov	esi,[ebp+8]
 	call	setmatrix
 	CEND
 
@@ -52,8 +52,8 @@ _csetmatrix:
 global _crotlist
 _crotlist:
 	CBEG
-	mov	esi,[esp+12]
-	mov	edi,[esp+8]
+	mov	esi,[ebp+12]
+	mov	edi,[ebp+8]
 	call	_rotlist
 	CEND
 
@@ -61,8 +61,8 @@ _crotlist:
 global _cprojlist
 _cprojlist:
 	CBEG
-	mov	esi,[esp+12]
-	mov	edi,[esp+8]
+	mov	esi,[ebp+12]
+	mov	edi,[ebp+8]
 	call	projlist
 	CEND
 
@@ -70,7 +70,7 @@ _cprojlist:
 global _ccliplist
 _ccliplist:
 	CBEG
-	mov	esi,[esp+8]
+	mov	esi,[ebp+8]
 	call	cliplist
 	CEND
 
@@ -537,11 +537,11 @@ _ceasypolylist: ;polylist,polys,points3
   ;     1 dword ("visiblity flags")
   ;     1 dword (Z)
 
-	mov	edi,[esp+8]
+	mov	edi,[ebp+8]
 	;mov	es,word [ebp+8]
-	mov	esi,[esp+12]
+	mov	esi,[ebp+12]
 	;mov	ds,word [ebp+12]
-	mov	edx,[esp+16]
+	mov	edx,[ebp+16]
 	add	edx,4
 	mov	[pointsoff],edx
 	mov	bp,-1

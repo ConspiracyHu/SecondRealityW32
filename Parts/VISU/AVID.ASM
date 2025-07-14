@@ -68,6 +68,8 @@ setrows:
 ;descr: sets the vision angle (a=0..65535)
 _vid_cameraangle:
 	CBEG
+	push	ebx
+
 	mov	eax,[_projclipx+CLIPMAX] ;right edge
 	sub	eax,[_projaddx] ;center X
 	;ax=width of half of screen
@@ -90,6 +92,8 @@ _vid_cameraangle:
 	mul	ecx	
 	shrd	eax,edx,8
 	mov	[_projmuly],eax
+
+	pop	ebx
 	CEND
 
 
@@ -138,7 +142,11 @@ _vid_init:
 	;push	ds
 	;mov	ax,ds
 	;LOADDS
-  CBEG
+	CBEG
+	push	esi
+	push	edi
+	push	ebx
+
 	mov	[_cdataseg],ax
 	movpar	ax,0
 	cmp	ax,1
@@ -154,7 +162,11 @@ _vid_init:
 	jne	@@3
 	call	m1o_init
 @@3:
-  CEND
+
+	pop	ebx
+	pop	edi
+	pop	esi
+	CEND
 
 	
 ;北北北北 _vid_deinit() 北北北北
