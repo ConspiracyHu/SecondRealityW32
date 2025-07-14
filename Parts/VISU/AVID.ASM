@@ -337,11 +337,13 @@ _vid_clear255:
 ;descr: Copies the bg to screen
 _vid_clearbg:
 	CBEG
+	push	esi
 	call	vidstart
 	mov	ax,2 ;bgcopy
-	mov	esi,[esp+8]
+	mov	esi,[ebp+8]
 	;mov	fs,[bp+8]
 	call	[vr+CLEAR]
+	pop	esi
 	CEND
 
 
