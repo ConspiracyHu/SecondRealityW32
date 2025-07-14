@@ -125,9 +125,14 @@ _inittwk:
 global _linezoom
 _linezoom:
 	push ebp
-	mov edi,[esp+8]
-	mov esi,[esp+12]
-	mov	ebx,[esp+16]
+	mov ebp, esp
+	push esi
+	push edi
+	push ebx
+
+	mov edi,[ebp+8]
+	mov esi,[ebp+12]
+	mov	ebx,[ebp+16]
 	cmp	ebx,318
 	jbe	.@@1
 	mov	ebx,318
@@ -142,5 +147,8 @@ _linezoom:
 
 	xor eax,eax
 	call [zoomt+ebx]
+	pop	ebx
+	pop	edi
+	pop	esi
 	pop	ebp
 	ret

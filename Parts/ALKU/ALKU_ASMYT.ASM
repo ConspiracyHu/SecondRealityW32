@@ -12,10 +12,13 @@ _ascrolltext:
 
 ;	ARG	scrl:word, text:dword
 
-%define scrl esp+8
-%define text esp+12
+%define scrl ebp+8
+%define text ebp+12
 
 	push ebp
+	mov ebp, esp
+	push esi
+	push ebx
 	;push	0a000h
 	;pop	es
 	mov esi, [text]
@@ -52,6 +55,8 @@ _ascrolltext:
 ;	cmp	ecx, 4
 ;	jne	.@@l1
 
+	pop ebx
+	pop esi
 	pop ebp
 	ret
 
@@ -59,10 +64,13 @@ global _outline
 _outline:
 
 ;	ARG	src:dword, dest:dword
-%define src esp+8
-%define dest esp+12
+%define src ebp+8
+%define dest ebp+12
 
 	push ebp
+	mov ebp, esp
+	push esi
+	push edi
 
 	;mov	word [mrol], 0802h
 	mov	ecx, 4
@@ -108,6 +116,7 @@ _outline:
 	dec	ecx
 	jnz	.@@l1
 
-
+	pop edi
+	pop esi
 	pop ebp
 	ret

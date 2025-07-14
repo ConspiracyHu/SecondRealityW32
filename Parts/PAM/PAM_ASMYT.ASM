@@ -18,10 +18,10 @@ global _init_uframe
 _init_uframe:
 
 	;ARG	fseg:word
-  push ebp
+	push ebp
 	mov	eax, [esp+8]
 	mov	[aseg], eax
-  pop ebp
+	pop ebp
 	ret
 
 global _ulosta_frame
@@ -30,17 +30,20 @@ _ulosta_frame:
 	;ARG	scseg:word
 
 	;push	ds di si
-  push ebp
+	push ebp
+	push edi
+	push esi
+	push ebx
 
 	;mov	edi, [esp+8]
 	;mov	es, ax
-  ;xor edi, edi
-  mov edi, _shim_vram
-  mov	esi, [aseg]
-  xor eax, eax
-  xor ebx, ebx
-  xor ecx, ecx
-  xor edx, edx
+	;xor edi, edi
+	  mov edi, _shim_vram
+	  mov	esi, [aseg]
+	  xor eax, eax
+	  xor ebx, ebx
+	  xor ecx, ecx
+	  xor edx, edx
 	;mov	dx, 03c4h		; map mask... 03c4h, 02..
 
 .@@looppi:
@@ -241,6 +244,9 @@ _ulosta_frame:
 .@@exit:
 	add	[aseg], esi
 
+	pop ebx
+	pop esi
+	pop edi
 	pop ebp
 
 	ret

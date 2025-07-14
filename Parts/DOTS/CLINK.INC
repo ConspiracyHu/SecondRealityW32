@@ -10,30 +10,28 @@
 %endmacro
 
 %macro CBEG 0 ;C/Assembler procedure begin
-	;push	bp
-	;mov	bp,sp
-	;push	si
-	;push	di
+	push	ebp
+	mov	ebp,esp
+	push	esi
+	push	edi
 	;push	ds
-  push ebp
 %endmacro
 
 %macro CEND 0 ;C/Assembler procedure end
 	;pop	ds
-	;pop	di
-	;pop	si
-	;pop	bp
-  pop ebp
+	pop	esi
+	pop	edi
+	pop	ebp
 	ret
 %endmacro
 
 %macro CBEG0 0 ;C/Assembler procedure begin, minimal
-	push	bp
-	mov	bp,sp
+	push	ebp
+	mov	ebp,esp
 %endmacro
 
 %macro CEND0 0 ;C/Assembler procedure end, minimal
-	pop	bp
+	pop	ebp
 	ret
 %endmacro
 

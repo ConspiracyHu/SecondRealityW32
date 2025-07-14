@@ -88,8 +88,12 @@ section .code
 global _do_block
 _do_block:
 	;ARG	ycount:word
-  %define ycount esp+8
-  push ebp
+	%define ycount ebp+8
+	push ebp
+	mov ebp, esp
+	push	esi
+	push	edi
+	push	ebx
 
 	mov	ax, [ycount]
 	mov	[_linecount], ax
@@ -334,6 +338,9 @@ plz_y0:
 	jnz	..@doline
 
 ..@end:
+	pop	ebx
+	pop	edi
+	pop	esi
 	pop	ebp
 	ret
 
@@ -390,6 +397,9 @@ plz_y0:
 
 	dec	word [_linecount]
 	jnz	..@doline
+	pop	ebx
+	pop	edi
+	pop	esi
 	pop	ebp
 	ret
 
@@ -397,11 +407,15 @@ global _shadepal
 _shadepal:
 
 	;ARG	fpal:dword, ppal:dword, shd:word
-  %define fpal esp+8
-  %define ppal esp+12
-  %define shd esp+16
+  %define fpal ebp+8
+  %define ppal ebp+12
+  %define shd  ebp+16
 
 	push	ebp
+	mov	ebp, esp
+	push	esi
+	push	edi
+	push	ebx
 
 	mov esi, [ppal]
 	mov edi, [fpal]
@@ -416,6 +430,9 @@ _shadepal:
 	%endrep
 	LOOP_LARGE	..@loop
 
+	pop	ebx
+	pop	edi
+	pop	esi
 	pop	ebp
 	ret
 

@@ -24,9 +24,14 @@ segment .code
 global _plzline
 _plzline:
         push ebp
+        mov ebp, esp
+        push esi
+        push edi
+        push ebx
+
         ;ARG     y1:word, vseg:word
-        %define y1 esp+8
-        %define vseg esp+12
+        %define y1 ebp+8
+        %define vseg ebp+12
         ;push    ds es si di
 
         mov ecx, [vseg]
@@ -74,6 +79,9 @@ LC_OFS(lc3) equ $+3
 %endif
         %assign ccc_inc ccc_inc+1
         %endrep
+        pop ebx
+        pop edi
+        pop esi
         pop ebp
         ret
 ENDP

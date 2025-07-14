@@ -101,27 +101,37 @@ segment .code
 global _docol
 _docol:
 	push	ebp
+	mov	ebp, esp
+	push	esi
+	push	edi
+	push	ebx
 ;	mov	es,[_vbuf+2]
 ;	mov	fs,[_wave1+2]
 ;	mov	gs,[_wave2+2]
 	mov	eax,~1
-	mov	esi,[esp+8]
+	mov	esi,[ebp+8]
 	and	esi,eax
-	mov	edi,[esp+12]
+	mov	edi,[ebp+12]
 	and	edi,eax
-	mov	ecx,[esp+16]
+	mov	ecx,[ebp+16]
 	and	ecx,eax
-	mov	edx,[esp+20]
+	mov	edx,[ebp+20]
 	and	edx,eax
-	mov	ebp,[esp+24]
+	mov	ebp,[ebp+24]
 	mov	ax,[_cameralevel]
 	call	theloop
+	pop	ebx
+	pop	edi
+	pop	esi
 	pop	ebp
 	ret
 
 global _docopy
 _docopy:
 	push	ebp
+	push	esi
+	push	edi
+	push	ebx
 
 %ifdef PXLSUX
 	mov	ax,cs
@@ -212,5 +222,8 @@ _docopy:
 	dec	cx
 	jnz	@@cl1
 	
+	pop	ebx
+	pop	edi
+	pop	esi
 	pop	ebp
 	ret

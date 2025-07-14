@@ -41,8 +41,8 @@ short	textin[768];
 short	textout[768];
 
 char	*alku_fonaorder="ABCDEFGHIJKLMNOPQRSTUVWXabcdefghijklmnopqrstuvwxyz0123456789!?,.:\x8f\x8f()+-*='\x8f\x99";
-int	fonap[256];
-int	fonaw[256];
+int	alku_fonap[256];
+int	alku_fonaw[256];
 
 short alku_dtau[30000];
 char	tbuf[186][352];
@@ -263,12 +263,12 @@ void alku_init()	{
 			x++;
 		}
 		//printf("%c: %i %i\n",*alku_fonaorder,b,x-b);
-		fonap[*alku_fonaorder]=b;
-		fonaw[*alku_fonaorder]=x-b;
+		alku_fonap[(unsigned char)*alku_fonaorder]=b;
+		alku_fonaw[(unsigned char)*alku_fonaorder]=x-b;
 		alku_fonaorder++;
 	}
-	fonap[32]=1500-20;
-	fonaw[32]=16;
+	alku_fonap[32]=1500-20;
+	alku_fonaw[32]=16;
 
 	for(a=0;a<768;a++)
 		{
@@ -323,8 +323,8 @@ void prt(int x,int y,char *txt)
 	int	x2w,x2,y2,y2w=y+32,sx,d;
 	while(*txt)
 	{
-		x2w=fonaw[*txt]+x;
-		sx=fonap[*txt];
+		x2w=alku_fonaw[(unsigned char)*txt]+x;
+		sx=alku_fonap[(unsigned char)*txt];
 		for(x2=x;x2<x2w;x2++)
 		{
 			for(y2=y;y2<y2w;y2++)
@@ -343,7 +343,7 @@ void prtc(int x,int y,char *txt)
 {
 	int	w=0;
 	char	*t=txt;
-	while(*t) w+=fonaw[*t++]+2;
+	while(*t) w+=alku_fonaw[(unsigned char)*t++]+2;
 	prt(x-w/2,y,txt);
 }
 
@@ -380,16 +380,16 @@ void addtext(int tx,int ty,char *txt)
 	int	a,b,c,x,y,w=0;
 	char	*t=txt;
 
-	while(*t) w+=fonaw[*t++]+2;
+	while(*t) w+=alku_fonaw[(unsigned char)*t++]+2;
 
 	t=txt; w/=2;
 	while(*t)
 		{
-		for(x=0;x<fonaw[*t];x++)
+		for(x=0;x<alku_fonaw[(unsigned char)*t];x++)
 			for(y=0;y<31;y++)
-				tbuf[y+ty][tx+x-w]=font[y][fonap[*t]+x];
+				tbuf[y+ty][tx+x-w]=font[y][alku_fonap[(unsigned char)*t]+x];
 
-		tx+=fonaw[*t++]+2;
+		tx+=alku_fonaw[(unsigned char)*t++]+2;
 		}
 	}
 
@@ -488,17 +488,17 @@ void faddtext(int tx,int ty,char *txt)
 	int	a,b,c,x,y,w=0;
 	char	*t=txt;
 
-	while(*t) w+=fonaw[*t++]+2;
+	while(*t) w+=alku_fonaw[(unsigned char)*t++]+2;
 
 	t=txt; w/=2;
 	while(*t)
 		{
-		for(x=0;x<fonaw[*t];x++)
+		for(x=0;x<alku_fonaw[(unsigned char)*t];x++)
 			for(y=0;y<32;y++)
-				tbuf[y+ty][tx+x-w]=font[y][fonap[*t]+x];
+				tbuf[y+ty][tx+x-w]=font[y][alku_fonap[(unsigned char)*t]+x];
 
 		alku_do_scroll(0);
-		tx+=fonaw[*t++]+2;
+		tx+=alku_fonaw[(unsigned char)*t++]+2;
 		}
 	}
 

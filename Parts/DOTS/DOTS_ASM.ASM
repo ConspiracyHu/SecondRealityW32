@@ -53,6 +53,7 @@ section .code
 global _drawdots
 _drawdots:
 	CBEG
+	push	ebx
 
   ; ds:si = dot array
   ; es:di = video memory
@@ -184,7 +185,9 @@ _drawdots:
 @@z:	pop	ecx
 	add	esi,16
 	LOOP_LARGE	@@1
-@@0:	CEND
+@@0:
+	pop	ebx
+	CEND
 
 @@2:	mov	di,[esi+8]
 	mov	eax,[_bgpic+edi]
@@ -218,7 +221,6 @@ _drawdots:
 	add	esi,16
 	LOOP_LARGE	@@1
 	jmp	@@0
-  ret
 
 section .data
 _face:
