@@ -3451,6 +3451,7 @@ int16_t st3play_GetPlusFlags( void )
   case 2: return currentRow >= 32 ? -32 : currentRow;
   case 3: return currentRow < -32 ? currentRow : currentRow - 64;
   }
+  return 0;
 }
 
 // ---------------------------------------------------------------------------
