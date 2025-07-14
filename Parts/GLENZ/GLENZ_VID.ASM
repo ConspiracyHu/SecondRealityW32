@@ -201,6 +201,7 @@ clear640x400:
 global _init320x200
 _init320x200:
 init320x200:
+	CBEG
 	LOADDS
 	mov	dword [projxmul],256
 	mov	dword [projymul],213
@@ -218,7 +219,7 @@ init320x200:
 	mov	ecx,200
 	mov	edx,80
 	call	setrows
-	ret
+	CEND
 
 init320x240:
 	LOADDS
