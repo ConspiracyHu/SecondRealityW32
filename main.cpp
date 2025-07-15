@@ -176,33 +176,29 @@ void demo_vsync()
 #endif
 }
 
-unsigned char * musicdata = NULL;
-void start_music( const char * path, int start_order )
-{
-  FILE * f1 = fopen( path, "rb" );
-  fseek( f1, 0L, SEEK_END );
-  unsigned int size = ftell( f1 );
-  musicdata = (unsigned char *)malloc( size );
-  fseek( f1, 0L, SEEK_SET );
-  fread( musicdata, (size_t)size, 1, f1 );
-  fclose( f1 );
+unsigned char * reality_fc_data = NULL;
+unsigned int reality_fc_datalength = 0;
+const char * reality_fc_path = "REALITY.FC";
 
-  st3play_PlaySong( musicdata, size, true, 44100, start_order );
+void start_music( int song_idx, int start_order )
+{
+  unsigned int offset = ( (unsigned int *)reality_fc_data )[ song_idx ];
+  st3play_PlaySong( reality_fc_data + offset, reality_fc_datalength, true, 44100, start_order );
 #ifdef _DEBUG
   //st3play_SetMasterVol( 100 );
 #endif // _DEBUG
 }
 
-void end_music( const char * path, int start_order )
+void end_music()
 {
   st3play_Close();
 
-  free( musicdata );
-  musicdata = NULL;
+  free( reality_fc_data );
+  reality_fc_data = NULL;
 }
 
-#define MUSIC_SKAV 1
-#define MUSIC_PM 2
+#define MUSIC_SKAV 0
+#define MUSIC_PM 1
 
 int main( int argc, char * argv[] )
 {
@@ -212,6 +208,14 @@ int main( int argc, char * argv[] )
   VirtualProtect( &rotlist, 8192, PAGE_EXECUTE_READWRITE, &old );
   VirtualProtect( &plzline, 8192, PAGE_EXECUTE_READWRITE, &old );
   VirtualProtect( &tun_main, 8192, PAGE_EXECUTE_READWRITE, &old );
+
+  FILE * f = fopen( reality_fc_path, "rb" );
+  fseek( f, 0L, SEEK_END );
+  reality_fc_datalength = ftell( f );
+  reality_fc_data = (unsigned char *)malloc( reality_fc_datalength );
+  fseek( f, 0L, SEEK_SET );
+  fread( reality_fc_data, (size_t)reality_fc_datalength, 1, f );
+  fclose( f );
 
   int windowWidth = 1280;
   int windowHeight = 960;
@@ -257,7 +261,7 @@ int main( int argc, char * argv[] )
   };
 
 #ifdef _DEBUG
-  int start = 6;
+  int start = 0;
 #else
   int start = 0;
 #endif
@@ -272,17 +276,13 @@ int main( int argc, char * argv[] )
     }
   }
 
-  const char * music_paths[ 3 ] = { NULL };
-  music_paths[MUSIC_SKAV] = "Data\\2ND_SKAV.S3M";
-  music_paths[MUSIC_PM] = "Data\\2ND_PM.S3M";
-
-  int lastmusic = 0;
+  int lastmusic = -1;
   for ( int i = start; parts[ i ].x; i++ )
   {
     if ( lastmusic != parts[ i ].music )
     {
       lastmusic = parts[ i ].music;
-      start_music( music_paths[ parts[ i ].music ], parts[ i ].music_startorder );
+      start_music( parts[ i ].music, parts[ i ].music_startorder );
     }
     demo_changemode( parts[ i ].x, parts[ i ].y );
     parts[ i ].part();
@@ -308,7 +308,8 @@ int main( int argc, char * argv[] )
       }
     }
   }
-  
+
+  end_music();
   delete[] screen32;
 
   graphics.Close();

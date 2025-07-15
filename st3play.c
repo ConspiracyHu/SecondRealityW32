@@ -785,6 +785,8 @@ static int16_t neworder(void) // rewritten to be more safe
 	return np_row;
 }
 
+#define READ_2NDREAL_DECRYPTED_PATBYTE(i) np_patseg[ i ] ^ ((i)+2) ^ ( ((i)+2) * 4 ); i++
+
 static int8_t getnote1(void)
 {
 	uint8_t dat, channel;
@@ -803,7 +805,8 @@ static int8_t getnote1(void)
 	i = np_patoff;
 	while (true)
 	{
-		dat = np_patseg[i++];
+    dat = READ_2NDREAL_DECRYPTED_PATBYTE(i);
+    
 		if (dat == 0)
 		{
 			np_patoff = i;
@@ -827,22 +830,24 @@ static int8_t getnote1(void)
 	// NOTE/INSTRUMENT
 	if (dat & 0x20)
 	{
-		ch->note = np_patseg[i++];
-		ch->ins = np_patseg[i++];
+		ch->note = READ_2NDREAL_DECRYPTED_PATBYTE(i);
+		ch->ins = READ_2NDREAL_DECRYPTED_PATBYTE(i);
 
 		if (ch->note != 255) ch->lastnote = ch->note;
 		if (ch->ins > 0) ch->lastins = ch->ins;
 	}
 
 	// VOLUME
-	if (dat & 0x40)
-		ch->vol = np_patseg[i++];
+  if ( dat & 0x40 )
+  {
+    ch->vol = READ_2NDREAL_DECRYPTED_PATBYTE(i);
+  }
 
 	// COMMAND/INFO
 	if (dat & 0x80)
 	{
-		ch->cmd = np_patseg[i++];
-		ch->info = np_patseg[i++];
+		ch->cmd = READ_2NDREAL_DECRYPTED_PATBYTE(i);
+		ch->info = READ_2NDREAL_DECRYPTED_PATBYTE(i);
 	}
 
 	np_patoff = i;
@@ -1075,7 +1080,7 @@ static void donotes(void)
 				i = np_row;
 				while (i > 0)
 				{
-					dat = np_patseg[j++];
+					dat = READ_2NDREAL_DECRYPTED_PATBYTE(j);
 					if (dat == 0)
 					{
 						i--;
