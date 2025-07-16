@@ -30,4 +30,4 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: w32nd_real
-        path: package/archive.zip
+        path: w32nd_real.zip
