@@ -91,17 +91,17 @@ begin
       mov   esi,offset wat1
       mov   ebx,offset fbuf
       call  putrouts1
-     end ['esi','ebx'];
+     end ['esi','ebx','edi','ecx'];
    1:asm
       mov   esi,offset wat2
       mov   ebx,offset fbuf
       call  putrouts1
-     end ['esi','ebx'];
+     end ['esi','ebx','edi','ecx'];
    2:asm
       mov   esi,offset wat3
       mov   ebx,offset fbuf
       call  putrouts1
-     end ['esi','ebx'];
+     end ['esi','ebx','edi','ecx'];
   end;
 end;
 

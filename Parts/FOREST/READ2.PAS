@@ -96,18 +96,18 @@ begin
       mov   esi,offset posi1
       mov   ebx,offset font
       call  putrouts
-     end ['esi','ebx'];
+     end ['esi','ebx','edi','ecx'];
    1:asm
       mov   esi,offset posi2
       mov   ebx,offset font
       call  putrouts
-     end ['esi','ebx'];
+     end ['esi','ebx','edi','ecx'];
    2:begin
       asm
        mov   esi,offset posi3
        mov   ebx,offset font
        call  putrouts
-      end ['esi','ebx'];
+      end ['esi','ebx','edi','ecx'];
       move(@font[1],@font[0],237*31);
       for ff := 0 to 30 do font[ff*237+236] := fbuf[ff*640+scp];
       if scp < 639 then inc(scp);
