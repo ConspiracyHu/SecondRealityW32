@@ -219,14 +219,14 @@ void coman_main()
 	}
 	{
 		FILE *f1;
-		f1=fopen("w1dta.bin","wb");
+		f1=blob_fopen("w1dta.bin","wb");
 		fwrite(wave1,2,16384,f1);
 		fwrite(wave1+16384,2,16384,f1);
-		fclose(f1);
-		f1=fopen("w2dta.bin","wb");
+		blob_fclose(f1);
+		f1=blob_fopen("w2dta.bin","wb");
 		fwrite(wave2,2,16384,f1);
 		fwrite(wave2+16384,2,16384,f1);
-		fclose(f1);
+		blob_fclose(f1);
 	}
 	#else
 	//wave1=w1dta;

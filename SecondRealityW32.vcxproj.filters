@@ -543,6 +543,7 @@
     <YASM Include="Parts\TECHNO\TECHNO_DATA.ASM">
       <Filter>Parts\06-Techno</Filter>
     </YASM>
+    <YASM Include="blob_data.asm" />
   </ItemGroup>
   <ItemGroup>
     <FreePascal Include="Parts\TUNNELI\TUN10.PAS">

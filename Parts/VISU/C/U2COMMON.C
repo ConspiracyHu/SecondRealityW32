@@ -112,15 +112,15 @@ char	*readfile(char *name)
 	FILE	*f1;
 	long	size;
 	char *p,*p0;
-  f1=fopen(name,"rb");
+  f1=blob_fopen(name,"rb");
 	if(!f1)
 	{
 		printf("File '%s' not found.",name);
 		exit(3);
 	}
-	fseek(f1,0L,SEEK_END);
-	p0=p=getmem(size=ftell(f1));
-	fseek(f1,0L,SEEK_SET);
+	blob_fseek(f1,0L,SEEK_END);
+	p0=p=getmem(size= blob_ftell(f1));
+	blob_fseek(f1,0L,SEEK_SET);
   /*
 	if(size>128000)
 	{
@@ -144,7 +144,7 @@ char	*readfile(char *name)
 	}
 	else
   */
-  fread(p,(size_t)size,1,f1);
-	fclose(f1);
+  blob_fread(p,(size_t)size,1,f1);
+	blob_fclose(f1);
 	return(p0);
 }

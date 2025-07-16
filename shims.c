@@ -1,3 +1,5 @@
+#define _CRT_SECURE_NO_WARNINGS
+
 #include "shims.h"
 
 unsigned char shim_vram[ shim_vram_x * shim_vram_y ] = { 0 };
@@ -108,7 +110,112 @@ char demo_isfirstpart()
   return is_first_part;
 }
 
-EXTERN void demo_finishedfirstpart()
+void demo_finishedfirstpart()
 {
   is_first_part = 0;
+}
+
+#define BLOB
+
+#ifdef BLOB
+typedef struct
+{
+  unsigned int hash;
+  char * ptr;
+  unsigned int size;
+  unsigned int offset;
+} t_blob;
+
+extern t_blob blob_index[];
+extern unsigned int blob_file_count;
+
+unsigned int blob_hash( const char * p )
+{
+  unsigned short u1 = 0x1111;
+  unsigned short u2 = 0x1111;
+  for ( int a = 0; p[ a ]; a++ )
+  {
+    unsigned short b = p[ a ];
+    b &= ~0x20;
+    _asm
+    {
+      mov	ax, b
+      xor u1, ax
+      rol	u1, 1
+      add	u2, ax
+    }
+  }
+  return (u2 << 16) + u1;
+}
+#endif
+
+FILE * blob_fopen( const char * filename, const char * mode )
+{
+#ifdef BLOB
+  unsigned int hash = blob_hash( filename );
+  for ( int i = 0; i < blob_file_count; i++ )
+  {
+    if ( blob_index[ i ].hash == hash )
+    {
+      blob_index[ i ].offset = 0;
+      return (FILE *)&blob_index[ i ];
+    }
+  }
+  return NULL;
+#else
+  char path[ 256 ] = { 0 };
+  strncpy( path, "Data\\", sizeof( path ) );
+  strncat( path, filename, sizeof( path ) );
+  return fopen( path, mode );
+#endif // _DEBUG
+}
+
+int blob_fread( void * buffer, int element_size, int element_count, FILE * file )
+{
+#ifdef BLOB
+  t_blob * blob = (t_blob *)file;
+  int count = element_size * element_count;
+  if ( count > blob->size - blob->offset )
+  {
+    count = blob->size - blob->offset;
+  }
+  memcpy( buffer, blob->ptr + blob->offset, count );
+  blob->offset += count;
+  return count;
+#else
+  return fread( buffer, element_size, element_count, file );
+#endif // _DEBUG
+}
+
+void blob_fseek( FILE * file, int offset, int origin )
+{
+#ifdef BLOB
+  t_blob * blob = (t_blob *)file;
+  switch ( origin )
+  {
+    case SEEK_SET: blob->offset = offset;  break;
+    case SEEK_CUR: blob->offset += offset;  break;
+    case SEEK_END: blob->offset = blob->size - offset;  break;
+  }
+#else
+  fseek( file, offset, origin );
+#endif
+}
+
+int blob_ftell( FILE * file )
+{
+#ifdef BLOB
+  t_blob * blob = (t_blob *)file;
+  return blob->offset;
+#else
+  return ftell( file );
+#endif
+}
+
+
+void blob_fclose( FILE * file )
+{
+#ifndef BLOB
+  fclose( file );
+#endif // _DEBUG
 }

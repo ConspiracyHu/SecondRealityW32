@@ -141,7 +141,7 @@ void init()
 	{
 	int	x,y,b;
 
-  FILE * a = fopen( "Data/endscrol.txt", "rb"); fread( text, 60000, 1, a ); fclose( a );
+  FILE * a = blob_fopen( "endscrol.txt", "rb"); blob_fread( text, 60000, 1, a ); blob_fclose( a );
 
 	// --- W32 PORT CHANGE (decompiled from final) ---
 	for(x=0;x<1550 && *fonaorder;)

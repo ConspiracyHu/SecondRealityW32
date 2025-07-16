@@ -215,10 +215,10 @@ void init_plz()
 #ifdef	DO_TABLES
 	{
 	FILE	*f1,*f2,*f3,*f4;
-	f1=fopen("lsini4.inc","wb");
-	f2=fopen("lsini16.inc","wb");
-	f3=fopen("psini.inc","wb");
-	f4=fopen("ptau.inc","wb");
+	f1=blob_fopen("lsini4.inc","wb");
+	f2=blob_fopen("lsini16.inc","wb");
+	f3=blob_fopen("psini.inc","wb");
+	f4=blob_fopen("ptau.inc","wb");
 
 	for(a=0;a<1024*16;a++)
 		{
@@ -255,7 +255,7 @@ void init_plz()
 		}
 	fputc('}',f4); fputc(';',f4);
 
-	fclose(f1); fclose(f2); fclose(f3); fclose(f4);
+	blob_fclose(f1); blob_fclose(f2); blob_fclose(f3); blob_fclose(f4);
 	}
 #endif
 	//tw_opengraph2();

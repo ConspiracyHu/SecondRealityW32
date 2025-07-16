@@ -722,14 +722,14 @@ int	doit3(int count)
 	{
 		FILE	*h;
 		char	*p=pic;
-		h=fopen("Data\\troll.up","rb");
+		h=blob_fopen("troll.up","rb");
 		dis_waitb();
-		fread(p,40000,1,h);
+		blob_fread(p,40000,1,h);
 		dis_waitb();
 		//_asm add word ptr p[2],40000/16
     p+=40000;
-		fread(p,40000,1,h);
-		fclose(h);
+		blob_fread(p,40000,1,h);
+		blob_fclose(h);
 	}
 
 	dis_waitb();

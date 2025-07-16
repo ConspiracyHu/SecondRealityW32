@@ -427,7 +427,7 @@ void lens_main()
 	setpalarea(palette,0,256);
 
 	#ifdef SAVEPATH
-	fp=fopen("lens.exp","wb");
+	fp=blob_fopen("lens.exp","wb");
 	putw(0,fp);
 	putw(0,fp);
 	#endif
@@ -445,6 +445,6 @@ void lens_main()
 	rewind(fp);
 	putw(0,fp);
 	putw(pathstart2,fp);
-	fclose(fp);
+	blob_fclose(fp);
 	#endif
 }

@@ -261,9 +261,9 @@ int main( int argc, char * argv[] )
   };
 
 #ifdef _DEBUG
-  int start = 0;
+  int start = 15;
 #else
-  int start = 0;
+  int start = 15;
 #endif
   if ( argc > 1 )
   {
@@ -275,6 +275,9 @@ int main( int argc, char * argv[] )
     case '5': start = 18; break;
     }
   }
+
+  char exename[ MAX_PATH ];
+  GetModuleFileNameA( NULL, exename, MAX_PATH );
 
   int lastmusic = -1;
   for ( int i = start; parts[ i ].x; i++ )

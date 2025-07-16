@@ -58,12 +58,12 @@ void u2a_main()
 	char	*cp;
 	int	a,b,c,d,e,f,g,x,y,z;
 	#ifdef DEBUG
-	fr=fopen("tmp","wt");
+	fr=blob_fopen("tmp","wt");
 	#endif
 	indemo=1;
 
 	dis_partstart();
-	sprintf(tmpname,"Data\\%s.00M",u2a_scene);
+	sprintf(tmpname,"%s.00M",u2a_scene);
 	if(!indemo) printf("Loading materials %s...\n",tmpname);
 	scene0=scenem=readfile(tmpname);
 
@@ -91,7 +91,7 @@ void u2a_main()
 		if(e>f)
 		{
 			f=e;
-			sprintf(tmpname,"Data\\%s.%03i",u2a_scene,e);
+			sprintf(tmpname,"%s.%03i",u2a_scene,e);
 			if(!indemo) printf("Loading %s... ",tmpname);
 			co[c].o=vis_loadobject(tmpname);
 			memset(co[c].o->r,0,sizeof(rmatrix));
@@ -119,7 +119,7 @@ void u2a_main()
 	camobject.r=&cam;
 	camobject.r0=&cam;
 
-	sprintf(tmpname,"Data\\%s.0AA",u2a_scene);
+	sprintf(tmpname,"%s.0AA",u2a_scene);
 	if(!indemo) printf("Loading animations...\n");
 	ip=readfile(tmpname);
   scl=0;
@@ -127,7 +127,7 @@ void u2a_main()
 	{
 		a=*ip;
 		if(a==-1) break;
-		sprintf(tmpname,"Data\\%s.0%c%c",u2a_scene,a/10+'A',a%10+'A');
+		sprintf(tmpname,"%s.0%c%c",u2a_scene,a/10+'A',a%10+'A');
 		if(!indemo) printf("Scene: %s ",tmpname);
 		scenelist[scl].data=readfile(tmpname);
 		if (!indemo) printf("(%i:@%Fp)\n",scl,scenelist[scl].data);
@@ -375,7 +375,7 @@ void u2a_main()
 	}
 
 	#ifdef DEBUG
-	fclose(fr);
+	blob_fclose(fr);
 	#endif
 	return;
 }

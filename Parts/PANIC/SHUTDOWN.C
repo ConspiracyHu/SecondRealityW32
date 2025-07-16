@@ -53,12 +53,12 @@ void shutdown_main()  {
 #ifndef _LOADER_
 	//tw_opengraph();
 	//tw_setstart(80);
-	fff = fopen("monster.u", "rb");
-	fread(kuva,64000,1,fff);
-	fclose(fff);
-	fff=fopen("monster.pal", "rb");
-	fread(kuvapal,768,1,fff);
-	fclose(fff);
+	fff = blob_fopen("monster.u", "rb");
+	blob_fread(kuva,64000,1,fff);
+	blob_fclose(fff);
+	fff=blob_fopen("monster.pal", "rb");
+	blob_fread(kuvapal,768,1,fff);
+	blob_fclose(fff);
 
 	for(y=0;y<200;y++) for(x=0;x<320;x++)
 		{
