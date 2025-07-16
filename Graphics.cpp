@@ -278,18 +278,21 @@ void Graphics::Update( void * _buffer, int _width, int _height )
   {
     unsigned int * srcline = NULL;
 
-    for ( int yz = 0; yz < zoom; yz++ )
+    srcline = src;
+    for ( int x = 0; x < _width; x++ )
     {
-      srcline = src;
-      for ( int x = 0; x < _width; x++ )
+      for ( int xz = 0; xz < zoom; xz++ )
       {
-        for ( int xz = 0; xz < zoom; xz++ )
-        {
-          *( dst++ ) = *srcline;
-        }
-        srcline++;
+        *( dst++ ) = *srcline;
       }
-      dst += mPhysicalWidth - ( _width * zoom );
+      srcline++;
+    }
+    dst += mPhysicalWidth - ( _width * zoom );
+
+    for ( int yz = 1; yz < zoom; yz++ )
+    {
+      memcpy( dst, dst - mPhysicalWidth, zoomedX * sizeof( unsigned int ) );
+      dst += mPhysicalWidth;
     }
     src = srcline;
   }
