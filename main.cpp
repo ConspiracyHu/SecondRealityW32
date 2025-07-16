@@ -217,9 +217,15 @@ int main( int argc, char * argv[] )
   fread( reality_fc_data, (size_t)reality_fc_datalength, 1, f );
   fclose( f );
 
+#ifdef _DEBUG
+  bool fullscreen = false;
   int windowWidth = 1280;
   int windowHeight = 960;
-  bool fullscreen = false;
+#else
+  bool fullscreen = true;
+  int windowWidth = GetSystemMetrics( SM_CXSCREEN );
+  int windowHeight = GetSystemMetrics( SM_CYSCREEN );
+#endif // _DEBUG
   if ( !graphics.Init( GetModuleHandle( NULL ), windowWidth, windowHeight, -1, fullscreen ) )
   {
     return false;
