@@ -245,7 +245,7 @@ begin
         jnz    @a
         pop    ebp
         mov    [RY],ax
-       end['esi','eax','ebx','ecx'];
+       end['esi','edi','eax','ebx','ecx'];
      end;
 
      for sync := 1 to frames do
