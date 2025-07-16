@@ -218,15 +218,15 @@ int main( int argc, char * argv[] )
   fclose( f );
 
 #ifdef _DEBUG
-  bool fullscreen = false;
+  Graphics::WindowType windowType = Graphics::WindowType::Windowed;
   int windowWidth = 1280;
   int windowHeight = 960;
 #else
-  bool fullscreen = true;
+  Graphics::WindowType windowType = Graphics::WindowType::Borderless;
   int windowWidth = GetSystemMetrics( SM_CXSCREEN );
   int windowHeight = GetSystemMetrics( SM_CYSCREEN );
 #endif // _DEBUG
-  if ( !graphics.Init( GetModuleHandle( NULL ), windowWidth, windowHeight, -1, fullscreen ) )
+  if ( !graphics.Init( GetModuleHandle( NULL ), windowWidth, windowHeight, -1, windowType ) )
   {
     return false;
   }

@@ -4,10 +4,17 @@
 class Graphics
 {
 public:
+  enum WindowType
+  {
+    Fullscreen,
+    Windowed,
+    Borderless,
+  };
+
   Graphics();
   ~Graphics();
 
-  bool Init( HINSTANCE _instance, int _width, int _height, int _zoom, bool _fullscreen );
+  bool Init( HINSTANCE _instance, int _width, int _height, int _zoom, WindowType _fullscreen );
   void Update( void * _screenBuffer, int _screenWidth, int _screenHeight );
   void HandleMessages();
   void Close();
@@ -37,6 +44,6 @@ private:
   int mIntegerZoom;
 
   bool mWantsToQuit;
-  bool mFullscreen;
+  WindowType mWindowType;
   unsigned int * mPhysicalScreen;
 };

@@ -11,11 +11,9 @@ Graphics::Graphics()
   , mPhysicalHeight( 0 )
   , mIntegerZoom( 0 )
   , mWantsToQuit( 0 )
-  , mFullscreen( 0 )
+  , mWindowType( WindowType::Windowed )
   , mPhysicalScreen( NULL )
 {
-  mWantsToQuit = false;
-  mFullscreen = false;
   ZeroMemory( &mRectWindow, sizeof( RECT ) );
   ZeroMemory( &mRectViewport, sizeof( RECT ) );
   ZeroMemory( &mRectScreen, sizeof( RECT ) );
@@ -25,11 +23,11 @@ Graphics::~Graphics()
 {
 }
 
-bool Graphics::Init( HINSTANCE _instance, int _screenWidth, int _screenHeight, int _zoom, bool _fullscreen )
+bool Graphics::Init( HINSTANCE _instance, int _screenWidth, int _screenHeight, int _zoom, WindowType _windowType )
 {
   mPhysicalWidth = _screenWidth;
   mPhysicalHeight = _screenHeight;
-  mFullscreen = _fullscreen;
+  mWindowType = _windowType;
 
   mIntegerZoom = _zoom;
 
@@ -38,7 +36,7 @@ bool Graphics::Init( HINSTANCE _instance, int _screenWidth, int _screenHeight, i
 
   DWORD wExStyle = WS_EX_APPWINDOW;
   DWORD wStyle = WS_POPUP | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | WS_VISIBLE;
-  if ( !mFullscreen )
+  if ( mWindowType == WindowType::Windowed )
   {
     wStyle |= WS_OVERLAPPED | WS_CAPTION;
   }
@@ -61,10 +59,7 @@ bool Graphics::Init( HINSTANCE _instance, int _screenWidth, int _screenHeight, i
   }
 
   RECT windowRect = { 0,0,mPhysicalWidth,mPhysicalHeight };
-  if ( !mFullscreen )
-  {
-    AdjustWindowRectEx( &windowRect, wStyle, FALSE, wExStyle );
-  }
+  AdjustWindowRectEx( &windowRect, wStyle, FALSE, wExStyle );
 
   mHWnd = CreateWindowEx( wExStyle, wndClass.lpszClassName, _T( "Second Reality (Win32)" ), wStyle,
     ( GetSystemMetrics( SM_CXSCREEN ) - ( windowRect.right - windowRect.left ) ) / 2,
@@ -95,7 +90,7 @@ bool Graphics::Init( HINSTANCE _instance, int _screenWidth, int _screenHeight, i
     return false;
   }
 
-  if ( mFullscreen )
+  if ( mWindowType == WindowType::Fullscreen )
   {
     result = mDirectDraw->SetCooperativeLevel( mHWnd, DDSCL_EXCLUSIVE | DDSCL_FULLSCREEN );
     if ( result != DD_OK )
@@ -416,7 +411,7 @@ void Graphics::Blit( void * _buffer )
   }
 
   HRESULT hRes = NULL;
-  if ( mFullscreen )
+  if ( mWindowType == WindowType::Fullscreen )
   {
     hRes = mSurfacePrimary->Flip( NULL, NULL );
   }
@@ -447,7 +442,7 @@ LRESULT CALLBACK Graphics::WndProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM 
 
     case WM_PAINT:
       {
-        if ( mFullscreen )
+        if ( mWindowType == WindowType::Fullscreen )
         {
           return 0;
         }
