@@ -62,7 +62,7 @@ void demo_changemode( int x, int y )
 
 void demo_blit()
 {
-#if 1
+#ifdef _DEBUG
   unsigned short order = 0;
   unsigned short row = 0;
   unsigned int frame = 0;
@@ -263,7 +263,7 @@ int main( int argc, char * argv[] )
 #ifdef _DEBUG
   int start = 15;
 #else
-  int start = 15;
+  int start = 0;
 #endif
   if ( argc > 1 )
   {
