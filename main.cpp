@@ -120,11 +120,13 @@ void demo_blit()
     DebugBreak(); // Unknown screen mode?!
   }
 
+#ifdef _DEBUG
   if ( GetAsyncKeyState('P') &0x8000 )
   {
     for ( int i = 0; i < 256; i++ ) screen32[ i ] = shim_palette[ i ];
   }
-
+#endif
+  
   graphics.Update( screen32, virtual_screen_width, virtual_screen_height );
 }
 
