@@ -22,12 +22,10 @@ jobs:
       run: msbuild .\SecondRealityW32.sln /p:Configuration=Debug /p:Platform=x86
     - name: Build Release|X86
       run: msbuild .\SecondRealityW32.sln /p:Configuration=Release /p:Platform=x86
-    - name: ZIP package
-      run: |
-        7z a -tzip -mx9 w32nd_real.zip SecondRealityW32.exe 
-        7z a -tzip -mx9 w32nd_real.zip REALITY.FC
     - name: Create artifact
       uses: actions/upload-artifact@v4
       with:
         name: w32nd_real
-        path: w32nd_real.zip
+        path: |
+            SecondRealityW32.exe 
+            REALITY.FC
