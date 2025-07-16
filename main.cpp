@@ -276,9 +276,6 @@ int main( int argc, char * argv[] )
     }
   }
 
-  char exename[ MAX_PATH ];
-  GetModuleFileNameA( NULL, exename, MAX_PATH );
-
   int lastmusic = -1;
   for ( int i = start; parts[ i ].x; i++ )
   {
