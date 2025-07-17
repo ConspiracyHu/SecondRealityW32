@@ -173,6 +173,9 @@
     <Filter Include="Parts\06-Techno">
       <UniqueIdentifier>{1519af0d-6b4c-41ca-9c5d-35749e2ea049}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Parts\HiddenPart">
+      <UniqueIdentifier>{03327537-84a3-41d0-b4ab-934abfb5008a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="Parts\DOTS\CLINK.INC">
@@ -376,6 +379,9 @@
     <None Include="Parts\DIS\DISPAS.INC">
       <Filter>Parts\DIS</Filter>
     </None>
+    <None Include="Parts\DDSTARS\TEXTS.16">
+      <Filter>Parts\HiddenPart</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <YASM Include="Parts\ALKU\ALKU_ASMYT.ASM">
@@ -544,6 +550,15 @@
       <Filter>Parts\06-Techno</Filter>
     </YASM>
     <YASM Include="blob_data.asm" />
+    <YASM Include="Parts\DDSTARS\KOE.ASM">
+      <Filter>Parts\HiddenPart</Filter>
+    </YASM>
+    <YASM Include="Parts\DDSTARS\POLYEGA.ASM">
+      <Filter>Parts\HiddenPart</Filter>
+    </YASM>
+    <YASM Include="Parts\DDSTARS\STARS.ASM">
+      <Filter>Parts\HiddenPart</Filter>
+    </YASM>
   </ItemGroup>
   <ItemGroup>
     <FreePascal Include="Parts\TUNNELI\TUN10.PAS">
