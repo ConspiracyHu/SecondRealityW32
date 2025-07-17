@@ -27,6 +27,7 @@ extern "C" void forest_main();
 extern "C" void water_main();
 extern "C" void shutdown_main();
 extern "C" void koe_main();
+extern "C" void ddstars_main();
 
 extern "C" void rotate( int, int, int, int );
 extern "C" void rotlist();
@@ -236,14 +237,16 @@ int main( int argc, char * argv[] )
   screen32 = new unsigned int[ virtual_screen_width * virtual_screen_height ];
   ZeroMemory( screen32, virtual_screen_width * virtual_screen_height * sizeof( unsigned int ) );
 
-  struct  
+  typedef struct 
   {
     unsigned char music;
     unsigned char music_startorder;
     unsigned short x;
     unsigned short y;
     void (*part)();
-  } parts[] = {
+  } t_part;
+
+  t_part main_parts[] = {
     /* 00       */ { MUSIC_SKAV,  0x00, 320, 400, alku_main },      // 1   db  'Alkutekstit I (WILDF)       ' / 'ALKU    ' / 'ALKU.EXE'
     /* 01       */ { MUSIC_SKAV,  0x0C, 320, 200, u2a_main },       // 2   db  'Alkutekstit II (PSI)        ' / 'VISU    ' / 'U2A.EXE'
     /* 02       */ { MUSIC_SKAV,  0x0D, 320, 200, pam_main },       // 3   db  'Alkutekstit III (TRUG/WILDF)' / 'PAM     ' / 'PAM.EXE'
@@ -268,6 +271,13 @@ int main( int argc, char * argv[] )
                    { 0         ,  0x00,   0,   0, NULL },
   };
 
+  t_part hidden_part[] = {
+    /* 00       */ { MUSIC_SKAV,  0x46, 320, 200, ddstars_main },   // hidden part
+                   { 0         ,  0x00,   0,   0, NULL },
+  };
+
+  t_part * parts = main_parts;
+
 #ifdef _DEBUG
   int start = 15;
 #else
@@ -281,6 +291,8 @@ int main( int argc, char * argv[] )
     case '3': start = 8; break;
     case '4': start = 15; break;
     case '5': start = 18; break;
+    case 'u':
+    case 'U': start = 0; parts = hidden_part; break;
     }
   }
 

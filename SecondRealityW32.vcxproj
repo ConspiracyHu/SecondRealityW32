@@ -256,8 +256,7 @@ $(SolutionDir)\Tools\upx.exe -9 $(OutDir)$(TargetFilename) -o $(SolutionDir)$(Ta
     <YASM Include="Parts\COMAN\COMAN_DATA.ASM" />
     <YASM Include="Parts\COMAN\THELOOP.ASM" />
     <YASM Include="Parts\CREDITS\CREDITS_INCLUDE.ASM" />
-    <YASM Include="Parts\DDSTARS\KOE.ASM" />
-    <YASM Include="Parts\DDSTARS\POLYEGA.ASM" />
+    <YASM Include="Parts\DDSTARS\DDSTARS_KOE.ASM" />
     <YASM Include="Parts\DDSTARS\STARS.ASM" />
     <YASM Include="Parts\DOTS\DOTS_ASM.ASM">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>

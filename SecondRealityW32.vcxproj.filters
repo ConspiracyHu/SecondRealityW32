@@ -550,10 +550,7 @@
       <Filter>Parts\06-Techno</Filter>
     </YASM>
     <YASM Include="blob_data.asm" />
-    <YASM Include="Parts\DDSTARS\KOE.ASM">
-      <Filter>Parts\HiddenPart</Filter>
-    </YASM>
-    <YASM Include="Parts\DDSTARS\POLYEGA.ASM">
+    <YASM Include="Parts\DDSTARS\DDSTARS_KOE.ASM">
       <Filter>Parts\HiddenPart</Filter>
     </YASM>
     <YASM Include="Parts\DDSTARS\STARS.ASM">
