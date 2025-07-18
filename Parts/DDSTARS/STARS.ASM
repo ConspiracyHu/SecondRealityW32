@@ -58,7 +58,6 @@ _resolve_planar:
   mov esi, _ddstars_planar
   mov edx, 320
   mov bl, 0x80
-  shr bl, cl
   mov ecx, 320*400
   resolve_byte:
     xor al, al
@@ -361,21 +360,19 @@ staradd:
 	cmp	bp,[starlimit]
 	jb	@@2
 	shl	ebx,1
-	movsx	eax, word [esi+4]
+	mov	ax, word [esi+4]
 	imul	word [muldivy+ebx]
-	movsx   eax, ax
-	movsx   edx, dx
-	shld	edx,eax,2
+	shld	dx,ax,2
+	movsx	edx, dx
 	add	edx,100
 	cmp	edx,99
 	ja	@@2
 	mov	ecx,edx
-	movsx	eax,word [esi+2]
+	mov	ax, word [esi+2]
 	imul	word [muldivx+ebx]
-	movsx   eax, ax
-	movsx   edx, dx
 	mov	ebx,ecx
-	shld	edx,eax,2
+	shld	dx,ax,2
+	movsx	edx, dx
 	add	edx,160
 	cmp	edx,319
 	ja	@@2
@@ -435,21 +432,19 @@ staradd2:
 	cmp	bp,[starlimit]
 	jb	@@2
 	shl	ebx,1
-	movzx	eax, word [esi+4]
+	mov	ax, word [esi+4]
 	imul	word [muldivy+ebx]
-	movsx   eax, ax
-	movsx   edx, dx
-	shld	edx,eax,2
+	shld	dx,ax,2
+	movsx	edx, dx
 	add	edx,100
 	cmp	edx,99
 	ja	@@2
 	mov	ecx,edx
-	movzx	eax, word [esi+2]
+	mov	ax, word [esi+2]
 	imul	word [muldivx+ebx]
-	movsx   eax, ax
-	movsx   edx, dx
 	mov	ebx,ecx
-	shld	edx,eax,2
+	shld	dx,ax,2
+	movsx	edx, dx
 	add	edx,160
 	cmp	edx,319
 	ja	@@2
@@ -888,7 +883,7 @@ do_stars:
 	loop	@@5
 	mov	edi, _ddstars_planar + PLANE_SIZE * 1
 	add	edi,200*40
-	pop	esi
+	pop esi
 	add	esi,99*40+4096
 	;mov	dx,3c4h
 	;mov	ax,0202h
