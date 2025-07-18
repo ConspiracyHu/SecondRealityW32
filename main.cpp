@@ -165,7 +165,7 @@ void demo_vsync()
   while ( !( GetAsyncKeyState( ' ' ) & 0x8000 ) ) { Sleep( 1 ); }
   while ( GetAsyncKeyState( ' ' ) & 0x8000 ) { Sleep( 1 ); }
 #else
-  const float cycle_ms = 13.75f;// 1000.0f / 70.0f;
+  const float cycle_ms = 1000.0f / 70.0f;
   float now = get_time_ms_precise();
   float elapsed = now - lastVblank;
   while ( elapsed < cycle_ms )
