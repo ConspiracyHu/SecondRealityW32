@@ -582,7 +582,7 @@ risetext:
 	mov	[edi+zzz+PLANE_SIZE*0],eax
 	;mov	[edi+zzz+PLANE_SIZE*1],eax
 	mov	[edi+zzz+PLANE_SIZE*2],eax
-	mov	[edi+zzz+PLANE_SIZE*3],eax
+	;mov	[edi+zzz+PLANE_SIZE*3],eax
 	%assign zzz zzz+4
 	%endrep
 	add	esi,40
@@ -592,7 +592,10 @@ risetext:
 	%assign zzz 0
 	%rep	40/4
 	mov	eax,[esi+zzz]
+	;mov	[edi+zzz+PLANE_SIZE*0],eax
 	mov	[edi+zzz+PLANE_SIZE*1],eax
+	mov	[edi+zzz+PLANE_SIZE*2],eax
+	;mov	[edi+zzz+PLANE_SIZE*3],eax
 	%assign zzz zzz+4
 	%endrep
 	add	esi,40
