@@ -188,7 +188,7 @@ void start_music( int song_idx, int start_order )
   unsigned int offset = ( (unsigned int *)reality_fc_data )[ song_idx ];
   st3play_PlaySong( reality_fc_data + offset, reality_fc_datalength, true, 44100, start_order );
 #ifdef _DEBUG
-  //st3play_SetMasterVol( 100 );
+  st3play_SetMasterVol( 100 );
 #endif // _DEBUG
 }
 
@@ -272,7 +272,7 @@ int main( int argc, char * argv[] )
   };
 
   t_part hidden_part[] = {
-    /* 00       */ { MUSIC_SKAV,  0x46, 320, 200, ddstars_main },   // hidden part
+    /* 00       */ { MUSIC_SKAV,  0x46, 320, 400, ddstars_main },   // hidden part
                    { 0         ,  0x00,   0,   0, NULL },
   };
 

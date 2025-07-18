@@ -61,22 +61,31 @@ waitb:
 
 global _ddstars_main
 _ddstars_main:
-	mov	bx,SEG endcode
-	mov	ax,es
-	sub	bx,ax
-	add	bx,64
-        mov     ah,4ah
- 	int	21h
-	
+	;mov	bx,SEG endcode
+	;mov	ax,es
+	;sub	bx,ax
+	;add	bx,64
+        ;mov     ah,4ah
+ 	;int	21h
+	push	ebp
+	mov	ebp, esp
+	push	edi
+	push	esi
+	push	ebx
+
 	call	_dis_partstart
 	
-	call	resetmode13
+	;call	resetmode13
 
 	call	init_stars
 	
 	call	do_stars
 	call	deinit_stars
 
+	pop	ebx
+	pop	esi
+	pop	edi
+	pop	ebp
 	ret
 	
 ;@@xit:	mov	ax,3
