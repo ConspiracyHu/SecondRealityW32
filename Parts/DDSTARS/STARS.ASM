@@ -141,10 +141,10 @@ init_stars:
 	
 	;mov	ax,0a000h
 	;mov	es,ax
-	mov	edi, _shim_vram
-	mov	cx,32768
-	xor	ax,ax
-	rep	stosw
+	mov	edi, _ddstars_planar
+	mov	cx,PLANE_SIZE
+	xor	eax,eax
+	rep	stosd
 	
 ;	mov	ah,43h
 ;	mov	bx,32*2
@@ -203,8 +203,8 @@ init_stars:
 	mov	edi,muldivy
 	mov	ecx,256
 	mov	ebp,150
-@@2b:	mov	edx,108
-	xor	eax,eax
+@@2b:	mov	eax,108 << 16
+	xor	edx, edx
 	div	ebp
 	shr	eax,1
 	stosw
@@ -214,8 +214,8 @@ init_stars:
 	mov	edi,muldivx
 	mov	ecx,256
 	mov	ebp,150
-@@2c:	mov	edx,144
-	xor	eax,eax
+@@2c:	mov	eax,144 << 16
+	xor	edx,edx
 	div	ebp
 	shr	eax,1
 	stosw
@@ -256,9 +256,9 @@ fetch4ax:
 	;shl	ax,12-4
 	;add	ax,[emmseg]
 	movzx	eax, ax
-	shl	eax, 16
+	shl	eax, 13
 	;add	eax, 0
-	mov	eax, emmdata
+	add	eax, emmdata
 	ret
 
 fetch4ax2:
@@ -275,9 +275,9 @@ fetch4ax2:
 	;add	ax,[emmseg]
 	;add	ax,400h
 	movzx	eax, ax
-	shl	eax, 16
-	add	eax, 0x4000
-	mov	eax, emmdata
+	shl	eax, 13
+	add	eax, 0x1000
+	add	eax, emmdata
 	ret
 
 fetch4ax3:
@@ -294,8 +294,8 @@ fetch4ax3:
 	;add	ax,[emmseg]
 	;add	ax,800h
 	movzx	eax, ax
-	shl	eax, 16
-	add	eax, 0x8000
+	shl	eax, 13
+	add	eax, 0x1000
 	mov	eax, emmdata
 	ret
 
@@ -307,7 +307,7 @@ clearsbu:
 	call	fetch4ax
 	;mov	es,ax
 	mov	edi, eax
-	mov	cx,4096/4*2
+	mov	ecx,4096/4*2
 	xor	eax,eax
 	rep	stosd
 	pop	eax
@@ -339,8 +339,8 @@ starfetch2:
 	movzx	eax,word [emmpage4]
 	add	eax,43
 	and	eax,63
-	mov	[curemmptr2], eax
 	call	fetch4ax3
+	mov	[curemmptr2], eax
 	;mov	gs,ax
 	ret
 
@@ -361,7 +361,7 @@ staradd:
 	cmp	bp,[starlimit]
 	jb	@@2
 	shl	ebx,1
-	movzx	eax, word [esi+4]
+	movsx	eax, word [esi+4]
 	imul	word [muldivy+ebx]
 	movsx   eax, ax
 	movsx   edx, dx
@@ -370,7 +370,7 @@ staradd:
 	cmp	edx,99
 	ja	@@2
 	mov	ecx,edx
-	movzx	eax,word [esi+2]
+	movsx	eax,word [esi+2]
 	imul	word [muldivx+ebx]
 	movsx   eax, ax
 	movsx   edx, dx
@@ -379,6 +379,7 @@ staradd:
 	add	edx,160
 	cmp	edx,319
 	ja	@@2
+	; x = edx, y = ebx
 	mov	cl,dl
 	and	cl,7
 	shr	edx,3
