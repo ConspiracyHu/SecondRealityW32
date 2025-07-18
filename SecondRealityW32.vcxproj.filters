@@ -77,6 +77,7 @@
       <Filter>Parts\06-Techno</Filter>
     </ClCompile>
     <ClCompile Include="st3play.c" />
+    <ClCompile Include="music.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Graphics.h" />

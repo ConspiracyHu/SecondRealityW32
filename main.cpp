@@ -39,6 +39,10 @@ extern "C" void st3play_SetMasterVol( unsigned short volume );
 extern "C" void st3play_GetOrderRowAndFrame( unsigned short * orderPtr, unsigned short * rowPtr, unsigned int * framePtr );
 extern "C" short st3play_GetPlusFlags();
 
+extern "C" void load_music();
+extern "C" void start_music( int song_idx, int start_order );
+extern "C" void end_music();
+
 unsigned int * screen32;
 
 Graphics graphics;
@@ -179,27 +183,6 @@ void demo_vsync()
 #endif
 }
 
-unsigned char * reality_fc_data = NULL;
-unsigned int reality_fc_datalength = 0;
-const char * reality_fc_path = "REALITY.FC";
-
-void start_music( int song_idx, int start_order )
-{
-  unsigned int offset = ( (unsigned int *)reality_fc_data )[ song_idx ];
-  st3play_PlaySong( reality_fc_data + offset, reality_fc_datalength, true, 44100, start_order );
-#ifdef _DEBUG
-  st3play_SetMasterVol( 100 );
-#endif // _DEBUG
-}
-
-void end_music()
-{
-  st3play_Close();
-
-  free( reality_fc_data );
-  reality_fc_data = NULL;
-}
-
 #define MUSIC_SKAV 0
 #define MUSIC_PM 1
 
@@ -212,13 +195,7 @@ int main( int argc, char * argv[] )
   VirtualProtect( &plzline, 8192, PAGE_EXECUTE_READWRITE, &old );
   VirtualProtect( &tun_main, 8192, PAGE_EXECUTE_READWRITE, &old );
 
-  FILE * f = fopen( reality_fc_path, "rb" );
-  fseek( f, 0L, SEEK_END );
-  reality_fc_datalength = ftell( f );
-  reality_fc_data = (unsigned char *)malloc( reality_fc_datalength );
-  fseek( f, 0L, SEEK_SET );
-  fread( reality_fc_data, (size_t)reality_fc_datalength, 1, f );
-  fclose( f );
+  load_music();
 
 #ifdef _DEBUG
   Graphics::WindowType windowType = Graphics::WindowType::Windowed;
