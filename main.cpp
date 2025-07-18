@@ -49,11 +49,6 @@ Graphics graphics;
 
 extern "C" void demo_blit();
 
-void demo_clear()
-{
-  ZeroMemory( shim_vram, shim_vram_x * shim_vram_y );
-}
-
 const int virtual_screen_width = 640;
 const int virtual_screen_height = 400;
 int demo_screen_width = 320;
@@ -175,7 +170,6 @@ void demo_vsync()
   float elapsed = now - lastVblank;
   while ( elapsed < cycle_ms )
   {
-    Sleep( 1 );
     now = get_time_ms_precise();
     elapsed = now - lastVblank;
   }
