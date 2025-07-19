@@ -9,6 +9,8 @@ extern "C" int dis_musplus();
 extern "C" int dis_waitb();
 
 extern "C" void menu();
+extern "C" int m_windowmode;
+extern "C" int m_looping;
 extern "C" int m_proceed;
 extern "C" int m_exit;
 
@@ -201,14 +203,20 @@ int main( int argc, char * argv[] )
   int windowHeight = 960;
 #else
   Graphics::WindowType windowType = Graphics::WindowType::Borderless;
-  int windowWidth = GetSystemMetrics( SM_CXSCREEN );
-  int windowHeight = GetSystemMetrics( SM_CYSCREEN );
+  int windowWidth = 1280;
+  int windowHeight = 960;
+
   menu();
   if ( m_exit )
   {
     return false;
   }
-
+  if ( m_windowmode == 0 )
+  {
+    windowType = Graphics::WindowType::Borderless;
+    windowWidth = GetSystemMetrics( SM_CXSCREEN );
+    windowHeight = GetSystemMetrics( SM_CYSCREEN );
+  }
 #endif // _DEBUG
   if ( !graphics.Init( GetModuleHandle( NULL ), windowWidth, windowHeight, -1, windowType ) )
   {
@@ -260,7 +268,7 @@ int main( int argc, char * argv[] )
   t_part * parts = main_parts;
 
 #ifdef _DEBUG
-  int start = 16;
+  int start = 0;
 #else
   int start = 0;
 #endif
@@ -278,37 +286,51 @@ int main( int argc, char * argv[] )
   }
 
   int lastmusic = -1;
-  for ( int i = start; parts[ i ].x; i++ )
+  do 
   {
-    if ( lastmusic != parts[ i ].music )
+    for ( int i = start; parts[ i ].x; i++ )
     {
-      lastmusic = parts[ i ].music;
-      start_music( parts[ i ].music, parts[ i ].music_startorder );
+      if ( lastmusic != parts[ i ].music )
+      {
+        lastmusic = parts[ i ].music;
+        start_music( parts[ i ].music, parts[ i ].music_startorder );
+      }
+      demo_changemode( parts[ i ].x, parts[ i ].y );
+      parts[ i ].part();
+      if ( dis_exit() )
+      {
+        break;
+      }
+
+      demo_finishedfirstpart();
+
+      if ( i == 7 )
+      {
+        // wait for music between the shutdown / forest parts (see @@zh5 in U2.ASM)
+        while ( !dis_exit() && dis_musplus() >= 0 )
+        {
+          dis_waitb();
+          demo_blit();
+        }
+        while ( !dis_exit() && dis_musplus() < 0 )
+        {
+          dis_waitb();
+          demo_blit();
+        }
+      }
+
+      // loop
+      if ( m_looping && i == 17 )
+      {
+        lastmusic = -1;
+        i = -1;
+      }
     }
-    demo_changemode( parts[ i ].x, parts[ i ].y );
-    parts[ i ].part();
     if ( dis_exit() )
     {
       break;
     }
-
-    demo_finishedfirstpart();
-
-    if ( i == 7 )
-    {
-      // wait for music between the shutdown / forest parts (see @@zh5 in U2.ASM)
-      while ( !dis_exit() && dis_musplus() >= 0 )
-      {
-        dis_waitb();
-        demo_blit();
-      }
-      while ( !dis_exit() && dis_musplus() < 0 )
-      {
-        dis_waitb();
-        demo_blit();
-      }
-    }
-  }
+  } while ( m_looping );
 
   end_music();
   delete[] screen32;

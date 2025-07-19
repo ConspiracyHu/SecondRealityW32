@@ -29,37 +29,37 @@ void menu_prtt( const char * str )
 		if ( screen_coord.Y >= 25 )
 		{
 			break;
-                }
-                switch ( str[ i ] )
-                {
-                case 126:
-                        {
-                                char a = str[ ++i ];
-                                if ( !a ) break;
-                                screen_color = col[ a - '0' ];
-                                //vramcol = col[ a - '0' ];
-                                //if ( vramforce ) vramusecol = vramforce;
-                                //else vramusecol = vramcol | vramor;
-                        }
-                        break;
-                case 10:
-                        {
-                                gotoxy( 0, screen_coord.Y + 1 );
-                        }
-                        break;
-                default:
-                        {
-                                if ( screen_color )
-                                {
-                                        CHAR_INFO * c = &screen_buffer[ screen_coord.X + screen_coord.Y * 80 ];
-                                        c->Attributes = screen_color;
-                                        c->Char.AsciiChar = str[ i ];
-                                }
-                                screen_coord.X++;
-                                //prtc( a );
-                        }
-                }
-        }
+		}
+		switch ( str[ i ] )
+		{
+		case 126:
+			{
+				char a = str[ ++i ];
+				if ( !a ) break;
+				screen_color = col[ a - '0' ];
+				//vramcol = col[ a - '0' ];
+				//if ( vramforce ) vramusecol = vramforce;
+				//else vramusecol = vramcol | vramor;
+			}
+			break;
+		case 10:
+			{
+				gotoxy( 0, screen_coord.Y + 1 );
+			}
+			break;
+		default:
+			{
+				if ( screen_color )
+				{
+					CHAR_INFO * c = &screen_buffer[ screen_coord.X + screen_coord.Y * 80 ];
+					c->Attributes = screen_color;
+					c->Char.AsciiChar = str[ i ];
+				}
+				screen_coord.X++;
+				//prtc( a );
+			}
+		}
+	}
 }
 
 #define prtf menu_prtt
@@ -76,6 +76,8 @@ int	m_soundquality = 2;
 int	m_looping = 0;
 int	m_proceed = 0;
 int	m_exit = 0;
+
+int	m_windowmode = 0;
 
 int mainmenu();
 
@@ -139,11 +141,12 @@ void menu()
 
 	for (;;)
 	{
-		mainmenu();
 		//a = getch();
 		INPUT_RECORD inputs[ 10 ] = { 0 };
 		DWORD event_count = 0;
 		ReadConsoleInput( GetStdHandle( STD_INPUT_HANDLE ), inputs, 10, &event_count );
+		static int debounceTimer = 0;
+
 		for ( int i = 0; i < event_count; i++ )
 		{
 			const INPUT_RECORD * input = &inputs[ i ];
@@ -151,6 +154,13 @@ void menu()
 			{
 				continue;
 			}
+			int time = GetTickCount();
+			if ( time - debounceTimer < 100 )
+			{
+				continue;
+			}
+			debounceTimer = time;
+
 			a = 0;
 			if ( input->Event.KeyEvent.wVirtualKeyCode == 13 )
 			{
@@ -170,11 +180,15 @@ void menu()
 			case VK_LEFT: ( *menux )--; break;
 			case VK_RIGHT: ( *menux )++; break;
 			}
+			FlushConsoleInputBuffer( GetStdHandle( STD_INPUT_HANDLE ) );
+			break;
 		}
 		if ( m_exit || m_proceed )
 		{
 			break;
 		}
+		mainmenu();
+
 		const COORD full_screen = { 80,50 };
 		const COORD screen_start = { 0,0 };
 		SMALL_RECT write_region = { 0,0,80,50 };
@@ -229,17 +243,29 @@ int	mainmenu( void )
 {
 	int	a;
 
-	if ( menuy < 1 ) menuy = 1;
-	if ( menuy > 3 ) menuy = 3;
+#ifdef OLD_MENU
+	int menucount = 3;
+#else
+	int menucount = 2;
+#endif
 
+	if ( menuy < 1 ) menuy = 1;
+	if ( menuy > menucount ) menuy = menucount;
+
+#ifdef OLD_MENU
 	if ( m_detail < 0 ) m_detail = 1;
 	if ( m_detail > 1 ) m_detail = 0;
 	if ( m_soundcard < 0 ) m_soundcard = 3;
 	if ( m_soundcard > 3 ) m_soundcard = 0;
 	if ( m_soundquality < 0 ) m_soundquality = 2;
 	if ( m_soundquality > 2 ) m_soundquality = 0;
+#else
+        if ( m_windowmode < 0 ) m_windowmode = 1;
+        if ( m_windowmode > 1 ) m_windowmode = 0;
+#endif
 	if ( m_looping < 0 ) m_looping = 1;
 	if ( m_looping > 1 ) m_looping = 0;
+
 	gotoxy( 0, 2 );
 
 	/*
@@ -261,7 +287,10 @@ int	mainmenu( void )
 		"~0        ~3 In case you encounter difficulties running this demo, try             ~0  \n"
 		"~0        ~3 rebooting you computer with a clean boot (no TSRs etc.)               ~0  \n"
 		"\n" );
-	menucolorize( 1, &m_soundcard );
+
+	int menu_index = 1;
+#ifdef OLD_MENU
+	menucolorize( menu_index++, &m_soundcard );
 	switch ( m_soundcard )
 	{
 	case 0:	prtf(
@@ -282,7 +311,9 @@ int	mainmenu( void )
 		"~0        ~3 570,000 bytes of conventional memory. With SoundBlaster, an           ~0  \n"
 		"~0        ~3 additional 1MB of expanded memory (EMS) is required.                  ~0  \n"
 		"\n" );
-	menucolorize( 2, &m_soundquality );
+
+
+	menucolorize( menu_index++, &m_soundquality );
 	switch ( m_soundquality )
 	{
 	case 0:	prtf(
@@ -300,19 +331,40 @@ int	mainmenu( void )
 		"~0        ~3 rate. For the Gravis Ultrasound, the quality has no effect. If        ~0  \n"
 		"~0        ~3 the demo runs too slowly, try decreasing the sound quality.           ~0  \n"
 		"\n" );
-	menucolorize( 3, &m_looping );
-	switch ( m_looping )
+
+#else
+	menucolorize( menu_index++, &m_windowmode );
+	switch ( m_windowmode )
 	{
 	case 0:	prtf(
-		"~0    ~1       Demo looping:~2 Disabled                                            ~0  \n"
+		"~0    ~1       Window mode:~2 Fullscreen                                           ~0  \n"
 	); break;
 	case 1:	prtf(
-		"~0    ~1       Demo looping:~2 Enabled (no end scroller shown)                     ~0  \n"
+		"~0    ~1       Window mode:~2 Windowed (1280x720)                                  ~0  \n"
 	); break;
 	}
 	col[ 1 ] &= ~0x10; col[ 2 ] &= ~0x10; prtf(
-		"~0        ~3 If you wish the demo to run continuously, enable this option.         ~0  \n"
+		"~0        ~3 The fullscreen mode is actually just borderless window,               ~0  \n"
+		"~0        ~3 because disabling vertical synchronization in fullscreen              ~0  \n"
+		"~0        ~3 DirectDraw is problematic.                                            ~0  \n"
 		"\n" );
-	menucolorize( 4, &m_looping );
+#endif
+
+        menucolorize( menu_index++, &m_looping );
+        switch ( m_looping )
+        {
+        case 0:	prtf(
+                "~0    ~1       Demo looping:~2 Disabled                                            ~0  \n"
+        ); break;
+        case 1:	prtf(
+                "~0    ~1       Demo looping:~2 Enabled (no end scroller shown)                     ~0  \n"
+        ); break;
+        }
+        col[ 1 ] &= ~0x10; col[ 2 ] &= ~0x10; prtf(
+                "~0        ~3 If you wish the demo to run continuously, enable this option.         ~0  \n"
+                "\n" );
+
+        menucolorize( menu_index++, &m_looping );
+
 	return 0;
 }
