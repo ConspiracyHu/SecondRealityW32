@@ -75,6 +75,10 @@ void alku_main()
 	alku_init();
 
 	while(dis_sync()<1 && !dis_exit()) demo_blit();
+	if ( dis_exit() )
+	{
+		return;
+	}
 
 	prtc(160,120,"A");
 	prtc(160,160,"Future Crew");
@@ -82,12 +86,20 @@ void alku_main()
 	dofade(fade1,fade2); wait(300); dofade(fade2,fade1); fonapois();
 
 	while(dis_sync()<2 && !dis_exit()) demo_blit();
+	if ( dis_exit() )
+	{
+		return;
+	}
 
 	prtc(160,160,"First Presented");
 	prtc(160,200,"at Assembly 93");
 	dofade(fade1,fade2); wait(300); dofade(fade2,fade1); fonapois();
 
 	while(dis_sync()<3 && !dis_exit()) demo_blit();
+	if ( dis_exit() )
+	{
+		return;
+	}
 
 	prtc(160,120,"in");
 	prtc(160,160,"\x8f");
@@ -95,6 +107,10 @@ void alku_main()
 	dofade(fade1,fade2); wait(300); dofade(fade2,fade1); fonapois();
 
 	while(dis_sync()<4 && !dis_exit()) demo_blit();
+	if ( dis_exit() )
+	{
+		return;
+	}
 
 	memcpy(fadepal,fade1,768);
 	cop_fadepal=(char*)picin;
