@@ -49,12 +49,9 @@ void menu_prtt( const char * str )
 			break;
 		default:
 			{
-				if ( screen_color )
-				{
-					CHAR_INFO * c = &screen_buffer[ screen_coord.X + screen_coord.Y * 80 ];
-					c->Attributes = screen_color;
-					c->Char.AsciiChar = str[ i ];
-				}
+				CHAR_INFO * c = &screen_buffer[ screen_coord.X + screen_coord.Y * 80 ];
+				c->Attributes = screen_color;
+				c->Char.AsciiChar = str[ i ];
 				screen_coord.X++;
 				//prtc( a );
 			}
@@ -82,6 +79,14 @@ int	m_windowmode = 0;
 int mainmenu();
 
 #define DOS_RGB(r,g,b) ((COLORREF)( ((DWORD)((BYTE)(r))<<2) | ((DWORD)((BYTE)(g))<<10) | (((DWORD)(BYTE)(b))<<18) ))
+
+void screen_update()
+{
+	const COORD full_screen = { 80,50 };
+	const COORD screen_start = { 0,0 };
+	SMALL_RECT write_region = { 0,0,80,50 };
+	WriteConsoleOutput( GetStdHandle( STD_OUTPUT_HANDLE ), screen_buffer, full_screen, screen_start, &write_region );
+}
 
 void menu()
 {
@@ -189,14 +194,12 @@ void menu()
 		}
 		mainmenu();
 
-		const COORD full_screen = { 80,50 };
-		const COORD screen_start = { 0,0 };
-		SMALL_RECT write_region = { 0,0,80,50 };
-		WriteConsoleOutput( GetStdHandle( STD_OUTPUT_HANDLE ), screen_buffer, full_screen, screen_start, &write_region );
+		screen_update();
 	}
 
 	gotoxy( 0, 0 );
 	for ( y = 0; y < 50; y++ ) menu_prtt( "~0                                                                                " );
+	screen_update();
 
 	if ( !m_soundcard )
 	{
