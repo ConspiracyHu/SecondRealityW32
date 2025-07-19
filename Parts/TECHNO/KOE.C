@@ -707,6 +707,8 @@ int	doit3(int count)
 	//_asm int 10h
 	//inittwk();
   demo_changemode( 320, 400 );
+  memset( shim_vram, 0, 320 * 400 );
+  demo_blit();
   /*
 	_asm 
 	{
@@ -771,6 +773,7 @@ int	doit3(int count)
     */
     b = dis_musrow(0);
     a = dis_musorder(0);
+    demo_blit();
 		if(a>35 || (a==35 && b>48)) break;
 	}
   
