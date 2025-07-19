@@ -106,6 +106,9 @@
     <ClInclude Include="Parts\VISU\C\U2COMMON.H">
       <Filter>Parts\VISU\C</Filter>
     </ClInclude>
+    <ClInclude Include="Resources\resource.h">
+      <Filter>Parts</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Parts">
@@ -179,6 +182,9 @@
     </Filter>
     <Filter Include="Parts\HiddenPart">
       <UniqueIdentifier>{03327537-84a3-41d0-b4ab-934abfb5008a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources">
+      <UniqueIdentifier>{42bb7d77-dea5-4ab0-8a78-0ece2cfdb3ab}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -571,5 +577,15 @@
     <FreePascal Include="Parts\WATER\DEMO.PAS">
       <Filter>Parts\16-MirrorBallScroller</Filter>
     </FreePascal>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="Resources\atomic_playboy.ico">
+      <Filter>Parts</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Resources\Resource.rc">
+      <Filter>Parts</Filter>
+    </ResourceCompile>
   </ItemGroup>
 </Project>

@@ -194,6 +194,7 @@ $(SolutionDir)\Tools\upx.exe -9 $(OutDir)$(TargetFilename) -o $(SolutionDir)$(Ta
     <ClInclude Include="Parts\VISU\C.H" />
     <ClInclude Include="Parts\VISU\CD.H" />
     <ClInclude Include="Parts\VISU\C\U2COMMON.H" />
+    <ClInclude Include="Resources\resource.h" />
     <ClInclude Include="shims.h" />
   </ItemGroup>
   <ItemGroup>
@@ -607,6 +608,12 @@ $(SolutionDir)\Tools\upx.exe -9 $(OutDir)$(TargetFilename) -o $(SolutionDir)$(Ta
     <FreePascal Include="Parts\FOREST\READ2.PAS" />
     <FreePascal Include="Parts\TUNNELI\TUN10.PAS" />
     <FreePascal Include="Parts\WATER\DEMO.PAS" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="Resources\atomic_playboy.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Resources\Resource.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <Import Project="$(SolutionDir)\Tools\YASM\vsyasm.targets" />
