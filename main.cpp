@@ -8,7 +8,9 @@ extern "C" int dis_getmframe();
 extern "C" int dis_musplus();
 extern "C" int dis_waitb();
 
-extern "C" int menu();
+extern "C" void menu();
+extern "C" int m_proceed;
+extern "C" int m_exit;
 
 extern "C" void beg_main();
 extern "C" void glenz_main();
@@ -202,6 +204,11 @@ int main( int argc, char * argv[] )
   int windowWidth = GetSystemMetrics( SM_CXSCREEN );
   int windowHeight = GetSystemMetrics( SM_CYSCREEN );
   menu();
+  if ( m_exit )
+  {
+    return false;
+  }
+
 #endif // _DEBUG
   if ( !graphics.Init( GetModuleHandle( NULL ), windowWidth, windowHeight, -1, windowType ) )
   {
