@@ -8,6 +8,8 @@ extern "C" int dis_getmframe();
 extern "C" int dis_musplus();
 extern "C" int dis_waitb();
 
+extern "C" int menu();
+
 extern "C" void beg_main();
 extern "C" void glenz_main();
 extern "C" void dots_main();
@@ -68,7 +70,7 @@ void demo_blit()
   unsigned int frame = 0;
   st3play_GetOrderRowAndFrame( &order, &row, &frame );
   unsigned short plus = st3play_GetPlusFlags();
-  printf( "%04X %04X %04X %d\r", order, row, plus, dis_getmframe() );
+  printf( "%04X %04X | %04X %4d | %d\r", order, row, plus, (short)plus, frame );
 #endif
 
   graphics.HandleMessages();
@@ -199,6 +201,7 @@ int main( int argc, char * argv[] )
   Graphics::WindowType windowType = Graphics::WindowType::Borderless;
   int windowWidth = GetSystemMetrics( SM_CXSCREEN );
   int windowHeight = GetSystemMetrics( SM_CYSCREEN );
+  menu();
 #endif // _DEBUG
   if ( !graphics.Init( GetModuleHandle( NULL ), windowWidth, windowHeight, -1, windowType ) )
   {
@@ -250,7 +253,7 @@ int main( int argc, char * argv[] )
   t_part * parts = main_parts;
 
 #ifdef _DEBUG
-  int start = 15;
+  int start = 16;
 #else
   int start = 0;
 #endif

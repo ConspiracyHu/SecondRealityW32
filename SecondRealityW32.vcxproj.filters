@@ -78,6 +78,9 @@
     </ClCompile>
     <ClCompile Include="st3play.c" />
     <ClCompile Include="music.c" />
+    <ClCompile Include="Parts\MENU.C">
+      <Filter>Parts</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Graphics.h" />

@@ -116,6 +116,7 @@ void end_main()
 	for(a=0;a<5000 && !dis_exit();a++)
 	{
 		dis_waitb();
+		demo_blit();
 		if(dis_musplus()>-16) break;
 	}
 	for(c=63;c>=0;c--)

@@ -170,6 +170,7 @@ $(SolutionDir)\Tools\upx.exe -9 $(OutDir)$(TargetFilename) -o $(SolutionDir)$(Ta
     <ClCompile Include="Parts\JPLOGO\JP.C" />
     <ClCompile Include="Parts\COMMON.C" />
     <ClCompile Include="Parts\LENS\LENS_MAIN.C" />
+    <ClCompile Include="Parts\MENU.C" />
     <ClCompile Include="Parts\PAM\OUTTAA.C" />
     <ClCompile Include="Parts\PANIC\SHUTDOWN.C" />
     <ClCompile Include="Parts\PLZPART\PLZ_MAIN.C" />
