@@ -36,6 +36,7 @@ extern int lsini16[8192];
 //char	lsini[16384]=
 //#include "lsini.pre"
 char plz_vidmem[2][ 84 * 280 ];
+extern char plz_fadepal[];
 
 void init_plz();
 
@@ -62,41 +63,7 @@ int	inittable[10][8]={{1000,2000,3000,4000,3500,2300,3900,3670},
 extern unsigned short plz_dtau[ 65 ];
 
 int drop_y = 0;
-void copper_update()
-{
-  cop_drop++;
-  if ( cop_drop < 64 )
-  {
-    drop_y = plz_dtau[ cop_drop ];
-    return;
-  }
-
-  if ( cop_drop >= 256 )
-  {
-    cop_drop = 0;
-    return;
-  }
-  else if ( cop_drop >= 128 )
-  {
-    drop_y = plz_dtau[ 0 ];
-    cop_dofade = 1;
-  }
-  else if ( cop_drop > 64 + 32 )
-  {
-    cop_drop = 0;
-    return;
-  }
-  else
-  {
-    drop_y = plz_dtau[ 0 ];
-    cop_dofade = 1;
-  }
-  if ( cop_drop == 65 )
-  {
-    initpparas();
-  }
-  copper3();
-}
+void do_drop();
 
 void plz()
 {
@@ -126,7 +93,7 @@ void plz()
 		tim+=frame_count; frame_count=0; count++;
 		if(dis_getmframe()>timetable[ttptr])
 			{
-			for ( int i = 0; i < 768; i++ ) fadepal_short[ i ] &= 0xFF;
+			memset(plz_fadepal,0,768);
 			cop_drop=1;
 			cop_fadepal=pals[curpal++];
 			ttptr++;
@@ -167,10 +134,10 @@ void plz()
 		for(y=0;y<MAXY;y+=2)
 			plzline(y,plz_vidmem[1]+y*84+YADD*6);
 
-    if ( cop_drop > 0 )
-    {
-      copper_update();
-    }
+		if ( cop_drop )
+		{
+			do_drop();
+		}
     copper2();
     moveplz();
 
@@ -200,8 +167,8 @@ void plz()
     demo_blit();
     frame_count += dis_waitb();
 		}
-  //drop_y = dtau[ 0 ];
-  //cop_drop = 0; //frame_count = 0; while ( frame_count == 0 );
+
+	//cop_drop = 0; //frame_count = 0; while ( frame_count == 0 );
 	set_plzstart(500);
 	//cop_plz=0;
 	}

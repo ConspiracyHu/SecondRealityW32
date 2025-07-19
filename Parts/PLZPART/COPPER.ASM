@@ -31,7 +31,7 @@ extern _cop_drop
 extern _cop_scrl
 extern _do_pal
 extern _cop_pal
-extern _fadepal
+;extern _fadepal
 extern _cop_fadepal
 
 global _plz_dtau
@@ -46,7 +46,8 @@ _plz_dtau:
 pompi   db      0
 
 ;_fadepal
-fadepal		times	768*2 db 0
+global _plz_fadepal
+_plz_fadepal		times	768*2 db 0
 ;
 ;_cop_fadepal
 cop_fadepal	dd	0
@@ -198,30 +199,37 @@ _moveplz:
 	pop ebp
 	ret
 
-do_drop:
+extern _drop_y
+global _do_drop
+_do_drop:
+	push	ebp
 
 	inc	word [_cop_drop]
 	cmp	word [_cop_drop], 64
 	ja	@@over
 
-	push	bx
-	mov	bx, [_cop_drop]
-	shl	bx, 1
-	add	bx, _plz_dtau
+	push	ebx
+	movzx	ebx, word [_cop_drop]
+	shl	ebx, 1
+	movzx	ebx, word [_plz_dtau+ebx]
+	mov	[_drop_y], ebx
 
-	mov	bx, [cs:bx]
-	mov	dx, 3d4h
-	mov	al, 18h		; linecompare
-	mov	ah, bl
-	out	dx, ax
-	mov	al, 07h
-	mov	ah, bh
-	shl	ah, 4
-	and	ah, 10h
-	or	ah, 0fh
-	out	dx, ax			; 8th bit
+	;add	bx, _plz_dtau
 
-	pop	bx
+	;mov	bx, [cs:bx]
+	;mov	dx, 3d4h
+	;mov	al, 18h		; linecompare
+	;mov	ah, bl
+	;out	dx, ax
+	;mov	al, 07h
+	;mov	ah, bh
+	;shl	ah, 4
+	;and	ah, 10h
+	;or	ah, 0fh
+	;out	dx, ax			; 8th bit
+
+	pop	ebx
+	pop	ebp
 	ret
 
 @@over:
@@ -232,50 +240,58 @@ do_drop:
 	cmp	word [_cop_drop], 64+32
 	ja	@@end
 
-@@lll:	mov	word [_cop_pal], _fadepal
-	mov	word [_cop_pal+2], _fadepal
+@@lll:	mov	dword [_cop_pal], _plz_fadepal
 	mov	word [_do_pal], 1
 
 	cmp	word [_cop_drop], 65
 	je	@@l5
 
-	mov	dx, 3d4h
-	mov	ax, 3c18h
-	out	dx, ax
-	mov	ax, 0f07h
-	out	dx, ax			; 8th bit
+	;mov	dx, 3d4h
+	;mov	ax, 3c18h
+	;out	dx, ax
+	;mov	ax, 0f07h
+	;out	dx, ax			; 8th bit
+	movzx	eax, word [_plz_dtau]
+	mov	[_drop_y], eax
 
-	;push	ds si di cx
+	push	esi
+	push	edi
 
-	lds	si, [_cop_fadepal]
-	mov	di, _fadepal
-	mov	cx, 768/16
+	mov	esi, [_cop_fadepal]
+	mov	edi, _plz_fadepal
+	mov	ecx, 768/16
 @@l4:
 	%assign ccc 0
 	%rep 16
-	mov	ax, [si+ccc*2]
-	add	[cs:di+ccc+768], al
-	adc	[cs:di+ccc], ah
+	mov	ax, [esi+ccc*2]
+	add	[edi+ccc+768], al
+	adc	[edi+ccc], ah
 	%assign ccc ccc+1
 	%endrep
-	add	di, 16
-	add	si, 32
-	dec	cx
+	add	edi, 16
+	add	esi, 32
+	dec	ecx
 	jnz	@@l4
 
-	;pop	cx di si ds
+	pop	edi
+	pop	esi
+	pop	ebp
 	ret
 @@l5:
-	mov	dx, 3d4h
-	mov	ax, 9018h
-	out	dx, ax
-	mov	ax, 1f07h
-	out	dx, ax			; 8th bit
+	;mov	dx, 3d4h
+	;mov	ax, 9018h
+	;out	dx, ax
+	;mov	ax, 1f07h
+	;out	dx, ax			; 8th bit
+	movzx	eax, word [_plz_dtau]
+	mov	[_drop_y], eax
 
 	call	_initpparas
+	pop	ebp
 	ret
 @@end:
 	mov	word [_cop_drop], 0
+	pop	ebp
 	ret
 
 global _initpparas
