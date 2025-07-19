@@ -95,7 +95,7 @@ _outline:
 	%rep	75
 	mov	al, [esi+ccc*640]
 	mov	[edi+ccc*352*2], al
-	mov	[edi+ccc*352*2+352], al
+	;mov	[edi+ccc*352*2+352], al
 	%assign ccc ccc+1
 	%endrep
 
@@ -108,7 +108,7 @@ _outline:
 	%rep	75
 	mov	al, [esi+ccc*640]
 	mov	[edi+ccc*352*2+75*352*2], al
-	mov	[edi+ccc*352*2+75*352*2+352], al
+	;mov	[edi+ccc*352*2+75*352*2+352], al
 	%assign ccc ccc+1
 	%endrep
 
