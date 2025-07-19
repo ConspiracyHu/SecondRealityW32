@@ -197,15 +197,10 @@ int main( int argc, char * argv[] )
 
   load_music();
 
-#ifdef _DEBUG
   Graphics::WindowType windowType = Graphics::WindowType::Windowed;
   int windowWidth = 1280;
   int windowHeight = 960;
-#else
-  Graphics::WindowType windowType = Graphics::WindowType::Borderless;
-  int windowWidth = 1280;
-  int windowHeight = 960;
-
+#ifndef _DEBUG
   menu();
   if ( m_exit )
   {
