@@ -79,7 +79,7 @@ void copper_update()
   else if ( cop_drop >= 128 )
   {
     drop_y = plz_dtau[ 0 ];
-    cop_dofade = 256 - cop_drop;
+    cop_dofade = 1;
   }
   else if ( cop_drop > 64 + 32 )
   {
@@ -89,7 +89,7 @@ void copper_update()
   else
   {
     drop_y = plz_dtau[ 0 ];
-    cop_dofade = 96 - cop_drop;
+    cop_dofade = 1;
   }
   if ( cop_drop == 65 )
   {
@@ -126,8 +126,7 @@ void plz()
 		tim+=frame_count; frame_count=0; count++;
 		if(dis_getmframe()>timetable[ttptr])
 			{
-			memset(fadepal,0,768);
-      memset(fadepal_short,0,768*2);
+			for ( int i = 0; i < 768; i++ ) fadepal_short[ i ] &= 0xFF;
 			cop_drop=1;
 			cop_fadepal=pals[curpal++];
 			ttptr++;
@@ -141,7 +140,7 @@ void plz()
 			ik4=inittable[ttptr][7];
 			}
 
-    // --- W32 PORT CHANGE ---
+		// --- W32 PORT CHANGE ---
 		//if(curpal==5 && cop_drop>64) break;
 		if(curpal==4 && cop_drop>64) break;
 
