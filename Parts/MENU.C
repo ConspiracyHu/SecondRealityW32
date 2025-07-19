@@ -343,7 +343,7 @@ int	mainmenu( void )
 		"~0    ~1       Window mode:~2 Fullscreen                                           ~0  \n"
 	); break;
 	case 1:	prtf(
-		"~0    ~1       Window mode:~2 Windowed (1280x720)                                  ~0  \n"
+		"~0    ~1       Window mode:~2 Windowed (1280x960)                                  ~0  \n"
 	); break;
 	}
 	col[ 1 ] &= ~0x10; col[ 2 ] &= ~0x10; prtf(
