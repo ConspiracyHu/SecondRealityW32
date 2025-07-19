@@ -332,7 +332,6 @@ void koe_main()
 			}
 			if(a>=0) flash(a);
 			else flash(0);
-      demo_blit();
 		}
 
 		while(!dis_exit())
