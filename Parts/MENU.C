@@ -120,6 +120,8 @@ void menu()
 
 	SetConsoleScreenBufferInfoEx( GetStdHandle( STD_OUTPUT_HANDLE ), &info );
 
+	SetConsoleTitleA( "Second Reality (W32)" );
+
 //	outp( 0x3c8, 0 );
 //	for ( a = 0; a < 768; a++ ) outp( 0x3c9, 0 );
 
