@@ -188,6 +188,8 @@ void demo_vsync()
 
 int main( int argc, char * argv[] )
 {
+  ::SetProcessDPIAware();
+
   // self-modifying code everywhere, wahey!
   DWORD old = 0;
   VirtualProtect( &rotate, 8192, PAGE_EXECUTE_READWRITE, &old );
