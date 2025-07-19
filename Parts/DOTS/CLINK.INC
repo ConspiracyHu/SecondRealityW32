@@ -19,8 +19,8 @@
 
 %macro CEND 0 ;C/Assembler procedure end
 	;pop	ds
-	pop	esi
 	pop	edi
+	pop	esi
 	pop	ebp
 	ret
 %endmacro
