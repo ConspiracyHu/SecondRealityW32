@@ -27,5 +27,5 @@ jobs:
       with:
         name: w32nd_real
         path: |
-            SecondRealityW32.exe 
+            SECOND_W32.EXE
             REALITY.FC

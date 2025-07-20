@@ -121,8 +121,8 @@
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
     </Link>
     <PostBuildEvent>
-      <Command>del $(SolutionDir)$(TargetFilename)
-$(SolutionDir)\Tools\upx.exe -9 $(OutDir)$(TargetFilename) -o $(SolutionDir)$(TargetFilename)</Command>
+      <Command>del $(SolutionDir)SECOND_W32.EXE
+$(SolutionDir)\Tools\upx.exe -9 $(OutDir)$(TargetFilename) -o $(SolutionDir)SECOND_W32.EXE</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
