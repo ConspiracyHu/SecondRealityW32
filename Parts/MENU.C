@@ -152,7 +152,6 @@ void menu()
 		INPUT_RECORD inputs[ 10 ] = { 0 };
 		DWORD event_count = 0;
 		ReadConsoleInput( GetStdHandle( STD_INPUT_HANDLE ), inputs, 10, &event_count );
-		static int debounceTimer = 0;
 
 		for ( int i = 0; i < event_count; i++ )
 		{
@@ -161,14 +160,12 @@ void menu()
 			{
 				continue;
 			}
-			int time = GetTickCount();
-			if ( time - debounceTimer < 100 )
+			if ( !input->Event.KeyEvent.bKeyDown )
 			{
 				continue;
 			}
-			debounceTimer = time;
 
-			a = 0;
+			//a = 0;
 			if ( input->Event.KeyEvent.wVirtualKeyCode == 13 )
 			{
 				m_proceed = 1;
