@@ -45,7 +45,7 @@ extern "C" void st3play_SetMasterVol( unsigned short volume );
 extern "C" void st3play_GetOrderRowAndFrame( unsigned short * orderPtr, unsigned short * rowPtr, unsigned int * framePtr );
 extern "C" short st3play_GetPlusFlags();
 
-extern "C" void load_music();
+extern "C" char load_music();
 extern "C" void start_music( int song_idx, int start_order );
 extern "C" void end_music();
 
@@ -197,7 +197,12 @@ int main( int argc, char * argv[] )
   VirtualProtect( &plzline, 8192, PAGE_EXECUTE_READWRITE, &old );
   VirtualProtect( &tun_main, 8192, PAGE_EXECUTE_READWRITE, &old );
 
-  load_music();
+  if ( !load_music() )
+  {
+    printf( "Could not find either SECOND.EXE or REALITY.FC. These files are\r\n"
+      "required to be in the current directory when the demo is run.\r\n" );
+    return -1;
+  }
 
   Graphics::WindowType windowType = Graphics::WindowType::Windowed;
   int windowWidth = 1280;
@@ -206,7 +211,7 @@ int main( int argc, char * argv[] )
   menu();
   if ( m_exit )
   {
-    return false;
+    return -2;
   }
   if ( m_windowmode == 0 )
   {
@@ -217,7 +222,7 @@ int main( int argc, char * argv[] )
 #endif // _DEBUG
   if ( !graphics.Init( GetModuleHandle( NULL ), windowWidth, windowHeight, -1, windowType ) )
   {
-    return false;
+    return -3;
   }
 
   screen32 = new unsigned int[ virtual_screen_width * virtual_screen_height ];
@@ -333,4 +338,6 @@ int main( int argc, char * argv[] )
   delete[] screen32;
 
   graphics.Close();
+
+  return 0;
 }
