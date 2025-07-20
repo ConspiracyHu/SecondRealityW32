@@ -129,6 +129,7 @@ _docol:
 global _docopy
 _docopy:
 	push	ebp
+	mov	ebp, esp
 	push	esi
 	push	edi
 	push	ebx
@@ -164,44 +165,55 @@ _docopy:
 	jnz	@@7
 %endif
 
-	mov	dx,3c4h
-	mov	ax,0f02h
+	;mov	dx,3c4h
+	;mov	ax,0f02h
 	;out	dx,ax
-	mov	edi,[esp+8]
+	mov	edi,[ebp+8]
+	mov	ebx,[ebp+12]
 	mov	esi,_vbuf
-	add esi,60*160
-	add	edi,52*80
-	mov	ecx,18*80/4
+	add	esi,60*160
+	add	edi,52*80*4
+	mov	ecx,18*80;/4
 	xor	eax,eax
 	rep	stosd
 	mov	ecx,140
-	mov	bl,255
-	mov	bh,bl
-	mov	ax,bx
-	shl	ebx,16
-	mov	bx,ax
+	sub	ecx,ebx
+
+	; edi+=startrise*320
+	xchg	eax,ebx
+	mov	ebx,320
+	mul	ebx
+	add	edi,eax
+
+	;mov	bl,255
+	;mov	bh,bl
+	;mov	ax,bx
+	;shl	ebx,16
+	;mov	bx,ax
 	;
-@@1:	mov	dx,3c4h
-	mov	ax,0302h
+@@1:	;mov	dx,3c4h
+	;mov	ax,0302h
 	;out	dx,ax
 	%assign zzz 0
-	%rep	20
-	mov	eax,[esi+zzz]
-	mov	[edi+zzz],eax
-	%assign zzz zzz+4
+	%rep	20*4
+	mov	al,[esi+zzz]
+	mov	ah, al
+	mov	[edi+zzz*4+0],ax
+	%assign zzz zzz+1
 	%endrep
-	mov	dx,3c4h
-	mov	ax,0C02h
+	;mov	dx,3c4h
+	;mov	ax,0C02h
 	;out	dx,ax
 	%assign zzz 0
-	%rep	20
-	mov	eax,[esi+zzz+80]
-	mov	[edi+zzz],eax
-	%assign zzz zzz+4
+	%rep	20*4
+	mov	al,[esi+zzz+80]
+	mov	ah, al
+	mov	[edi+zzz*4+2],ax
+	%assign zzz zzz+1
 	%endrep
 	add	esi,160
-	add	edi,80
-	dec	cx
+	add	edi,80*4
+	dec	ecx
 	jnz	@@1
 
 ;	mov	ax,cs
@@ -209,7 +221,7 @@ _docopy:
 ;	mov	si,OFFSET _combguse+60*160
 	xor	eax,eax
 	mov	edi,_vbuf
-	add edi,68*160
+	add	edi,68*160
 	mov	ecx,30*160/4/4
 @@cl1:	mov	[edi],eax
 	add	di,4
