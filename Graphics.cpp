@@ -1,5 +1,6 @@
 #include <tchar.h>
 #include "Graphics.h"
+#include "Resources/resource.h"
 
 Graphics::Graphics()
   : mDirectDraw( NULL )
@@ -47,7 +48,7 @@ bool Graphics::Init( HINSTANCE _instance, int _screenWidth, int _screenHeight, i
   wndClass.cbClsExtra = 0;
   wndClass.cbWndExtra = 0;
   wndClass.hInstance = _instance;
-  wndClass.hIcon = NULL;
+  wndClass.hIcon = LoadIcon( _instance, MAKEINTRESOURCE( IDI_ICON1 ) );
   wndClass.hCursor = LoadCursor( NULL, IDC_ARROW );
   wndClass.hbrBackground = NULL;
   wndClass.lpszMenuName = NULL;
