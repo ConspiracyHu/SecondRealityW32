@@ -213,11 +213,33 @@ int main( int argc, char * argv[] )
   {
     return -2;
   }
-  if ( m_windowmode == 0 )
+  switch ( m_windowmode )
   {
-    windowType = Graphics::WindowType::Borderless;
-    windowWidth = GetSystemMetrics( SM_CXSCREEN );
-    windowHeight = GetSystemMetrics( SM_CYSCREEN );
+  case 0:
+    {
+      windowType = Graphics::WindowType::Borderless;
+      windowWidth = GetSystemMetrics( SM_CXSCREEN );
+      windowHeight = GetSystemMetrics( SM_CYSCREEN );
+    }
+    break;
+  case 1:
+    {
+      windowWidth = 640;
+      windowHeight = 400;
+    }
+    break;
+  case 2:
+    {
+      windowWidth = 1280;
+      windowHeight = 800;
+    }
+    break;
+  case 3:
+    {
+      windowWidth = 1920;
+      windowHeight = 1200;
+    }
+    break;
   }
 #endif // _DEBUG
   if ( !graphics.Init( GetModuleHandle( NULL ), windowWidth, windowHeight, -1, windowType ) )

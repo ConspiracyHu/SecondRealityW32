@@ -262,8 +262,8 @@ int	mainmenu( void )
 	if ( m_soundquality < 0 ) m_soundquality = 2;
 	if ( m_soundquality > 2 ) m_soundquality = 0;
 #else
-        if ( m_windowmode < 0 ) m_windowmode = 1;
-        if ( m_windowmode > 1 ) m_windowmode = 0;
+        if ( m_windowmode < 0 ) m_windowmode = 3;
+        if ( m_windowmode > 3 ) m_windowmode = 0;
 #endif
 	if ( m_looping < 0 ) m_looping = 1;
 	if ( m_looping > 1 ) m_looping = 0;
@@ -342,7 +342,13 @@ int	mainmenu( void )
 		"~0    ~1       Window mode:~2 Fullscreen                                           ~0  \n"
 	); break;
 	case 1:	prtf(
-		"~0    ~1       Window mode:~2 Windowed (1280x960)                                  ~0  \n"
+		"~0    ~1       Window mode:~2 Windowed, native (640x400)                           ~0  \n"
+	); break;
+	case 2:	prtf(
+		"~0    ~1       Window mode:~2 Windowed, double size (1280x800)                     ~0  \n"
+	); break;
+	case 3:	prtf(
+		"~0    ~1       Window mode:~2 Windowed, triple size (1920x1200)                    ~0  \n"
 	); break;
 	}
 	col[ 1 ] &= ~0x10; col[ 2 ] &= ~0x10; prtf(
