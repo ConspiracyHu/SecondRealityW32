@@ -137,7 +137,6 @@ void vect()
     copper2();
     copper3();
 		calculate(1);
-    memset( vram_half, 0, 640 * 134 );
 		draw(15);
 
     char * src = vram_half + 160;
@@ -151,7 +150,7 @@ void vect()
     }
 
     demo_blit();
-		//clear();
+		clear();
 		}
 //	tw_closegraph();
 	}

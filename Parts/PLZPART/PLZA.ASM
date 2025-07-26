@@ -440,85 +440,89 @@ global _do_clear
 _do_clear:
 
 ;	ARG	vmem:dword, otau:dword, ntau:dword
-  %define vmem esp+8
-  %define otau esp+12
-  %define ntau esp+16
+  %define vmem ebp+8
+  %define otau ebp+12
+  %define ntau ebp+16
 
 	push	ebp
+	mov	ebp, esp
+	push	esi
+	push	edi
+	push	ebx
 
-	mov	dx, 3c4h
-	mov	ax, 0f02h
+	;mov	dx, 3c4h
+	;mov	ax, 0f02h
 	;out	dx, ax
 
 	mov edx, [vmem]
-  mov edi, edx
-	mov ebx, [otau]		; dx:bx-> otau
+  	mov ebx, [otau]		; dx:bx-> otau
 	mov esi, [ntau]
 	sub	esi, ebx                  ; dx:bx+si-> ntau
-	movzx	edx, byte [vmem]		; fill latches
+	;movzx	edx, byte [vmem]		; fill latches
 	mov	word [ycnt], 134
 	xor	eax, eax
 
 ..@lineloop:
-	cmp	word [ebx], 320
+	cmp	word [ebx], 640
 	je	..@nextline
 
 	movzx	edi, word [ebx]
-	shr	edi, 2
+	;shr	edi, 2
 	movzx	ecx, word [ebx+esi]
-	shr	ecx, 2
+	;shr	ecx, 2
 	sub	ecx, edi
 	jb	..@l1
 	add	edi, edx
-  add edi, [vmem]
 	rep	stosb
 ..@l1:
 	movzx	edi, word [ebx+esi+2]
-	shr	edi, 2
+	;shr	edi, 2
 	movzx	ecx, word [ebx+2]
-	shr	ecx, 2
+	;shr	ecx, 2
 	sub	ecx, edi
 	jb	..@nextline
 	add	edi, edx
 	inc	edi
-  add edi, [vmem]
-	rep	stosb
+  	rep	stosb
 
 ..@nextline:
-	mov	word [ebx], 320
+	mov	word [ebx], 640
 	mov	word [ebx+2], 0
 
-	add	dx, 320
-	add	bx, 4
+	add	edx, 640
+	add	ebx, 4
 	sub	word [ycnt], 1
 	jae	..@lineloop
 
 ; Maskaa p„„t...
 
-	mov edi, [vmem]
-	mov esi, [ntau]		; dx:bx-> ntau
-	mov	ecx, 134
-	mov	edx, 3c4h
-	mov	eax, 0f02h
-..@maskloop:
-	movzx	ebx, word [esi]
-	dec	bx
-	mov	ah, [end_mask+ebx]
-	;out	dx, ax
-	shr	bx, 2
-	mov	[ebx+edi], ch
+;	mov edi, [vmem]
+;	mov esi, [ntau]		; dx:bx-> ntau
+;	mov	ecx, 134
+;	mov	edx, 3c4h
+;	mov	eax, 0f02h
+;..@maskloop:
+;	movzx	ebx, word [esi]
+;	dec	bx
+;	mov	ah, [end_mask+ebx]
+;	;out	dx, ax
+;	shr	bx, 2
+;	mov	[ebx+edi], ch
+;
+;	movzx	ebx, word [esi+2]
+;	inc	bx
+;	mov	ah, [start_mask+ebx]
+;	;out	dx, ax
+;	shr	bx, 2
+;	mov	[ebx+edi], ch
+;
+;..@nextmask:
+;	add	si,4
+;	add	di, 320
+;	loop	..@maskloop
 
-	movzx	ebx, word [esi+2]
-	inc	bx
-	mov	ah, [start_mask+ebx]
-	;out	dx, ax
-	shr	bx, 2
-	mov	[ebx+edi], ch
-
-..@nextmask:
-	add	si,4
-	add	di, 320
-	loop	..@maskloop
-
+	pop	ebx
+	pop	edi
+	pop	esi
 	pop	ebp
 	ret

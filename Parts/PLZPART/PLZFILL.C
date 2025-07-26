@@ -183,7 +183,7 @@ int	x1,y1,x2,y2,x3,y3,x4,y4,color, dd;
 
 clear()
 	{
-  short *otau=clrtau[(clrptr-3)&7], *ntau=clrtau[clrptr];
+  short *otau=clrtau[(clrptr-1)&7], *ntau=clrtau[clrptr];
 
 	clrptr=(clrptr+1)&7;
 
