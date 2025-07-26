@@ -28,7 +28,6 @@ jobs:
         copy REALITY.FC Dist/
     - name: Create artifact
       uses: actions/upload-artifact@v4
-      working-directory: Dist/
       with:
         name: w32nd_real
-        path: ./
+        path: Dist/
