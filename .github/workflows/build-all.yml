@@ -22,10 +22,13 @@ jobs:
       run: msbuild .\SecondRealityW32.sln /p:Configuration=Debug /p:Platform=x86
     - name: Build Release|X86
       run: msbuild .\SecondRealityW32.sln /p:Configuration=Release /p:Platform=x86
+    - name: Copy files into Dist dir
+      run: |
+        copy SECOND_W32.EXE Dist/
+        copy REALITY.FC Dist/
     - name: Create artifact
       uses: actions/upload-artifact@v4
+      working-directory: Dist/
       with:
         name: w32nd_real
-        path: |
-            SECOND_W32.EXE
-            REALITY.FC
+        path: *
