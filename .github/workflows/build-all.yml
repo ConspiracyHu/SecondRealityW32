@@ -31,4 +31,4 @@ jobs:
       working-directory: Dist/
       with:
         name: w32nd_real
-        path: *
+        path: ./
