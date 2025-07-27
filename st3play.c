@@ -7,6 +7,10 @@
 ** by Olav "8bitbubsy" Sørensen. Using the original asm source codes
 ** by Sami "PSI" Tammilehto (Future Crew) with permission.
 **
+**  !!
+**  !! MODDED VERSION FOR THE SECOND REALITY PORT
+**  !!
+**
 ** This replayer supports 16-bit samples and >64K sample lengths (which ST3 doesn't)!
 **
 ** You need to link winmm.lib for this to compile (-lwinmm).
