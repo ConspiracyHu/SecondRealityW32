@@ -1,0 +1,112 @@
+ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+³                                                                             ³
+³                             = Second Reality =                              ³
+³                                                                             ³
+³                     Copyright (C) 1993 by the Future Crew                   ³
+³                                                                             ³
+ÃÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´
+³                                                                             ³
+³                     Released on the 7th of October 1993                     ³
+³                                                                             ³
+³                        This demo won the Assembly'93                        ³
+³                    annual international demo competition                    ³
+³                        held in Finland, summer 1993.                        ³
+³                                                                             ³
+³                            This demo is freeware.                           ³
+³             It can be freely distributed without modifications.             ³
+³                       No money can be charged for it.                       ³
+³                                                                             ³
+ÃÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´
+³                                                                             ³
+³                  Ported to Windows by Conspiracy in 2025                    ³
+³                                                                             ³
+³                       = Released at Assembly '25 =                          ³
+³                                                                             ³
+ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+
+
+                      32 years after the original release:
+
+             A native port of Second Reality on a modern computer.
+
+
+
+        CREDITS AND ACKNOWLEDGEMENTS
+        ----------------------------
+
+        The original code for the demo was done by
+          Sami "PSI" Tammilehto
+          Mika "Trug" Tuomi
+          and Arto "Wildfire" Vuori
+
+        Porting work was done by Gargaj / Conspiracy
+
+        The port uses a heavily modded version of
+          st3play v1.01
+        by Olav "8bitbubsy" Sorensen (https://16-bits.org)
+        for music replay
+
+        Additional credits and heartfelt thankyous go to
+          Trixter / Hornet
+            for sharing his considerable knowledge on the workings
+            of early EGA/VGA and for some reverse engineering help.
+          Saga_Music / Nuance
+            for his insight into STMIK and the Scream Tracker
+            module format.
+
+
+
+        PORT ACCURACY
+        -------------
+
+        To the best of our knowledge the port is 95% accurate;
+        as the original demo heavily relies on a mix of 70 Hz
+        vertical blanking synchronization and timing to the music
+        replay, there may be subtle differences in timing.
+
+
+
+        FUTURE PLANS
+        ------------
+
+        Many of you may rightfully be asking if this port can be
+        moved to further platforms (Linux, Mac, or something more
+        exotic), and the answer is "eventually":
+
+        The original demo, as you may know, is written about 80%
+        in assembly, and as such, it's tightly tied to the
+        architecture and endianness of x86; moving from DOS to
+        Windows was certainly the most obvious and least complicated
+        lift. Our goal was to port the demo as accurately as
+        possible, with as much of the original code left intact as
+        possible, and as such, the current version may not be as
+        portable as one would hope.
+
+        However, we plan to continue on this further, and create a
+        further generation of the port where we would convert the
+        entire demo to a portable language (C), and create a
+        "standards compliant" version that would allow for easier
+        porting between platforms - we haven't quite started work
+        on this yet, but once we reach a certain stage, we plan to
+        involve more of the open source community to help us with
+        that, so keep an eye and ear out for updates about this!
+
+
+
+        LINKS
+        -----
+
+        The original source is available at
+          https://github.com/mtuomi/SecondReality
+
+        The ported source is available at
+          https://github.com/ConspiracyHu/SecondRealityW32
+
+        You can get in touch at
+          https://www.conspiracy.hu
+          https://bsky.app/profile/conspiracy.hu
+          https://graphics.social/@conspiracyhu
+
+        (Triton! if you still have the sources for Crystal Dream 2,
+        hit us up! :D )
