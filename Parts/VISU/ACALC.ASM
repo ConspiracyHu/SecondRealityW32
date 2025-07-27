@@ -622,8 +622,8 @@ _calc_singlez:
 	ldspar	esi,2 ;matrix - dataseg not used in procedure, so DS can be used
 	movpar	eax,0
 	lfspar	ebp,1 ;source - NOTE: bp/parameter pointer destroyed!
-	shl	ax,vlist_sizeshl
-	add	bp,ax
+	shl	eax,vlist_sizeshl
+	add	ebp,eax
 
 	mov	eax,[esi+rmatrix_m+24]
 	imul	dword [ebp+vlist_x]
