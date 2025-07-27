@@ -937,6 +937,9 @@ do_interference:
 @@cp0:
 	;MOVE
 
+  call _resolve_planar
+  call _demo_blit
+
 	mov	bx,6
 	;int	0fch
   call _dis_musrow
@@ -1018,8 +1021,6 @@ do_interference:
 	inc	word [framecount]
 	;cmp	[framecount],70*13
 	;je	@@xx
-  call _resolve_planar
-  call _demo_blit
  	mov	ax,0
 	mov	bx,9
 	;int	0fch
