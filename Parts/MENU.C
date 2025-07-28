@@ -88,37 +88,54 @@ void screen_update()
 	WriteConsoleOutput( GetStdHandle( STD_OUTPUT_HANDLE ), screen_buffer, full_screen, screen_start, &write_region );
 }
 
+typedef BOOL (WINAPI * T_GetConsoleScreenBufferInfoEx)( _In_ HANDLE hConsoleOutput, _Inout_ PCONSOLE_SCREEN_BUFFER_INFOEX lpConsoleScreenBufferInfoEx );
+typedef BOOL (WINAPI * T_SetConsoleScreenBufferInfoEx)( _In_ HANDLE hConsoleOutput, _Inout_ PCONSOLE_SCREEN_BUFFER_INFOEX lpConsoleScreenBufferInfoEx );
+
 void menu()
 {
 	int	y, a;
 
 	delay( 1 );
 
-	CONSOLE_SCREEN_BUFFER_INFOEX info = { 0 };
-	info.cbSize = sizeof( CONSOLE_SCREEN_BUFFER_INFOEX );
-	GetConsoleScreenBufferInfoEx( GetStdHandle( STD_OUTPUT_HANDLE ), &info );
-	info.dwSize.Y = 25;
-	info.dwMaximumWindowSize.Y = 25;
-	int color = 0;
-	info.ColorTable[ color++ ] = DOS_RGB( 0, 0, 0 );
-	info.ColorTable[ color++ ] = DOS_RGB( 16, 16, 24 ); // bar
-	info.ColorTable[ color++ ] = DOS_RGB( 13, 0, 0 );
-	info.ColorTable[ color++ ] = DOS_RGB( 43, 0, 0 );
-	info.ColorTable[ color++ ] = DOS_RGB( 23, 0, 0 );
-	info.ColorTable[ color++ ] = DOS_RGB( 53, 0, 0 );
-	info.ColorTable[ color++ ] = DOS_RGB( 33, 0, 0 ); // do not use
-	info.ColorTable[ color++ ] = DOS_RGB( 63, 0, 0 );
+	HMODULE hKernel32 = LoadLibraryA( "KERNEL32.DLL" );
+	T_GetConsoleScreenBufferInfoEx _GetConsoleScreenBufferInfoEx = GetProcAddress( hKernel32, "GetConsoleScreenBufferInfoEx" );
+	T_SetConsoleScreenBufferInfoEx _SetConsoleScreenBufferInfoEx = GetProcAddress( hKernel32, "SetConsoleScreenBufferInfoEx" );
 
-	info.ColorTable[ color++ ] = DOS_RGB( 0, 50, 63 );
-	info.ColorTable[ color++ ] = DOS_RGB( 0, 60, 63 );
-	info.ColorTable[ color++ ] = DOS_RGB( 25, 25, 30 );
-	info.ColorTable[ color++ ] = DOS_RGB( 0, 30, 60 );
-	info.ColorTable[ color++ ] = DOS_RGB( 0, 50, 60 );
-	info.ColorTable[ color++ ] = DOS_RGB( 63, 0, 0 );
-	info.ColorTable[ color++ ] = DOS_RGB( 63, 0, 0 );
-	info.ColorTable[ color++ ] = DOS_RGB( 63, 0, 0 );
+	if ( _GetConsoleScreenBufferInfoEx && _SetConsoleScreenBufferInfoEx )
+	{
+		CONSOLE_SCREEN_BUFFER_INFOEX info = { 0 };
+		info.cbSize = sizeof( CONSOLE_SCREEN_BUFFER_INFOEX );
+		_GetConsoleScreenBufferInfoEx( GetStdHandle( STD_OUTPUT_HANDLE ), &info );
+		info.dwSize.Y = 25;
+		info.dwMaximumWindowSize.Y = 25;
+		int color = 0;
+		info.ColorTable[ color++ ] = DOS_RGB( 0, 0, 0 );
+		info.ColorTable[ color++ ] = DOS_RGB( 16, 16, 24 ); // bar
+		info.ColorTable[ color++ ] = DOS_RGB( 13, 0, 0 );
+		info.ColorTable[ color++ ] = DOS_RGB( 43, 0, 0 );
+		info.ColorTable[ color++ ] = DOS_RGB( 23, 0, 0 );
+		info.ColorTable[ color++ ] = DOS_RGB( 53, 0, 0 );
+		info.ColorTable[ color++ ] = DOS_RGB( 33, 0, 0 ); // do not use
+		info.ColorTable[ color++ ] = DOS_RGB( 63, 0, 0 );
 
-	SetConsoleScreenBufferInfoEx( GetStdHandle( STD_OUTPUT_HANDLE ), &info );
+		info.ColorTable[ color++ ] = DOS_RGB( 0, 50, 63 );
+		info.ColorTable[ color++ ] = DOS_RGB( 0, 60, 63 );
+		info.ColorTable[ color++ ] = DOS_RGB( 25, 25, 30 );
+		info.ColorTable[ color++ ] = DOS_RGB( 0, 30, 60 );
+		info.ColorTable[ color++ ] = DOS_RGB( 0, 50, 60 );
+		info.ColorTable[ color++ ] = DOS_RGB( 63, 0, 0 );
+		info.ColorTable[ color++ ] = DOS_RGB( 63, 0, 0 );
+		info.ColorTable[ color++ ] = DOS_RGB( 63, 0, 0 );
+
+		_SetConsoleScreenBufferInfoEx( GetStdHandle( STD_OUTPUT_HANDLE ), &info );
+	}
+	else
+	{
+		// pre-Vista
+		COORD coords = { 80, 25 };
+		SetConsoleScreenBufferSize( GetStdHandle( STD_OUTPUT_HANDLE ), coords );
+	}
+	FreeLibrary( hKernel32 );
 
 	SetConsoleTitleA( "Second Reality (W32)" );
 
