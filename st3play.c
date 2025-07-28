@@ -2659,23 +2659,35 @@ typedef struct
   uint32_t frame;
 } SampleMarker;
 
-// TODO: trim this every so often if the music has already passed a point
-#define MARKER_MAX 0x40 * 0x70 * 10
-SampleMarker sampleMarkers[ MARKER_MAX ];
+// simple ring buffer
+#define MARKER_MAX 128
+SampleMarker sampleMarkers[ MARKER_MAX ]; 
+#define SAMPLEMARKER_IDX(x) (((x)+sampleMarkerIndex) & (MARKER_MAX-1))
+uint16_t sampleMarkerIndex = 0;
 uint16_t sampleMarkerCount = 0;
+
 uint32_t totalSampleCount = 0;
 
 static void insertSampleMarker()
 {
-  if ( sampleMarkerCount >= MARKER_MAX )
+  if ( sampleMarkerCount < MARKER_MAX )
   {
-    __asm int 3;
+    // ring buffer not full yet
+    sampleMarkers[ sampleMarkerCount ].sampleCountStart = totalSampleCount;
+    sampleMarkers[ sampleMarkerCount ].order = (uint8_t)np_ord;
+    sampleMarkers[ sampleMarkerCount ].row = (uint8_t)np_row;
+    sampleMarkers[ sampleMarkerCount ].frame = np_zframe;
+    sampleMarkerCount++;
   }
-  sampleMarkers[ sampleMarkerCount ].sampleCountStart = totalSampleCount;
-  sampleMarkers[ sampleMarkerCount ].order = (uint8_t)np_ord;
-  sampleMarkers[ sampleMarkerCount ].row = (uint8_t)np_row;
-  sampleMarkers[ sampleMarkerCount ].frame = np_zframe;
-  sampleMarkerCount++;
+  else
+  {
+    // ring buffer full
+    sampleMarkers[ sampleMarkerIndex ].sampleCountStart = totalSampleCount;
+    sampleMarkers[ sampleMarkerIndex ].order = (uint8_t)np_ord;
+    sampleMarkers[ sampleMarkerIndex ].row = (uint8_t)np_row;
+    sampleMarkers[ sampleMarkerIndex ].frame = np_zframe;
+    sampleMarkerIndex = SAMPLEMARKER_IDX( 1 );
+  }
 }
 
 static bool st3play_FillAudioBuffer( int16_t * audioBuffer, int32_t samples )
@@ -3389,9 +3401,9 @@ void st3play_GetOrderRowAndFrame( unsigned short * orderPtr, unsigned short * ro
 
   if ( sampleMarkerCount == 1 )
   {
-    *orderPtr = sampleMarkers[ 0 ].order - 1;
-    *rowPtr = sampleMarkers[ 0 ].row;
-    *framePtr = sampleMarkers[ 0 ].frame;
+    *orderPtr = sampleMarkers[ SAMPLEMARKER_IDX( 0 ) ].order - 1;
+    *rowPtr = sampleMarkers[ SAMPLEMARKER_IDX( 0 ) ].row;
+    *framePtr = sampleMarkers[ SAMPLEMARKER_IDX( 0 ) ].frame;
     return;
   }
 
@@ -3400,7 +3412,7 @@ void st3play_GetOrderRowAndFrame( unsigned short * orderPtr, unsigned short * ro
   while ( i1 - i0 != 1 )
   {
     int half = ( i1 + i0 ) / 2;
-    if ( sampleMarkers[ half ].sampleCountStart < mmTime.u.sample )
+    if ( sampleMarkers[ SAMPLEMARKER_IDX( half ) ].sampleCountStart < mmTime.u.sample )
     {
       i0 = half;
     }
@@ -3410,9 +3422,9 @@ void st3play_GetOrderRowAndFrame( unsigned short * orderPtr, unsigned short * ro
     }
   }
 
-  *orderPtr = sampleMarkers[ i0 ].order - 1; // st3play is always one order ahead
-  *rowPtr = sampleMarkers[ i0 ].row;
-  *framePtr = sampleMarkers[ i0 ].frame;
+  *orderPtr = sampleMarkers[ SAMPLEMARKER_IDX( i0 ) ].order - 1; // st3play is always one order ahead
+  *rowPtr = sampleMarkers[ SAMPLEMARKER_IDX( i0 ) ].row;
+  *framePtr = sampleMarkers[ SAMPLEMARKER_IDX( i0 ) ].frame;
 }
 
 uint16_t st3play_GetOrder( void )
