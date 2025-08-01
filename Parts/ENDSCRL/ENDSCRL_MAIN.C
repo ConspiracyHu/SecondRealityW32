@@ -83,7 +83,7 @@ void do_scroll()
 		for(a=0,tstart=0,chars=0;*tptr!='\n';a++,chars++)
 			{
 			textline[a]=*tptr;
-			tstart+=fonaw[*tptr++]+2;
+			tstart+=fonaw[(unsigned char)*tptr++]+2;
 			}
 		textline[a]=*tptr++; tstart=(639-tstart)/2;
 		if (textline[0]=='[')
@@ -94,9 +94,9 @@ void do_scroll()
 	memset(scanbuf,0,80*4);
 
 	for(a=0,x=tstart;a<chars;a++,x+=2)
-		for(b=0;b<fonaw[textline[a]];b++,x++)
+		for(b=0;b<fonaw[(unsigned char)textline[a]];b++,x++)
 		{
-		scanbuf[x] = endscrl_font[line][fonap[textline[a]]+b];
+		scanbuf[x] = endscrl_font[line][fonap[ (unsigned char)textline[a]]+b];
 		/*
 		m=mtau[x&7];
 		if(endscrl_font[line][fonap[textline[a]]+b]&1)
@@ -160,8 +160,8 @@ void init()
 			x++;
 		}
 		//printf("%c: %i %i\n",*fonaorder,b,x-b);
-		fonap[*fonaorder]=b;
-		fonaw[*fonaorder]=x-b;
+		fonap[(unsigned char)*fonaorder]=b;
+		fonaw[(unsigned char)*fonaorder]=x-b;
 		fonaorder++;
 	}
 	// --- W32 PORT CHANGE (decompiled from final) ---
