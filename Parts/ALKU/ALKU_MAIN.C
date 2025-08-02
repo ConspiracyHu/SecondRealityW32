@@ -1,5 +1,6 @@
 #include <dos.h>
 #include <stdio.h>
+#include <stdint.h>
 #include <conio.h>
 #include <memory.h>
 //#include "tweak.h"
@@ -9,12 +10,43 @@
 
 #define SCRLF 9
 
-extern char hzpic[];
-extern void outline(char *f, char *t);
-extern void ascrolltext(int scrl, int *dtau);
-
 #define vmem shim_vram
-unsigned char alku_planar_vram[ 352 * 500 ];
+unsigned char alku_planar_vram[352 * 500];
+
+/* alku_include.c */
+extern char hzpic[];
+
+/* ported from asm  --paper */
+void ascrolltext(int scrl, short* text)
+{
+	uint16_t *esi;
+
+	for (esi = text; *esi != 0xFFFF; esi += 2)
+		alku_planar_vram[(uint32_t)esi[0] + 100 * 352 + scrl - 1] ^= (esi[1] & 0xFF);
+}
+
+/* ported from asm  --paper */
+void outline(char *src, char *dest)
+{
+	char *dptr, *sptr;
+	int ecx;
+
+	for (ecx = 4; ecx; ecx--) {
+		int i;
+
+		sptr = src + ecx;
+		dptr = dest + ecx;
+
+		for (i = 0; i < 75; i++)
+			dptr[i * 352 * 2] = sptr[i * 640];
+
+		sptr += 75 * 40 * 16;
+		dptr += 75 * 352 * 2;
+
+		for (i = 0; i < 75; i++)
+			dptr[i * 352 * 2] = sptr[i * 640];
+	}
+}
 
 void alku_simulate_scroll()
 {

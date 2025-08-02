@@ -1,3 +1,4 @@
+#define _CRT_SECURE_NO_WARNINGS /* microsoft hates fopen() for whatever reason  --paper */
 #include <stdio.h>
 
 unsigned char * reality_fc_data = NULL;

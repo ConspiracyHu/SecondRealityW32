@@ -81,6 +81,9 @@
     <ClCompile Include="Parts\MENU.C">
       <Filter>Parts</Filter>
     </ClCompile>
+    <ClCompile Include="Parts\ALKU\ALKU_INCLUDE.C">
+      <Filter>Parts\01-IntroScroll</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Graphics.h" />
@@ -248,15 +251,6 @@
     <None Include="Parts\PAM\PAL.INC">
       <Filter>Parts\03a-IntroPraxisBlast</Filter>
     </None>
-    <None Include="Parts\ALKU\HOI.IN0">
-      <Filter>Parts\01-IntroScroll</Filter>
-    </None>
-    <None Include="Parts\ALKU\HOI.IN1">
-      <Filter>Parts\01-IntroScroll</Filter>
-    </None>
-    <None Include="Parts\ALKU\FONA.INC">
-      <Filter>Parts\01-IntroScroll</Filter>
-    </None>
     <None Include="Parts\COMAN\SIN1024.INC">
       <Filter>Parts\17-ComancheVoxel</Filter>
     </None>
@@ -394,12 +388,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <YASM Include="Parts\ALKU\ALKU_ASMYT.ASM">
-      <Filter>Parts\01-IntroScroll</Filter>
-    </YASM>
-    <YASM Include="Parts\ALKU\ALKU_INCLUDE.ASM">
-      <Filter>Parts\01-IntroScroll</Filter>
-    </YASM>
     <YASM Include="Parts\PAM\PAM_ASMYT.ASM">
       <Filter>Parts\03a-IntroPraxisBlast</Filter>
     </YASM>
