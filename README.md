@@ -11,5 +11,5 @@ Ported from the original source available at https://github.com/mtuomi/SecondRea
 
 ## Links
 
-- [Future Crew](http://www.wikipedia.org/wiki/Future_Crew)
-- [Second Reality](http://www.wikipedia.org/wiki/Second_reality)
+- [Future Crew](http://en.wikipedia.org/wiki/Future_Crew)
+- [Second Reality](http://en.wikipedia.org/wiki/Second_Reality)
