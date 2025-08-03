@@ -51,7 +51,7 @@ extern "C" void end_music();
 
 unsigned int * screen32;
 
-Graphics graphics;
+static Graphics *graphics = NULL;
 
 extern "C" void demo_blit();
 
@@ -77,7 +77,7 @@ void demo_blit()
   printf( "%04X %04X | %04X %4d | %d\r", order, row, plus, (short)plus, frame );
 #endif
 
-  graphics.HandleMessages();
+  graphics->HandleMessages();
 
   if ( demo_screen_width == 320 && demo_screen_height == 200 )
   {
@@ -133,13 +133,13 @@ void demo_blit()
   }
 #endif
   
-  graphics.Update( screen32, virtual_screen_width, virtual_screen_height );
+  graphics->Update( screen32, virtual_screen_width, virtual_screen_height );
 }
 
 extern "C" bool demo_wantstoquit();
 bool demo_wantstoquit()
 {
-  return graphics.WantsToQuit();
+  return graphics->WantsToQuit();
 }
 
 double currentTime = 0.0;
@@ -188,6 +188,7 @@ void demo_vsync()
 
 int main( int argc, char * argv[] )
 {
+  // should dynload this, this is Vista+  --paper
   ::SetProcessDPIAware();
 
   // self-modifying code everywhere, wahey!
@@ -242,12 +243,27 @@ int main( int argc, char * argv[] )
     break;
   }
 #endif // _DEBUG
-  if ( !graphics.Init( GetModuleHandle( NULL ), windowWidth, windowHeight, -1, windowType ) )
-  {
-    return -3;
-  }
 
-  screen32 = new unsigned int[ virtual_screen_width * virtual_screen_height ];
+#define TRY_GRAPHICS(x) \
+do { \
+  if (graphics) delete graphics; \
+\
+  graphics = new Graphics##x; \
+\
+  if (graphics->Init(windowWidth, windowHeight, -1, windowType)) \
+    goto BS_havegraphics; \
+} while (0)
+
+  TRY_GRAPHICS(WindowsDDraw);
+  TRY_GRAPHICS(WindowsGDI);
+
+  if (graphics) delete graphics;
+
+  return -3;
+
+BS_havegraphics:
+
+  screen32 = new uint32_t[ virtual_screen_width * virtual_screen_height ];
   ZeroMemory( screen32, virtual_screen_width * virtual_screen_height * sizeof( unsigned int ) );
 
   typedef struct 
@@ -359,7 +375,7 @@ int main( int argc, char * argv[] )
   end_music();
   delete[] screen32;
 
-  graphics.Close();
+  graphics->Close();
 
   return 0;
 }
